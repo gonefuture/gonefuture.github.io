@@ -1,0 +1,366 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>git入门简介 | zooooooooy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="git基础概念git是目前最好的版本控制系统（没有之一） branchgit里面核心的内容是分支（branch）,不同于svn的是，分支的成本很低，只记录变化的文件。git官方是非常推荐是使用分支来开发，我们在自己本地进行某些特性开发的时候，也是可以开辟一个本地分支。操作方式分为两种  自己本地建一个分支，可选择方式有两种，本地写好后自己merge到develop分支，删除本地分支。—-个人建议采">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git入门简介">
+<meta property="og:url" content="http://db101.cn/2018/07/26/git-summary/index.html">
+<meta property="og:site_name" content="zooooooooy">
+<meta property="og:description" content="git基础概念git是目前最好的版本控制系统（没有之一） branchgit里面核心的内容是分支（branch）,不同于svn的是，分支的成本很低，只记录变化的文件。git官方是非常推荐是使用分支来开发，我们在自己本地进行某些特性开发的时候，也是可以开辟一个本地分支。操作方式分为两种  自己本地建一个分支，可选择方式有两种，本地写好后自己merge到develop分支，删除本地分支。—-个人建议采">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://db101.cn/images/log.png">
+<meta property="og:image" content="http://db101.cn/images/stash.png">
+<meta property="og:image" content="http://db101.cn/images/data-flow.png">
+<meta property="og:image" content="http://db101.cn/images/git-flow.png">
+<meta property="og:updated_time" content="2018-07-25T03:59:07.365Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git入门简介">
+<meta name="twitter:description" content="git基础概念git是目前最好的版本控制系统（没有之一） branchgit里面核心的内容是分支（branch）,不同于svn的是，分支的成本很低，只记录变化的文件。git官方是非常推荐是使用分支来开发，我们在自己本地进行某些特性开发的时候，也是可以开辟一个本地分支。操作方式分为两种  自己本地建一个分支，可选择方式有两种，本地写好后自己merge到develop分支，删除本地分支。—-个人建议采">
+<meta name="twitter:image" content="http://db101.cn/images/log.png">
+  
+    <link rel="alternative" href="/atom.xml" title="zooooooooy" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://gitee.com/zooy"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">冻冰</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">冻冰</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-git-summary" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/07/26/git-summary/" class="article-date">
+  <time datetime="2018-07-26T02:28:13.253Z" itemprop="datePublished">2018-07-26</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      git入门简介
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h3 id="git基础概念"><a href="#git基础概念" class="headerlink" title="git基础概念"></a>git基础概念</h3><p>git是目前最好的版本控制系统（没有之一）</p>
+<h4 id="branch"><a href="#branch" class="headerlink" title="branch"></a>branch</h4><p>git里面核心的内容是分支（branch）,不同于svn的是，分支的成本很低，只记录变化的文件。git官方是非常推荐是使用分支来开发，我们在自己本地进行某些特性开发的时候，也是可以开辟一个本地分支。操作方式分为两种</p>
+<ul>
+<li>自己本地建一个分支，可选择方式有两种，本地写好后自己merge到develop分支，删除本地分支。—-个人建议采用这种方式</li>
+<li>如果是业务特性，例如feature分支，可能对现有在develop上开发的其他工程师造成影响，且有两个人以上开发这个feature分支。或者需要为某些特性单独做一些特别的处理。这就需要推送到远程分支上面去。 —-个人建议如果一个人开发的话，开新的本地分支是有效的操作方式<br>操作命令如下<ul>
+<li>git branch (name)</li>
+<li>git checkout (name)    </li>
+<li>git checkout -b (name) 是上面两个命令的合集</li>
+<li>git merge <name> git有个概念是当前分支，如果用命令行的话可以清晰的看到，这个merge的意思是在将<name>分支合并到当前分支上</name></name></li>
+<li>git push origin (name) 推送到远程分支    </li>
+<li>git branch -d (name) 删除本地分支 git中一个远程分支对应一个本地分支，名字可以不一样，不过建议最好保持一致。</li>
+<li>git push origin :(name) 冒号前面是空的代表将一个空推送到远程分支，即是删除远程分支</li>
+<li>git push origin –delete (name) git1.7 以上支持这个方式 建议删除时不要填写master,develop等比较关键的分支</li>
+</ul>
+</li>
+</ul>
+<h4 id="commit"><a href="#commit" class="headerlink" title="commit"></a>commit</h4><p>git第二个概念是commit，提交记录，每次提交都会产生一个sha1-hash值，Git仓库中内容和头信息（Header）的一个校验和(checksum)。<br>主要使用来保证每次提交的完整性。</p>
+<p>git log<br><img src="/images/log.png" alt="log"></p>
+<p>可以看到每个commit后都有一个加密的串。这个串可以做一些回滚或者checkout的操作。—下面的这些操作建议少使用。</p>
+<ul>
+<li>git reset –soft (id) 撤销当前的提交，会保持当前的提交和之间的跨度提交，将代码回退到id对应的版本。</li>
+<li>git reset –hard (id) 撤销当前的提交，将代码硬回退到id对应的版本。</li>
+<li>git reset . 撤销当前本地的所有提交和修改。回退到你拉代码时的版本。可以重新get代码</li>
+<li>git reset –soft HEAD 回退一个版本</li>
+<li>git reset –soft HEAD~3 向前回退三个版本</li>
+<li>git reset –hard origin/master 回退到服务器最新</li>
+</ul>
+<p>有时候可能需要撤销当前的修改，做其他的任务的时候，操作方式分为三种。</p>
+<ul>
+<li>直接提交当前的提交</li>
+<li>暂存当前的提交<ul>
+<li>git stash 暂存起来</li>
+<li>git stash pop 拿出暂存区的内容<br><img src="/images/stash.png" alt="stash"></li>
+<li>git stash list 查看暂存区列表</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>直接提交抛弃到此次的修改<ul>
+<li>git checkout . 也可以撤销某个文件的修改 .替换成修改的文件，需要带上路径</li>
+</ul>
+</li>
+</ul>
+<h4 id="stage（暂存区）"><a href="#stage（暂存区）" class="headerlink" title="stage（暂存区）"></a>stage（暂存区）</h4><p><img src="/images/data-flow.png" alt="data"></p>
+<p>操作步骤如下：</p>
+<ul>
+<li>git add . 增加索引 提交到暂存区</li>
+<li>git commit -m ‘message’提交到本地仓库</li>
+<li>git push origin (BranchName) 提交到远程仓库</li>
+<li>git commit -a -m ‘message’</li>
+</ul>
+<p>上面三个步骤是将本地代码提交到远程服务器的基本操作。</p>
+<h4 id="git-flow"><a href="#git-flow" class="headerlink" title="git flow"></a>git flow</h4><p>git工作流程是以分支为基础的操作流程<br><img src="/images/git-flow.png" alt="flow"></p>
+<blockquote>
+<p>可以看下项目里面现在的分支规则</p>
+</blockquote>
+<p>这个地方需要发布代码的遵循这个规则。现在基本是有（徐蕾）负责。</p>
+<h4 id="工作中git的使用"><a href="#工作中git的使用" class="headerlink" title="工作中git的使用"></a>工作中git的使用</h4><p>我一般遇到的问题和操作方式，感兴趣的也可以自己习惯一套自己的命令方式，不反对使用sourceTree和git tortoise等工具提交源码，原则是保证代码合并的时候不出问题。</p>
+<ul>
+<li>建立仓库,推送代码,建议使用ssh的方式，现在git支持http和ssh两种方式。<ul>
+<li>git init</li>
+<li>git add .</li>
+<li>git commit -m ‘message’</li>
+<li>git remote add origin (git url)</li>
+<li>git push origin master</li>
+<li>git checkout -b develop</li>
+<li>git push origin develop</li>
+<li>git remote set-url origin (git url)</li>
+</ul>
+</li>
+<li>拉取代码，提交，推送代码<ul>
+<li>git status</li>
+<li>git add .</li>
+<li>git commit -m ‘message’</li>
+<li>git pull –rebase</li>
+<li>git push origin ()</li>
+</ul>
+</li>
+<li>遇到冲突的时候<ul>
+<li>先解决掉本地的冲突，建议使用开发工具解决</li>
+<li>git rebase –continue | git merge -m ‘message’</li>
+<li>git add .</li>
+<li>git push origin ()</li>
+</ul>
+</li>
+<li>stash（隐藏起来） 当你需要临时修改其他的bug，但是现在已经的修改又不能提交时，建议采用这个方式<ul>
+<li>git stash</li>
+<li>git stash pop</li>
+<li>git stash list</li>
+</ul>
+</li>
+<li>建议多使用git的本地分支去辅助代码开发</li>
+<li>建议每次提交时以一个单元去使用，意思就是一个独立的单元生成一个提交，在继续后面的开发。一次推送可以推送多个单元的提交</li>
+<li>未完待续</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://db101.cn/2018/07/26/git-summary/" data-id="cjk1xvtht0001agvtdlo1deqc" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  <!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="git-summary" ></div>
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytJofnm1'; 
+var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/07/26/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/07/26/expression/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Normal Expression</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/07/26/springboot-summary/">springboot</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/26/semaphore/">Semaphore</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/26/jdk8-reduce/">JDK8 lambda reduce</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/26/java-scattered/">JAVA scatter</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/26/java-build-mode/">java build mode</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&amp;id=116099393&amp;auto=1&amp;height=430"></iframe>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 冻冰
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+	  </span><br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

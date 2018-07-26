@@ -5,15 +5,21 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   
-  <title>zooooooooy</title>
+  <title>springboot | zooooooooy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="zooooooooy">
-<meta property="og:url" content="http://db101.cn/index.html">
+  <meta name="description" content="springMVCspringboot提供了开箱即用的web mvc，项目中用到的是gradle，只需要引用两个包就可以了12compile(&amp;apos;org.springframework.boot:spring-boot-starter&amp;apos;)compile(&amp;apos;org.springframework.boot:spring-boot-starter-web&amp;apos;) 并不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springboot">
+<meta property="og:url" content="http://db101.cn/2018/07/26/springboot-summary/index.html">
 <meta property="og:site_name" content="zooooooooy">
+<meta property="og:description" content="springMVCspringboot提供了开箱即用的web mvc，项目中用到的是gradle，只需要引用两个包就可以了12compile(&amp;apos;org.springframework.boot:spring-boot-starter&amp;apos;)compile(&amp;apos;org.springframework.boot:spring-boot-starter-web&amp;apos;) 并不">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://db101.cn/images/TIM截图20180605114425.png">
+<meta property="og:updated_time" content="2018-07-25T03:59:07.418Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="zooooooooy">
+<meta name="twitter:title" content="springboot">
+<meta name="twitter:description" content="springMVCspringboot提供了开箱即用的web mvc，项目中用到的是gradle，只需要引用两个包就可以了12compile(&amp;apos;org.springframework.boot:spring-boot-starter&amp;apos;)compile(&amp;apos;org.springframework.boot:spring-boot-starter-web&amp;apos;) 并不">
+<meta name="twitter:image" content="http://db101.cn/images/TIM截图20180605114425.png">
   
     <link rel="alternative" href="/atom.xml" title="zooooooooy" type="application/atom+xml">
   
@@ -72,9 +78,7 @@
 </header>
 
     <div class="outer">
-      <section id="main">
-  
-    <article id="post-springboot-summary" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main"><article id="post-springboot-summary" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/07/26/springboot-summary/" class="article-date">
   <time datetime="2018-07-26T02:28:13.276Z" itemprop="datePublished">2018-07-26</time>
@@ -89,8 +93,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/springboot-summary/">springboot</a>
+    <h1 class="article-title" itemprop="name">
+      springboot
     </h1>
   
 
@@ -173,133 +177,21 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
   </div>
   
-</article>
-
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-semaphore" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/26/semaphore/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.273Z" itemprop="datePublished">2018-07-26</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/semaphore/">Semaphore</a>
-    </h1>
+    <a href="/2018/07/26/semaphore/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Semaphore</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <p>是一个分离的信号量计数器<br>主要核心方法有两个：</p>
-<ul>
-<li>acquire<br><em>从信号队列里面获取一个信号量，如果没有获取到则会一直阻塞到获取到信号量为止</em></li>
-<li>release<br><em>释放一个信号量回队列，这种模型相对来说比较适合池这种类型的业务需求</em></li>
-</ul>
-<p>acquire(int permits) 一次获取多个信号量<br>acquireUninterruptibly() 连续获取一个信号量<br>acquireUninterruptibly(int permits) 连续获得多个信号量</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://db101.cn/2018/07/26/semaphore/" data-id="cjk1xvti60009agvt66vlim4h" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-  <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="semaphore" ></div>
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytJofnm1'; 
-var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
   
 </article>
 
 
-
-  
-    <article id="post-jdk8-reduce" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/26/jdk8-reduce/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.269Z" itemprop="datePublished">2018-07-26</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/jdk8-reduce/">JDK8 lambda reduce</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <p>今天接了一个需求，需要在302的同时，将代理的所有参数都在转发到新的页面上</p>
-<p>直接上代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, String[]&gt; parameterMap = request.getParameterMap();</span><br><span class="line">   List&lt;String&gt; paramList = new ArrayList&lt;&gt;();</span><br><span class="line">   parameterMap.forEach((k,v) -&gt; &#123;</span><br><span class="line">      paramList.add(k + &quot;=&quot; + v[0]);</span><br><span class="line">   &#125;);</span><br><span class="line"></span><br><span class="line">   String paramChain = paramList.stream().reduce((s1, s2) -&gt; s1 + &quot;&amp;&quot; + s2).get();</span><br><span class="line">   response.setStatus(302);</span><br><span class="line">   response.setHeader(&quot;Location&quot;, lxAddress + &quot;?&quot; + paramChain);</span><br><span class="line">   response.setHeader(&quot;Connection&quot;, &quot;close&quot;);</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://db101.cn/2018/07/26/jdk8-reduce/" data-id="cjk1xvti50008agvtaxaxqx1b" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-  <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="jdk8-reduce" ></div>
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytJofnm1'; 
-var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-  
-  
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
-  
 </section>
       
       <aside id="sidebar">
