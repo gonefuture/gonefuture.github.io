@@ -5,23 +5,23 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   
-  <title>oschina git仓库提交webHook触发hexo博客更新 | zooooooooy</title>
+  <title>oschina git仓库提交webHook触发hexo博客更新 | gonefuture</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="创建一个项目  将服务器上的代码整个打包传到项目上来，使用如下命令 1.1    git init 1.2 git add . 1.3 git commit -m ‘init’ 1.4 git remote add origin ‘your remote ssh address’ 后续就需要配置openresty，解决自动提交webHook触发脚本执行的功能 2.1 openresty的安装可以参">
 <meta property="og:type" content="article">
 <meta property="og:title" content="oschina git仓库提交webHook触发hexo博客更新">
-<meta property="og:url" content="http://db101.cn/2018/07/26/hexo-oschina/index.html">
-<meta property="og:site_name" content="zooooooooy">
+<meta property="og:url" content="http://gonefuture.top/2018/07/26/hexo-oschina/index.html">
+<meta property="og:site_name" content="gonefuture">
 <meta property="og:description" content="创建一个项目  将服务器上的代码整个打包传到项目上来，使用如下命令 1.1    git init 1.2 git add . 1.3 git commit -m ‘init’ 1.4 git remote add origin ‘your remote ssh address’ 后续就需要配置openresty，解决自动提交webHook触发脚本执行的功能 2.1 openresty的安装可以参">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://db101.cn/images/TIM截图20180428143154.png">
+<meta property="og:image" content="http://gonefuture.top/images/TIM截图20180428143154.png">
 <meta property="og:updated_time" content="2018-07-25T03:59:07.370Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="oschina git仓库提交webHook触发hexo博客更新">
 <meta name="twitter:description" content="创建一个项目  将服务器上的代码整个打包传到项目上来，使用如下命令 1.1    git init 1.2 git add . 1.3 git commit -m ‘init’ 1.4 git remote add origin ‘your remote ssh address’ 后续就需要配置openresty，解决自动提交webHook触发脚本执行的功能 2.1 openresty的安装可以参">
-<meta name="twitter:image" content="http://db101.cn/images/TIM截图20180428143154.png">
+<meta name="twitter:image" content="http://gonefuture.top/images/TIM截图20180428143154.png">
   
-    <link rel="alternative" href="/atom.xml" title="zooooooooy" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
   
   
   <link rel="stylesheet" href="/css/style.css">
@@ -52,13 +52,13 @@
     <div id="header-title">
       
         <h1 id="blog-title-wrap">
-          <a href="/" id="blog-title">冻冰</a>
+          <a href="/" id="blog-title">gonefuture</a>
         </h1>
       
     </div>
     <div id="contenedor">
       <ul class="cube">
-        <li class="cara">冻冰</li>
+        <li class="cara">gonefuture</li>
         <li class="cara"></li>
         <li class="cara"></li>
         <li class="cara"></li>
@@ -107,12 +107,43 @@
 <ol>
 <li>将服务器上的代码整个打包传到项目上来，使用如下命令<br> 1.1    git init<br> 1.2 git add .<br> 1.3 git commit -m ‘init’<br> 1.4 git remote add origin ‘your remote ssh address’</li>
 <li><p>后续就需要配置openresty，解决自动提交webHook触发脚本执行的功能<br> 2.1 openresty的安装可以参照官网<br> 2.2 启动还是跟nginx一样的，start nginx<br> 2.3 配置nginx的配置，执行lua脚本<br> 2.4 lua脚本中需要验证密码这一块，我暂时没处理，oschina的验证规则是在post body里面有一个参数是password，可以和自己的配置的webHook秘钥进行匹配就可以<br> 2.5 lua脚本只是简单执行依据脚本命令</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">os.execute(&quot;bash /opt/lua/hexo.sh&quot;);</span><br><span class="line">ngx.say(&quot;OK&quot;)</span><br><span class="line">ngx.exit(200)</span><br></pre></td></tr></table></figure>
-<p> 2.6 主要是后续的shell命令，操作的流程是获取git 远程的代码，执行hexo的generate生成静态文件</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#! /bin/bash</span><br><span class="line">blog_dir=/opt/blog</span><br><span class="line">branch=master</span><br><span class="line">hexo=/root/.nvm/versions/node/v9.11.1/bin/hexo</span><br><span class="line"></span><br><span class="line">cd $blog_dir</span><br><span class="line">git reset --hard origin/$branch</span><br><span class="line">git clean -f</span><br><span class="line">git pull origin master</span><br><span class="line"></span><br><span class="line">cd $blog_dir</span><br><span class="line">$hexo generate</span><br><span class="line">echo &quot;success&quot;</span><br></pre></td></tr></table></figure>
-<p> 2.7 静态文件的目录是public，前面装好的openresty也可以用作服务代理，将域名的root访问路径指向到public目录即可<br> 2.8 漏了nginx的转发配置了，有两个  一个是webHook地址，一个是服务器的请求地址</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server_name  db101.cn;</span><br><span class="line"></span><br><span class="line">    lua_code_cache off;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        root   /opt/blog/public;</span><br><span class="line">        index  index.html index.htm;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location /hexo/github &#123;</span><br><span class="line">        content_by_lua_file /opt/lua/hexo.lua;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
+<pre><code> os.execute(&quot;bash /opt/lua/hexo.sh&quot;);
+ ngx.say(&quot;OK&quot;)
+ ngx.exit(200)
+
+</code></pre><p> 2.6 主要是后续的shell命令，操作的流程是获取git 远程的代码，执行hexo的generate生成静态文件</p>
+<pre><code> #! /bin/bash
+ blog_dir=/opt/blog
+ branch=master
+ hexo=/root/.nvm/versions/node/v9.11.1/bin/hexo
+
+ cd $blog_dir
+ git reset --hard origin/$branch
+ git clean -f
+ git pull origin master
+
+ cd $blog_dir
+ $hexo generate
+ echo &quot;success&quot;
+
+</code></pre><p> 2.7 静态文件的目录是public，前面装好的openresty也可以用作服务代理，将域名的root访问路径指向到public目录即可<br> 2.8 漏了nginx的转发配置了，有两个  一个是webHook地址，一个是服务器的请求地址</p>
+<pre><code> server {
+     listen       80;
+     server_name  db101.cn;
+
+     lua_code_cache off;
+
+     location / {
+         root   /opt/blog/public;
+         index  index.html index.htm;
+     }
+
+     location /hexo/github {
+         content_by_lua_file /opt/lua/hexo.lua;
+     }
+ }
+
+</code></pre></li>
 </ol>
 <hr>
 <p>后续就可以当更新了source下面的md文件。可以直接通过域名访问到最新的更新了。也可以修改其他的主体或者配置一类的文件。当有push操作时触发webHook操作，调用服务器的地址，最终更新页面。</p>
@@ -123,7 +154,7 @@
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://db101.cn/2018/07/26/hexo-oschina/" data-id="cjk1xvthz0004agvt7349w0o9" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/07/26/hexo-oschina/" data-id="cjk1zkhn30004rcvtoqcp0xdl" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -231,7 +262,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2018 冻冰
+      &copy; 2018 weijian qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
 	  </span><br>
