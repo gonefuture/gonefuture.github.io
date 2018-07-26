@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>springboot | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="springMVCspringboot提供了开箱即用的web mvc，项目中用到的是gradle，只需要引用两个包就可以了 compile(&amp;#39;org.springframework.boot:spring-boot-starter&amp;#39;) compile(&amp;#39;org.springframework.boot:spring-boot-starter-web&amp;#39;) 并不需要做什">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springboot">
+<meta property="og:url" content="http://yoursite.com/2018/07/25/springboot-summary/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="springMVCspringboot提供了开箱即用的web mvc，项目中用到的是gradle，只需要引用两个包就可以了 compile(&amp;#39;org.springframework.boot:spring-boot-starter&amp;#39;) compile(&amp;#39;org.springframework.boot:spring-boot-starter-web&amp;#39;) 并不需要做什">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/TIM截图20180605114425.png">
+<meta property="og:updated_time" content="2018-07-25T03:59:07.418Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="springboot">
+<meta name="twitter:description" content="springMVCspringboot提供了开箱即用的web mvc，项目中用到的是gradle，只需要引用两个包就可以了 compile(&amp;#39;org.springframework.boot:spring-boot-starter&amp;#39;) compile(&amp;#39;org.springframework.boot:spring-boot-starter-web&amp;#39;) 并不需要做什">
+<meta name="twitter:image" content="http://yoursite.com/images/TIM截图20180605114425.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-springboot-summary" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/25/springboot-summary/" class="article-date">
+  <time datetime="2018-07-25T03:59:07.417Z" itemprop="datePublished">2018-07-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      springboot
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="springMVC"><a href="#springMVC" class="headerlink" title="springMVC"></a>springMVC</h3><p>springboot提供了开箱即用的web mvc，项目中用到的是gradle，只需要引用两个包就可以了</p>
+<pre><code>compile(&#39;org.springframework.boot:spring-boot-starter&#39;)
+compile(&#39;org.springframework.boot:spring-boot-starter-web&#39;)
+</code></pre><p>并不需要做什么其他配置，就可以启动web项目，编写restful接口。还是有一些需要个性化定制的功能需要我们手动去配置。有一些并不是springboot独有，配置的时候都是采用代码代替xml的方式。问题记录如下：</p>
+<ul>
+<li><p>Json序列化，<br>springmvc都是需要配置的，之前都是通过xml来配置。在springboot里面需要自定义MessageConverter。注册bean的方式加载到spring消息转换器里面，默认是放置到转换器队列的最前面优先解析。<br>springmvc默认的json解析器是Jackson,我这边算是先继承MappingJackson2HttpMessageConverter，修改覆盖初始方法来定制化项目需要的json格式化规则。</p>
+<pre><code>public class JsonMessageConverter extends MappingJackson2HttpMessageConverter {
+
+       @Override
+       protected void init(ObjectMapper objectMapper) {
+           objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+           objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+           objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
+           objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+           objectMapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+           objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+
+           objectMapper.setDateFormat(new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;));
+
+           super.init(objectMapper);
+       }
+   }
+
+</code></pre><p>后面需要将这个注册到spring bean管理里面。在configuration类里面注册</p>
+<pre><code>@Bean
+public HttpMessageConverters customConverters() {
+   return new HttpMessageConverters(new JsonMessageConverter());
+}
+
+</code></pre></li>
+<li><p>UTF8编码<br>同样是在configuration类里面注册，其实configuration就相当于spring的一个xml文件，每个方法相当于定义的一个bean，方法之间是可以互相依赖的。spring已经考虑到这点，不用担心依赖的时候破坏单例的特性。</p>
+<pre><code>@Bean
+public CharacterEncodingFilter encodingFilter() {
+
+   CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
+   encodingFilter.setEncoding(&quot;UTF-8&quot;);
+   encodingFilter.setForceEncoding(true);
+   return encodingFilter;
+}
+
+</code></pre></li>
+<li><p>拦截器<br>用到拦截器的时候，需要继承WebMvcConfigurerAdapter，通过适配器的模式，覆盖相应的方法。当然同时这个类需要标注为configuration类。</p>
+<p>| 方法 |<br>|——–|<br>|configurePathMatch|<br>|configureContentNegotiation|<br>|configureAsyncSupport|<br>|configureDefaultServletHandling|<br>|addFormatters|<br>|addInterceptors|<br>|addResourceHandlers|<br>|addCorsMappings|<br>|addViewControllers|<br>|configureViewResolvers|<br>|addArgumentResolvers|<br>|addReturnValueHandlers|<br>|configureMessageConverters|<br>|extendMessageConverters|<br>|configureHandlerExceptionResolvers|<br>|extendHandlerExceptionResolvers|<br>|getValidator|<br>|getMessageCodesResolver|<br>拦截器添加选择覆盖addInterceptors</p>
+<pre><code>@Override
+public void addInterceptors(InterceptorRegistry registry) {
+   registry.addInterceptor(new MappedInterceptor(new String[]{&quot;/**&quot;}, new String[]{&quot;&quot;},
+           new MvcInterceptor()));
+}
+</code></pre><p>MvcInterceptor是自定义的拦截器，如果需要用到url拦截的功能，需要使用spring带的MappedInterceptor定义拦截的url和排除的url<br>项目中还用到了addArgumentResolvers，addReturnValueHandlers就不一一列举了。</p>
+</li>
+</ul>
+<h3 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h3><ul>
+<li><p>属性文件<br>使用@PropertySources({@PropertySource(value = “classpath:setting.properties”)})来引入，不过这个不是springboot里面的东西。</p>
+</li>
+<li><p>项目分布</p>
+<ul>
+<li>css,js前端等用到的组件都分布在public下面或者static下面<br>需要渲染的模板定义在templates里面，安利一下我正在使用的模板<a href="http://www.mitchellbosecke.com/pebble/documentation/guide/basic-usage" target="_blank" rel="noopener">pebble</a></li>
+<li>数据库使用的是mybatis，sql还是写在xml里面在，始终觉得在代码里面写sql比较别扭。</li>
+<li><p>打包工具使用的是gradle，第一次接触，感觉还是不错，在编译速度上超过了maven。</p>
+<pre><code>compile(&#39;org.springframework.boot:spring-boot-starter&#39;)
+compile(&#39;org.springframework.boot:spring-boot-starter-log4j2&#39;)
+compile(&#39;org.springframework.boot:spring-boot-starter-web&#39;) {
+  //exclude group:&#39;org.springframework.boot&#39;,module:&quot;spring-boot-starter-tomcat&quot;
+}
+compile(&#39;org.springframework.boot:spring-boot-devtools&#39;)
+compile(&#39;org.springframework.boot:spring-boot-starter-test&#39;)
+compile(&#39;org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.0&#39;)
+
+compile(&#39;mysql:mysql-connector-java:6.0.5&#39;)
+compile(&#39;com.zaxxer:HikariCP:2.6.1&#39;)
+
+compile(&#39;org.projectlombok:lombok:1.16.16&#39;)
+
+//token
+compile(&quot;io.jsonwebtoken:jjwt:0.7.0&quot;)
+
+//bean copy
+compile(&#39;commons-beanutils:commons-beanutils:1.9.3&#39;)
+
+//apache commons lang3
+compile(&#39;org.apache.commons:commons-lang3:3.6&#39;)
+
+compile(&#39;javax.validation:validation-api:2.0.0.CR2&#39;)
+
+testCompile(&#39;junit:junit:4.12&#39;)
+
+</code></pre><p>项目中用到的jar包如上，springboot的版本号定义在buildscript里面在。使用的是1.5.2</p>
+</li>
+</ul>
+</li>
+<li><p>项目发布<br>项目还是采用外置的tomcat发布，需要在启动类Application继承SpringBootServletInitializer，覆盖</p>
+<pre><code>@Override
+protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+   return builder.sources(Application.class);
+}
+
+</code></pre><p>发布的脚本上gradle clean build -x test</p>
+</li>
+<li>profile配置<br>使用了gradle，在dev环境和prod环境的配置上，相对来说是没有maven好使的，<br>需要启动的时候在环境变量里面配置-Dspring.profiles.active=dev<br>其他的跟平常的spring开发还都是保持一致的。随着后续功能的开发慢慢会涉及到更多springboot的功能，个人感觉在开发效率上还是提升了不少。</li>
+</ul>
+<hr>
+<p>后续研究了下gradle的分环境打包方式，参数网上的例子，操作步骤如下</p>
+<ul>
+<li>添加配置文件config.groovy<br>environments {<br>   dev {<br>   }<br>   prod {<br>   }<br>}<br>在dev和prod写不同环境下的变量值，按照groovy的方式</li>
+<li>在build.gradle获取打包时指定的环境参数<pre><code>ext {
+   profile = System.properties[&#39;spring.profiles.active&#39;]
+}
+</code></pre></li>
+<li><p>读取config.groovy对应环境的的变量值</p>
+<pre><code>def loadGroovyConfig(){
+   def configFile = file(&#39;config.groovy&#39;)
+   new ConfigSlurper(profile).parse(configFile.toURL()).toProperties()
+}
+
+processResources {
+   from(sourceSets.main.resources.srcDirs) {
+       filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: loadGroovyConfig())
+   }
+}
+</code></pre></li>
+<li>变量覆盖如图<br><img src="/images/TIM截图20180605114425.png" alt="log4j2"><br>后续打包还是按照正常的方式，指定-Dspring.profiles.active=dev或者prod就可以</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/25/springboot-summary/" data-id="cjk1xovci000aqsvtp46ptq00" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/07/25/semaphore/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Semaphore</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/expression/" style="font-size: 10px;">expression</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/07/25/springboot-summary/">springboot</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/25/semaphore/">Semaphore</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/25/jdk8-reduce/">JDK8 lambda reduce</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/25/java-scattered/">JAVA scatter</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/25/java-build-mode/">java build mode</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
