@@ -7,13 +7,17 @@
   
   <title>gonefuture</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
+  <meta name="description" content="《Thinking in Java 》读书笔记-11                                                                                                                  /**  * prism.js Github theme based on GitHub&apos;">
+<meta property="og:type" content="article">
 <meta property="og:title" content="gonefuture">
-<meta property="og:url" content="http://gonefuture.top/index.html">
+<meta property="og:url" content="http://gonefuture.top/2018/07/31/《Thinking in Java 》读书笔记-11/index.html">
 <meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="《Thinking in Java 》读书笔记-11                                                                                                                  /**  * prism.js Github theme based on GitHub&apos;">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-07-31T13:08:23.564Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="gonefuture">
+<meta name="twitter:description" content="《Thinking in Java 》读书笔记-11                                                                                                                  /**  * prism.js Github theme based on GitHub&apos;">
   
     <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
   
@@ -78,9 +82,7 @@
 </header>
 
     <div class="outer">
-      <section id="main">
-  
-    <article id="post-《Thinking in Java 》读书笔记-11" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main"><article id="post-《Thinking in Java 》读书笔记-11" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/07/31/《Thinking in Java 》读书笔记-11/" class="article-date">
   <time datetime="2018-07-31T13:08:23.560Z" itemprop="datePublished">2018-07-31</time>
@@ -455,210 +457,21 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
   </div>
   
-</article>
-
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-《Thinking in Java 》读书笔记-11" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/30/《Thinking in Java 》读书笔记-11/" class="article-date">
-  <time datetime="2018-07-30T10:11:35.454Z" itemprop="datePublished">2018-07-30</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/30/《Thinking in Java 》读书笔记-11/">《Thinking in Java 》读书笔记-11</a>
-    </h1>
+    <a href="/2018/07/30/《Thinking in Java 》读书笔记-11/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《Thinking in Java 》读书笔记-11</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="第11章-持有对象"><a href="#第11章-持有对象" class="headerlink" title="第11章 持有对象"></a>第11章 持有对象</h1><hr>
-<h2 id="11-1-泛型和类型安全的容器"><a href="#11-1-泛型和类型安全的容器" class="headerlink" title="11.1 泛型和类型安全的容器"></a>11.1 泛型和类型安全的容器</h2><h2 id="1-2-基本概念"><a href="#1-2-基本概念" class="headerlink" title="1.2 基本概念"></a>1.2 基本概念</h2><ul>
-<li>Collection</li>
-<li>Map</li>
-<li>List</li>
-</ul>
-<h2 id="1-3添加一组元素"><a href="#1-3添加一组元素" class="headerlink" title="1.3添加一组元素"></a>1.3添加一组元素</h2><p>构建一个不包含元素的Collection，然后调用Collection.addAll()这种方式，运行速度快，也比较方便，是首先方式。</p>
-<p>使用Array.asList()可以使用<strong>显式类型参数</strong>说明产生的List的实际的目标类型。</p>
-<h2 id="1-4-容器的打印"><a href="#1-4-容器的打印" class="headerlink" title="1.4 容器的打印"></a>1.4 容器的打印</h2><p>使用Arrays.toString()来产生数组的可打印表示。</p>
-<h2 id="11-5-List"><a href="#11-5-List" class="headerlink" title="11.5 List"></a>11.5 List</h2><ul>
-<li><p>基本的ArrayList，它长于随机访问元素，但是在List的中间插入移动元素时较慢。</p>
-</li>
-<li><p>LinkedList,它通过代价较低的在List中间进行的插入和删除操作，提供了优化的顺序访问。LinkedList在随机访问方面相对比较慢，但它的特性较ArrayList更大。</p>
-</li>
-</ul>
-<h2 id="11-6-迭代器"><a href="#11-6-迭代器" class="headerlink" title="11.6 迭代器"></a>11.6 迭代器</h2><p>Java的iterator()要求容器返回一个Iterator。Iterator将准备好返回序列的第一个元素。</p>
-<ol>
-<li>使用方法iterator()要求容器返回一个Iterator.Iterator将准备好返回序列的第一个元素。</li>
-<li>使用next()获得序列中的下一个元素。</li>
-<li>使用hashNext()检查序列中是否还有元素。</li>
-<li>使用remove()将迭代器新近返回的元素删除。</li>
-</ol>
-<p>Iterator可以移除由next()产生的最后一个元素，这意味着在调用remove()之前必须先调用next()。</p>
-<h2 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h2><p>LinkedList具有能够直接实现栈的所有功能的方法，因此可以直接将LinkedList作为栈使用。</p>
-<p>peek()方法提供栈顶元素，但是并不将其从栈顶移除，而pop()将移除并返回栈顶元素。</p>
-<h2 id="11-9-Set"><a href="#11-9-Set" class="headerlink" title="11.9 Set"></a>11.9 Set</h2><p>Set不保存重复的元素。</p>
-<p>TreeSet将元素储存在红-黑树数据结构中，有序。</p>
-<p>HashSet使用的是散列函数，无序。</p>
-<p>LinkedHashList因为查询速度的原因使用散列，但是也使用了链表来维护元素的插入顺序。</p>
-<h2 id="11-10-Map"><a href="#11-10-Map" class="headerlink" title="11.10 Map"></a>11.10 Map</h2><p>Map可以用keySet()返回它的键的Set，用valueSet()它的值的Collection。</p>
-<ul>
-<li><p>HashMap</p>
-</li>
-<li><p>TreeMap</p>
-</li>
-<li><p>LinkedHashMap</p>
-</li>
-</ul>
-<h2 id="11-111-Queue"><a href="#11-111-Queue" class="headerlink" title="11.111 Queue"></a>11.111 Queue</h2><p>  队列是一个典型的先进先出的容器。</p>
-<h3 id="11-11-1-PriorityQueue"><a href="#11-11-1-PriorityQueue" class="headerlink" title="11.11.1 PriorityQueue"></a>11.11.1 PriorityQueue</h3><p>优先队列声明下一个弹出元素是最需要的元素（具有最高的优先级）。</p>
-<h2 id="Collection和Iterator"><a href="#Collection和Iterator" class="headerlink" title="Collection和Iterator"></a>Collection和Iterator</h2><p>Collection是描述所有序列容器的共性的跟接口，它可能被认为是一个“附属接口”，即因为要表示其他若干个接口的共性而出现的接口。</p>
-<p>实现Collection就意味着需要提供iterator()方法。</p>
-<p>Collection可以生成Iterator，而List可以生成ListIterator。</p>
-<h2 id="11-13-Foreach与迭代器"><a href="#11-13-Foreach与迭代器" class="headerlink" title="11.13 Foreach与迭代器"></a>11.13 Foreach与迭代器</h2><p>foreach语法主要用于数组和实现了Iterable接口的对象。</p>
-<h3 id="11-13-1-适配器方法惯用法"><a href="#11-13-1-适配器方法惯用法" class="headerlink" title="11.13.1 适配器方法惯用法"></a>11.13.1 适配器方法惯用法</h3><p>由Arrays.asList()产生的List对象会使用底层数组作为其物理实现。只要你执行的操作会修改这个List，并且你不想原来的数组被修改，那么你应该在另一个容器中创建一个副本。</p>
-<h2 id="11-14-总结"><a href="#11-14-总结" class="headerlink" title="11.14 总结"></a>11.14 总结</h2><ol>
-<li><p>数组将数字与对象联系起来。它保存类型明确的对象，查询对象时，不需要对结果做类型转换。他可以是多维的，可以保存基本类型的数组。但是，数组一旦生成，其容量就不能改变。</p>
-</li>
-<li><p>Collection保存单一的元素，而Map保存相关的键值对。有了Java的泛型，你就可可以指定容器中存放的对象类型，因此你就不会将错误类型的对象放置到容器中，并且自从容器中获取元素时，不必进行类型转换。各种Collection和各种Map都可以在你向其中添加更多的元素时，紫红调整其尺寸。容器不能持有基本类型，但是自动包装机制会仔细地执行基本类型到容器中所持有的包装其类型之间的双向转换。</p>
-</li>
-<li><p>像数组一样，List也建立数字索引与对象的关联，因此，数组和List都是排好序的容器。List能够自动扩充容量。</p>
-</li>
-<li><p>如果要进行大量的随机访问，就使用ArrayList；如果要经常从表中插入或删除元素，则应该使用LinkedList。</p>
-</li>
-<li><p>各种Queue以及栈的行为，由LinkedList提供支持。</p>
-</li>
-<li><p>Map是一种将对象（而非数字）与对象相关联的设计。HashMap设计用来快速访问；而TreeMap保持“键”始终处于排序状态，所以没有HashMap快。LinkedHashMap保持元素插入的顺序，但是也通过散列提供快速访问能力。</p>
-</li>
-<li><p>Set不接受重复元素。HashSet提供组块的查询速度，而TreeSet保持元素处于排序状态，LinkedHashSet以插入顺序保存元素。</p>
-</li>
-<li><p>新程序中不应该使用过时的Vector、Hashtable和Stack。</p>
-</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/07/30/《Thinking in Java 》读书笔记-11/" data-id="cjkai1i4q000b5gvt31ehdx7w" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-  <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-11" ></div>
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytJofnm1'; 
-var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
   
 </article>
 
 
-
-  
-    <article id="post-《Thinking in Java 》读书笔记-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/30/《Thinking in Java 》读书笔记-1/" class="article-date">
-  <time datetime="2018-07-30T07:03:58.070Z" itemprop="datePublished">2018-07-30</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/30/《Thinking in Java 》读书笔记-1/">《Thinking in Java 》读书笔记-1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="第一章-对象导论"><a href="#第一章-对象导论" class="headerlink" title="第一章 对象导论"></a>第一章 对象导论</h1><h2 id="1-1-抽象过程"><a href="#1-1-抽象过程" class="headerlink" title="1.1 抽象过程"></a>1.1 抽象过程</h2><ul>
-<li>万物皆对象。</li>
-<li>程序是对象的集合，它们通过发送消息来告知彼此索要做的。</li>
-<li>每个对象都有自己的由其他对象所构成的储存。</li>
-<li>每个对象都拥有其类型。</li>
-<li>某个特定类型的所有对象都可以接受同样的消息。</li>
-</ul>
-<h2 id="1-2-每个对象都要有一个接口"><a href="#1-2-每个对象都要有一个接口" class="headerlink" title="1.2 每个对象都要有一个接口"></a>1.2 每个对象都要有一个接口</h2><h2 id="1-3-每个对象都提供服务"><a href="#1-3-每个对象都提供服务" class="headerlink" title="1.3 每个对象都提供服务"></a>1.3 每个对象都提供服务</h2><h2 id="1-4-被隐藏的具体实现"><a href="#1-4-被隐藏的具体实现" class="headerlink" title="1.4 被隐藏的具体实现"></a>1.4 被隐藏的具体实现</h2><h2 id="1-5-复用具体实现"><a href="#1-5-复用具体实现" class="headerlink" title="1.5 复用具体实现"></a>1.5 复用具体实现</h2><h2 id="1-6-继承"><a href="#1-6-继承" class="headerlink" title="1.6 继承"></a>1.6 继承</h2><h3 id="1-6-1-“is-a”和”like-a”"><a href="#1-6-1-“is-a”和”like-a”" class="headerlink" title="1.6.1 “is-a”和”like-a”"></a>1.6.1 “is-a”和”like-a”</h3><h2 id="1-7-伴随多态的可互换对象"><a href="#1-7-伴随多态的可互换对象" class="headerlink" title="1.7 伴随多态的可互换对象"></a>1.7 伴随多态的可互换对象</h2><h2 id="1-8-单根继承结构"><a href="#1-8-单根继承结构" class="headerlink" title="1.8 单根继承结构"></a>1.8 单根继承结构</h2><h2 id="1-9-容器"><a href="#1-9-容器" class="headerlink" title="1.9 容器"></a>1.9 容器</h2><h2 id="1-10-对象的创建和生命期"><a href="#1-10-对象的创建和生命期" class="headerlink" title="1.10 对象的创建和生命期"></a>1.10 对象的创建和生命期</h2><h2 id="1-11-异常处理：处理错误"><a href="#1-11-异常处理：处理错误" class="headerlink" title="1.11 异常处理：处理错误"></a>1.11 异常处理：处理错误</h2><h2 id="1-12-并发编程"><a href="#1-12-并发编程" class="headerlink" title="1.12 并发编程"></a>1.12 并发编程</h2><h2 id="1-13-Java与Internet"><a href="#1-13-Java与Internet" class="headerlink" title="1.13 Java与Internet"></a>1.13 Java与Internet</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>过程式编程：<br>  &emsp;数据定义和函数调用</li>
-<li>面向对象编程：<br>  &emsp;用来表示问题空间概念的对象（而不是有关计算机表示方式的相关内容），以及发送给这些对象的用来表示在此空间内的行为的消息。</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/07/30/《Thinking in Java 》读书笔记-1/" data-id="cjkai1i4v000f5gvtn3p0h7up" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-  <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-1" ></div>
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytJofnm1'; 
-var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-  
-  
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
-  
 </section>
       
       <aside id="sidebar">
