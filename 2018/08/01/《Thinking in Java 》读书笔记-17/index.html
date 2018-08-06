@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>《Thinking in Java 》读书笔记-17 | gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="《Thinking in Java 》读书笔记-1717.1 完整的容器分类法 17.2 填充容器Collections.nCopies()和Collection.fill()都可以用单个对象的引用来填充Collection，并且所有引用都被设置为指向相同的的对象。fill()方法的用处更为有限，它只能替换已经在List中存在的元素，而不能添加新的元素。 17.2.1 一种Generator解决方">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Thinking in Java 》读书笔记-17">
+<meta property="og:url" content="http://gonefuture.top/2018/08/01/《Thinking in Java 》读书笔记-17/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="《Thinking in Java 》读书笔记-1717.1 完整的容器分类法 17.2 填充容器Collections.nCopies()和Collection.fill()都可以用单个对象的引用来填充Collection，并且所有引用都被设置为指向相同的的对象。fill()方法的用处更为有限，它只能替换已经在List中存在的元素，而不能添加新的元素。 17.2.1 一种Generator解决方">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://img-blog.csdn.net/20180801173227921?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:updated_time" content="2018-08-01T13:06:41.454Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Thinking in Java 》读书笔记-17">
+<meta name="twitter:description" content="《Thinking in Java 》读书笔记-1717.1 完整的容器分类法 17.2 填充容器Collections.nCopies()和Collection.fill()都可以用单个对象的引用来填充Collection，并且所有引用都被设置为指向相同的的对象。fill()方法的用处更为有限，它只能替换已经在List中存在的元素，而不能添加新的元素。 17.2.1 一种Generator解决方">
+<meta name="twitter:image" content="https://img-blog.csdn.net/20180801173227921?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-《Thinking in Java 》读书笔记-17" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/01/《Thinking in Java 》读书笔记-17/" class="article-date">
+  <time datetime="2018-08-01T13:06:05.058Z" itemprop="datePublished">2018-08-01</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《Thinking in Java 》读书笔记-17
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="《Thinking-in-Java-》读书笔记-17"><a href="#《Thinking-in-Java-》读书笔记-17" class="headerlink" title="《Thinking in Java 》读书笔记-17"></a>《Thinking in Java 》读书笔记-17</h1><h2 id="17-1-完整的容器分类法"><a href="#17-1-完整的容器分类法" class="headerlink" title="17.1 完整的容器分类法"></a>17.1 完整的容器分类法</h2><p><img src="https://img-blog.csdn.net/20180801173227921?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h2 id="17-2-填充容器"><a href="#17-2-填充容器" class="headerlink" title="17.2 填充容器"></a>17.2 填充容器</h2><p>Collections.nCopies()和Collection.fill()都可以用单个对象的引用来填充Collection，并且所有引用都被设置为指向相同的的对象。<br>fill()方法的用处更为有限，它只能替换已经在List中存在的元素，而不能添加新的元素。</p>
+<h3 id="17-2-1-一种Generator解决方案"><a href="#17-2-1-一种Generator解决方案" class="headerlink" title="17.2.1 一种Generator解决方案"></a>17.2.1 一种Generator解决方案</h3><p>所有的Collection子类型都有一个接受另一个Collection对象的构造器。</p>
+<h3 id="17-2-2-Map生成器"><a href="#17-2-2-Map生成器" class="headerlink" title="17.2.2 Map生成器"></a>17.2.2 Map生成器</h3><h3 id="未获支持的操作"><a href="#未获支持的操作" class="headerlink" title="未获支持的操作"></a>未获支持的操作</h3><h3 id="17-2-3-使用Abstract类"><a href="#17-2-3-使用Abstract类" class="headerlink" title="17.2.3 使用Abstract类"></a>17.2.3 使用Abstract类</h3><h2 id="17-3-Collection的功能方法"><a href="#17-3-Collection的功能方法" class="headerlink" title="17.3 Collection的功能方法"></a>17.3 Collection的功能方法</h2><h2 id="17-4-可选操作"><a href="#17-4-可选操作" class="headerlink" title="17.4 可选操作"></a>17.4 可选操作</h2><p>执行各种不同的添加和移除的方法在Collection接口中都是可选操作。<br>使用Arrays.asList()生成的List,基于一个固定大小的数组，仅支持那些不会改变数组大小的操作。</p>
+<h2 id="17-5-List的功能方法"><a href="#17-5-List的功能方法" class="headerlink" title="17.5 List的功能方法"></a>17.5 List的功能方法</h2><h2 id="17-6-Set和存储顺序"><a href="#17-6-Set和存储顺序" class="headerlink" title="17.6 Set和存储顺序"></a>17.6 Set和存储顺序</h2><p>接口    描述<br>| Set    | 存入Set的每一个元素都必须是唯一的，因为Set不保存重复元素．加入Set的元素必须定义equals()方法以确保对象的唯一性. Set和Collection有完全一样的接口.Set接口不保证维护元素的次序. |<br>| —— | —— | —— |<br>| HashSet *    | 为快速查找而设计的Set.存入HashSet的元素必须定义HashCode()方法. |<br>|TreeSet | 保持次序的Set,底层为树结构.使用它可以从Set中提取有序的序列.元素必须实现Comparable接口 |<br>| LinkedHashSet    | 具有HashSet的查询速度,且内部使用链表维护元素的顺序.于是在使用迭代器遍历Set时,结果会按元素插入的次序显示.元素也必须定义hashCode()方法. |</p>
+<h2 id="17-7-队列"><a href="#17-7-队列" class="headerlink" title="17.7 队列"></a>17.7 队列</h2><h3 id="17-7-1-优先级队列"><a href="#17-7-1-优先级队列" class="headerlink" title="17.7.1 优先级队列"></a>17.7.1 优先级队列</h3><h2 id="17-8-理解Map"><a href="#17-8-理解Map" class="headerlink" title="17.8 理解Map"></a>17.8 理解Map</h2><h2 id="17-9-散列与散列码"><a href="#17-9-散列与散列码" class="headerlink" title="17.9 散列与散列码"></a>17.9 散列与散列码</h2><p>散列的价值在于速度。我们使用数组来保存键的信息，这个信息并不是键本身，而是通过键对象生成一个数字(散列码)，作为数组下标。由于数组的容量是固定的，而散列容器的大小是可变的，所以不同的键可以产生相同的数组下标(散列码)。也就是说，可能会有冲突(当然也有特例，比如EnumMap和EnumSet)。所以，数组的值存放着一个保存所有相同散列码的值的list(引用)。然后对list中的值使用equals进行线性查询。如果散列函数设计的比较好的话，数组的每个位置只有较少的值，并且浪费空间也小。于是，查询过程就是首先计算键的散列码得到数组下标，然后内存寻址(时间复杂度为O(1)，赋值)找到数组的值，再遍历list(时间复杂度为O(n)，线性查询)即可。即hashCode和equals共同确定了对象的唯一性。</p>
+<p>所有类都继承于Object。Object的hashCode方法生成的散列码，实际上是默认使用对象的地址计算散列码；而Object的equals方法实际上就是地址比较(==)。显然，当我们在使用散列容器(如HashMap的Key，HashSet等)时，我们自定义的类中还继承Object的hashCode和equals是不行的。必须重写hashCode和equals方法。好的hashCode()应该产生分布均匀的散列码。</p>
+<h2 id="17-10-选择接口的不同实现"><a href="#17-10-选择接口的不同实现" class="headerlink" title="17.10 选择接口的不同实现"></a>17.10 选择接口的不同实现</h2><h2 id="17-11-实用方法"><a href="#17-11-实用方法" class="headerlink" title="17.11 实用方法"></a>17.11 实用方法</h2><h2 id="17-12-持有引用"><a href="#17-12-持有引用" class="headerlink" title="17.12 持有引用"></a>17.12 持有引用</h2><ul>
+<li>SoftRefernce </li>
+<li>WeakRefernce </li>
+<li>PhantomRefernce </li>
+</ul>
+<h2 id="17-13-Java-1-0-1-1的容器"><a href="#17-13-Java-1-0-1-1的容器" class="headerlink" title="17.13 Java 1.0/1.1的容器"></a>17.13 Java 1.0/1.1的容器</h2><ol>
+<li>不要在新代码里使用Vector、Enumeration。</li>
+<li>用LinkedLsit或基于LinlkedList的子类代替旧版的Stack。</li>
+<li>如果拥有一个可以命名的固定的标志集合，那么EnumSet与BitSet相比是更好的选择。</li>
+<li>只有在运行时才知道需要多少个标志，对标志命名不合理，需要BitSet中的某种特性操作。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/01/《Thinking in Java 》读书笔记-17/" data-id="cjki1prhn000n3gvtr3ileruq" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  <!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-17" ></div>
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytJofnm1'; 
+var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/08/02/零碎的知识点-1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          零碎的知识点-1
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/07/30/《Thinking in Java 》读书笔记-11/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《Thinking in Java 》读书笔记-11</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/08/06/《Java并发编程实战》-1/">《Java并发编程实战》-1</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/03/零碎的知识点-2/">零碎的知识点-2</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/02/大数据开发知识点-1/">大数据开发知识点-1</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/02/零碎的知识点-1/">零碎的知识点-1</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/01/《Thinking in Java 》读书笔记-17/">《Thinking in Java 》读书笔记-17</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 weijian qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+	  </span><br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

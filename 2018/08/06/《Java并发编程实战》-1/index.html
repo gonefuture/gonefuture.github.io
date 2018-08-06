@@ -5,21 +5,17 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   
-  <title>oschina git仓库提交webHook触发hexo博客更新 （转载自zooooooooy） | gonefuture</title>
+  <title>《Java并发编程实战》-1 | gonefuture</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="创建一个项目  将服务器上的代码整个打包传到项目上来，使用如下命令 1.1    git init 1.2 git add . 1.3 git commit -m ‘init’ 1.4 git remote add origin ‘your remote ssh address’ 后续就需要配置openresty，解决自动提交webHook触发脚本执行的功能 2.1 openresty的安装可以参">
+  <meta name="keywords" content="java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="oschina git仓库提交webHook触发hexo博客更新 （转载自zooooooooy）">
-<meta property="og:url" content="http://gonefuture.top/2018/07/26/hexo-oschina/index.html">
+<meta property="og:title" content="《Java并发编程实战》-1">
+<meta property="og:url" content="http://gonefuture.top/2018/08/06/《Java并发编程实战》-1/index.html">
 <meta property="og:site_name" content="gonefuture">
-<meta property="og:description" content="创建一个项目  将服务器上的代码整个打包传到项目上来，使用如下命令 1.1    git init 1.2 git add . 1.3 git commit -m ‘init’ 1.4 git remote add origin ‘your remote ssh address’ 后续就需要配置openresty，解决自动提交webHook触发脚本执行的功能 2.1 openresty的安装可以参">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://gonefuture.top/images/TIM截图20180428143154.png">
-<meta property="og:updated_time" content="2018-07-26T03:20:48.651Z">
+<meta property="og:updated_time" content="2018-08-06T09:00:13.716Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="oschina git仓库提交webHook触发hexo博客更新 （转载自zooooooooy）">
-<meta name="twitter:description" content="创建一个项目  将服务器上的代码整个打包传到项目上来，使用如下命令 1.1    git init 1.2 git add . 1.3 git commit -m ‘init’ 1.4 git remote add origin ‘your remote ssh address’ 后续就需要配置openresty，解决自动提交webHook触发脚本执行的功能 2.1 openresty的安装可以参">
-<meta name="twitter:image" content="http://gonefuture.top/images/TIM截图20180428143154.png">
+<meta name="twitter:title" content="《Java并发编程实战》-1">
   
     <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
   
@@ -84,12 +80,16 @@
 </header>
 
     <div class="outer">
-      <section id="main"><article id="post-hexo-oschina" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main"><article id="post-《Java并发编程实战》-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/07/26/hexo-oschina/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.259Z" itemprop="datePublished">2018-07-26</time>
+    <h3 href="/2018/08/06/《Java并发编程实战》-1/" class="article-date">
+  <time datetime="2018-08-06T08:59:00.930Z" itemprop="datePublished">2018-08-06</time>
 </h3>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
   </div>
   <div class="article-inner">
   <div class="curve-down">
@@ -100,7 +100,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      oschina git仓库提交webHook触发hexo博客更新 （转载自zooooooooy）
+      《Java并发编程实战》-1
     </h1>
   
 
@@ -109,65 +109,22 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h4 id="创建一个项目"><a href="#创建一个项目" class="headerlink" title="创建一个项目"></a>创建一个项目</h4><p><img src="/images/TIM截图20180428143154.png" alt="项目界面"></p>
-<ol>
-<li>将服务器上的代码整个打包传到项目上来，使用如下命令<br> 1.1    git init<br> 1.2 git add .<br> 1.3 git commit -m ‘init’<br> 1.4 git remote add origin ‘your remote ssh address’</li>
-<li><p>后续就需要配置openresty，解决自动提交webHook触发脚本执行的功能<br> 2.1 openresty的安装可以参照官网<br> 2.2 启动还是跟nginx一样的，start nginx<br> 2.3 配置nginx的配置，执行lua脚本<br> 2.4 lua脚本中需要验证密码这一块，我暂时没处理，oschina的验证规则是在post body里面有一个参数是password，可以和自己的配置的webHook秘钥进行匹配就可以<br> 2.5 lua脚本只是简单执行依据脚本命令</p>
-<pre><code> os.execute(&quot;bash /opt/lua/hexo.sh&quot;);
- ngx.say(&quot;OK&quot;)
- ngx.exit(200)
-
-</code></pre><p> 2.6 主要是后续的shell命令，操作的流程是获取git 远程的代码，执行hexo的generate生成静态文件</p>
-<pre><code> #! /bin/bash
- blog_dir=/opt/blog
- branch=master
- hexo=/root/.nvm/versions/node/v9.11.1/bin/hexo
-
- cd $blog_dir
- git reset --hard origin/$branch
- git clean -f
- git pull origin master
-
- cd $blog_dir
- $hexo generate
- echo &quot;success&quot;
-
-</code></pre><p> 2.7 静态文件的目录是public，前面装好的openresty也可以用作服务代理，将域名的root访问路径指向到public目录即可<br> 2.8 漏了nginx的转发配置了，有两个  一个是webHook地址，一个是服务器的请求地址</p>
-<pre><code> server {
-     listen       80;
-     server_name  db101.cn;
-
-     lua_code_cache off;
-
-     location / {
-         root   /opt/blog/public;
-         index  index.html index.htm;
-     }
-
-     location /hexo/github {
-         content_by_lua_file /opt/lua/hexo.lua;
-     }
- }
-
-</code></pre></li>
-</ol>
-<hr>
-<p>后续就可以当更新了source下面的md文件。可以直接通过域名访问到最新的更新了。也可以修改其他的主体或者配置一类的文件。当有push操作时触发webHook操作，调用服务器的地址，最终更新页面。</p>
-<p>上述步骤参考的网址 &gt; <a href="https://blog.liaol.net/" target="_blank" rel="noopener">https://blog.liaol.net/</a></p>
-
+        
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2018/07/26/hexo-oschina/" data-id="cjki1prgy00023gvtot33wvfu" class="article-share-link">Share</a>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/06/《Java并发编程实战》-1/" data-id="cjki1prh600083gvt7200qjnl" class="article-share-link">Share</a>
         
       </div>
     </footer>
   </div>
   </div>
   <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="hexo-oschina" ></div>
+<div id="SOHUCS" sid="《Java并发编程实战》-1" ></div>
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytJofnm1'; 
@@ -181,19 +138,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     
 <nav id="article-nav">
   
-    <a href="/2018/07/26/java-build-mode/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          java build mode （转载自zooooooooy）
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/07/26/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2018/08/03/零碎的知识点-2/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Hello World</div>
+      <div class="article-nav-title">零碎的知识点-2</div>
     </a>
   
 </nav>

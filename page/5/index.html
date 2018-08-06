@@ -5,24 +5,15 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   
-  <title>git入门简介 （转载自zooooooooy） | gonefuture</title>
+  <title>gonefuture</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="git基础概念git是目前最好的版本控制系统（没有之一） branchgit里面核心的内容是分支（branch）,不同于svn的是，分支的成本很低，只记录变化的文件。git官方是非常推荐是使用分支来开发，我们在自己本地进行某些特性开发的时候，也是可以开辟一个本地分支。操作方式分为两种  自己本地建一个分支，可选择方式有两种，本地写好后自己merge到develop分支，删除本地分支。—-个人建议采">
-<meta property="og:type" content="article">
-<meta property="og:title" content="git入门简介 （转载自zooooooooy）">
-<meta property="og:url" content="http://gonefuture.top/2018/07/26/git-summary/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="gonefuture">
+<meta property="og:url" content="http://gonefuture.top/page/5/index.html">
 <meta property="og:site_name" content="gonefuture">
-<meta property="og:description" content="git基础概念git是目前最好的版本控制系统（没有之一） branchgit里面核心的内容是分支（branch）,不同于svn的是，分支的成本很低，只记录变化的文件。git官方是非常推荐是使用分支来开发，我们在自己本地进行某些特性开发的时候，也是可以开辟一个本地分支。操作方式分为两种  自己本地建一个分支，可选择方式有两种，本地写好后自己merge到develop分支，删除本地分支。—-个人建议采">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://gonefuture.top/images/log.png">
-<meta property="og:image" content="http://gonefuture.top/images/stash.png">
-<meta property="og:image" content="http://gonefuture.top/images/data-flow.png">
-<meta property="og:image" content="http://gonefuture.top/images/git-flow.png">
-<meta property="og:updated_time" content="2018-07-26T03:21:52.348Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="git入门简介 （转载自zooooooooy）">
-<meta name="twitter:description" content="git基础概念git是目前最好的版本控制系统（没有之一） branchgit里面核心的内容是分支（branch）,不同于svn的是，分支的成本很低，只记录变化的文件。git官方是非常推荐是使用分支来开发，我们在自己本地进行某些特性开发的时候，也是可以开辟一个本地分支。操作方式分为两种  自己本地建一个分支，可选择方式有两种，本地写好后自己merge到develop分支，删除本地分支。—-个人建议采">
-<meta name="twitter:image" content="http://gonefuture.top/images/log.png">
+<meta name="twitter:title" content="gonefuture">
   
     <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
   
@@ -87,7 +78,175 @@
 </header>
 
     <div class="outer">
-      <section id="main"><article id="post-git-summary" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main">
+  
+    <article id="post-hexo-oschina" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/07/26/hexo-oschina/" class="article-date">
+  <time datetime="2018-07-26T02:28:13.259Z" itemprop="datePublished">2018-07-26</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/hexo-oschina/">oschina git仓库提交webHook触发hexo博客更新 （转载自zooooooooy）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h4 id="创建一个项目"><a href="#创建一个项目" class="headerlink" title="创建一个项目"></a>创建一个项目</h4><p><img src="/images/TIM截图20180428143154.png" alt="项目界面"></p>
+<ol>
+<li>将服务器上的代码整个打包传到项目上来，使用如下命令<br> 1.1    git init<br> 1.2 git add .<br> 1.3 git commit -m ‘init’<br> 1.4 git remote add origin ‘your remote ssh address’</li>
+<li><p>后续就需要配置openresty，解决自动提交webHook触发脚本执行的功能<br> 2.1 openresty的安装可以参照官网<br> 2.2 启动还是跟nginx一样的，start nginx<br> 2.3 配置nginx的配置，执行lua脚本<br> 2.4 lua脚本中需要验证密码这一块，我暂时没处理，oschina的验证规则是在post body里面有一个参数是password，可以和自己的配置的webHook秘钥进行匹配就可以<br> 2.5 lua脚本只是简单执行依据脚本命令</p>
+<pre><code> os.execute(&quot;bash /opt/lua/hexo.sh&quot;);
+ ngx.say(&quot;OK&quot;)
+ ngx.exit(200)
+
+</code></pre><p> 2.6 主要是后续的shell命令，操作的流程是获取git 远程的代码，执行hexo的generate生成静态文件</p>
+<pre><code> #! /bin/bash
+ blog_dir=/opt/blog
+ branch=master
+ hexo=/root/.nvm/versions/node/v9.11.1/bin/hexo
+
+ cd $blog_dir
+ git reset --hard origin/$branch
+ git clean -f
+ git pull origin master
+
+ cd $blog_dir
+ $hexo generate
+ echo &quot;success&quot;
+
+</code></pre><p> 2.7 静态文件的目录是public，前面装好的openresty也可以用作服务代理，将域名的root访问路径指向到public目录即可<br> 2.8 漏了nginx的转发配置了，有两个  一个是webHook地址，一个是服务器的请求地址</p>
+<pre><code> server {
+     listen       80;
+     server_name  db101.cn;
+
+     lua_code_cache off;
+
+     location / {
+         root   /opt/blog/public;
+         index  index.html index.htm;
+     }
+
+     location /hexo/github {
+         content_by_lua_file /opt/lua/hexo.lua;
+     }
+ }
+
+</code></pre></li>
+</ol>
+<hr>
+<p>后续就可以当更新了source下面的md文件。可以直接通过域名访问到最新的更新了。也可以修改其他的主体或者配置一类的文件。当有push操作时触发webHook操作，调用服务器的地址，最终更新页面。</p>
+<p>上述步骤参考的网址 &gt; <a href="https://blog.liaol.net/" target="_blank" rel="noopener">https://blog.liaol.net/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2018/07/26/hexo-oschina/" data-id="cjki1prgy00023gvtot33wvfu" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  <!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="hexo-oschina" ></div>
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytJofnm1'; 
+var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/07/26/hello-world/" class="article-date">
+  <time datetime="2018-07-26T02:28:13.256Z" itemprop="datePublished">2018-07-26</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/hello-world/">Hello World</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre><code class="bash">$ hexo new &quot;My New Post&quot;
+</code></pre>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre><code class="bash">$ hexo server
+</code></pre>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre><code class="bash">$ hexo generate
+</code></pre>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre><code class="bash">$ hexo deploy
+</code></pre>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2018/07/26/hello-world/" data-id="cjki1prh200043gvt8ny188z1" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  <!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="hello-world" ></div>
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytJofnm1'; 
+var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-git-summary" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/07/26/git-summary/" class="article-date">
   <time datetime="2018-07-26T02:28:13.253Z" itemprop="datePublished">2018-07-26</time>
@@ -102,8 +261,8 @@
       <header class="article-header">
         
   
-    <h1 class="article-title" itemprop="name">
-      git入门简介 （转载自zooooooooy）
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/git-summary/">git入门简介 （转载自zooooooooy）</a>
     </h1>
   
 
@@ -231,30 +390,16 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
   </div>
   
-    
-<nav id="article-nav">
-  
-    <a href="/2018/07/26/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Hello World
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2018/07/26/expression/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Normal Expression （转载自zooooooooy）</div>
-    </a>
-  
-</nav>
-
-  
 </article>
 
 
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+    </nav>
+  
 </section>
       
       <aside id="sidebar">

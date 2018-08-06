@@ -5,15 +5,26 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   
-  <title>gonefuture</title>
+  <title>零碎的知识点-2 | gonefuture</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="gonefuture">
-<meta property="og:url" content="http://gonefuture.top/index.html">
+  <meta name="description" content="零碎的知识点-2死锁及其解决方案（避免、预防、检测）死锁产生的原因因竞争资源发生死锁 现象：系统中供多个进程共享的资源的数目不足以满足全部进程的需要时，就会引起对诸资源的竞争而发生死锁现象。 死锁的四个必要条件： 互斥条件：进程对所分配到的资源不允许其他进程进行访问，若其他进程访问该资源，只能等待，直至占有该资源的进程使用完成后释放该资源  请求和保持条件：进程获得一定的资源之后，又对其他资源发出">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="零碎的知识点-2">
+<meta property="og:url" content="http://gonefuture.top/2018/08/03/零碎的知识点-2/index.html">
 <meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="零碎的知识点-2死锁及其解决方案（避免、预防、检测）死锁产生的原因因竞争资源发生死锁 现象：系统中供多个进程共享的资源的数目不足以满足全部进程的需要时，就会引起对诸资源的竞争而发生死锁现象。 死锁的四个必要条件： 互斥条件：进程对所分配到的资源不允许其他进程进行访问，若其他进程访问该资源，只能等待，直至占有该资源的进程使用完成后释放该资源  请求和保持条件：进程获得一定的资源之后，又对其他资源发出">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="https://img-blog.csdn.net/20180803161201776?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180803161352694?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180803173523226?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="http://images2017.cnblogs.com/blog/1228077/201712/1228077-20171222172525053-1730746112.png">
+<meta property="og:image" content="http://images2017.cnblogs.com/blog/1228077/201712/1228077-20171222172533787-134255588.png">
+<meta property="og:updated_time" content="2018-08-06T08:57:57.111Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="gonefuture">
+<meta name="twitter:title" content="零碎的知识点-2">
+<meta name="twitter:description" content="零碎的知识点-2死锁及其解决方案（避免、预防、检测）死锁产生的原因因竞争资源发生死锁 现象：系统中供多个进程共享的资源的数目不足以满足全部进程的需要时，就会引起对诸资源的竞争而发生死锁现象。 死锁的四个必要条件： 互斥条件：进程对所分配到的资源不允许其他进程进行访问，若其他进程访问该资源，只能等待，直至占有该资源的进程使用完成后释放该资源  请求和保持条件：进程获得一定的资源之后，又对其他资源发出">
+<meta name="twitter:image" content="https://img-blog.csdn.net/20180803161201776?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
   
     <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
   
@@ -78,69 +89,7 @@
 </header>
 
     <div class="outer">
-      <section id="main">
-  
-    <article id="post-《Java并发编程实战》-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/06/《Java并发编程实战》-1/" class="article-date">
-  <time datetime="2018-08-06T08:59:00.930Z" itemprop="datePublished">2018-08-06</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/06/《Java并发编程实战》-1/">《Java并发编程实战》-1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/06/《Java并发编程实战》-1/" data-id="cjki1prh600083gvt7200qjnl" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-  <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-1" ></div>
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytJofnm1'; 
-var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-零碎的知识点-2" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main"><article id="post-零碎的知识点-2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/08/03/零碎的知识点-2/" class="article-date">
   <time datetime="2018-08-03T03:06:13.995Z" itemprop="datePublished">2018-08-03</time>
@@ -159,8 +108,8 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/03/零碎的知识点-2/">零碎的知识点-2</a>
+    <h1 class="article-title" itemprop="name">
+      零碎的知识点-2
     </h1>
   
 
@@ -433,83 +382,30 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
   </div>
   
-</article>
-
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-大数据开发知识点-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/02/大数据开发知识点-1/" class="article-date">
-  <time datetime="2018-08-02T07:51:41.120Z" itemprop="datePublished">2018-08-02</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/大数据/">大数据</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
+    <a href="/2018/08/06/《Java并发编程实战》-1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/02/大数据开发知识点-1/">大数据开发知识点-1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="大数据开发知识点-1"><a href="#大数据开发知识点-1" class="headerlink" title="大数据开发知识点-1"></a>大数据开发知识点-1</h1><h2 id="数据倾斜"><a href="#数据倾斜" class="headerlink" title="数据倾斜"></a>数据倾斜</h2><h3 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h3><p>数据倾斜在MapReduce编程模型中十分常见,用最通俗易懂的话来说,数据倾斜无非就是大量的相同key被partition分配到一个分区里,造成了’一个人累死,其他人闲死’的情况,这种情况是我们不能接受的,这也违背了并行计算的初衷,首先一个节点要承受着巨大的压力,而其他节点计算完毕后要一直等待这个忙碌的节点,也拖累了整体的计算时间,可以说效率是十分低下的。</p>
-<h3 id="原理以及现象分析："><a href="#原理以及现象分析：" class="headerlink" title="原理以及现象分析："></a>原理以及现象分析：</h3><p>出现数据倾斜的原因，基本只可能是因为发生了shuffle操作，在shuffle的过程中，出现了数据倾斜的问题。因为某个，或者某些key对应的数据，远远的高于其他的key。你在自己的程序里面找找，哪些地方用了会产生shuffle的算子，groupByKey、countByKey、reduceByKey、join。看log一般会报是在你的哪一行代码，导致了OOM异常；或者呢，看log，看看是执行到了第几个stage！！！</p>
-<p>###解决思路：</p>
-<ol>
-<li>对包含少数几个数据量过大的key的那个RDD，通过sample算子采样出一份样本来，然后统计一下每个key的数量，计算出来数据量最大的是哪几个key。</li>
-<li>然后将这几个key对应的数据从原来的RDD中拆分出来，形成一个单独的RDD，并给每个key都打上n以内的随机数作为前缀，而不会导致倾斜的大部分key形成另外一个RDD。<br>接着将需要join的另一个RDD，也过滤出来那几个倾斜key对应的数据并形成一个单独的RDD，将每条数据膨胀成n条数据，这n条数据都按顺序附加一个0~n的前缀，不会导致倾斜的大部分key也形成另外一个RDD。<br>再将附加了随机前缀的独立RDD与另一个膨胀n倍的独立RDD进行join，此时就可以将原先相同的key打散成n份，分散到多个task中去进行join了。<br>而另外两个普通的RDD就照常join即可。<br>最后将两次join的结果使用union算子合并起来即可，就是最终的join结果。</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/02/大数据开发知识点-1/" data-id="cjki1prhl000j3gvt4l0v30pq" class="article-share-link">Share</a>
+          《Java并发编程实战》-1
         
       </div>
-    </footer>
-  </div>
-  </div>
-  <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="大数据开发知识点-1" ></div>
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytJofnm1'; 
-var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+    </a>
+  
+  
+    <a href="/2018/08/02/大数据开发知识点-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">大数据开发知识点-1</div>
+    </a>
+  
+</nav>
 
-  </div>
   
 </article>
 
 
-
-  
-  
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
-  
 </section>
       
       <aside id="sidebar">
