@@ -80,6 +80,242 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-springboot-summary" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/07/26/springboot-summary/" class="article-date">
+  <time datetime="2018-07-26T02:28:13.276Z" itemprop="datePublished">2018-07-26</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/springboot-summary/">springboot （转载自zooooooooy）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h3 id="springMVC"><a href="#springMVC" class="headerlink" title="springMVC"></a>springMVC</h3><p>springboot提供了开箱即用的web mvc，项目中用到的是gradle，只需要引用两个包就可以了</p>
+<pre><code>compile(&#39;org.springframework.boot:spring-boot-starter&#39;)
+compile(&#39;org.springframework.boot:spring-boot-starter-web&#39;)
+</code></pre><p>并不需要做什么其他配置，就可以启动web项目，编写restful接口。还是有一些需要个性化定制的功能需要我们手动去配置。有一些并不是springboot独有，配置的时候都是采用代码代替xml的方式。问题记录如下：</p>
+<ul>
+<li><p>Json序列化，<br>springmvc都是需要配置的，之前都是通过xml来配置。在springboot里面需要自定义MessageConverter。注册bean的方式加载到spring消息转换器里面，默认是放置到转换器队列的最前面优先解析。<br>springmvc默认的json解析器是Jackson,我这边算是先继承MappingJackson2HttpMessageConverter，修改覆盖初始方法来定制化项目需要的json格式化规则。</p>
+<pre><code>public class JsonMessageConverter extends MappingJackson2HttpMessageConverter {
+
+       @Override
+       protected void init(ObjectMapper objectMapper) {
+           objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+           objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+           objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
+           objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+           objectMapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+           objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+
+           objectMapper.setDateFormat(new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;));
+
+           super.init(objectMapper);
+       }
+   }
+
+</code></pre><p>后面需要将这个注册到spring bean管理里面。在configuration类里面注册</p>
+<pre><code>@Bean
+public HttpMessageConverters customConverters() {
+   return new HttpMessageConverters(new JsonMessageConverter());
+}
+
+</code></pre></li>
+<li><p>UTF8编码<br>同样是在configuration类里面注册，其实configuration就相当于spring的一个xml文件，每个方法相当于定义的一个bean，方法之间是可以互相依赖的。spring已经考虑到这点，不用担心依赖的时候破坏单例的特性。</p>
+<pre><code>@Bean
+public CharacterEncodingFilter encodingFilter() {
+
+   CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
+   encodingFilter.setEncoding(&quot;UTF-8&quot;);
+   encodingFilter.setForceEncoding(true);
+   return encodingFilter;
+}
+
+</code></pre></li>
+<li><p>拦截器<br>用到拦截器的时候，需要继承WebMvcConfigurerAdapter，通过适配器的模式，覆盖相应的方法。当然同时这个类需要标注为configuration类。</p>
+<p>| 方法 |<br>|——–|<br>|configurePathMatch|<br>|configureContentNegotiation|<br>|configureAsyncSupport|<br>|configureDefaultServletHandling|<br>|addFormatters|<br>|addInterceptors|<br>|addResourceHandlers|<br>|addCorsMappings|<br>|addViewControllers|<br>|configureViewResolvers|<br>|addArgumentResolvers|<br>|addReturnValueHandlers|<br>|configureMessageConverters|<br>|extendMessageConverters|<br>|configureHandlerExceptionResolvers|<br>|extendHandlerExceptionResolvers|<br>|getValidator|<br>|getMessageCodesResolver|<br>拦截器添加选择覆盖addInterceptors</p>
+<pre><code>@Override
+public void addInterceptors(InterceptorRegistry registry) {
+   registry.addInterceptor(new MappedInterceptor(new String[]{&quot;/**&quot;}, new String[]{&quot;&quot;},
+           new MvcInterceptor()));
+}
+</code></pre><p>MvcInterceptor是自定义的拦截器，如果需要用到url拦截的功能，需要使用spring带的MappedInterceptor定义拦截的url和排除的url<br>项目中还用到了addArgumentResolvers，addReturnValueHandlers就不一一列举了。</p>
+</li>
+</ul>
+<h3 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h3><ul>
+<li><p>属性文件<br>使用@PropertySources({@PropertySource(value = “classpath:setting.properties”)})来引入，不过这个不是springboot里面的东西。</p>
+</li>
+<li><p>项目分布</p>
+<ul>
+<li>css,js前端等用到的组件都分布在public下面或者static下面<br>需要渲染的模板定义在templates里面，安利一下我正在使用的模板<a href="http://www.mitchellbosecke.com/pebble/documentation/guide/basic-usage" target="_blank" rel="noopener">pebble</a></li>
+<li>数据库使用的是mybatis，sql还是写在xml里面在，始终觉得在代码里面写sql比较别扭。</li>
+<li><p>打包工具使用的是gradle，第一次接触，感觉还是不错，在编译速度上超过了maven。</p>
+<pre><code>compile(&#39;org.springframework.boot:spring-boot-starter&#39;)
+compile(&#39;org.springframework.boot:spring-boot-starter-log4j2&#39;)
+compile(&#39;org.springframework.boot:spring-boot-starter-web&#39;) {
+  //exclude group:&#39;org.springframework.boot&#39;,module:&quot;spring-boot-starter-tomcat&quot;
+}
+compile(&#39;org.springframework.boot:spring-boot-devtools&#39;)
+compile(&#39;org.springframework.boot:spring-boot-starter-test&#39;)
+compile(&#39;org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.0&#39;)
+
+compile(&#39;mysql:mysql-connector-java:6.0.5&#39;)
+compile(&#39;com.zaxxer:HikariCP:2.6.1&#39;)
+
+compile(&#39;org.projectlombok:lombok:1.16.16&#39;)
+
+//token
+compile(&quot;io.jsonwebtoken:jjwt:0.7.0&quot;)
+
+//bean copy
+compile(&#39;commons-beanutils:commons-beanutils:1.9.3&#39;)
+
+//apache commons lang3
+compile(&#39;org.apache.commons:commons-lang3:3.6&#39;)
+
+compile(&#39;javax.validation:validation-api:2.0.0.CR2&#39;)
+
+testCompile(&#39;junit:junit:4.12&#39;)
+
+</code></pre><p>项目中用到的jar包如上，springboot的版本号定义在buildscript里面在。使用的是1.5.2</p>
+</li>
+</ul>
+</li>
+<li><p>项目发布<br>项目还是采用外置的tomcat发布，需要在启动类Application继承SpringBootServletInitializer，覆盖</p>
+<pre><code>@Override
+protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+   return builder.sources(Application.class);
+}
+
+</code></pre><p>发布的脚本上gradle clean build -x test</p>
+</li>
+<li>profile配置<br>使用了gradle，在dev环境和prod环境的配置上，相对来说是没有maven好使的，<br>需要启动的时候在环境变量里面配置-Dspring.profiles.active=dev<br>其他的跟平常的spring开发还都是保持一致的。随着后续功能的开发慢慢会涉及到更多springboot的功能，个人感觉在开发效率上还是提升了不少。</li>
+</ul>
+<hr>
+<p>后续研究了下gradle的分环境打包方式，参数网上的例子，操作步骤如下</p>
+<ul>
+<li>添加配置文件config.groovy<br>environments {<br>   dev {<br>   }<br>   prod {<br>   }<br>}<br>在dev和prod写不同环境下的变量值，按照groovy的方式</li>
+<li>在build.gradle获取打包时指定的环境参数<pre><code>ext {
+   profile = System.properties[&#39;spring.profiles.active&#39;]
+}
+</code></pre></li>
+<li><p>读取config.groovy对应环境的的变量值</p>
+<pre><code>def loadGroovyConfig(){
+   def configFile = file(&#39;config.groovy&#39;)
+   new ConfigSlurper(profile).parse(configFile.toURL()).toProperties()
+}
+
+processResources {
+   from(sourceSets.main.resources.srcDirs) {
+       filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: loadGroovyConfig())
+   }
+}
+</code></pre></li>
+<li>变量覆盖如图<br><img src="/images/TIM截图20180605114425.png" alt="log4j2"><br>后续打包还是按照正常的方式，指定-Dspring.profiles.active=dev或者prod就可以</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2018/07/26/springboot-summary/" data-id="cjkjplf0v000bpkvtv9sxxbvf" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  <!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="springboot-summary" ></div>
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytJofnm1'; 
+var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-semaphore" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/07/26/semaphore/" class="article-date">
+  <time datetime="2018-07-26T02:28:13.273Z" itemprop="datePublished">2018-07-26</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/semaphore/">Semaphore （转载自zooooooooy）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <p>是一个分离的信号量计数器<br>主要核心方法有两个：</p>
+<ul>
+<li>acquire<br><em>从信号队列里面获取一个信号量，如果没有获取到则会一直阻塞到获取到信号量为止</em></li>
+<li>release<br><em>释放一个信号量回队列，这种模型相对来说比较适合池这种类型的业务需求</em></li>
+</ul>
+<p>acquire(int permits) 一次获取多个信号量<br>acquireUninterruptibly() 连续获取一个信号量<br>acquireUninterruptibly(int permits) 连续获得多个信号量</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2018/07/26/semaphore/" data-id="cjkjplf2l000mpkvtm8c3qz9r" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+  <!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="semaphore" ></div>
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytJofnm1'; 
+var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-jdk8-reduce" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/07/26/jdk8-reduce/" class="article-date">
@@ -123,7 +359,7 @@
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2018/07/26/jdk8-reduce/" data-id="cjki1prh500063gvtbra5fc8e" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/07/26/jdk8-reduce/" data-id="cjkjplf1x000gpkvtqrmv9w3i" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -131,305 +367,6 @@
   </div>
   <!--PC和WAP自适应版-->
 <div id="SOHUCS" sid="jdk8-reduce" ></div>
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytJofnm1'; 
-var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-java-scattered" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/26/java-scattered/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.266Z" itemprop="datePublished">2018-07-26</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/java-scattered/">JAVA scatter （转载自zooooooooy）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <p>查看系统的线程上下文切换次数</p>
-<p>使用vmstat 3<br><img src="/images/TIM截图20180704163235.png" alt="vmstat"></p>
-<p>其中cs就是context switch的次数，数值越高代表上线文切换的越频繁，耗时越多。每秒的切换次数可以和进程的总线程数进行比对，如果大于线程总数代表是满负荷运转</p>
-<hr>
-<p>java 线程状态之间的跃迁<br><img src="/images/TIM截图20180704193005.png" alt="thread change"></p>
-<p>线程的各个状态及说明如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">状态名称</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">NEW</td>
-<td>初始状态</td>
-</tr>
-<tr>
-<td style="text-align:left">RUNNABLE</td>
-<td>运行状态</td>
-</tr>
-<tr>
-<td style="text-align:left">BLOCKED</td>
-<td>阻塞状态</td>
-</tr>
-<tr>
-<td style="text-align:left">WAITING</td>
-<td>等待状态</td>
-</tr>
-<tr>
-<td style="text-align:left">TIME_WAITING</td>
-<td>超时等待状态</td>
-</tr>
-<tr>
-<td style="text-align:left">TERMINATED</td>
-<td>终止状态</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>synchronized 关键字的使用场景</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">锁的方式</th>
-<th>锁的对象</th>
-<th>伪代码</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">实例方法</td>
-<td>类的实例对象</td>
-<td>public synchronized void method</td>
-</tr>
-<tr>
-<td style="text-align:left">静态方法</td>
-<td>类对象</td>
-<td>public synchronized static void method</td>
-</tr>
-<tr>
-<td style="text-align:left">实例对象</td>
-<td>类的实例对象</td>
-<td>synchronized (this)</td>
-</tr>
-<tr>
-<td style="text-align:left">class对象</td>
-<td>类对象</td>
-<td>synchronized (A.class)</td>
-</tr>
-<tr>
-<td style="text-align:left">普通对象</td>
-<td>普通对象</td>
-<td>synchronized (o)</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>mark 下 通过ReentrantLock中线程等待唤醒的状态跃迁<br><img src="/images/TIM截图20180720114120.png" alt="await|singal"></p>
-<hr>
-<p>java queue 方法</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">方法名称</th>
-<th>说明</th>
-<th>是否阻塞</th>
-<th>是否抛出异常</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">add</td>
-<td>插入</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style="text-align:left">offer</td>
-<td>插入</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style="text-align:left">remove</td>
-<td>删除</td>
-<td>否</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">poll</td>
-<td>删除</td>
-<td>否</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">element</td>
-<td>获取</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style="text-align:left">peek</td>
-<td>获取</td>
-<td>否</td>
-<td>是</td>
-</tr>
-</tbody>
-</table>
-<p>blocking queue</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">方法名称</th>
-<th>说明</th>
-<th>是否阻塞</th>
-<th>是否抛出异常</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">put</td>
-<td>插入</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">offer <em>支持超时</em></td>
-<td>插入</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">take</td>
-<td>删除</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">poll <em>支持超时</em></td>
-<td>删除</td>
-<td>是</td>
-<td>否</td>
-</tr>
-</tbody>
-</table>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2018/07/26/java-scattered/" data-id="cjki1prhe000d3gvts16ps5n7" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-  <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="java-scattered" ></div>
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytJofnm1'; 
-var conf = 'prod_96aec0e0cd42cf2966acb3929a223503'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-java-build-mode" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/26/java-build-mode/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.263Z" itemprop="datePublished">2018-07-26</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/java-build-mode/">java build mode （转载自zooooooooy）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <p>还有一种通过内部类来实现单例的方式，静态内部类只能访问外部类的静态方法和静态属性。现在一般利用这个特性来实现单例模式。应该类在初始化的时候线程是互斥的，可以完美的解决单例创建冲突的问题。</p>
-<p>借用mybatis单例的实现来看一下：</p>
-<p>Class:ParameterMapping</p>
-<p>构造方法私有化：</p>
-<p>private ParameterMapping() {<br>}</p>
-<p>静态内部类来初始化外部对象：</p>
-<p>public static class Builder {<br>    private ParameterMapping parameterMapping = new ParameterMapping();</p>
-<pre><code>public Builder(Configuration configuration, String property, TypeHandler&lt;?&gt; typeHandler) { --生成ParameterMapping对象
-  parameterMapping.configuration = configuration;
-  parameterMapping.property = property;
-  parameterMapping.typeHandler = typeHandler;
-  parameterMapping.mode = ParameterMode.IN;
-}
-
-public Builder(Configuration configuration, String property, Class&lt;?&gt; javaType) {
-  parameterMapping.configuration = configuration;
-  parameterMapping.property = property;
-  parameterMapping.javaType = javaType;
-  parameterMapping.mode = ParameterMode.IN;
-}
-</code></pre><p>}</p>
-<p>提供公共build方法来返回该单例对象：</p>
-<p>public ParameterMapping build() {<br>      resolveTypeHandler();<br>      validate();<br>      return parameterMapping;<br>}</p>
-<p>这种方式相对于一般的单例方式的实现，复杂度会相对高一点,其实是java的builder建造者模式。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2018/07/26/java-build-mode/" data-id="cjki1prh400053gvtr2w0719o" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-  <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="java-build-mode" ></div>
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytJofnm1'; 
@@ -461,6 +398,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2018/08/07/排序算法/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/07/《Java并发编程实战》-2/">《Java并发编程实战》-2</a>
+          </li>
+        
+          <li>
             <a href="/2018/08/06/《Java并发编程实战》-1/">《Java并发编程实战》-1</a>
           </li>
         
@@ -472,14 +417,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2018/08/02/大数据开发知识点-1/">大数据开发知识点-1</a>
           </li>
         
-          <li>
-            <a href="/2018/08/02/零碎的知识点-1/">零碎的知识点-1</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/01/《Thinking in Java 》读书笔记-17/">《Thinking in Java 》读书笔记-17</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -489,7 +426,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -498,7 +435,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
@@ -519,7 +456,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2018 weijian qian
+      &copy; 2018 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
 	  </span><br>
