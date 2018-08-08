@@ -1,23 +1,21 @@
 
+
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   
-  <title>java build mode （转载自zooooooooy） | gonefuture</title>
+  <title>categories | gonefuture</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="还有一种通过内部类来实现单例的方式，静态内部类只能访问外部类的静态方法和静态属性。现在一般利用这个特性来实现单例模式。应该类在初始化的时候线程是互斥的，可以完美的解决单例创建冲突的问题。 借用mybatis单例的实现来看一下： Class:ParameterMapping 构造方法私有化： private ParameterMapping() {} 静态内部类来初始化外部对象： public st">
-<meta property="og:type" content="article">
-<meta property="og:title" content="java build mode （转载自zooooooooy）">
-<meta property="og:url" content="http://gonefuture.top/2018/07/26/java-build-mode/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="categories">
+<meta property="og:url" content="http://gonefuture.top/categories/index.html">
 <meta property="og:site_name" content="gonefuture">
-<meta property="og:description" content="还有一种通过内部类来实现单例的方式，静态内部类只能访问外部类的静态方法和静态属性。现在一般利用这个特性来实现单例模式。应该类在初始化的时候线程是互斥的，可以完美的解决单例创建冲突的问题。 借用mybatis单例的实现来看一下： Class:ParameterMapping 构造方法私有化： private ParameterMapping() {} 静态内部类来初始化外部对象： public st">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-26T03:21:52.338Z">
+<meta property="og:updated_time" content="2018-08-08T08:43:27.153Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="java build mode （转载自zooooooooy）">
-<meta name="twitter:description" content="还有一种通过内部类来实现单例的方式，静态内部类只能访问外部类的静态方法和静态属性。现在一般利用这个特性来实现单例模式。应该类在初始化的时候线程是互斥的，可以完美的解决单例创建冲突的问题。 借用mybatis单例的实现来看一下： Class:ParameterMapping 构造方法私有化： private ParameterMapping() {} 静态内部类来初始化外部对象： public st">
+<meta name="twitter:title" content="categories">
   
     <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
   
@@ -82,10 +80,10 @@
 </header>
 
     <div class="outer">
-      <section id="main"><article id="post-java-build-mode" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main"><article id="page-" class="article article-type-page" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/07/26/java-build-mode/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.263Z" itemprop="datePublished">2018-07-26</time>
+    <h3 href="/categories/index.html" class="article-date">
+  <time datetime="2018-08-08T08:43:27.000Z" itemprop="datePublished">2018-08-08</time>
 </h3>
     
   </div>
@@ -98,7 +96,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      java build mode （转载自zooooooooy）
+      categories
     </h1>
   
 
@@ -107,44 +105,20 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <p>还有一种通过内部类来实现单例的方式，静态内部类只能访问外部类的静态方法和静态属性。现在一般利用这个特性来实现单例模式。应该类在初始化的时候线程是互斥的，可以完美的解决单例创建冲突的问题。</p>
-<p>借用mybatis单例的实现来看一下：</p>
-<p>Class:ParameterMapping</p>
-<p>构造方法私有化：</p>
-<p>private ParameterMapping() {<br>}</p>
-<p>静态内部类来初始化外部对象：</p>
-<p>public static class Builder {<br>    private ParameterMapping parameterMapping = new ParameterMapping();</p>
-<pre><code>public Builder(Configuration configuration, String property, TypeHandler&lt;?&gt; typeHandler) { --生成ParameterMapping对象
-  parameterMapping.configuration = configuration;
-  parameterMapping.property = property;
-  parameterMapping.typeHandler = typeHandler;
-  parameterMapping.mode = ParameterMode.IN;
-}
-
-public Builder(Configuration configuration, String property, Class&lt;?&gt; javaType) {
-  parameterMapping.configuration = configuration;
-  parameterMapping.property = property;
-  parameterMapping.javaType = javaType;
-  parameterMapping.mode = ParameterMode.IN;
-}
-</code></pre><p>}</p>
-<p>提供公共build方法来返回该单例对象：</p>
-<p>public ParameterMapping build() {<br>      resolveTypeHandler();<br>      validate();<br>      return parameterMapping;<br>}</p>
-<p>这种方式相对于一般的单例方式的实现，复杂度会相对高一点,其实是java的builder建造者模式。</p>
-
+        
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2018/07/26/java-build-mode/" data-id="cjkkw1o660009u0vtyd072w4g" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/categories/index.html" data-id="cjkkw1o7x001fu0vtqsluicui" class="article-share-link">Share</a>
         
       </div>
     </footer>
   </div>
   </div>
   <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="java-build-mode" ></div>
+<div id="SOHUCS" sid="" ></div>
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytJofnm1'; 
@@ -156,25 +130,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
   
     
-<nav id="article-nav">
-  
-    <a href="/2018/07/26/java-scattered/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          JAVA scatter （转载自zooooooooy）
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2018/07/26/hexo-oschina/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">oschina git仓库提交webHook触发hexo博客更新 （转载自zooooooooy）</div>
-    </a>
-  
-</nav>
-
   
 </article>
 
@@ -303,3 +258,4 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 </div>
 </body>
 </html>
+
