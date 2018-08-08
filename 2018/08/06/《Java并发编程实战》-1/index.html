@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="gonefuture">
 <meta property="og:description" content="第2章 线程安全性2.1 什么是线程安全性 当多个线程访问某个类时，不管运行时环境采用何种调度方式或者这些线程架构如何交替执行，并且在主调用代码中不需要任何额外的同步或协同，这个类都表示出正确的行为，那么就称这个类是线程安全。   在线程安全类中封装了必要的同步机制，因此客户端无需进一步采用同步措施。   无状态对象一定是线程安全的。  2.2 原子性2.2.1 竞态条件2.2.2 延迟初始化中的">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-06T12:58:41.581Z">
+<meta property="og:updated_time" content="2018-08-08T08:15:44.023Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Java并发编程实战》-1">
 <meta name="twitter:description" content="第2章 线程安全性2.1 什么是线程安全性 当多个线程访问某个类时，不管运行时环境采用何种调度方式或者这些线程架构如何交替执行，并且在主调用代码中不需要任何额外的同步或协同，这个类都表示出正确的行为，那么就称这个类是线程安全。   在线程安全类中封装了必要的同步机制，因此客户端无需进一步采用同步措施。   无状态对象一定是线程安全的。  2.2 原子性2.2.1 竞态条件2.2.2 延迟初始化中的">
@@ -121,7 +121,17 @@
 <blockquote>
 <p>无状态对象一定是线程安全的。</p>
 </blockquote>
-<h2 id="2-2-原子性"><a href="#2-2-原子性" class="headerlink" title="2.2 原子性"></a>2.2 原子性</h2><h3 id="2-2-1-竞态条件"><a href="#2-2-1-竞态条件" class="headerlink" title="2.2.1 竞态条件"></a>2.2.1 竞态条件</h3><h3 id="2-2-2-延迟初始化中的竞态条件"><a href="#2-2-2-延迟初始化中的竞态条件" class="headerlink" title="2.2.2 延迟初始化中的竞态条件"></a>2.2.2 延迟初始化中的竞态条件</h3><h3 id="2-2-3-复合操作"><a href="#2-2-3-复合操作" class="headerlink" title="2.2.3 复合操作"></a>2.2.3 复合操作</h3><blockquote>
+<h2 id="2-2-原子性"><a href="#2-2-原子性" class="headerlink" title="2.2 原子性"></a>2.2 原子性</h2><h3 id="2-2-1-竞态条件"><a href="#2-2-1-竞态条件" class="headerlink" title="2.2.1 竞态条件"></a>2.2.1 竞态条件</h3><h3 id="2-2-2-延迟初始化中的竞态条件"><a href="#2-2-2-延迟初始化中的竞态条件" class="headerlink" title="2.2.2 延迟初始化中的竞态条件"></a>2.2.2 延迟初始化中的竞态条件</h3><p>延迟初始化中的竞态条件（不要这样做）</p>
+<pre><code class="java">@NotThreadSafe
+public class LazyInitRace {
+    private ExpensiveObject instance = null;
+    public ExpensiveObject getInstance() {
+    if( instance == null)
+        instance = new ExpensiveObject();
+    return instance;
+}
+</code></pre>
+<h3 id="2-2-3-复合操作"><a href="#2-2-3-复合操作" class="headerlink" title="2.2.3 复合操作"></a>2.2.3 复合操作</h3><blockquote>
 <p>假定有两个操作A和B，如果从执行A的线程来看，当另一个线程执行B时，要么将B全部执行完，要么完成不执行B，那么A和B对彼此来说时原子的。原子操作是指，对于访问同一个状态的所有操作(包括该操作本身)来说，这个操作是一个以原子方式执行的操作。</p>
 </blockquote>
 <blockquote>
@@ -130,14 +140,11 @@
 <h2 id="2-3-加锁机制"><a href="#2-3-加锁机制" class="headerlink" title="2.3 加锁机制"></a>2.3 加锁机制</h2><blockquote>
 <p>要保持状态的一致性，就需要在单个原子操作中更新所有相关的状态变量。</p>
 </blockquote>
-<h3 id="2-3-1-内置锁"><a href="#2-3-1-内置锁" class="headerlink" title="2.3.1 内置锁"></a>2.3.1 内置锁</h3><h3 id="2-3-2-重入"><a href="#2-3-2-重入" class="headerlink" title="2.3.2 重入"></a>2.3.2 重入</h3><h2 id="2-4-用锁来保护状态"><a href="#2-4-用锁来保护状态" class="headerlink" title="2.4 用锁来保护状态"></a>2.4 用锁来保护状态</h2><blockquote>
-<p>对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。</p>
-</blockquote>
+<h3 id="2-3-1-内置锁"><a href="#2-3-1-内置锁" class="headerlink" title="2.3.1 内置锁"></a>2.3.1 内置锁</h3><h3 id="2-3-2-重入"><a href="#2-3-2-重入" class="headerlink" title="2.3.2 重入"></a>2.3.2 重入</h3><h2 id="2-4-用锁来保护状态"><a href="#2-4-用锁来保护状态" class="headerlink" title="2.4 用锁来保护状态"></a>2.4 用锁来保护状态</h2><h3 id="对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。"><a href="#对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。" class="headerlink" title="对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。"></a>对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。</h3><h3 id="每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。"><a href="#每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。" class="headerlink" title="每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。"></a>每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。</h3><h3 id="对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。"><a href="#对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。" class="headerlink" title="对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。"></a>对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。</h3><pre><code class="java"> if (!vector.contains(element) )
+     vector.add(element)
+</code></pre>
 <blockquote>
-<p>每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。</p>
-</blockquote>
-<blockquote>
-<p>对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。</p>
+<p>即使Vector时同步的，因为上米娜的复合操作不是原子的，所以上面的代码也是非线程安全的。</p>
 </blockquote>
 <h2 id="2-5-活跃性与性能"><a href="#2-5-活跃性与性能" class="headerlink" title="2.5 活跃性与性能"></a>2.5 活跃性与性能</h2><blockquote>
 <p>通常，在简单性与性能之间存在着互相约制因素。当实现某个同步策略时，一定不要盲目地为了性能而牺牲简单性（这可能破坏安全性）。</p>
@@ -153,7 +160,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/06/《Java并发编程实战》-1/" data-id="cjkjpleze0006pkvtsmvjeoj8" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/06/《Java并发编程实战》-1/" data-id="cjkkvcph900091kvtki4rxaba" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -206,7 +213,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2018/08/07/排序算法/">(no title)</a>
+            <a href="/2018/08/07/Java常用的排序算法/">Java常用的排序算法</a>
           </li>
         
           <li>
@@ -234,7 +241,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
