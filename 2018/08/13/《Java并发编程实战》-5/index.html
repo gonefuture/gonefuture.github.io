@@ -5,23 +5,20 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   
-  <title>JAVA scatter （转载自zooooooooy） | gonefuture</title>
+  <title>《Java并发编程实战》-5 | gonefuture</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="查看系统的线程上下文切换次数 使用vmstat 3 其中cs就是context switch的次数，数值越高代表上线文切换的越频繁，耗时越多。每秒的切换次数可以和进程的总线程数进行比对，如果大于线程总数代表是满负荷运转  java 线程状态之间的跃迁 线程的各个状态及说明如下：    状态名称 说明     NEW 初始状态   RUNNABLE 运行状态   BLOCKED 阻塞状态   WAI">
+  <meta name="description" content="《Java并发编程实战》-56.1.1 串行地执行renwu6.1.2 显式地为任务创建线程6.1.3 无限制创建线程的不足 线程生命周期的开销非常高。 资源消耗。 稳定性。  6.2 Executir框架6.2.1 示例：基于Executor的Web服务器6.2.2 执行策略 每当看到new Thread(runnable).start()时，并且你希望获得一种更灵活的执行策略时，请考虑使用Ex">
+<meta name="keywords" content="java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JAVA scatter （转载自zooooooooy）">
-<meta property="og:url" content="http://gonefuture.top/2018/07/26/java-scattered/index.html">
+<meta property="og:title" content="《Java并发编程实战》-5">
+<meta property="og:url" content="http://gonefuture.top/2018/08/13/《Java并发编程实战》-5/index.html">
 <meta property="og:site_name" content="gonefuture">
-<meta property="og:description" content="查看系统的线程上下文切换次数 使用vmstat 3 其中cs就是context switch的次数，数值越高代表上线文切换的越频繁，耗时越多。每秒的切换次数可以和进程的总线程数进行比对，如果大于线程总数代表是满负荷运转  java 线程状态之间的跃迁 线程的各个状态及说明如下：    状态名称 说明     NEW 初始状态   RUNNABLE 运行状态   BLOCKED 阻塞状态   WAI">
+<meta property="og:description" content="《Java并发编程实战》-56.1.1 串行地执行renwu6.1.2 显式地为任务创建线程6.1.3 无限制创建线程的不足 线程生命周期的开销非常高。 资源消耗。 稳定性。  6.2 Executir框架6.2.1 示例：基于Executor的Web服务器6.2.2 执行策略 每当看到new Thread(runnable).start()时，并且你希望获得一种更灵活的执行策略时，请考虑使用Ex">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://gonefuture.top/images/TIM截图20180704163235.png">
-<meta property="og:image" content="http://gonefuture.top/images/TIM截图20180704193005.png">
-<meta property="og:image" content="http://gonefuture.top/images/TIM截图20180720114120.png">
-<meta property="og:updated_time" content="2018-07-26T03:21:52.343Z">
+<meta property="og:updated_time" content="2018-08-13T09:57:46.412Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JAVA scatter （转载自zooooooooy）">
-<meta name="twitter:description" content="查看系统的线程上下文切换次数 使用vmstat 3 其中cs就是context switch的次数，数值越高代表上线文切换的越频繁，耗时越多。每秒的切换次数可以和进程的总线程数进行比对，如果大于线程总数代表是满负荷运转  java 线程状态之间的跃迁 线程的各个状态及说明如下：    状态名称 说明     NEW 初始状态   RUNNABLE 运行状态   BLOCKED 阻塞状态   WAI">
-<meta name="twitter:image" content="http://gonefuture.top/images/TIM截图20180704163235.png">
+<meta name="twitter:title" content="《Java并发编程实战》-5">
+<meta name="twitter:description" content="《Java并发编程实战》-56.1.1 串行地执行renwu6.1.2 显式地为任务创建线程6.1.3 无限制创建线程的不足 线程生命周期的开销非常高。 资源消耗。 稳定性。  6.2 Executir框架6.2.1 示例：基于Executor的Web服务器6.2.2 执行策略 每当看到new Thread(runnable).start()时，并且你希望获得一种更灵活的执行策略时，请考虑使用Ex">
   
     <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
   
@@ -86,12 +83,16 @@
 </header>
 
     <div class="outer">
-      <section id="main"><article id="post-java-scattered" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main"><article id="post-《Java并发编程实战》-5" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/07/26/java-scattered/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.266Z" itemprop="datePublished">2018-07-26</time>
+    <h3 href="/2018/08/13/《Java并发编程实战》-5/" class="article-date">
+  <time datetime="2018-08-13T07:32:02.057Z" itemprop="datePublished">2018-08-13</time>
 </h3>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
   </div>
   <div class="article-inner">
   <div class="curve-down">
@@ -102,7 +103,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      JAVA scatter （转载自zooooooooy）
+      《Java并发编程实战》-5
     </h1>
   
 
@@ -111,187 +112,37 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <p>查看系统的线程上下文切换次数</p>
-<p>使用vmstat 3<br><img src="/images/TIM截图20180704163235.png" alt="vmstat"></p>
-<p>其中cs就是context switch的次数，数值越高代表上线文切换的越频繁，耗时越多。每秒的切换次数可以和进程的总线程数进行比对，如果大于线程总数代表是满负荷运转</p>
-<hr>
-<p>java 线程状态之间的跃迁<br><img src="/images/TIM截图20180704193005.png" alt="thread change"></p>
-<p>线程的各个状态及说明如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">状态名称</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">NEW</td>
-<td>初始状态</td>
-</tr>
-<tr>
-<td style="text-align:left">RUNNABLE</td>
-<td>运行状态</td>
-</tr>
-<tr>
-<td style="text-align:left">BLOCKED</td>
-<td>阻塞状态</td>
-</tr>
-<tr>
-<td style="text-align:left">WAITING</td>
-<td>等待状态</td>
-</tr>
-<tr>
-<td style="text-align:left">TIME_WAITING</td>
-<td>超时等待状态</td>
-</tr>
-<tr>
-<td style="text-align:left">TERMINATED</td>
-<td>终止状态</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>synchronized 关键字的使用场景</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">锁的方式</th>
-<th>锁的对象</th>
-<th>伪代码</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">实例方法</td>
-<td>类的实例对象</td>
-<td>public synchronized void method</td>
-</tr>
-<tr>
-<td style="text-align:left">静态方法</td>
-<td>类对象</td>
-<td>public synchronized static void method</td>
-</tr>
-<tr>
-<td style="text-align:left">实例对象</td>
-<td>类的实例对象</td>
-<td>synchronized (this)</td>
-</tr>
-<tr>
-<td style="text-align:left">class对象</td>
-<td>类对象</td>
-<td>synchronized (A.class)</td>
-</tr>
-<tr>
-<td style="text-align:left">普通对象</td>
-<td>普通对象</td>
-<td>synchronized (o)</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>mark 下 通过ReentrantLock中线程等待唤醒的状态跃迁<br><img src="/images/TIM截图20180720114120.png" alt="await|singal"></p>
-<hr>
-<p>java queue 方法</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">方法名称</th>
-<th>说明</th>
-<th>是否阻塞</th>
-<th>是否抛出异常</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">add</td>
-<td>插入</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style="text-align:left">offer</td>
-<td>插入</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style="text-align:left">remove</td>
-<td>删除</td>
-<td>否</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">poll</td>
-<td>删除</td>
-<td>否</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">element</td>
-<td>获取</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style="text-align:left">peek</td>
-<td>获取</td>
-<td>否</td>
-<td>是</td>
-</tr>
-</tbody>
-</table>
-<p>blocking queue</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">方法名称</th>
-<th>说明</th>
-<th>是否阻塞</th>
-<th>是否抛出异常</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">put</td>
-<td>插入</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">offer <em>支持超时</em></td>
-<td>插入</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">take</td>
-<td>删除</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">poll <em>支持超时</em></td>
-<td>删除</td>
-<td>是</td>
-<td>否</td>
-</tr>
-</tbody>
-</table>
+        <h1 id="《Java并发编程实战》-5"><a href="#《Java并发编程实战》-5" class="headerlink" title="《Java并发编程实战》-5"></a>《Java并发编程实战》-5</h1><h3 id="6-1-1-串行地执行renwu"><a href="#6-1-1-串行地执行renwu" class="headerlink" title="6.1.1 串行地执行renwu"></a>6.1.1 串行地执行renwu</h3><h3 id="6-1-2-显式地为任务创建线程"><a href="#6-1-2-显式地为任务创建线程" class="headerlink" title="6.1.2 显式地为任务创建线程"></a>6.1.2 显式地为任务创建线程</h3><h3 id="6-1-3-无限制创建线程的不足"><a href="#6-1-3-无限制创建线程的不足" class="headerlink" title="6.1.3 无限制创建线程的不足"></a>6.1.3 无限制创建线程的不足</h3><ul>
+<li>线程生命周期的开销非常高。</li>
+<li>资源消耗。</li>
+<li>稳定性。</li>
+</ul>
+<h2 id="6-2-Executir框架"><a href="#6-2-Executir框架" class="headerlink" title="6.2 Executir框架"></a>6.2 Executir框架</h2><h3 id="6-2-1-示例：基于Executor的Web服务器"><a href="#6-2-1-示例：基于Executor的Web服务器" class="headerlink" title="6.2.1 示例：基于Executor的Web服务器"></a>6.2.1 示例：基于Executor的Web服务器</h3><h3 id="6-2-2-执行策略"><a href="#6-2-2-执行策略" class="headerlink" title="6.2.2 执行策略"></a>6.2.2 执行策略</h3><blockquote>
+<p>每当看到<code>new Thread(runnable).start()</code>时，并且你希望获得一种更灵活的执行策略时，请考虑使用Excecutor来代替Thread。</p>
+</blockquote>
+<h3 id="6-2-3-线程池"><a href="#6-2-3-线程池" class="headerlink" title="6.2.3 线程池"></a>6.2.3 线程池</h3><ul>
+<li>newFixedThreadPool</li>
+<li>newCachedTheadPool</li>
+<li>newSingleThread</li>
+<li>newScheduleThreadPool</li>
+</ul>
+<h3 id="6-2-4-Executor的声明周期"><a href="#6-2-4-Executor的声明周期" class="headerlink" title="6.2.4 Executor的声明周期"></a>6.2.4 Executor的声明周期</h3><h3 id="6-2-5-延迟任务与周期任务"><a href="#6-2-5-延迟任务与周期任务" class="headerlink" title="6.2.5 延迟任务与周期任务"></a>6.2.5 延迟任务与周期任务</h3><h2 id="6-3-找出可利用的并行性"><a href="#6-3-找出可利用的并行性" class="headerlink" title="6.3 找出可利用的并行性"></a>6.3 找出可利用的并行性</h2><h3 id="6-3-1-示例：串行的页面渲染器"><a href="#6-3-1-示例：串行的页面渲染器" class="headerlink" title="6.3.1 示例：串行的页面渲染器"></a>6.3.1 示例：串行的页面渲染器</h3><h3 id="6-3-2-携带结果的任务Callable与Future"><a href="#6-3-2-携带结果的任务Callable与Future" class="headerlink" title="6.3.2 携带结果的任务Callable与Future"></a>6.3.2 携带结果的任务Callable与Future</h3><h3 id="6-3-3-实例：使用Future实现页面渲染器"><a href="#6-3-3-实例：使用Future实现页面渲染器" class="headerlink" title="6.3.3 实例：使用Future实现页面渲染器"></a>6.3.3 实例：使用Future实现页面渲染器</h3><h3 id="6-3-4-在异构任务并行化中存在的局限"><a href="#6-3-4-在异构任务并行化中存在的局限" class="headerlink" title="6.3.4 在异构任务并行化中存在的局限"></a>6.3.4 在异构任务并行化中存在的局限</h3><h3 id="6-3-6-实例：使用CompletionService实现页面渲染器"><a href="#6-3-6-实例：使用CompletionService实现页面渲染器" class="headerlink" title="6.3.6 实例：使用CompletionService实现页面渲染器"></a>6.3.6 实例：使用CompletionService实现页面渲染器</h3><h3 id="6-3-7-为任务设置时限"><a href="#6-3-7-为任务设置时限" class="headerlink" title="6.3.7 为任务设置时限"></a>6.3.7 为任务设置时限</h3><h3 id="6-3-8-示例：旅行预订门户网站"><a href="#6-3-8-示例：旅行预订门户网站" class="headerlink" title="6.3.8 示例：旅行预订门户网站"></a>6.3.8 示例：旅行预订门户网站</h3><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>Executor框架将任务提交与执行策略解耦开来，同时还支持多种不同类型的执行策略。<br>要想将应用程序分解为不同的任务时获得最大的好处，必须定义清晰的任务边界。</p>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2018/07/26/java-scattered/" data-id="cjktgozzp000afwvtsalv1pw5" class="article-share-link">Share</a>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/13/《Java并发编程实战》-5/" data-id="cjktgp003000nfwvtl6iudaxd" class="article-share-link">Share</a>
         
       </div>
     </footer>
   </div>
   </div>
   <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="java-scattered" ></div>
+<div id="SOHUCS" sid="《Java并发编程实战》-5" ></div>
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytJofnm1'; 
@@ -305,19 +156,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     
 <nav id="article-nav">
   
-    <a href="/2018/07/26/jdk8-reduce/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          JDK8 lambda reduce （转载自zooooooooy）
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/07/26/java-build-mode/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2018/08/10/《Java并发编程实战》-4/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">java build mode （转载自zooooooooy）</div>
+      <div class="article-nav-title">《Java并发编程实战》-4</div>
     </a>
   
 </nav>
