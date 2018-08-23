@@ -83,14 +83,14 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-《Thinking in Java 》读书笔记-17" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-零碎的知识点-3" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/01/《Thinking in Java 》读书笔记-17/" class="article-date">
-  <time datetime="2018-08-01T13:06:05.058Z" itemprop="datePublished">2018-08-01</time>
+    <h3 href="/2018/08/14/零碎的知识点-3/" class="article-date">
+  <time datetime="2018-08-14T09:26:06.062Z" itemprop="datePublished">2018-08-14</time>
 </h3>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+    <a class="article-category-link" href="/categories/零碎的知识点/">零碎的知识点</a>
   </div>
 
   </div>
@@ -103,7 +103,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/《Thinking in Java 》读书笔记-17/">《Thinking in Java 》读书笔记-17</a>
+      <a class="article-title" href="/2018/08/14/零碎的知识点-3/">零碎的知识点-3</a>
     </h1>
   
 
@@ -112,150 +112,204 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="《Thinking-in-Java-》读书笔记-17"><a href="#《Thinking-in-Java-》读书笔记-17" class="headerlink" title="《Thinking in Java 》读书笔记-17"></a>《Thinking in Java 》读书笔记-17</h1><h2 id="17-1-完整的容器分类法"><a href="#17-1-完整的容器分类法" class="headerlink" title="17.1 完整的容器分类法"></a>17.1 完整的容器分类法</h2><p><img src="https://img-blog.csdn.net/20180801173227921?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<h2 id="17-2-填充容器"><a href="#17-2-填充容器" class="headerlink" title="17.2 填充容器"></a>17.2 填充容器</h2><p>Collections.nCopies()和Collection.fill()都可以用单个对象的引用来填充Collection，并且所有引用都被设置为指向相同的的对象。<br>fill()方法的用处更为有限，它只能替换已经在List中存在的元素，而不能添加新的元素。</p>
-<h3 id="17-2-1-一种Generator解决方案"><a href="#17-2-1-一种Generator解决方案" class="headerlink" title="17.2.1 一种Generator解决方案"></a>17.2.1 一种Generator解决方案</h3><p>所有的Collection子类型都有一个接受另一个Collection对象的构造器。</p>
-<h3 id="17-2-2-Map生成器"><a href="#17-2-2-Map生成器" class="headerlink" title="17.2.2 Map生成器"></a>17.2.2 Map生成器</h3><h3 id="未获支持的操作"><a href="#未获支持的操作" class="headerlink" title="未获支持的操作"></a>未获支持的操作</h3><h3 id="17-2-3-使用Abstract类"><a href="#17-2-3-使用Abstract类" class="headerlink" title="17.2.3 使用Abstract类"></a>17.2.3 使用Abstract类</h3><h2 id="17-3-Collection的功能方法"><a href="#17-3-Collection的功能方法" class="headerlink" title="17.3 Collection的功能方法"></a>17.3 Collection的功能方法</h2><h2 id="17-4-可选操作"><a href="#17-4-可选操作" class="headerlink" title="17.4 可选操作"></a>17.4 可选操作</h2><p>执行各种不同的添加和移除的方法在Collection接口中都是可选操作。<br>使用Arrays.asList()生成的List,基于一个固定大小的数组，仅支持那些不会改变数组大小的操作。</p>
-<h2 id="17-5-List的功能方法"><a href="#17-5-List的功能方法" class="headerlink" title="17.5 List的功能方法"></a>17.5 List的功能方法</h2><h2 id="17-6-Set和存储顺序"><a href="#17-6-Set和存储顺序" class="headerlink" title="17.6 Set和存储顺序"></a>17.6 Set和存储顺序</h2><p>接口    描述<br>| Set    | 存入Set的每一个元素都必须是唯一的，因为Set不保存重复元素．加入Set的元素必须定义equals()方法以确保对象的唯一性. Set和Collection有完全一样的接口.Set接口不保证维护元素的次序. |<br>| —— | —— | —— |<br>| HashSet *    | 为快速查找而设计的Set.存入HashSet的元素必须定义HashCode()方法. |<br>|TreeSet | 保持次序的Set,底层为树结构.使用它可以从Set中提取有序的序列.元素必须实现Comparable接口 |<br>| LinkedHashSet    | 具有HashSet的查询速度,且内部使用链表维护元素的顺序.于是在使用迭代器遍历Set时,结果会按元素插入的次序显示.元素也必须定义hashCode()方法. |</p>
-<h2 id="17-7-队列"><a href="#17-7-队列" class="headerlink" title="17.7 队列"></a>17.7 队列</h2><h3 id="17-7-1-优先级队列"><a href="#17-7-1-优先级队列" class="headerlink" title="17.7.1 优先级队列"></a>17.7.1 优先级队列</h3><h2 id="17-8-理解Map"><a href="#17-8-理解Map" class="headerlink" title="17.8 理解Map"></a>17.8 理解Map</h2><h2 id="17-9-散列与散列码"><a href="#17-9-散列与散列码" class="headerlink" title="17.9 散列与散列码"></a>17.9 散列与散列码</h2><p>散列的价值在于速度。我们使用数组来保存键的信息，这个信息并不是键本身，而是通过键对象生成一个数字(散列码)，作为数组下标。由于数组的容量是固定的，而散列容器的大小是可变的，所以不同的键可以产生相同的数组下标(散列码)。也就是说，可能会有冲突(当然也有特例，比如EnumMap和EnumSet)。所以，数组的值存放着一个保存所有相同散列码的值的list(引用)。然后对list中的值使用equals进行线性查询。如果散列函数设计的比较好的话，数组的每个位置只有较少的值，并且浪费空间也小。于是，查询过程就是首先计算键的散列码得到数组下标，然后内存寻址(时间复杂度为O(1)，赋值)找到数组的值，再遍历list(时间复杂度为O(n)，线性查询)即可。即hashCode和equals共同确定了对象的唯一性。</p>
-<p>所有类都继承于Object。Object的hashCode方法生成的散列码，实际上是默认使用对象的地址计算散列码；而Object的equals方法实际上就是地址比较(==)。显然，当我们在使用散列容器(如HashMap的Key，HashSet等)时，我们自定义的类中还继承Object的hashCode和equals是不行的。必须重写hashCode和equals方法。好的hashCode()应该产生分布均匀的散列码。</p>
-<h2 id="17-10-选择接口的不同实现"><a href="#17-10-选择接口的不同实现" class="headerlink" title="17.10 选择接口的不同实现"></a>17.10 选择接口的不同实现</h2><h2 id="17-11-实用方法"><a href="#17-11-实用方法" class="headerlink" title="17.11 实用方法"></a>17.11 实用方法</h2><h2 id="17-12-持有引用"><a href="#17-12-持有引用" class="headerlink" title="17.12 持有引用"></a>17.12 持有引用</h2><ul>
-<li>SoftRefernce </li>
-<li>WeakRefernce </li>
-<li>PhantomRefernce </li>
-</ul>
-<h2 id="17-13-Java-1-0-1-1的容器"><a href="#17-13-Java-1-0-1-1的容器" class="headerlink" title="17.13 Java 1.0/1.1的容器"></a>17.13 Java 1.0/1.1的容器</h2><ol>
-<li>不要在新代码里使用Vector、Enumeration。</li>
-<li>用LinkedLsit或基于LinlkedList的子类代替旧版的Stack。</li>
-<li>如果拥有一个可以命名的固定的标志集合，那么EnumSet与BitSet相比是更好的选择。</li>
-<li>只有在运行时才知道需要多少个标志，对标志命名不合理，需要BitSet中的某种特性操作。</li>
-</ol>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+        <h1 id="零碎的知识点-3"><a href="#零碎的知识点-3" class="headerlink" title="零碎的知识点-3"></a>零碎的知识点-3</h1><hr>
+<h2 id="TCP拥塞控制-慢启动、拥塞避免、快重传、快启动"><a href="#TCP拥塞控制-慢启动、拥塞避免、快重传、快启动" class="headerlink" title="TCP拥塞控制-慢启动、拥塞避免、快重传、快启动"></a>TCP拥塞控制-慢启动、拥塞避免、快重传、快启动</h2><p>一般原理：发生拥塞控制的原因：资源(带宽、交换节点的缓存、处理机)的需求&gt;可用资源。</p>
+<p>作用：拥塞控制就是为了防止过多的数据注入到网络中，这样可以使网络中的路由器或者链路不至于过载。拥塞控制要做的都有一个前提：就是网络能够承受现有的网络负荷。</p>
+<p>对比流量控制：拥塞控制是一个全局的过程，涉及到所有的主机、路由器、以及降低网络相关的所有因素。流量控制往往指点对点通信量的控制。是端对端的问题。</p>
+<p><strong>拥塞窗口</strong>：发送方为一个动态变化的窗口叫做拥塞窗口，拥塞窗口的大小取决于网络的拥塞程度。发送方让自己的发送窗口等于拥塞窗口，但是发送窗口不是一直等于拥塞窗口的，在网络情况好的时候，拥塞窗口不断的增加，发送方的窗口自然也随着增加，但是接受方的接受能力有限，在发送方的窗口达到某个大小时就不在发生变化了。</p>
+<p>发送方如果知道网络拥塞了呢？发送方发送一些报文段时，如果发送方没有在时间间隔内收到接收方的确认报文段，则就可以人为网络出现了拥塞。</p>
+<p><strong>慢启动算法的思路</strong>：主机开发发送数据报时，如果立即将大量的数据注入到网络中，可能会出现网络的拥塞。慢启动算法就是在主机刚开始发送数据报的时候先探测一下网络的状况，如果网络状况良好，发送方每发送一次文段都能正确的接受确认报文段。那么就从小到大的增加拥塞窗口的大小，即增加发送窗口的大小。</p>
+<p><img src="https://img-blog.csdn.net/20180808175025408?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="慢开始和拥塞避免算法的实现举例"></p>
+<p><strong>拥塞避免</strong>：为了防止cwnd增加过快而导致网络拥塞，所以需要设置一个<strong>慢开始门限</strong>ssthresh状态变量（拥塞控制的标识）,它的用法：</p>
+<pre><code>               1. 当cwnd &lt; ssthresh,使用慢启动算法，
 
-        <a data-url="http://gonefuture.top/2018/08/01/《Thinking in Java 》读书笔记-17/" data-id="cjkthgrju000zj0vthc9ls5u0" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
+               2. 当cwnd &gt; ssthresh,使用拥塞控制算法，停用慢启动算法。
 
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-17" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-《Thinking in Java 》读书笔记-11" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/30/《Thinking in Java 》读书笔记-11/" class="article-date">
-  <time datetime="2018-07-30T10:11:35.454Z" itemprop="datePublished">2018-07-30</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/30/《Thinking in Java 》读书笔记-11/">《Thinking in Java 》读书笔记-11</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="第11章-持有对象"><a href="#第11章-持有对象" class="headerlink" title="第11章 持有对象"></a>第11章 持有对象</h1><hr>
-<h2 id="11-1-泛型和类型安全的容器"><a href="#11-1-泛型和类型安全的容器" class="headerlink" title="11.1 泛型和类型安全的容器"></a>11.1 泛型和类型安全的容器</h2><h2 id="1-2-基本概念"><a href="#1-2-基本概念" class="headerlink" title="1.2 基本概念"></a>1.2 基本概念</h2><ul>
-<li>Collection</li>
-<li>Map</li>
-<li>List</li>
-</ul>
-<h2 id="1-3添加一组元素"><a href="#1-3添加一组元素" class="headerlink" title="1.3添加一组元素"></a>1.3添加一组元素</h2><p>构建一个不包含元素的Collection，然后调用Collection.addAll()这种方式，运行速度快，也比较方便，是首先方式。</p>
-<p>使用Array.asList()可以使用<strong>显式类型参数</strong>说明产生的List的实际的目标类型。</p>
-<h2 id="1-4-容器的打印"><a href="#1-4-容器的打印" class="headerlink" title="1.4 容器的打印"></a>1.4 容器的打印</h2><p>使用Arrays.toString()来产生数组的可打印表示。</p>
-<h2 id="11-5-List"><a href="#11-5-List" class="headerlink" title="11.5 List"></a>11.5 List</h2><ul>
-<li><p>基本的ArrayList，它长于随机访问元素，但是在List的中间插入移动元素时较慢。</p>
-</li>
-<li><p>LinkedList,它通过代价较低的在List中间进行的插入和删除操作，提供了优化的顺序访问。LinkedList在随机访问方面相对比较慢，但它的特性较ArrayList更大。</p>
-</li>
-</ul>
-<h2 id="11-6-迭代器"><a href="#11-6-迭代器" class="headerlink" title="11.6 迭代器"></a>11.6 迭代器</h2><p>Java的iterator()要求容器返回一个Iterator。Iterator将准备好返回序列的第一个元素。</p>
+               3. 当cwnd = ssthresh，这两个算法都可以。
+</code></pre><p>拥塞避免的思路：是让cwnd缓慢的增加而不是加倍的增长，每经历过一次往返时间就使cwnd增加1，而不是加倍，这样使cwnd缓慢的增长，比慢启动要慢的多。</p>
+<p>无论是慢启动算法还是拥塞避免算法，只要判断网络出现拥塞，就要把慢启动开始门限(ssthresh)设置为设置为发送窗口的一半（&gt;=2），cwnd(拥塞窗口)设置为1，然后在使用慢启动算法，这样做的目的能迅速的减少主机向网络中传输数据，使发生拥塞的路由器能够把队列中堆积的分组处理完毕。拥塞窗口是按照线性的规律增长，比慢启动算法拥塞窗口增长块的多。</p>
+<p><strong>快重传</strong>：快重传算法要求首先接收方收到一个失序的报文段后就立刻发出重复确认，而不要等待自己发送数据时才进行捎带确认。接收方成功的接受了发送方发送来的M1、M2并且分别给发送了ACK，现在接收方没有收到M3，而接收到了M4，显然接收方不能确认M4，因为M4是失序的报文段。如果根据可靠性传输原理接收方什么都不做，但是按照快速重传算法，在收到M4、M5等报文段的时候，不断重复的向发送方发送M2的ACK,如果接收方一连收到三个重复的ACK,那么发送方不必等待重传计时器到期，由于发送方尽早重传未被确认的报文段。</p>
+<p><img src="https://img-blog.csdn.net/20180808175132761?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="快重传示意图"></p>
+<p><strong>快恢复</strong>：</p>
 <ol>
-<li>使用方法iterator()要求容器返回一个Iterator.Iterator将准备好返回序列的第一个元素。</li>
-<li>使用next()获得序列中的下一个元素。</li>
-<li>使用hashNext()检查序列中是否还有元素。</li>
-<li>使用remove()将迭代器新近返回的元素删除。</li>
+<li>当发送发连续接收到三个确认时，就执行乘法减小算法，把慢启动开始门限（ssthresh）减半，但是接下来并不执行慢开始算法。</li>
+<li>此时不执行慢启动算法，而是把cwnd设置为ssthresh的一半， 然后执行拥塞避免算法，使拥塞窗口缓慢增大。</li>
 </ol>
-<p>Iterator可以移除由next()产生的最后一个元素，这意味着在调用remove()之前必须先调用next()。</p>
-<h2 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h2><p>LinkedList具有能够直接实现栈的所有功能的方法，因此可以直接将LinkedList作为栈使用。</p>
-<p>peek()方法提供栈顶元素，但是并不将其从栈顶移除，而pop()将移除并返回栈顶元素。</p>
-<h2 id="11-9-Set"><a href="#11-9-Set" class="headerlink" title="11.9 Set"></a>11.9 Set</h2><p>Set不保存重复的元素。</p>
-<p>TreeSet将元素储存在红-黑树数据结构中，有序。</p>
-<p>HashSet使用的是散列函数，无序。</p>
-<p>LinkedHashList因为查询速度的原因使用散列，但是也使用了链表来维护元素的插入顺序。</p>
-<h2 id="11-10-Map"><a href="#11-10-Map" class="headerlink" title="11.10 Map"></a>11.10 Map</h2><p>Map可以用keySet()返回它的键的Set，用valueSet()它的值的Collection。</p>
+<p><img src="https://img-blog.csdn.net/20180808175548267?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="快恢复"></p>
+<hr>
+<h2 id="TCP报头"><a href="#TCP报头" class="headerlink" title="TCP报头"></a>TCP报头</h2><p>TCP/IP协议栈主要分为四层:应用层、传输层、网络层、数据链路层,每层都有相应的协议，如下图</p>
+<p><img src="https://img-blog.csdn.net/20180809093940441?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP/IP协议体系"></p>
+<p>TCP数据报头格式：<br><img src="https://img-blog.csdn.net/20180809101737547?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP数据报头格式"></p>
 <ul>
-<li><p>HashMap</p>
+<li>端口号：32位，16位源端口+16位目的端口， 最大端口为65536</li>
+<li>位序号：32位，也称顺序号，简写位SEQ。</li>
+<li><strong>确认序号</strong>：32位，简写为ACK，在握手阶段，确认序号将发送方的序号加1作为回答。</li>
+<li>数据偏移：规定了整个报头的长度。</li>
+<li>6位标志字段：<ul>
+<li>ACK 置1时表示确认号（为合法，为0的时候表示数据段不包含确认信息，确认号被忽略。</li>
+<li>RST 置1时重建连接。如果接收到RST位时候，通常发生了某些错误。</li>
+<li>SYN 置1时用来发起一个连接。</li>
+<li>FIN 置1时表示发端完成发送任务。用来释放连接，表明发送方已经没有数据发送了。</li>
+<li>URG 紧急指针，告诉接收TCP模块紧要指针域指着紧要数据。注：一般不使用。</li>
+<li>PSH 置1时请求的数据段在接收方得到后就可直接送到应用程序，而不必等到缓冲区满时才传送。注：一般不使用。</li>
+</ul>
 </li>
-<li><p>TreeMap</p>
+<li><strong>检验和</strong>：16位，检验和覆盖了整个的TCP报文段： TCP首部和TCP数据。这是一个强制性的字段，一定是由发端计算和存储，并由收端进行验证。</li>
+<li>紧急指针：16位，一般不用。</li>
+<li>可选与变长选项：通常为空，可根据首部长度推算。用于发送方与接收方协商最大报文段长度（MSS，1460是以太网默认的大小），或在高速网络环境下作窗口调节因子时使用。首部字段还定义了一个时间戳选项。</li>
+</ul>
+<hr>
+<h2 id="UDP报头"><a href="#UDP报头" class="headerlink" title="UDP报头"></a>UDP报头</h2><p>UDP协议也是传输层协议，它是无连接，不保证可靠的传输层协议。<br><img src="https://img-blog.csdn.net/20180809100821202?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="UDP报头"></p>
+<ul>
+<li>源端口：16位，源端口是一个大于1023的16位数字，由基于UDP应用程序的用户进程随机选择。</li>
+<li>目的端口：16位，</li>
+<li>数据包长度：16位，指明了包括首部在内的UDP报文段长度。UDP长字段的值是UDP报文头的长度(8字节)与UDP所携带数据长度的总和。</li>
+<li>校验和：16位，是指整个UDP报文头和UDP所带的数据的校验和（也包括伪报文头）。伪报文头不包括在真正的UDP报文头中，但是它可以保证UDP数据被正确的主机收到了。因在校验和中加入了伪头标，故ICMP除能防止单纯数据差错之外，对IP分组也具有保护作用。</li>
+</ul>
+<hr>
+<h2 id="DNS解析过程"><a href="#DNS解析过程" class="headerlink" title="DNS解析过程"></a>DNS解析过程</h2><p>DNS（Domain Name System，域名系统），DNS协议运行在<strong>UDP协议</strong>之上，使用端口号53。</p>
+<p>主机解析域名的顺序</p>
+<ol>
+<li>浏览器缓存：浏览器会按照一定的频率缓存DNS记录。</li>
+<li>操作系统缓存：如果浏览器缓存中找不到需要的DNS记录，那就去操作系统中找（如/etc/hosts文件）。</li>
+<li>路由缓存：路由器也有DNS缓存。</li>
+<li>ISP的DNS服务器：ISP是互联网服务提供商(Internet Service Provider)的简称，ISP有专门的DNS服务器应对DNS查询请求。</li>
+<li>根服务器：ISP的DNS服务器还找不到的话，它就会向根服务器发出请求，进行递归查询（DNS服务器先问根域名服务器.com域名服务器的IP地址，然后再问.com域名服务器，依次类推）。（root -&gt; com -&gt; baidu.com）</li>
+</ol>
+<hr>
+<h2 id="get和post请求的区别"><a href="#get和post请求的区别" class="headerlink" title="get和post请求的区别"></a>get和post请求的区别</h2><p>GET的语义是请求获取指定的资源。GET方法是安全、<strong>幂等</strong>、可缓存的（除非有 Cache-ControlHeader的约束）,GET方法的报文主体没有任何语义。</p>
+<p>POST的语义是根据请求负荷（报文主体）对指定的资源做出处理，具体的处理方式视资源类型而不同。POST不安全，<strong>不幂等</strong>，（大部分实现）不可缓存。</p>
+<ul>
+<li>GET后退按钮/刷新无害，POST数据会被重新提交（浏览器应该告知用户数据会被重新提交）。</li>
+<li>GET书签可收藏，POST为书签不可收藏。</li>
+<li>GET能被缓存，POST不能缓存 。</li>
+<li>GET编码类型application/x-www-form-url，POST编码类型encodedapplication/x-www-form-urlencoded 或 multipart/form-data。为二进制数据使用多重编码。</li>
+<li>GET历史参数保留在浏览器历史中。POST参数不会保存在浏览器历史中。</li>
+<li>GET对数据长度有限制，当发送数据时，GET 方法向 URL 添加数据；URL 的长度是受限制的（URL 的最大长度是 2048 个字符）。POST无限制。</li>
+<li>GET只允许 ASCII 字符。POST没有限制。也允许二进制数据。与 POST 相比，GET 的安全性较差，因为所发送的数据是 URL 的一部分。在发送密码或其他敏感信息时绝不要使用 GET ！</li>
+</ul>
+<hr>
+<h2 id="http和https区别，https在请求时额外的过程，https是如何保证数据安全的"><a href="#http和https区别，https在请求时额外的过程，https是如何保证数据安全的" class="headerlink" title="http和https区别，https在请求时额外的过程，https是如何保证数据安全的"></a>http和https区别，https在请求时额外的过程，https是如何保证数据安全的</h2><p>http是应用层协议，它会将要传输的数据以明文的方式给传输层，这样显然不安全。https则是在应用层与传输层之间又加了一层，该层遵守SSL/TLS协议。</p>
+<p>加密的方式有两种，</p>
+<ul>
+<li>对称加密：对称加密速度快，但是加密和解密的钥匙是相同的。</li>
+<li>非对称加密，算法更加复杂，速度慢，加密和解密钥匙不相同。</li>
+</ul>
+<p>在https中，加密过程大致如下：<br>首先服务器将公钥给浏览器，浏览器拿到公钥之后，生成一个“会话密钥”，这个会话密钥属于对称加密，然后用公钥加密这个“会话密钥”发送给服务器，最后，在数据传输的过程中，就用这个会话密钥来加密数据。打个比方：我有二把钥匙，我把其中一把钥匙放在信封里，然后把信封交给你。但是这个信封只有你能打开。</p>
+<p>上述的过程是在3次握手中完成，采用明文发送，握手完成以后，客户端和服务端就约定好了“会话密钥”，以后的数据传输，就采用这个会话密钥加密。</p>
+<p>在上述的过程中要注意<br>公钥怎么给客户端？<br>如果公钥A在发送给客户端的过程中，被截取，被黑客替换成了公钥B，以后的事情可想而知，你就会用公钥B加密“会话密钥”，然后。。。你的隐私就被窃取喽。对于这个问题，要引入证书和数据签名的概念。</p>
+<hr>
+<h2 id="Java正则表达式"><a href="#Java正则表达式" class="headerlink" title="Java正则表达式"></a>Java正则表达式</h2><p>java.util.regex 包主要包括以下三个类：</p>
+<ul>
+<li><p>Pattern 类：<br>pattern 对象是一个正则表达式的编译表示。Pattern 类没有公共构造方法。要创建一个 Pattern 对象，你必须首先调用其公共静态编译方法，它返回一个 Pattern 对象。该方法接受一个正则表达式作为它的第一个参数。</p>
 </li>
-<li><p>LinkedHashMap</p>
+<li><p>Matcher 类：<br>Matcher 对象是对输入字符串进行解释和匹配操作的引擎。与Pattern 类一样，Matcher 也没有公共构造方法。你需要调用 Pattern 对象的 matcher 方法来获得一个 Matcher 对象。</p>
 </li>
 </ul>
-<h2 id="11-111-Queue"><a href="#11-111-Queue" class="headerlink" title="11.111 Queue"></a>11.111 Queue</h2><p>  队列是一个典型的先进先出的容器。</p>
-<h3 id="11-11-1-PriorityQueue"><a href="#11-11-1-PriorityQueue" class="headerlink" title="11.11.1 PriorityQueue"></a>11.11.1 PriorityQueue</h3><p>优先队列声明下一个弹出元素是最需要的元素（具有最高的优先级）。</p>
-<h2 id="Collection和Iterator"><a href="#Collection和Iterator" class="headerlink" title="Collection和Iterator"></a>Collection和Iterator</h2><p>Collection是描述所有序列容器的共性的跟接口，它可能被认为是一个“附属接口”，即因为要表示其他若干个接口的共性而出现的接口。</p>
-<p>实现Collection就意味着需要提供iterator()方法。</p>
-<p>Collection可以生成Iterator，而List可以生成ListIterator。</p>
-<h2 id="11-13-Foreach与迭代器"><a href="#11-13-Foreach与迭代器" class="headerlink" title="11.13 Foreach与迭代器"></a>11.13 Foreach与迭代器</h2><p>foreach语法主要用于数组和实现了Iterable接口的对象。</p>
-<h3 id="11-13-1-适配器方法惯用法"><a href="#11-13-1-适配器方法惯用法" class="headerlink" title="11.13.1 适配器方法惯用法"></a>11.13.1 适配器方法惯用法</h3><p>由Arrays.asList()产生的List对象会使用底层数组作为其物理实现。只要你执行的操作会修改这个List，并且你不想原来的数组被修改，那么你应该在另一个容器中创建一个副本。</p>
-<h2 id="11-14-总结"><a href="#11-14-总结" class="headerlink" title="11.14 总结"></a>11.14 总结</h2><ol>
-<li><p>数组将数字与对象联系起来。它保存类型明确的对象，查询对象时，不需要对结果做类型转换。他可以是多维的，可以保存基本类型的数组。但是，数组一旦生成，其容量就不能改变。</p>
-</li>
-<li><p>Collection保存单一的元素，而Map保存相关的键值对。有了Java的泛型，你就可可以指定容器中存放的对象类型，因此你就不会将错误类型的对象放置到容器中，并且自从容器中获取元素时，不必进行类型转换。各种Collection和各种Map都可以在你向其中添加更多的元素时，紫红调整其尺寸。容器不能持有基本类型，但是自动包装机制会仔细地执行基本类型到容器中所持有的包装其类型之间的双向转换。</p>
-</li>
-<li><p>像数组一样，List也建立数字索引与对象的关联，因此，数组和List都是排好序的容器。List能够自动扩充容量。</p>
-</li>
-<li><p>如果要进行大量的随机访问，就使用ArrayList；如果要经常从表中插入或删除元素，则应该使用LinkedList。</p>
-</li>
-<li><p>各种Queue以及栈的行为，由LinkedList提供支持。</p>
-</li>
-<li><p>Map是一种将对象（而非数字）与对象相关联的设计。HashMap设计用来快速访问；而TreeMap保持“键”始终处于排序状态，所以没有HashMap快。LinkedHashMap保持元素插入的顺序，但是也通过散列提供快速访问能力。</p>
-</li>
-<li><p>Set不接受重复元素。HashSet提供组块的查询速度，而TreeSet保持元素处于排序状态，LinkedHashSet以插入顺序保存元素。</p>
-</li>
-<li><p>新程序中不应该使用过时的Vector、Hashtable和Stack。</p>
-</li>
-</ol>
+<p>PatternSyntaxException：<br>PatternSyntaxException 是一个非强制异常类，它表示一个正则表达式模式中的语法错误。</p>
+<h3 id="捕获组"><a href="#捕获组" class="headerlink" title="捕获组"></a>捕获组</h3><p>捕获组是把多个字符当一个单独单元进行处理的方法，它通过对括号内的字符分组来创建。</p>
+<pre><code class="java">      // 按指定模式在字符串查找
+      String line = &quot;This order was placed for QT3000! OK?&quot;;
+      String pattern = &quot;(\\D*)(\\d+)(.*)&quot;;
+
+      // 创建 Pattern 对象
+      Pattern r = Pattern.compile(pattern);
+
+      // 现在创建 matcher 对象
+      Matcher m = r.matcher(line);
+      if (m.find( )) {
+         System.out.println(&quot;Found value: &quot; + m.group(0) );
+         System.out.println(&quot;Found value: &quot; + m.group(1) );
+         System.out.println(&quot;Found value: &quot; + m.group(2) );
+         System.out.println(&quot;Found value: &quot; + m.group(3) ); 
+      } else {
+         System.out.println(&quot;NO MATCH&quot;);
+      }
+</code></pre>
+<p><strong>切记，要先调用find( )方法才能调用group()方法</strong></p>
+<hr>
+<h2 id="初步理解AQS"><a href="#初步理解AQS" class="headerlink" title="初步理解AQS"></a>初步理解AQS</h2><p>AQS全称AbstractQueuedSynchronizer，它是concurrent包中最重要的基础设施类之一，负责作为模板类向业务层提供对临界区的管理。AQS定义了一套多线程访问共享资源的同步器框架，许多同步类实现都依赖于它，如常用的ReentrantLock/Semaphore/CountDownLatch/FutureTask。</p>
+<p>它维护了一个volatile int state（代表共享资源）和一个FIFO线程等待队列（多线程争用资源被阻塞时会进入此队列）。这里volatile是核心关键词，具体volatile的语义，</p>
+<p>AQS定义两种资源共享方式：Exclusive（独占，只有一个线程能执行，如ReentrantLock）和Share（共享，多个线程可同时执行，如Semaphore/CountDownLatch）。</p>
+<p>以ReentrantLock为例，state初始化为0，表示未锁定状态。A线程lock()时，会调用tryAcquire()独占该锁并将state+1。此后，其他线程再tryAcquire()时就会失败，直到A线程unlock()到state=0（即释放锁）为止，其它线程才有机会获取该锁。当然，释放锁之前，A线程自己是可以重复获取此锁的（state会累加），这就是可重入的概念。但要注意，获取多少次就要释放多么次，这样才能保证state是能回到零态的。</p>
+<p>再以CountDownLatch以例，任务分为N个子线程去执行，state也初始化为N（注意N要与线程个数一致）。这N个子线程是并行执行的，每个子线程执行完后countDown()一次，state会CAS减1。等到所有子线程都执行完后(即state=0)，会unpark()主调用线程，然后主调用线程就会从await()函数返回，继续后余动作。</p>
+<p>一般来说，自定义同步器要么是独占方法，要么是共享方式，他们也只需实现tryAcquire-tryRelease、tryAcquireShared-tryReleaseShared中的一种即可。但AQS也支持自定义同步器同时实现独占和共享两种方式，如ReentrantReadWriteLock。</p>
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>互斥锁</th>
+<th>资源</th>
+<th>如何访问</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mutex</td>
+<td>互斥锁</td>
+<td>1</td>
+<td>仅排他</td>
+<td>出现在AQS类的注释中</td>
+</tr>
+<tr>
+<td>Semaphore</td>
+<td>信号量</td>
+<td>可指定（构造参数permits）</td>
+<td>仅共享</td>
+</tr>
+<tr>
+<td>ReentrantReadWriteLock</td>
+<td>读写（可重入）锁</td>
+<td>无上限（实际为16位unsigned short）</td>
+<td>读写共享访问，写锁排他访问</td>
+<td>可重入</td>
+</tr>
+</tbody>
+</table>
+<h3 id="复用AQS"><a href="#复用AQS" class="headerlink" title="复用AQS"></a>复用AQS</h3><p>Step1/3. 定义state。<br>state是一个int，它没有具体语义，但作为AQS的核心成员变量，可根据业务类的需要赋予state具体的语义。</p>
+<p>| 方法 | 简介 |<br>| getState() | 读状态 | setState (int newState) | 写状态 |<br>| compareAndSetState (int expect, int update) | CAS写状态 |</p>
+<p>Step2/3. 新建内部类Sync，继承自AQS并按需实现钩子方法</p>
+<table>
+<thead>
+<tr>
+<th>钩子方法</th>
+<th>简介</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tryAcquire (int arg)</td>
+<td>排他获取(资源数)</td>
+</tr>
+<tr>
+<td>tryRelease(int arg)</td>
+<td>排他释放(资源数)</td>
+</tr>
+<tr>
+<td>tryAcquireShared(int arg)</td>
+<td>共享获取(资源数)</td>
+</tr>
+<tr>
+<td>tryReleaseShared(int arg)</td>
+<td>共享释放(资源数)</td>
+</tr>
+<tr>
+<td>isHeldExclusively()</td>
+<td>是否排他状态</td>
+</tr>
+</tbody>
+</table>
+<p>Step3/3. 业务类把业务方法的实现委托给Sync。Sync可以直接使用继承自AQS的模板方法。</p>
+<h3 id="AQS内部细节"><a href="#AQS内部细节" class="headerlink" title="AQS内部细节"></a>AQS内部细节</h3><h4 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h4><p>AQS实现了一个FIFO队列，用于管理等候在临界区外的线程。队列的每个节点保留了线程信息，因此线程可以安然休眠，待临界区的资源可用时再次唤醒。注意，队列的存在并不保证公平，因为AQS并不确保被唤醒的队首线程能进入临界区，唤醒过程中可能会被其它尚未入队的竞争线程抢占先机。</p>
+<h4 id="线程控制"><a href="#线程控制" class="headerlink" title="线程控制"></a>线程控制</h4><p>线程的休眠和唤醒是通过<strong>LockSupport.park()</strong>和<strong>LockSupport.unpark()</strong>实现的。LockSupport是整个concurrent包最底层的API之一。在AQS的注释中写到，如果你对其排队机制不满，可以重新定义队列的数据结构并通过LockSupport调度。</p>
+<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><p>数据结构：双向链表构成的FIFO队列（链表是其物理结构，队列是其逻辑用途。注释中称其为CLH Lock队列的变种，而CLH Lock常用于实现自旋锁，其确保无饥饿性和公平性）</p>
+<p><img src="https://img-blog.csdn.net/20180814120858456?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="CLH Lock 队列"></p>
+<hr>
+<h2 id="LockSupport的park和unpark的基本使用-以及对线程中断的响应性"><a href="#LockSupport的park和unpark的基本使用-以及对线程中断的响应性" class="headerlink" title="LockSupport的park和unpark的基本使用,以及对线程中断的响应性"></a>LockSupport的park和unpark的基本使用,以及对线程中断的响应性</h2><p>  LockSupport是JDK中比较底层的类，用来创建锁和其他同步工具类的基本线程阻塞原语。java锁和同步器框架的核心AQS:AbstractQueuedSynchronizer，就是通过调用LockSupport.park()和LockSupport.unpark()实现线程的阻塞和唤醒的。LockSupport很类似于二元信号量(只有1个许可证可供使用)，如果这个许可还没有被占用，当前线程获取许可并继续执行；如果许可已经被占用，当前线程阻塞，等待获取许可。</p>
+<p>许可默认是被占用的。</p>
+<p>LockSupport是不可重入。</p>
+<p>线程如果因为调用park而阻塞的话，能够响应中断请求(中断状态被设置成true)，但是不会抛出InterruptedException。</p>
 
       
     </div>
@@ -264,7 +318,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/07/30/《Thinking in Java 》读书笔记-11/" data-id="cjkthgrjr000vj0vthi9uauvj" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/14/零碎的知识点-3/" data-id="cjl61a5hh0024qwvtqioralyt" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -272,7 +326,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-11" ></div> 
+<div id="SOHUCS" sid="零碎的知识点-3" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -290,10 +344,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Thinking in Java 》读书笔记-1" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Java并发编程实战》-5" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/07/30/《Thinking in Java 》读书笔记-1/" class="article-date">
-  <time datetime="2018-07-30T07:03:58.070Z" itemprop="datePublished">2018-07-30</time>
+    <h3 href="/2018/08/13/《Java并发编程实战》-5/" class="article-date">
+  <time datetime="2018-08-13T07:32:02.057Z" itemprop="datePublished">2018-08-13</time>
 </h3>
     
   <div class="article-category">
@@ -310,7 +364,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/30/《Thinking in Java 》读书笔记-1/">《Thinking in Java 》读书笔记-1</a>
+      <a class="article-title" href="/2018/08/13/《Java并发编程实战》-5/">《Java并发编程实战》-5</a>
     </h1>
   
 
@@ -319,16 +373,267 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="第一章-对象导论"><a href="#第一章-对象导论" class="headerlink" title="第一章 对象导论"></a>第一章 对象导论</h1><h2 id="1-1-抽象过程"><a href="#1-1-抽象过程" class="headerlink" title="1.1 抽象过程"></a>1.1 抽象过程</h2><ul>
-<li>万物皆对象。</li>
-<li>程序是对象的集合，它们通过发送消息来告知彼此索要做的。</li>
-<li>每个对象都有自己的由其他对象所构成的储存。</li>
-<li>每个对象都拥有其类型。</li>
-<li>某个特定类型的所有对象都可以接受同样的消息。</li>
+        <h1 id="《Java并发编程实战》-5"><a href="#《Java并发编程实战》-5" class="headerlink" title="《Java并发编程实战》-5"></a>《Java并发编程实战》-5</h1><hr>
+<h3 id="6-1-1-串行地执行renwu"><a href="#6-1-1-串行地执行renwu" class="headerlink" title="6.1.1 串行地执行renwu"></a>6.1.1 串行地执行renwu</h3><h3 id="6-1-2-显式地为任务创建线程"><a href="#6-1-2-显式地为任务创建线程" class="headerlink" title="6.1.2 显式地为任务创建线程"></a>6.1.2 显式地为任务创建线程</h3><h3 id="6-1-3-无限制创建线程的不足"><a href="#6-1-3-无限制创建线程的不足" class="headerlink" title="6.1.3 无限制创建线程的不足"></a>6.1.3 无限制创建线程的不足</h3><ul>
+<li>线程生命周期的开销非常高。</li>
+<li>资源消耗。</li>
+<li>稳定性。</li>
 </ul>
-<h2 id="1-2-每个对象都要有一个接口"><a href="#1-2-每个对象都要有一个接口" class="headerlink" title="1.2 每个对象都要有一个接口"></a>1.2 每个对象都要有一个接口</h2><h2 id="1-3-每个对象都提供服务"><a href="#1-3-每个对象都提供服务" class="headerlink" title="1.3 每个对象都提供服务"></a>1.3 每个对象都提供服务</h2><h2 id="1-4-被隐藏的具体实现"><a href="#1-4-被隐藏的具体实现" class="headerlink" title="1.4 被隐藏的具体实现"></a>1.4 被隐藏的具体实现</h2><h2 id="1-5-复用具体实现"><a href="#1-5-复用具体实现" class="headerlink" title="1.5 复用具体实现"></a>1.5 复用具体实现</h2><h2 id="1-6-继承"><a href="#1-6-继承" class="headerlink" title="1.6 继承"></a>1.6 继承</h2><h3 id="1-6-1-“is-a”和”like-a”"><a href="#1-6-1-“is-a”和”like-a”" class="headerlink" title="1.6.1 “is-a”和”like-a”"></a>1.6.1 “is-a”和”like-a”</h3><h2 id="1-7-伴随多态的可互换对象"><a href="#1-7-伴随多态的可互换对象" class="headerlink" title="1.7 伴随多态的可互换对象"></a>1.7 伴随多态的可互换对象</h2><h2 id="1-8-单根继承结构"><a href="#1-8-单根继承结构" class="headerlink" title="1.8 单根继承结构"></a>1.8 单根继承结构</h2><h2 id="1-9-容器"><a href="#1-9-容器" class="headerlink" title="1.9 容器"></a>1.9 容器</h2><h2 id="1-10-对象的创建和生命期"><a href="#1-10-对象的创建和生命期" class="headerlink" title="1.10 对象的创建和生命期"></a>1.10 对象的创建和生命期</h2><h2 id="1-11-异常处理：处理错误"><a href="#1-11-异常处理：处理错误" class="headerlink" title="1.11 异常处理：处理错误"></a>1.11 异常处理：处理错误</h2><h2 id="1-12-并发编程"><a href="#1-12-并发编程" class="headerlink" title="1.12 并发编程"></a>1.12 并发编程</h2><h2 id="1-13-Java与Internet"><a href="#1-13-Java与Internet" class="headerlink" title="1.13 Java与Internet"></a>1.13 Java与Internet</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>过程式编程：<br>  &emsp;数据定义和函数调用</li>
-<li>面向对象编程：<br>  &emsp;用来表示问题空间概念的对象（而不是有关计算机表示方式的相关内容），以及发送给这些对象的用来表示在此空间内的行为的消息。</li>
+<h2 id="6-2-Executir框架"><a href="#6-2-Executir框架" class="headerlink" title="6.2 Executir框架"></a>6.2 Executir框架</h2><h3 id="6-2-1-示例：基于Executor的Web服务器"><a href="#6-2-1-示例：基于Executor的Web服务器" class="headerlink" title="6.2.1 示例：基于Executor的Web服务器"></a>6.2.1 示例：基于Executor的Web服务器</h3><h3 id="6-2-2-执行策略"><a href="#6-2-2-执行策略" class="headerlink" title="6.2.2 执行策略"></a>6.2.2 执行策略</h3><blockquote>
+<p>每当看到<code>new Thread(runnable).start()</code>时，并且你希望获得一种更灵活的执行策略时，请考虑使用Excecutor来代替Thread。</p>
+</blockquote>
+<h3 id="6-2-3-线程池"><a href="#6-2-3-线程池" class="headerlink" title="6.2.3 线程池"></a>6.2.3 线程池</h3><ul>
+<li><strong>newFixedThreadPool</strong> 创建一个固定长度的线程池，每当提交一个任务时就创建一个线程，直到达到线程池的最大数量，这时线程池的规模将不再变化（如果某个线程由于发生了未预期的Exception而结束，那么线程池会补充一个新的线程）。</li>
+<li><strong>newCachedTheadPool</strong> 创建一个可缓存的线程池，如果线程池的当前规模超过了处理需求时，那么将回收空闲的线程，而当需求增加时，则可以添加新的线程，线程的规模不存在任何限制。</li>
+<li><strong>newSingleThread</strong> 一个单线程的Executor,它创建单个工作者线程来执行任务，如果这个线程异常结束，会创建另一个线程来代替。newSingleThreadExecutir能确保依照任务在队列中的顺序来串行执行（例如FIFO、LIFO、优先级）。</li>
+<li><strong>newScheduleThreadPool</strong> 创建一个固定长度的线程池，而且以延迟或定时的方式执行任务，类是于Timer。</li>
+</ul>
+<h3 id="6-2-4-Executor的生命周期"><a href="#6-2-4-Executor的生命周期" class="headerlink" title="6.2.4 Executor的生命周期"></a>6.2.4 Executor的生命周期</h3><ul>
+<li>运行</li>
+<li>关闭</li>
+<li>已终止</li>
+</ul>
+<h3 id="6-2-5-延迟任务与周期任务"><a href="#6-2-5-延迟任务与周期任务" class="headerlink" title="6.2.5 延迟任务与周期任务"></a>6.2.5 延迟任务与周期任务</h3><h2 id="6-3-找出可利用的并行性"><a href="#6-3-找出可利用的并行性" class="headerlink" title="6.3 找出可利用的并行性"></a>6.3 找出可利用的并行性</h2><h3 id="6-3-1-示例：串行的页面渲染器"><a href="#6-3-1-示例：串行的页面渲染器" class="headerlink" title="6.3.1 示例：串行的页面渲染器"></a>6.3.1 示例：串行的页面渲染器</h3><h3 id="6-3-2-携带结果的任务Callable与Future"><a href="#6-3-2-携带结果的任务Callable与Future" class="headerlink" title="6.3.2 携带结果的任务Callable与Future"></a>6.3.2 携带结果的任务Callable与Future</h3><h3 id="6-3-3-实例：使用Future实现页面渲染器"><a href="#6-3-3-实例：使用Future实现页面渲染器" class="headerlink" title="6.3.3 实例：使用Future实现页面渲染器"></a>6.3.3 实例：使用Future实现页面渲染器</h3><h3 id="6-3-4-在异构任务并行化中存在的局限"><a href="#6-3-4-在异构任务并行化中存在的局限" class="headerlink" title="6.3.4 在异构任务并行化中存在的局限"></a>6.3.4 在异构任务并行化中存在的局限</h3><h3 id="6-3-5-CompletionService-Executor与BlockingQueue"><a href="#6-3-5-CompletionService-Executor与BlockingQueue" class="headerlink" title="6.3.5 CompletionService:Executor与BlockingQueue"></a>6.3.5 CompletionService:Executor与BlockingQueue</h3><p>CompletionService将Execute和BlockingQueue的功能融合在一起。ExecutorCompletionService实现了CompletionSeervice,并将计算部分委托给一个Executor。</p>
+<h3 id="6-3-6-实例：使用CompletionService实现页面渲染器"><a href="#6-3-6-实例：使用CompletionService实现页面渲染器" class="headerlink" title="6.3.6 实例：使用CompletionService实现页面渲染器"></a>6.3.6 实例：使用CompletionService实现页面渲染器</h3><h3 id="6-3-7-为任务设置时限"><a href="#6-3-7-为任务设置时限" class="headerlink" title="6.3.7 为任务设置时限"></a>6.3.7 为任务设置时限</h3><h3 id="6-3-8-示例：旅行预订门户网站"><a href="#6-3-8-示例：旅行预订门户网站" class="headerlink" title="6.3.8 示例：旅行预订门户网站"></a>6.3.8 示例：旅行预订门户网站</h3><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>Executor框架将任务提交与执行策略解耦开来，同时还支持多种不同类型的执行策略。<br>要想将应用程序分解为不同的任务时获得最大的好处，必须定义清晰的任务边界。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/13/《Java并发编程实战》-5/" data-id="cjl61a5gw0016qwvt18x5853q" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-5" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-《Java并发编程实战》-4" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/10/《Java并发编程实战》-4/" class="article-date">
+  <time datetime="2018-08-10T02:23:59.768Z" itemprop="datePublished">2018-08-10</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/10/《Java并发编程实战》-4/">《Java并发编程实战》-4</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="《Java并发编程实战》-4"><a href="#《Java并发编程实战》-4" class="headerlink" title="《Java并发编程实战》-4"></a>《Java并发编程实战》-4</h1><h2 id="5-1-同步容器类"><a href="#5-1-同步容器类" class="headerlink" title="5.1 同步容器类"></a>5.1 同步容器类</h2><p>Collections.synchronizedXxx等工厂方法创建的同步实现线程安全的方式是：将它们的状态封装起来，并对每个公有方法都进行同步，使得每次只有一个线程能访问容器的状态。</p>
+<h3 id="5-5-1-同步容器的问题"><a href="#5-5-1-同步容器的问题" class="headerlink" title="5.5.1 同步容器的问题"></a>5.5.1 同步容器的问题</h3><p>在使用客户端加锁的Vector上的复合操作</p>
+<pre><code class="java">public static Object getList(Vector list) {
+    synchronized (list) {
+        int lastIndex = list.size() - 1;
+        return list.get(lastIndex);
+    }
+}
+
+public static void deleteLast(Vector list) {
+    synchronized (this) {
+        int lastIndex = list.size() - 1;
+        list.remove(lastIndex);
+    }
+}
+</code></pre>
+<h3 id="5-1-2-迭代器与ConcurrentModificationException"><a href="#5-1-2-迭代器与ConcurrentModificationException" class="headerlink" title="5.1.2 迭代器与ConcurrentModificationException"></a>5.1.2 迭代器与ConcurrentModificationException</h3><p>当容器类发现容器在迭代过程中被修改时，就会抛出一个”ConcurrentModificationException<br>“，这就是“快速失败”。</p>
+<h3 id="5-1-3-隐藏迭代器"><a href="#5-1-3-隐藏迭代器" class="headerlink" title="5.1.3 隐藏迭代器"></a>5.1.3 隐藏迭代器</h3><p>正如封装对象的状态有助于维持不变性条件，封装对象的同步机制同样有助确保实施同步策略。</p>
+<h2 id="5-2-并发容器"><a href="#5-2-并发容器" class="headerlink" title="5.2 并发容器"></a>5.2 并发容器</h2><p>通过并发容器来代替同步容器，可以极大地提高伸缩性并降低风险。</p>
+<table>
+<thead>
+<tr>
+<th>并发容器</th>
+<th>同步容器</th>
+<th>普通容器</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BlockingQueue</td>
+<td>ConcurrentLinkedQueue</td>
+<td>PriorityQueue</td>
+<td></td>
+</tr>
+<tr>
+<td>ConcurrentHashMap, SkipListMap</td>
+<td>hashtable,  Collections.synchroniedList(TreeSet set)</td>
+<td>hashmap,SortedMap, SortedSet</td>
+<td></td>
+</tr>
+<tr>
+<td>CopyOnWriteArrayList</td>
+<td>Vector, Collections.synchroniedList(List list)</td>
+<td>ArrayList, LinkedList</td>
+<td></td>
+</tr>
+<tr>
+<td>CopyOnWriteArraySet, ConcurrentSkipListListSet</td>
+<td>Collections.synchroniedSet(Set set)</td>
+<td>LinkedHashSet, HashSet, TreeSet</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="5-2-1-ConcurrentHashMap"><a href="#5-2-1-ConcurrentHashMap" class="headerlink" title="5.2.1 ConcurrentHashMap"></a>5.2.1 ConcurrentHashMap</h3><p>ConcurrentHashMap使用更细粒度的加锁机制—<strong>分段锁</strong>来实现更大程度的共享。</p>
+<p>ConcurrentHashMap具有<strong>弱一致性</strong>(Weakly Consistent)，而非”及时失败”。</p>
+<p>只有当应用程序需要加锁Map以进行独占访问时，才应该放弃使用ConcurrentHashMap。</p>
+<h3 id="5-2-2-额外的原子Map操作"><a href="#5-2-2-额外的原子Map操作" class="headerlink" title="5.2.2 额外的原子Map操作"></a>5.2.2 额外的原子Map操作</h3><pre><code class="java">public interface ConcurrentMap&lt;K,V&gt; extends Map&lt;K,V&gt; {
+    // 仅当K没有相应的映射值时才插入
+    V putIfAbsent(K key, V value);
+
+    // 仅当K被映射到oldValue时才替换为newValue
+    boolean remove(K key, V value);
+
+    // 仅当K被映射到oldValue时才替换为newValue
+    boolean replace(K key, V oldValue, V newValue);
+
+    // 仅当K被映射到某个值时才替换为newValue
+    boolean replace(K key, V newValue);
+}
+</code></pre>
+<h3 id="5-2-3-CopyOnWriteArrayList"><a href="#5-2-3-CopyOnWriteArrayList" class="headerlink" title="5.2.3 CopyOnWriteArrayList"></a>5.2.3 CopyOnWriteArrayList</h3><p>CopyOnWriteArrayLsit用于替代同步List，某些情况下它提供了更好的并发行性能，并且在迭代期间不需要对容器进行加锁或复制（类似地，CopyOnWriteArraySet的作用是替代同步Set）。</p>
+<p>每当修改容器时都会复制底层数组，这需要一定的开销。</p>
+<p>仅当迭代操作远远多于修改操作时，才应该使用”写入时负责”容器。</p>
+<h2 id="5-3-阻塞队列和生产者-消费者模式"><a href="#5-3-阻塞队列和生产者-消费者模式" class="headerlink" title="5.3 阻塞队列和生产者-消费者模式"></a>5.3 阻塞队列和生产者-消费者模式</h2><p>在构建高可靠的应用程序时，有界队列是一种强大的资源管理工具:它们能抑制并防止产生过多的工作项，使应用程序在负荷过载的情况下变得更加健壮。</p>
+<p>BlockingQueue的方法:</p>
+<ul>
+<li>put 如果队列满则阻塞</li>
+<li>take 如果队列为空则阻塞</li>
+<li>offer 如果队列满则返回一个失败状态，一般是false</li>
+<li>poll 如果队列空则返回一个表示空的数据,一般是null</li>
+</ul>
+<p>BlockingQueue的多种实现:</p>
+<ul>
+<li><strong>LinkedBlockingQueue</strong> 基于链表，FIFO</li>
+<li><strong>ArrayBlockingQueue</strong> 基于数组, FIFO</li>
+<li><strong>PriorityBlockingQueue</strong> 按优先级排序的队列</li>
+<li><strong>SynchronousQueue</strong> 它不会为队列中元素维护储存空间，它维护一组线程，这些线程在等待着吧元素加入或者移出队列。</li>
+</ul>
+<h3 id="5-3-1-示例-桌面搜索"><a href="#5-3-1-示例-桌面搜索" class="headerlink" title="5.3.1 示例:桌面搜索"></a>5.3.1 示例:桌面搜索</h3><h3 id="5-3-2-串行线程封闭"><a href="#5-3-2-串行线程封闭" class="headerlink" title="5.3.2 串行线程封闭"></a>5.3.2 串行线程封闭</h3><p>对象池利用了串行线程封闭，将一个对象“借给”一个请求线程。</p>
+<p>还可以通过ConcurrentMap的原子方法remove或者AtomicReference的原子方法compareAndSet来转笔可变对象的所有的所有权（但必须确保只有一个线程能接受被转移的对象）。</p>
+<h3 id="双端队列与工作密取"><a href="#双端队列与工作密取" class="headerlink" title="双端队列与工作密取"></a>双端队列与工作密取</h3><p>Deque是一个双端队列，实现了在队头和队尾的高效插入和移除。具体实现包括ArrayList和LinkedBlockingDeque。</p>
+<p>双端队列适用于工作密取模式。</p>
+<h2 id="5-4-阻塞方法与中断方法"><a href="#5-4-阻塞方法与中断方法" class="headerlink" title="5.4 阻塞方法与中断方法"></a>5.4 阻塞方法与中断方法</h2><ul>
+<li>传递</li>
+<li>恢复中断</li>
+</ul>
+<pre><code class="java">public class TackRunnable implements Runnable {
+    try {
+            processTack(queue.take());
+        } catch (InterruptedException e) {
+            // 恢复被中断的状态
+            Thread.currentThread().interrupt();
+        }
+}
+
+</code></pre>
+<h2 id="5-5-同步工具类"><a href="#5-5-同步工具类" class="headerlink" title="5.5 同步工具类"></a>5.5 同步工具类</h2><h3 id="5-5-1-闭锁"><a href="#5-5-1-闭锁" class="headerlink" title="5.5.1 闭锁"></a>5.5.1 闭锁</h3><p>CoutDwonLatch，倒计时门闩,又名闭锁、倒计时计数器，是一种同步工具类，可以延迟线程大的进度直到其到达终止状态。</p>
+<p>闭锁可以用来确保某些活动直到其他活动都完成后才能继续执行。</p>
+<ul>
+<li>确保某个计算在其需要得所有资源都被初始化之后才继续执行。二元闭锁（包括两个状态）可以用来表示“资源R已经被初始化”，而所有需要R的操作都必须现在这个闭锁上等待。</li>
+<li>确保某个服务在其依赖的所有其他服务都已经启动之后才启动。每个服务都有一个相关的二元闭锁。当启动服务S时，将首先在S依赖的其他服务的闭锁上等待，在所有依赖的服务启动后会释放锁S，这样其他依赖S的服务才能继续执行。</li>
+<li>等待直到某个操作的所有参与者（例如，在多个玩家游戏中的所有玩家）都就绪再继续执行。这种情况中，当所有玩家都准备就绪时，闭锁将到达结束状态。</li>
+</ul>
+<h3 id="5-5-2-FutureTask"><a href="#5-5-2-FutureTask" class="headerlink" title="5.5.2 FutureTask"></a>5.5.2 FutureTask</h3><p>FutureTask表示的计算是通过Callable来实现的，相当于一种可生成结果的Runnable，并且可以处于一下三种状态：</p>
+<ul>
+<li>等待运行(Wating to run)</li>
+<li>正在运行(Running)</li>
+<li>运行完成(Completed)</li>
+</ul>
+<h3 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h3><p>计数信号量用来控制同时访问某个某个特殊资源的操作数量，或者同时执行某个指定操作的数量。计算信号量还可以用来实现某种资源池，或者对容器施加边界。</p>
+<h3 id="5-5-4-栅栏"><a href="#5-5-4-栅栏" class="headerlink" title="5.5.4 栅栏"></a>5.5.4 栅栏</h3><p>栅栏类似于闭锁，他能阻塞一组线程直到某个事件发生。栅栏与闭锁的关键区别在于，所有线程必须同时到达栅栏位置，才能继续执行。闭锁用于等待事件，而栅栏用于等待其他线程线程。</p>
+<p>CyclicBarrier可以使一定数量的参与反复地在栅栏位置汇集，他在并行迭代算法中非常有用：这种算法通常将一个问题拆分成一系列相互独立的子问题。</p>
+<p>另一种形式的栅栏使Exchange，他是一种两方栅栏，各方在栅栏位置上交换数据。当两分法执行不对称的操作时，Exchanger会非常有用，例如当一个线程向缓冲区写入数据，而另一个线程从缓冲区读取数据。</p>
+<h2 id="5-6-构建高效且可伸缩的结果缓存"><a href="#5-6-构建高效且可伸缩的结果缓存" class="headerlink" title="5.6 构建高效且可伸缩的结果缓存"></a>5.6 构建高效且可伸缩的结果缓存</h2><p>使用ConcurrentHashMap和FutureTask来构架缓存</p>
+<pre><code class="java">
+public interface Computable&lt;A, V&gt; {
+    V compute(A arg) throws InterruptedExcetion;
+}
+
+public class Menoizer&lt;A, V&gt; implements Computable&lt;A, V&gt; {
+    private final ConcurrentMap&lt;A, Future&lt;V&gt;&gt; cache = new ConcurrentHashMap&lt;&gt;();
+    private final Computable&lt;A, V&gt; c;
+
+    public Menoizer(Computable&lt;A, V&gt; c) { this.c = c; }
+    while (true) {
+        Future&lt;V&gt; f = cache.get(arg);
+        if (f == null) {
+            Callable&lt;V&gt; eval = new Callable&lt;V&gt;() {
+                public V call() throws InterruptedException {
+                    return c.compute(args);
+                }
+            };
+            FutureTask&lt;V&gt; ft = new FutureTask&lt;V&gt;(eval);
+            // 复合操作（“若没有则添加”）
+            f = cache.putIfAbsent(arg, ft);
+            if(f == null) {
+                f = ft;
+                ft.run();
+            }
+        }
+        try{
+            // 若正在计算，则阻塞等待结果
+            return f.get();
+        } catch (CancellationException e) {
+            // 出现异常则去除缓存，防止缓存污染
+            cache.renove(arg,f);
+        } catch (ExecutionException e) {
+            throw launderThrowable(w.getCause())
+        }
+    }
+}
+
+</code></pre>
+<h2 id="第一部分小结"><a href="#第一部分小结" class="headerlink" title="第一部分小结"></a>第一部分小结</h2><ul>
+<li>可变状态是至关重要的。<br>  所有的并发问题都可以归结为如何协调对并发状态的访问，可变状态越少，就越容易确保线程安全。</li>
+<li>尽量将域声明为final类型，除非需要它们是可变的。</li>
+<li>不可变对象一定是线程安全的。<br>  不可变对象能极大地降低并发编程的复杂性。它们更为简单而且安全，可以任意共享而无须使用加锁或保护性复制等机制。</li>
+<li>封装有助于管理复杂性<br>  在编写线程安全的程序时，虽然可以将所有数据都保存在全局变量中，但为什么要这么做？将数据封装在对象中，更易于维持不变性条件：将同步机制封装在对象中，更易于遵循同步策略。</li>
+<li>用锁来保护每个可变变量。</li>
+<li>当保护同一个不变性条件中的所有变量时，要使用用一个锁。</li>
+<li>在执行复合操作期间，要持有锁。</li>
+<li>如果从多个线程中访问同一个可变变量没有同步机制，那么程序会出现问题。</li>
+<li>不要故作聪明地推断出不需要使用同步。</li>
+<li>在设计过程中考虑线程安全，或者在文档中明确地指出它不是线程安全的。</li>
+<li>将同步策略文档化。</li>
 </ul>
 
       
@@ -338,7 +643,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/07/30/《Thinking in Java 》读书笔记-1/" data-id="cjkthgrjp000tj0vt0ibvcna4" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/10/《Java并发编程实战》-4/" data-id="cjl61a5gn000uqwvtxwvddqum" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -346,7 +651,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-1" ></div> 
+<div id="SOHUCS" sid="《Java并发编程实战》-4" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -366,7 +671,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -380,23 +685,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2018/08/13/《Java并发编程实战》-5/">《Java并发编程实战》-5</a>
+            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12 第13章 显式锁</a>
           </li>
         
           <li>
-            <a href="/2018/08/10/《Java并发编程实战》-4/">《Java并发编程实战》-4</a>
+            <a href="/2018/08/22/《Java并发编程实战》-11/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2018/08/08/《Java并发编程实战》-3/">《Java并发编程实战》-3</a>
+            <a href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
           </li>
         
           <li>
-            <a href="/2018/08/07/Java常用的排序算法/">Java常用的排序算法</a>
+            <a href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
           </li>
         
           <li>
-            <a href="/2018/08/07/《Java并发编程实战》-2/">《Java并发编程实战》-2</a>
+            <a href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
           </li>
         
       </ul>
@@ -408,7 +713,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -417,7 +722,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

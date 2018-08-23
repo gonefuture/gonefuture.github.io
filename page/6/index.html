@@ -83,12 +83,16 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-java-scattered" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Java并发编程实战》-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/07/26/java-scattered/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.266Z" itemprop="datePublished">2018-07-26</time>
+    <h3 href="/2018/08/06/《Java并发编程实战》-1/" class="article-date">
+  <time datetime="2018-08-06T08:59:00.930Z" itemprop="datePublished">2018-08-06</time>
 </h3>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
   </div>
   <div class="article-inner">
   <div class="curve-down">
@@ -99,7 +103,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/java-scattered/">JAVA scatter （转载自zooooooooy）</a>
+      <a class="article-title" href="/2018/08/06/《Java并发编程实战》-1/">《Java并发编程实战》-1</a>
     </h1>
   
 
@@ -108,180 +112,55 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <p>查看系统的线程上下文切换次数</p>
-<p>使用vmstat 3<br><img src="/images/TIM截图20180704163235.png" alt="vmstat"></p>
-<p>其中cs就是context switch的次数，数值越高代表上线文切换的越频繁，耗时越多。每秒的切换次数可以和进程的总线程数进行比对，如果大于线程总数代表是满负荷运转</p>
-<hr>
-<p>java 线程状态之间的跃迁<br><img src="/images/TIM截图20180704193005.png" alt="thread change"></p>
-<p>线程的各个状态及说明如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">状态名称</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">NEW</td>
-<td>初始状态</td>
-</tr>
-<tr>
-<td style="text-align:left">RUNNABLE</td>
-<td>运行状态</td>
-</tr>
-<tr>
-<td style="text-align:left">BLOCKED</td>
-<td>阻塞状态</td>
-</tr>
-<tr>
-<td style="text-align:left">WAITING</td>
-<td>等待状态</td>
-</tr>
-<tr>
-<td style="text-align:left">TIME_WAITING</td>
-<td>超时等待状态</td>
-</tr>
-<tr>
-<td style="text-align:left">TERMINATED</td>
-<td>终止状态</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>synchronized 关键字的使用场景</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">锁的方式</th>
-<th>锁的对象</th>
-<th>伪代码</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">实例方法</td>
-<td>类的实例对象</td>
-<td>public synchronized void method</td>
-</tr>
-<tr>
-<td style="text-align:left">静态方法</td>
-<td>类对象</td>
-<td>public synchronized static void method</td>
-</tr>
-<tr>
-<td style="text-align:left">实例对象</td>
-<td>类的实例对象</td>
-<td>synchronized (this)</td>
-</tr>
-<tr>
-<td style="text-align:left">class对象</td>
-<td>类对象</td>
-<td>synchronized (A.class)</td>
-</tr>
-<tr>
-<td style="text-align:left">普通对象</td>
-<td>普通对象</td>
-<td>synchronized (o)</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>mark 下 通过ReentrantLock中线程等待唤醒的状态跃迁<br><img src="/images/TIM截图20180720114120.png" alt="await|singal"></p>
-<hr>
-<p>java queue 方法</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">方法名称</th>
-<th>说明</th>
-<th>是否阻塞</th>
-<th>是否抛出异常</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">add</td>
-<td>插入</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style="text-align:left">offer</td>
-<td>插入</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style="text-align:left">remove</td>
-<td>删除</td>
-<td>否</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">poll</td>
-<td>删除</td>
-<td>否</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">element</td>
-<td>获取</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style="text-align:left">peek</td>
-<td>获取</td>
-<td>否</td>
-<td>是</td>
-</tr>
-</tbody>
-</table>
-<p>blocking queue</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">方法名称</th>
-<th>说明</th>
-<th>是否阻塞</th>
-<th>是否抛出异常</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">put</td>
-<td>插入</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">offer <em>支持超时</em></td>
-<td>插入</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">take</td>
-<td>删除</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">poll <em>支持超时</em></td>
-<td>删除</td>
-<td>是</td>
-<td>否</td>
-</tr>
-</tbody>
-</table>
+        <h1 id="第2章-线程安全性"><a href="#第2章-线程安全性" class="headerlink" title="第2章 线程安全性"></a>第2章 线程安全性</h1><h2 id="2-1-什么是线程安全性"><a href="#2-1-什么是线程安全性" class="headerlink" title="2.1 什么是线程安全性"></a>2.1 什么是线程安全性</h2><blockquote>
+<p>当多个线程访问某个类时，不管运行时环境采用何种调度方式或者这些线程架构如何交替执行，并且在主调用代码中不需要任何额外的同步或协同，这个类都表示出正确的行为，那么就称这个类是线程安全。</p>
+</blockquote>
+<blockquote>
+<p>在线程安全类中封装了必要的同步机制，因此客户端无需进一步采用同步措施。</p>
+</blockquote>
+<blockquote>
+<p>无状态对象一定是线程安全的。</p>
+</blockquote>
+<h2 id="2-2-原子性"><a href="#2-2-原子性" class="headerlink" title="2.2 原子性"></a>2.2 原子性</h2><h3 id="2-2-1-竞态条件"><a href="#2-2-1-竞态条件" class="headerlink" title="2.2.1 竞态条件"></a>2.2.1 竞态条件</h3><h3 id="2-2-2-延迟初始化中的竞态条件"><a href="#2-2-2-延迟初始化中的竞态条件" class="headerlink" title="2.2.2 延迟初始化中的竞态条件"></a>2.2.2 延迟初始化中的竞态条件</h3><p>延迟初始化中的竞态条件（不要这样做）</p>
+<pre><code class="java">@NotThreadSafe
+public class LazyInitRace {
+    private ExpensiveObject instance = null;
+    public ExpensiveObject getInstance() {
+    if( instance == null)
+        instance = new ExpensiveObject();
+    return instance;
+}
+</code></pre>
+<h3 id="2-2-3-复合操作"><a href="#2-2-3-复合操作" class="headerlink" title="2.2.3 复合操作"></a>2.2.3 复合操作</h3><blockquote>
+<p>假定有两个操作A和B，如果从执行A的线程来看，当另一个线程执行B时，要么将B全部执行完，要么完成不执行B，那么A和B对彼此来说时原子的。原子操作是指，对于访问同一个状态的所有操作(包括该操作本身)来说，这个操作是一个以原子方式执行的操作。</p>
+</blockquote>
+<blockquote>
+<p>在实际情况中，应尽可能使用现有的线程安全对象（例如AcomicLong）来管理类的状态。与非线程安全的对象相比，判断线程安全对象的可能状态及其状态转换情况要更为容易，从而也更容易维护和验证线程安全性。</p>
+</blockquote>
+<h2 id="2-3-加锁机制"><a href="#2-3-加锁机制" class="headerlink" title="2.3 加锁机制"></a>2.3 加锁机制</h2><blockquote>
+<p>要保持状态的一致性，就需要在单个原子操作中更新所有相关的状态变量。</p>
+</blockquote>
+<h3 id="2-3-1-内置锁"><a href="#2-3-1-内置锁" class="headerlink" title="2.3.1 内置锁"></a>2.3.1 内置锁</h3><h3 id="2-3-2-重入"><a href="#2-3-2-重入" class="headerlink" title="2.3.2 重入"></a>2.3.2 重入</h3><h2 id="2-4-用锁来保护状态"><a href="#2-4-用锁来保护状态" class="headerlink" title="2.4 用锁来保护状态"></a>2.4 用锁来保护状态</h2><h3 id="对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。"><a href="#对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。" class="headerlink" title="对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。"></a>对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。</h3><h3 id="每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。"><a href="#每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。" class="headerlink" title="每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。"></a>每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。</h3><h3 id="对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。"><a href="#对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。" class="headerlink" title="对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。"></a>对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。</h3><pre><code class="java"> if (!vector.contains(element) )
+     vector.add(element)
+</code></pre>
+<blockquote>
+<p>即使Vector时同步的，因为上米娜的复合操作不是原子的，所以上面的代码也是非线程安全的。</p>
+</blockquote>
+<h2 id="2-5-活跃性与性能"><a href="#2-5-活跃性与性能" class="headerlink" title="2.5 活跃性与性能"></a>2.5 活跃性与性能</h2><blockquote>
+<p>通常，在简单性与性能之间存在着互相约制因素。当实现某个同步策略时，一定不要盲目地为了性能而牺牲简单性（这可能破坏安全性）。</p>
+</blockquote>
+<blockquote>
+<p>当执行时间较长的计算或者可能无法完成的操作时(例如，网络I/O或控制台I/O)，一定不要持有锁。</p>
+</blockquote>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2018/07/26/java-scattered/" data-id="cjkthgrj50009j0vta2rzgjmy" class="article-share-link">Share</a>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/06/《Java并发编程实战》-1/" data-id="cjl61a5gf000kqwvtox0s51nb" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -289,7 +168,7 @@
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="java-scattered" ></div> 
+<div id="SOHUCS" sid="《Java并发编程实战》-1" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -307,12 +186,16 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-java-build-mode" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-零碎的知识点-2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/07/26/java-build-mode/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.263Z" itemprop="datePublished">2018-07-26</time>
+    <h3 href="/2018/08/03/零碎的知识点-2/" class="article-date">
+  <time datetime="2018-08-03T03:06:13.995Z" itemprop="datePublished">2018-08-03</time>
 </h3>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/零碎的知识点/">零碎的知识点</a>
+  </div>
+
   </div>
   <div class="article-inner">
   <div class="curve-down">
@@ -323,7 +206,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/java-build-mode/">java build mode （转载自zooooooooy）</a>
+      <a class="article-title" href="/2018/08/03/零碎的知识点-2/">零碎的知识点-2</a>
     </h1>
   
 
@@ -332,139 +215,417 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <p>还有一种通过内部类来实现单例的方式，静态内部类只能访问外部类的静态方法和静态属性。现在一般利用这个特性来实现单例模式。应该类在初始化的时候线程是互斥的，可以完美的解决单例创建冲突的问题。</p>
-<p>借用mybatis单例的实现来看一下：</p>
-<p>Class:ParameterMapping</p>
-<p>构造方法私有化：</p>
-<p>private ParameterMapping() {<br>}</p>
-<p>静态内部类来初始化外部对象：</p>
-<p>public static class Builder {<br>    private ParameterMapping parameterMapping = new ParameterMapping();</p>
-<pre><code>public Builder(Configuration configuration, String property, TypeHandler&lt;?&gt; typeHandler) { --生成ParameterMapping对象
-  parameterMapping.configuration = configuration;
-  parameterMapping.property = property;
-  parameterMapping.typeHandler = typeHandler;
-  parameterMapping.mode = ParameterMode.IN;
-}
-
-public Builder(Configuration configuration, String property, Class&lt;?&gt; javaType) {
-  parameterMapping.configuration = configuration;
-  parameterMapping.property = property;
-  parameterMapping.javaType = javaType;
-  parameterMapping.mode = ParameterMode.IN;
-}
-</code></pre><p>}</p>
-<p>提供公共build方法来返回该单例对象：</p>
-<p>public ParameterMapping build() {<br>      resolveTypeHandler();<br>      validate();<br>      return parameterMapping;<br>}</p>
-<p>这种方式相对于一般的单例方式的实现，复杂度会相对高一点,其实是java的builder建造者模式。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2018/07/26/java-build-mode/" data-id="cjkthgrj40008j0vtprusd4wf" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="java-build-mode" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-hexo-oschina" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/26/hexo-oschina/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.259Z" itemprop="datePublished">2018-07-26</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/hexo-oschina/">oschina git仓库提交webHook触发hexo博客更新 （转载自zooooooooy）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h4 id="创建一个项目"><a href="#创建一个项目" class="headerlink" title="创建一个项目"></a>创建一个项目</h4><p><img src="/images/TIM截图20180428143154.png" alt="项目界面"></p>
+        <h1 id="零碎的知识点-2"><a href="#零碎的知识点-2" class="headerlink" title="零碎的知识点-2"></a>零碎的知识点-2</h1><h2 id="死锁及其解决方案（避免、预防、检测）"><a href="#死锁及其解决方案（避免、预防、检测）" class="headerlink" title="死锁及其解决方案（避免、预防、检测）"></a>死锁及其解决方案（避免、预防、检测）</h2><h3 id="死锁产生的原因"><a href="#死锁产生的原因" class="headerlink" title="死锁产生的原因"></a>死锁产生的原因</h3><p>因竞争资源发生死锁 现象：系统中供多个进程共享的资源的数目不足以满足全部进程的需要时，就会引起对诸资源的竞争而发生死锁现象。</p>
+<h3 id="死锁的四个必要条件："><a href="#死锁的四个必要条件：" class="headerlink" title="死锁的四个必要条件："></a>死锁的四个必要条件：</h3><ul>
+<li><p><strong>互斥条件</strong>：进程对所分配到的资源不允许其他进程进行访问，若其他进程访问该资源，只能等待，直至占有该资源的进程使用完成后释放该资源</p>
+</li>
+<li><p><strong>请求和保持条件</strong>：进程获得一定的资源之后，又对其他资源发出请求，但是该资源可能被其他进程占有，此事请求阻塞，但又对自己获得的资源保持不放</p>
+</li>
+<li><p><strong>不可剥夺条件</strong>：是指进程已获得的资源，在未完成使用之前，不可被剥夺，只能在使用完后自己释放</p>
+</li>
+<li><p><strong>环路等待条件</strong>：是指进程发生死锁后，必然存在一个进程–资源之间的环形链</p>
+</li>
+</ul>
+<h3 id="处理死锁的基本方法"><a href="#处理死锁的基本方法" class="headerlink" title="处理死锁的基本方法"></a>处理死锁的基本方法</h3><h4 id="预防死锁（破坏四个必要条件）"><a href="#预防死锁（破坏四个必要条件）" class="headerlink" title="预防死锁（破坏四个必要条件）"></a>预防死锁（破坏四个必要条件）</h4><ul>
+<li><strong>资源一次性分配</strong>：（破坏请求和保持条件）</li>
+<li><p><strong>可剥夺资源</strong>：即当某进程新的资源未满足时，释放已占有的资源（破坏不可剥夺条件）</p>
+</li>
+<li><p><strong>资源有序分配法</strong>：系统给每类资源赋予一个编号，每一个进程按编号递增的顺序请求资源，释放则相反（破坏环路等待条件）</p>
+</li>
+</ul>
+<h3 id="避免死锁-银行家算法"><a href="#避免死锁-银行家算法" class="headerlink" title="避免死锁(银行家算法)"></a><strong>避免</strong>死锁(银行家算法)</h3><p>上面的预防算法会严重地损害系统性能。而避免死锁算法是让系统在进行资源分配之前预先计算资源分配的安全性。</p>
+<h3 id="检测死锁"><a href="#检测死锁" class="headerlink" title="检测死锁"></a>检测死锁</h3><p>首先为每个进程和每个资源指定一个唯一的号码；</p>
+<p>然后建立资源分配表和进程等待表。</p>
+<h3 id="解除死锁"><a href="#解除死锁" class="headerlink" title="解除死锁"></a>解除死锁</h3><p>当发现有进程死锁后，便应立即把它从死锁状态中解脱出来，常采用的方法有：</p>
+<h4 id="剥夺资源"><a href="#剥夺资源" class="headerlink" title="剥夺资源"></a>剥夺资源</h4><p>从其它进程剥夺足够数量的资源给死锁进程，以解除死锁状态；</p>
+<h4 id="撤消进程"><a href="#撤消进程" class="headerlink" title="撤消进程"></a>撤消进程</h4><p>可以直接撤消死锁进程或撤消代价最小的进程，直至有足够的资源可用，死锁状态.消除为止；所谓代价是指优先级、运行代价、进程的重要性和价值等。</p>
+<h2 id="Linux-命令-amp-和-amp-amp-的区别"><a href="#Linux-命令-amp-和-amp-amp-的区别" class="headerlink" title="Linux 命令&amp;和&amp;&amp;的区别"></a>Linux 命令&amp;和&amp;&amp;的区别</h2><p>在Linux控制台命令的执行过程中，</p>
+<h3 id="amp-表示该命令后台执行。"><a href="#amp-表示该命令后台执行。" class="headerlink" title="&amp;表示该命令后台执行。"></a>&amp;表示该命令后台执行。</h3><p>例如执行：ping 192.168.1.*  &amp;</p>
+<p>表示后台不停的执行ping命令，即便你强制中断掉该线程，它仍然会不停的输出结果。除非你将该线程kill掉。</p>
+<h3 id="amp-amp-表示并行执行前后命令。"><a href="#amp-amp-表示并行执行前后命令。" class="headerlink" title="&amp;&amp;表示并行执行前后命令。"></a>&amp;&amp;表示并行执行前后命令。</h3><h2 id="Linux—shell中-、-、-与-的区别"><a href="#Linux—shell中-、-、-与-的区别" class="headerlink" title="Linux—shell中$(( ))、$( )、$与${ }的区别"></a>Linux—shell中<code>$</code>(( ))、<code>$</code>( )、<code>$</code>与<code>$</code>{ }的区别</h2><p>在bash中，<code>$</code>( )与<code></code>（反引号）都是用来作命令替换的。<br>命令替换与变量替换差不多，都是用来重组命令行的，先完成引号里的命令行，然后将其结果替换出来，再重组成新的命令行。</p>
+<h2 id="redis的持久化方式RDB和AOF的区别"><a href="#redis的持久化方式RDB和AOF的区别" class="headerlink" title="redis的持久化方式RDB和AOF的区别"></a>redis的持久化方式RDB和AOF的区别</h2><p>redis提供两种方式进行持久化，一种是RDB持久化（原理是将Reids在内存中的数据库记录定时dump到磁盘上的RDB持久化），另外一种是AOF持久化（原理是将Reids的操作日志以追加的方式写入文件）。</p>
+<p>二者却别：</p>
+<ul>
+<li><p>RDB持久化是指在指定的时间间隔内将内存中的数据集快照写入磁盘，实际操作过程是fork一个子进程，先将数据集写入临时文件，写入成功后，再替换之前的文件，用二进制压缩存储。</p>
+</li>
+<li><p>AOF持久化以日志的形式记录服务器所处理的每一个写、删除操作，查询操作不会记录，以文本的方式记录，可以打开文件看到详细的操作记录。</p>
+</li>
+</ul>
+<h2 id="MYSQL-innodb中MVCC的一些理解"><a href="#MYSQL-innodb中MVCC的一些理解" class="headerlink" title="MYSQL innodb中MVCC的一些理解"></a>MYSQL innodb中MVCC的一些理解</h2><h3 id="MVCC简介"><a href="#MVCC简介" class="headerlink" title="MVCC简介"></a>MVCC简介</h3><p>MVCC (Multiversion Concurrency Control)，即多版本并发控制技术,它使得大部分支持行锁的事务引擎，不再单纯的使用行锁来进行数据库的并发控制，取而代之的是把数据库的行锁与行的多个版本结合起来，只需要很小的开销,就可以实现非锁定读，从而大大提高数据库系统的并发性能</p>
+<ul>
+<li><p><strong>读锁</strong>：也叫共享锁、S锁，若事务T对数据对象A加上S锁，则事务T可以读A但不能修改A，其他事务只能再对A加S锁，而不能加X锁，直到T释放A上的S 锁。这保证了其他事务可以读A，但在T释放A上的S锁之前不能对A做任何修改。</p>
+</li>
+<li><p><strong>写锁</strong>：又称排他锁、X锁。若事务T对数据对象A加上X锁，事务T可以读A也可以修改A，其他事务不能再对A加任何锁，直到T释放A上的锁。这保证了其他事务在T释放A上的锁之前不能再读取和修改A。</p>
+</li>
+<li><p><strong>表锁</strong>：操作对象是数据表。Mysql大多数锁策略都支持(常见mysql innodb)，是系统开销最低但并发性最低的一个锁策略。事务t对整个表加读锁，则其他事务可读不可写，若加写锁，则其他事务增删改都不行。</p>
+</li>
+<li><p><strong>行级锁</strong>：操作对象是数据表中的一行。是MVCC技术用的比较多的，但在MYISAM用不了，行级锁用mysql的储存引擎实现而不是mysql服务器。但行级锁对系统开销较大，处理高并发较好。</p>
+</li>
+</ul>
+<p>MVCC有下面几个特点：</p>
+<ul>
+<li>每行数据都存在一个版本，每次数据更新时都更新该版本</li>
+<li>修改时Copy出当前版本随意修改，各个事务之间无干扰</li>
+<li>保存时比较版本号，如果成功（commit），则覆盖原记录；失败则放弃copy（rollback）</li>
+</ul>
+<blockquote>
+<p>一句话讲，MVCC就是用 同一份数据临时保留多版本的方式 的方式，实现并发控制。</p>
+</blockquote>
+<h2 id="TCP三次握手和四次挥手"><a href="#TCP三次握手和四次挥手" class="headerlink" title="TCP三次握手和四次挥手"></a>TCP三次握手和四次挥手</h2><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p>第一次握手：建立连接时，客户端发送syn包（syn=j）到服务器，并进入SYN_SENT状态，等待服务器确认；SYN：同步序列编号（Synchronize Sequence Numbers）。</p>
+<p>第二次握手：服务器收到syn包，必须确认客户的SYN（ack=j+1），同时自己也发送一个SYN包（syn=k），即SYN+ACK包，此时服务器进入SYN_RECV状态；</p>
+<p>第三次握手：客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ack=k+1），此包发送完毕，客户端和服务器进入ESTABLISHED（TCP连接成功）状态，完成三次握手。</p>
+<p>完成三次握手，客户端与服务器开始传送数据，在上述过程中，还有一些重要的概念：</p>
+<p>未连接队列</p>
+<p>在三次握手协议中，服务器维护一个未连接队列，该队列为每个客户端的SYN包（syn=j）开设一个条目，该条目表明服务器已收到SYN包，并向客户发出确认，正在等待客户的确认包。这些条目所标识的连接在服务器处于SYN_RECV状态，当服务器收到客户的确认包时，删除该条目，服务器进入ESTABLISHED状态。</p>
+<p><img src="https://img-blog.csdn.net/20180803161201776?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP握手"></p>
+<h3 id="TCP挥手"><a href="#TCP挥手" class="headerlink" title="TCP挥手"></a>TCP挥手</h3><p><img src="https://img-blog.csdn.net/20180803161352694?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP挥手"></p>
+<p>为什么TCP协议终止链接要四次？</p>
 <ol>
-<li>将服务器上的代码整个打包传到项目上来，使用如下命令<br> 1.1    git init<br> 1.2 git add .<br> 1.3 git commit -m ‘init’<br> 1.4 git remote add origin ‘your remote ssh address’</li>
-<li><p>后续就需要配置openresty，解决自动提交webHook触发脚本执行的功能<br> 2.1 openresty的安装可以参照官网<br> 2.2 启动还是跟nginx一样的，start nginx<br> 2.3 配置nginx的配置，执行lua脚本<br> 2.4 lua脚本中需要验证密码这一块，我暂时没处理，oschina的验证规则是在post body里面有一个参数是password，可以和自己的配置的webHook秘钥进行匹配就可以<br> 2.5 lua脚本只是简单执行依据脚本命令</p>
-<pre><code> os.execute(&quot;bash /opt/lua/hexo.sh&quot;);
- ngx.say(&quot;OK&quot;)
- ngx.exit(200)
+<li>当主机A确认发送完数据且知道B已经接受完了，想要关闭发送数据口（当然确认信号还是可以发），就会发FIN给主机B。</li>
+<li>主机B收到A发送的FIN，表示收到了，就会发送ACK回复。</li>
+<li>但这是B可能还在发送数据，没有想要关闭数据口的意思，所以FIN与ACK不是同时发送的，而是等到B数据发送完了，才会发送FIN给主机A。</li>
+<li>A收到B发来的FIN，知道B的数据也发送完了，回复ACK， A等待2MSL以后，没有收到B传来的任何消息，知道B已经收到自己的ACK了，A就关闭链接，B也关闭链接了。</li>
+</ol>
+<p>TCP挥手时，为什么等待2MSL，从TIME_WAIT到CLOSE？</p>
+<p> 在Client发送出最后的ACK回复，但该ACK可能丢失。Server如果没有收到ACK，将不断重复发送FIN片段。所以Client不能立即关闭，它必须确认Server接收到了该ACK。Client会在发送出ACK之后进入到TIME_WAIT状态。Client会设置一个计时器，等待2MSL的时间。如果在该时间内再次收到FIN，那么Client会重发ACK并再次等待2MSL。所谓的2MSL是两倍的MSL(Maximum Segment Lifetime)。MSL指一个片段在网络中最大的存活时间，2MSL就是一个发送和一个回复所需的最大时间。如果直到2MSL，Client都没有再次收到FIN，那么Client推断ACK已经被成功接收，则结束TCP连接。</p>
+<h2 id="C语言文件读写"><a href="#C语言文件读写" class="headerlink" title="C语言文件读写"></a>C语言文件读写</h2><p><img src="https://img-blog.csdn.net/20180803173523226?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="C语言文件读写"></p>
+<h2 id="Redis分布式锁"><a href="#Redis分布式锁" class="headerlink" title="Redis分布式锁"></a>Redis分布式锁</h2><h3 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h3><p>首先，为了确保分布式锁可用，我们至少要确保锁的实现同时满足以下四个条件：</p>
+<ul>
+<li><strong>互斥性</strong> 在任意时刻，只有一个客户端能持有锁。</li>
+<li><strong>不会发生死锁</strong> 即使有一个客户端在持有锁的期间崩溃而没有主动解锁，也能保证后续其他客户端能加锁。</li>
+<li><strong>具有容错性</strong> 只要大部分的Redis节点正常运行，客户端就可以加锁和解锁。</li>
+<li><strong>解铃还须系铃人</strong> 加锁和解锁必须是同一个客户端，客户端自己不能把别人加的锁给解了。</li>
+</ul>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><h4 id="加锁代码"><a href="#加锁代码" class="headerlink" title="加锁代码"></a>加锁代码</h4><pre><code class="java">public class RedisTool {
 
-</code></pre><p> 2.6 主要是后续的shell命令，操作的流程是获取git 远程的代码，执行hexo的generate生成静态文件</p>
-<pre><code> #! /bin/bash
- blog_dir=/opt/blog
- branch=master
- hexo=/root/.nvm/versions/node/v9.11.1/bin/hexo
+    private static final String LOCK_SUCCESS = &quot;OK&quot;;
+    private static final String SET_IF_NOT_EXIST = &quot;NX&quot;;
+    private static final String SET_WITH_EXPIRE_TIME = &quot;PX&quot;;
 
- cd $blog_dir
- git reset --hard origin/$branch
- git clean -f
- git pull origin master
+    /**
+     * 尝试获取分布式锁
+     * @param jedis Redis客户端
+     * @param lockKey 锁
+     * @param requestId 请求标识
+     * @param expireTime 超期时间
+     * @return 是否获取成功
+     */
+    public static boolean tryGetDistributedLock(Jedis jedis, String lockKey, String requestId, int expireTime) {
 
- cd $blog_dir
- $hexo generate
- echo &quot;success&quot;
+        String result = jedis.set(lockKey, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);
 
-</code></pre><p> 2.7 静态文件的目录是public，前面装好的openresty也可以用作服务代理，将域名的root访问路径指向到public目录即可<br> 2.8 漏了nginx的转发配置了，有两个  一个是webHook地址，一个是服务器的请求地址</p>
-<pre><code> server {
-     listen       80;
-     server_name  db101.cn;
+        if (LOCK_SUCCESS.equals(result)) {
+            return true;
+        }
+        return false;
 
-     lua_code_cache off;
+    }
 
-     location / {
-         root   /opt/blog/public;
-         index  index.html index.htm;
-     }
+}
 
-     location /hexo/github {
-         content_by_lua_file /opt/lua/hexo.lua;
-     }
- }
+</code></pre>
+<h4 id="解锁代码"><a href="#解锁代码" class="headerlink" title="解锁代码"></a>解锁代码</h4><p>···java<br>public class RedisTool {</p>
+<pre><code>private static final Long RELEASE_SUCCESS = 1L;
 
-</code></pre></li>
+/**
+ * 释放分布式锁
+ * @param jedis Redis客户端
+ * @param lockKey 锁
+ * @param requestId 请求标识
+ * @return 是否释放成功
+ */
+public static boolean releaseDistributedLock(Jedis jedis, String lockKey, String requestId) {
+
+    String script = &quot;if redis.call(&#39;get&#39;, KEYS[1]) == ARGV[1] then return redis.call(&#39;del&#39;, KEYS[1]) else return 0 end&quot;;
+    Object result = jedis.eval(script, Collections.singletonList(lockKey), Collections.singletonList(requestId));
+
+    if (RELEASE_SUCCESS.equals(result)) {
+        return true;
+    }
+    return false;
+
+}
+</code></pre><p>}<br><code>`</code></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>先拿setnx来争抢锁，抢到之后，再用expire给锁加一个过期时间防止锁忘记了释放。</p>
+<p>如果在setnx之后执行expire之前进程意外crash或者要重启维护了，那会怎么样？</p>
+<p>set指令有非常复杂的参数，这个应该是可以同时把setnx和expire合成一条指令来用的。</p>
+<h2 id="Java类加载机制"><a href="#Java类加载机制" class="headerlink" title="Java类加载机制"></a>Java类加载机制</h2><h3 id="双亲委派加载机制"><a href="#双亲委派加载机制" class="headerlink" title="双亲委派加载机制"></a>双亲委派加载机制</h3><blockquote>
+<p>双亲委派模型的工作流程是：如果一个类加载器收到了类加载的请求，它首先不会自己去尝试加载这个类，而是把请求委托给父加载器去完成，依次向上，因此，所有的类加载请求最终都应该被传递到顶层的启动类加载器中，只有当父加载器在它的搜索范围中没有找到所需的类时，即无法完成该加载，子加载器才会尝试自己去加载该类。</p>
+</blockquote>
+<ol>
+<li>遇见一个类需要加载的类，它会优先让父加载器去加载。层层传递。</li>
+<li>每个类加载器都有自己的加载区域，它也只能在自己的加载区域里面寻找。</li>
+<li>自定义类加载器也必须实现这样一个双亲委派模型。</li>
+<li>双亲委派机制是隔离的关键， 如String.class： <ol>
+<li>一个JVM里面只能有一个String.class。</li>
+<li>用户没法自定义个String.class出来。</li>
+<li>每个Classloader都有自己的加载区域，需要注意部分配置文件的存放地点。</li>
+</ol>
+</li>
+</ol>
+<h3 id="类加载的隔离机制"><a href="#类加载的隔离机制" class="headerlink" title="类加载的隔离机制"></a>类加载的隔离机制</h3><p>类加载的隔离机制<br>通过不同的 完整类名 和 classloader， 可以区分两个类。好处为内存隔离(最常见的就是静态变量)。</p>
+<ul>
+<li>类名不一致一定不是同一个类</li>
+<li>类名一致类加载器不一致也不是同一个类(eaquels false)</li>
+<li>类名一致类加载器一致但是类加载器实例不一致也不是同一个类。</li>
+</ul>
+<blockquote>
+<p>Tomcat提供了一个Child优先的类加载机制：首先由子类去加载， 加载不到再由父类加载。就很好的规避了Tomcat lib里面的包与webapps中用户的包互相冲突。WEB-INF/lib 目录下的类的加载优先级是优于Tomcat lib的。（配置文件在server.xml里面的<loader delegate="false"> default false）上。</loader></p>
+</blockquote>
+<p>针对Tomcat， 做一个加载路径的介绍：</p>
+<ul>
+<li>Tomcat起始于catalina.sh里面的命令 <code>java org.apache.catalina.startup.Bootstrap start</code></li>
+<li>因为显式的指定了java命令，因此 <ul>
+<li>BootstrapClassLoader负责加载<code>${JAVA_HOME}/jre/lib</code>部分jar包</li>
+<li>ExtClassLoader加载<code>${JAVA_HOME}/jre/lib/ext</code>下面的jar包</li>
+<li>AppClassLoader加载<code>bootstrap.jar</code>和<code>tomcat-juli.jar</code>（只显示的指定了这两个jar包）</li>
+<li>之后Tomcat通过初始化了三个URLClassLoader, 并指定加载路径 （见<code>catalina.properties#common.loader</code>配置）</li>
+<li>除了common外， server和shardLoader的加载路径一般都没有显示的指定， 因此这三个Loader实际上都是URLClassLoader。</li>
+<li>同时，它顺便指定了当前线程的contextClassLoader。</li>
+<li>Tomcat对于WEB应用的启动都是依赖于web.xml的， 里面配置的Filter、Listener、Servlet根据Tomcat的定义都是由WebappClassLoaderBase来加载的。</li>
+<li>毕竟<code>Filter</code>、<code>Listener</code>、<code>Servlet</code>等入口都是被WebappClassLoaderBase加载的，而一般开发者不会主动指定ClassLoader。那么除非指定了ClassLoader，所有的webapp都是它加载的（刚好它的加载空间包含了这些类）</li>
+<li>在需要Spring的时候已经由App自身加载得到， 就不会再去寻找Tomcat lib里面的Spring。</li>
+<li>自此，Tomcat的类加载区分完毕。 通过 “子优先” 这个机制，可以保证多个 Tomcat App 之间做到良好的隔离。</li>
+</ul>
+</li>
+</ul>
+<h3 id="类加载的顺序"><a href="#类加载的顺序" class="headerlink" title="类加载的顺序"></a>类加载的顺序</h3><p>当需要用一个类的时候， 必须先加载它。</p>
+<ol>
+<li>装载：查找和导入Class文件；</li>
+<li>链接：把类的二进制数据合并到JRE中； </li>
+<li>校验：检查载入Class文件数据的正确性；</li>
+<li>准备：给类的静态变量分配存储空间；</li>
+<li>解析：将符号引用转成直接引用；</li>
+<li>初始化：对类的静态变量，静态代码块执行初始化操作</li>
+</ol>
+<h3 id="类加载的触发点"><a href="#类加载的触发点" class="headerlink" title="类加载的触发点"></a>类加载的触发点</h3><ul>
+<li>遇到new、getstatic、putstatic或invokestatic这4条字节码指令时，如果类没有进行过初始化，则需要先触发其初始化。生成这4条指令的最常见的Java代码场景是：使用new关键字实例化对象的时候，读取或设置一个类的静态字段（被final修饰、已在编译期把结果放入常量池的静态字段除外）的时候，以及调用一个类的静态方法的时候。<ul>
+<li>使用java.lang.reflect包的方法对类进行反射调用的时候，如果类没有进行过初始化，则需要先触发其初始化。</li>
+<li>当初始化一个类的时候，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化。</li>
+</ul>
+</li>
+</ul>
+<h2 id="类的实例化"><a href="#类的实例化" class="headerlink" title="类的实例化"></a>类的实例化</h2><p>类只有在加载进入JVM之后才能被使用， 但是一般情况下还需要把类做实例化操作后来用。 一般区分为显式的实例化和隐式的示例化。</p>
+<p>类的实例化的目的是为了得到一个类的对象。</p>
+<ul>
+<li>new 方法为隐式的实例化。方便可用性高。</li>
+<li>newInstance()为显式的实例化。必须要一个无参构造器。</li>
+<li>两种实例化方式都需要ClassLoader的参与。显式的实例化往往指定，隐式的实例化则默认是调用的这个类的类加载器。</li>
+<li>实例化的目的都是为了得到类的对象。而类在实例化之前已经初始化完毕。</li>
+<li>实例化的时候会为域变量赋值，并执行代码块的方法。</li>
+</ul>
+<p>为什么静态元素和静态代码块在一个虚拟机里面只会执行一次 ？</p>
+<ol>
+<li>默认习惯都是不会指定ClassLoader的，所属类也就只有一次初始化过程。 </li>
+<li>赋值静态域，或者执行静态代码块，是在类加载的流程中执行的。而这样的操作只会有一次。 </li>
+<li>赋值域，或者执行代码块，是在类实例化的流程中执行的，这样的操作根据程序需求可能有多次。</li>
+</ol>
+<h2 id="JVM的符号引用和直接引用"><a href="#JVM的符号引用和直接引用" class="headerlink" title="JVM的符号引用和直接引用"></a>JVM的符号引用和直接引用</h2><blockquote>
+<p>在JVM中类加载过程中，在解析阶段，Java虚拟机会把类的二级制数据中的符号引用替换为直接引用。</p>
+</blockquote>
+<ol>
+<li><p>符号引用（Symbolic References）：　符号引用以一组符号来描述所引用的目标，符号可以是任何形式的字面量，只要使用时能够无歧义的定位到目标即可。Java中，一个java类将会编译成一个class文件。在编译时，java类并不知道所引用的类的实际地址，因此只能使用符号引用来代替。</p>
+</li>
+<li><p>直接引用：<br>直接引用可以是<br>（1）直接指向目标的指针（比如，指向“类型”【Class对象】、类变量、类方法的直接引用可能是指向方法区的指针）<br>（2）相对偏移量（比如，指向实例变量、实例方法的直接引用都是偏移量）<br>（3）一个能间接定位到目标的句柄</p>
+</li>
+</ol>
+<p>直接引用是和虚拟机的布局相关的，同一个符号引用在不同的虚拟机实例上翻译出来的直接引用一般不会相同。如果有了直接引用，那引用的目标必定已经被加载入内存中了。</p>
+<h2 id="MySQL主从复制、半同步复制和主主复制概述"><a href="#MySQL主从复制、半同步复制和主主复制概述" class="headerlink" title="MySQL主从复制、半同步复制和主主复制概述"></a>MySQL主从复制、半同步复制和主主复制概述</h2><p>MySQL数据库支持同步复制、单向、异步复制，在复制的过程中一个服务器充当主服务，而一个或多个服务器充当从服务器。主服务器将更新写入二进制日志文件，并维护文件的一个索引以跟踪日志循环。这些日志可以记录发送到从服务器的更新。当一个从服务器连接主服务器时，它通知主服务器从服务器在日志中读取的最后一次成功更新的位置。从服务器接收从那时起发生的任何更新，然后封锁并等待主服务器通知新的更新。</p>
+<h3 id="主从复制的原理："><a href="#主从复制的原理：" class="headerlink" title="主从复制的原理："></a>主从复制的原理：</h3><ol>
+<li>数据库有个bin-log二进制文件，记录了所有sql语句。</li>
+<li>我们的目标就是把主数据库的bin-log文件的sql语句复制过来。</li>
+<li>让其在从数据的relay-log重做日志文件中再执行一次这些sql语句即可。</li>
+<li>下面的主从配置就是围绕这个原理配置</li>
+</ol>
+<p><img src="http://images2017.cnblogs.com/blog/1228077/201712/1228077-20171222172525053-1730746112.png" alt="主从复制"></p>
+<p><img src="http://images2017.cnblogs.com/blog/1228077/201712/1228077-20171222172533787-134255588.png" alt="原理"></p>
+<ol start="5">
+<li><p>具体需要三个线程来操作：</p>
+<ol>
+<li><p>binlog输出线程:每当有从库连接到主库的时候，主库都会创建一个线程然后发送binlog内容到从库。</p>
+<p>在从库里，当复制开始的时候，从库就会创建两个线程进行处理：</p>
+</li>
+<li><p>从库I/O线程:当START SLAVE语句在从库开始执行之后，从库创建一个I/O线程，该线程连接到主库并请求主库发送binlog里面的更新记录到从库上。从库I/O线程读取主库的binlog输出线程发送的更新并拷贝这些更新到本地文件，其中包括relay log文件。</p>
+</li>
+<li><p>从库的SQL线程:从库创建一个SQL线程，这个线程读取从库I/O线程写到relay log的更新事件并执行。</p>
+</li>
+</ol>
+</li>
+</ol>
+<p>可以知道，对于每一个主从复制的连接，都有三个线程。拥有多个从库的主库为每一个连接到主库的从库创建一个binlog输出线程，每一个从库都有它自己的I/O线程和SQL线程。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/03/零碎的知识点-2/" data-id="cjl61a5h5001mqwvt89rwx8vm" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="零碎的知识点-2" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-大数据开发知识点-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/02/大数据开发知识点-1/" class="article-date">
+  <time datetime="2018-08-02T07:51:41.120Z" itemprop="datePublished">2018-08-02</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/大数据/">大数据</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/02/大数据开发知识点-1/">大数据开发知识点-1</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="大数据开发知识点-1"><a href="#大数据开发知识点-1" class="headerlink" title="大数据开发知识点-1"></a>大数据开发知识点-1</h1><h2 id="数据倾斜"><a href="#数据倾斜" class="headerlink" title="数据倾斜"></a>数据倾斜</h2><h3 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h3><p>数据倾斜在MapReduce编程模型中十分常见,用最通俗易懂的话来说,数据倾斜无非就是大量的相同key被partition分配到一个分区里,造成了’一个人累死,其他人闲死’的情况,这种情况是我们不能接受的,这也违背了并行计算的初衷,首先一个节点要承受着巨大的压力,而其他节点计算完毕后要一直等待这个忙碌的节点,也拖累了整体的计算时间,可以说效率是十分低下的。</p>
+<h3 id="原理以及现象分析："><a href="#原理以及现象分析：" class="headerlink" title="原理以及现象分析："></a>原理以及现象分析：</h3><p>出现数据倾斜的原因，基本只可能是因为发生了shuffle操作，在shuffle的过程中，出现了数据倾斜的问题。因为某个，或者某些key对应的数据，远远的高于其他的key。你在自己的程序里面找找，哪些地方用了会产生shuffle的算子，groupByKey、countByKey、reduceByKey、join。看log一般会报是在你的哪一行代码，导致了OOM异常；或者呢，看log，看看是执行到了第几个stage！！！</p>
+<p>###解决思路：</p>
+<ol>
+<li>对包含少数几个数据量过大的key的那个RDD，通过sample算子采样出一份样本来，然后统计一下每个key的数量，计算出来数据量最大的是哪几个key。</li>
+<li>然后将这几个key对应的数据从原来的RDD中拆分出来，形成一个单独的RDD，并给每个key都打上n以内的随机数作为前缀，而不会导致倾斜的大部分key形成另外一个RDD。</li>
+</ol>
+<p>接着将需要join的另一个RDD，也过滤出来那几个倾斜key对应的数据并形成一个单独的RDD，将每条数据膨胀成n条数据，这n条数据都按顺序附加一个0~n的前缀，不会导致倾斜的大部分key也形成另外一个RDD。<br>再将附加了随机前缀的独立RDD与另一个膨胀n倍的独立RDD进行join，此时就可以将原先相同的key打散成n份，分散到多个task中去进行join了。<br>而另外两个普通的RDD就照常join即可。<br>最后将两次join的结果使用union算子合并起来即可，就是最终的join结果。</p>
+<hr>
+<h2 id="Hbase实现快速查询的原因"><a href="#Hbase实现快速查询的原因" class="headerlink" title="Hbase实现快速查询的原因"></a>Hbase实现快速查询的原因</h2><h3 id="快速查询"><a href="#快速查询" class="headerlink" title="快速查询:"></a>快速查询:</h3><ol>
+<li>分区储存<br>HBase将每个表划分为多个region，每个region用rowkey来划分，数据的查询也是通过rowkey来查询<br>查询过程：client向HBase依赖的zookeeper获取metaregion的位置，然后通过metaregion中的记录获取到所要查询的rowkey<br>对应的region，这样就确定到一个region范围</li>
+<li>HFile的索引<br>HFile是HBase最底层数据文件的存储格式，一个region下包含着多个HFile，每个HFile的最后有末尾固定的长度来存储索引，这样可以快速确认你所查询的数据是否在这个HFile中 </li>
+<li>BloomFilter<br>BloomFilter是针对HFile的，每一条存储的数据，BloomFilter将记录hash进固定的数组中，这样在查询时对应Hash数组，如果对应位置被改变了，那么所要查的记录可能在这个文件里。如果没有被改变，那么肯定不在，这样可以大幅提高查询的效率 </li>
+</ol>
+<h3 id="实时查询："><a href="#实时查询：" class="headerlink" title="实时查询："></a>实时查询：</h3><p>实时查询，可以认为是从内存中查询，一般响应时间在1秒内。HBase的机制是数据先写入到内存中，当数据量达到一定的量（如128M）， 再写入磁盘中， 在内存中，是不进行数据的<strong>更新</strong>或<strong>合并</strong>操作的，只增加数据，这使得用户的写操作只要进入内存中就可以立即返回，保证了HBase I/O的 高性能。</p>
+<p>实时查询，即反应根据当前时间的数据，可以认为这些数据始终是在内存的，保证了数据的实时响应。</p>
+<p>像RDBMS这让的关系型数据库，按行存储，通过严格的ACID事务来进行同步，这造成了系统的可用性和伸缩性方面的大大折扣<br>HBase，Casandra是NOSQL的数据库或者说no relation，按列存储，是最终一致性的系统，他们为了高的可用性牺牲了一部分的一致性，向HBase就不支持事务特性。</p>
+<p>不同点：</p>
+<ol>
+<li>存储模式：HBase是基于列存储的，每个列族都有几个HFile保存，不同列族的文件是分离的，关系型数据库则是基于表格结构和行模式保存的</li>
+<li>数据操作：HBase只有最简单的CRUD操作，表与表之间是相互分离的，没有关系型数据库中的那些连接操作 </li>
+<li>数据类型：HBase只有简单的字符类型，所有的类型都是交由用户自己处理，他只保存字符串。而关系性数据库则有丰富的类型和存储方式</li>
+<li>数据维护：HBase是基于HDFS的，所以真实的更新操作是通过新增新纪录外加时间戳来实现的 </li>
+<li>可伸缩性：HBase这类分布式数据库就是为了这个目的开发出来的，他可以轻松的增加或减少硬件的数量，对错误的兼容性比较高</li>
 </ol>
 <hr>
-<p>后续就可以当更新了source下面的md文件。可以直接通过域名访问到最新的更新了。也可以修改其他的主体或者配置一类的文件。当有push操作时触发webHook操作，调用服务器的地址，最终更新页面。</p>
-<p>上述步骤参考的网址 &gt; <a href="https://blog.liaol.net/" target="_blank" rel="noopener">https://blog.liaol.net/</a></p>
+<h2 id="Zookeeper的实现原理"><a href="#Zookeeper的实现原理" class="headerlink" title="Zookeeper的实现原理"></a>Zookeeper的实现原理</h2><p>ZooKeeper 是一个开源的分布式协调服务，分布式应用程序可以基于 ZooKeeper 实现诸如数据发布/订阅、负载均衡、命名服务、分布式协调/通知、集群管理、Master 选举、分布式锁和分布式队列等功能。</p>
+<h3 id="集群角色"><a href="#集群角色" class="headerlink" title="集群角色"></a>集群角色</h3><ul>
+<li>Leader 负责进行投票的发起和决议，更新系统状态</li>
+<li>Follower 追随者用于接受客户端请求并向客户端返回结果，在选主过程中参与投票</li>
+<li>Observer 可以接受客户端连接，将写请求转发给leader，但observer不参加投票过程，只同步leader的状态，observer的目的是为了扩展系统，提高读取速度</li>
+<li>client，请求发起</li>
+</ul>
+<p>一个ZooKeeper集群同一时刻只会有一个Leader，其他都是Follower或Observer。Zookeeper的核心是原子广播，这个机制保证了各个Server之间的同步。实现这个机制的协议叫做Zab协议。Zab协议有两种模式，它们分别是恢复模式（选主）和广播模式（同步）。当服务启动或者在领导者崩溃后，Zab就进入了恢复模式，当领导者被选举出来，且大多数Server完成了和leader的状态同步以后，恢复模式就结束了。状态同步保证了leader和Server具有相同的系统状态。</p>
+<p>为了保证事务的顺序一致性，zookeeper采用了递增的事务id号（zxid）来标识事务。所有的提议（proposal）都在被提出的时候加上了zxid。实现中zxid是一个64位的数字，它高32位是epoch用来标识leader关系是否改变，每次一个leader被选出来，它都会有一个的epoch，标识当前属于那个leader的统治时期。低32位用于递增计数。</p>
+<p>每个Server在工作过程中有三种状态：</p>
+<ul>
+<li>LOOKING：当前Server不知道leader是谁，正在搜寻</li>
+<li>LEADING：当前Server即为选举出来的leader</li>
+<li>FOLLOWING：leader已经选举出来，当前Server与之同步</li>
+</ul>
+<h3 id="重要概念"><a href="#重要概念" class="headerlink" title="重要概念"></a>重要概念</h3><h4 id="会话-Session"><a href="#会话-Session" class="headerlink" title="会话(Session)"></a>会话(Session)</h4><p>Session 是指客户端会话，在讲解客户端会话之前，我们先来了解下客户端连接。在 ZooKeeper 中，一个客户端连接是指客户端和 ZooKeeper 服务器之间的TCP长连接。</p>
+<h4 id="数据节点-ZNode"><a href="#数据节点-ZNode" class="headerlink" title="数据节点(ZNode)"></a>数据节点(ZNode)</h4><p>谈到分布式的时候，一般『节点』指的是组成集群的每一台机器。而ZooKeeper 中的数据节点是指数据模型中的数据单元，称为 ZNode。ZooKeeper 将所有数据存储在内存中，数据模型是一棵树（ZNode Tree），由斜杠（/）进行分割的路径，就是一个ZNode，如 /hbase/master，其中 hbase 和 master 都是 ZNode。每个 ZNode 上都会保存自己的数据内容，同时会保存一系列属性信息。</p>
+<p>在 ZooKeeper 中，ZNode 可以分为持久节点和临时节点两类。</p>
+<ul>
+<li>持久节点</li>
+</ul>
+<p>所谓持久节点是指一旦这个 ZNode 被创建了，除非主动进行 ZNode 的移除操作，否则这个 ZNode 将一直保存在 ZooKeeper 上。</p>
+<ul>
+<li>临时节点</li>
+</ul>
+<p>临时节点的生命周期跟客户端会话绑定，一旦客户端会话失效，那么这个客户端创建的所有临时节点都会被移除。</p>
+<p>另外，ZooKeeper 还允许用户为每个节点添加一个特殊的属性：SEQUENTIAL。一旦节点被标记上这个属性，那么在这个节点被创建的时候，ZooKeeper 就会自动在其节点后面追加上一个整型数字，这个整型数字是一个由父节点维护的自增数字。</p>
+<h3 id="Zookeeper-的读写机制"><a href="#Zookeeper-的读写机制" class="headerlink" title="Zookeeper 的读写机制"></a>Zookeeper 的读写机制</h3><ul>
+<li>Zookeeper是一个由多个server组成的集群</li>
+<li>一个leader，多个follower</li>
+<li>每个server保存一份数据副本</li>
+<li>全局数据一致</li>
+<li>分布式读写</li>
+<li>更新请求转发，由leader实施</li>
+</ul>
+<h3 id="Zookeeper-的保证"><a href="#Zookeeper-的保证" class="headerlink" title="Zookeeper 的保证"></a>Zookeeper 的保证</h3><ul>
+<li>更新请求顺序进行，来自同一个client的更新请求按其发送顺序依次执行</li>
+<li>数据更新原子性，一次数据更新要么成功，要么失败</li>
+<li>全局唯一数据视图，client无论连接到哪个server，数据视图都是一致的</li>
+<li>实时性，在一定事件范围内，client能读到最新数据</li>
+</ul>
+<hr>
+<h2 id="数据一致性算法-–-Paxos"><a href="#数据一致性算法-–-Paxos" class="headerlink" title="数据一致性算法 – Paxos"></a>数据一致性算法 – Paxos</h2><h3 id="节点角色"><a href="#节点角色" class="headerlink" title="节点角色"></a>节点角色</h3><p>Paxos 协议中，有三类节点:</p>
+<ul>
+<li>Proposer:提案者</li>
+</ul>
+<p>Proposer 可以有多个，Proposer 提出议案(value)。所谓 value，在工程中可以是任何操作，例如“修改某个变量的值为某个值”、“设置当前 primary 为某个节点”等等。Paxos 协议中统一将这些操作抽象为 value。<br>不同的 Proposer 可以提出不同的甚至矛盾的 value，例如某个 Proposer 提议“将变量 X 设置为 1”，另一个 Proposer 提议“将变量 X 设置为 2”，但对同一轮 Paxos 过程，最多只有一个 value 被批准。</p>
+<ul>
+<li>Acceptor:批准者</li>
+</ul>
+<p>Acceptor 有 N 个，Proposer 提出的 value 必须获得超过半数(N/2+1)的<br>Acceptor 批准后才能通过。Acceptor 之间完全对等独立。</p>
+<ul>
+<li>Learner:学习者</li>
+</ul>
+<p>Learner 学习被批准的 value。所谓学习就是通过读取各个 Proposer 对 value 的选择结果，如果某个 value 被超过半数 Proposer 通过，则 Learner 学习到了这个 value。</p>
+<p>这里类似 Quorum 议会机制，某个 value 需要获得 W=N/2 + 1 的 Acceptor 批准，Learner 需要至少读取 N/2+1 个 Accpetor，至多读取 N 个 Acceptor 的结果后，能学习到一个通过的 value。</p>
+<h3 id="约束条件"><a href="#约束条件" class="headerlink" title="约束条件"></a>约束条件</h3><p>上述三类角色只是逻辑上的划分，实践中一个节点可以同时充当这三类角色。有些文章会添加一个Client角色，作为产生议题者，实际不参与选举过程。</p>
+<p>Paxos中 proposer 和 acceptor 是算法的核心角色，paxos 描述的就是在一个由多个 proposer 和多个 acceptor 构成的系统中，如何让多个 acceptor 针对 proposer 提出的多种提案达成一致的过程，而 learner 只是“学习”最终被批准的提案。</p>
+<p>Paxos协议流程还需要满足几个约束条件：</p>
+<ul>
+<li>Acceptor必须接受它收到的第一个提案；</li>
+<li>如果一个提案的v值被大多数Acceptor接受过，那后续的所有被接受的提案中也必须包含v值（v值可以理解为提案的内容，提案由一个或多个v和提案编号组成）；</li>
+<li>如果某一轮 Paxos 协议批准了某个 value，则以后各轮 Paxos 只能批准这个value；</li>
+</ul>
+<hr>
+<h2 id="倒序排序"><a href="#倒序排序" class="headerlink" title="倒序排序"></a>倒序排序</h2><p>倒排索引（英语：Inverted index），也常被称为反向索引、置入档案或反向档案，是一种索引方法，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。通过倒排索引，可以根据单词快速获取包含这个单词的文档列表。倒排索引主要由两个部分组成：“单词词典”和“倒排文件”。</p>
+<p>倒排索引有两种不同的反向索引形式：</p>
+<ul>
+<li>一条记录的水平反向索引（或者反向档案索引）包含每个引用单词的文档的列表。</li>
+<li>一个单词的水平反向索引（或者完全反向索引）又包含每个单词在一个文档中的位置。</li>
+</ul>
+<p>后者的形式提供了更多的兼容性（比如短语搜索），但是需要更多的时间和空间来创建。</p>
+<p>通过上面的定义可以知道，一个倒排索引包含一个单词词典和一个倒排文件。其中单词词典包含了所有粒度的拆分词；倒排文件则保存了该词对应的所有相关信息。</p>
+<p><img src="https://img-blog.csdn.net/20180820195726253?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="倒序排序例子"></p>
+<hr>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2018/07/26/hexo-oschina/" data-id="cjkthgrj20006j0vtqrkvs29y" class="article-share-link">Share</a>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/02/大数据开发知识点-1/" data-id="cjl61a5h1001fqwvtrkg5lf47" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -472,7 +633,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="hexo-oschina" ></div> 
+<div id="SOHUCS" sid="大数据开发知识点-1" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -492,7 +653,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -506,23 +667,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2018/08/13/《Java并发编程实战》-5/">《Java并发编程实战》-5</a>
+            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12 第13章 显式锁</a>
           </li>
         
           <li>
-            <a href="/2018/08/10/《Java并发编程实战》-4/">《Java并发编程实战》-4</a>
+            <a href="/2018/08/22/《Java并发编程实战》-11/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2018/08/08/《Java并发编程实战》-3/">《Java并发编程实战》-3</a>
+            <a href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
           </li>
         
           <li>
-            <a href="/2018/08/07/Java常用的排序算法/">Java常用的排序算法</a>
+            <a href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
           </li>
         
           <li>
-            <a href="/2018/08/07/《Java并发编程实战》-2/">《Java并发编程实战》-2</a>
+            <a href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
           </li>
         
       </ul>
@@ -534,7 +695,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -543,7 +704,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

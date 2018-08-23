@@ -83,14 +83,14 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-Java常用的排序算法" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Java并发编程实战》-10" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/07/Java常用的排序算法/" class="article-date">
-  <time datetime="2018-08-07T12:53:11.484Z" itemprop="datePublished">2018-08-07</time>
+    <h3 href="/2018/08/21/《Java并发编程实战》-10/" class="article-date">
+  <time datetime="2018-08-21T07:58:09.447Z" itemprop="datePublished">2018-08-21</time>
 </h3>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/算法/">算法</a>
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
   </div>
 
   </div>
@@ -103,7 +103,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/07/Java常用的排序算法/">Java常用的排序算法</a>
+      <a class="article-title" href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
     </h1>
   
 
@@ -112,316 +112,63 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="Java常用的排序算法"><a href="#Java常用的排序算法" class="headerlink" title="Java常用的排序算法"></a>Java常用的排序算法</h1><hr>
-<h2 id="1-直接插入排序"><a href="#1-直接插入排序" class="headerlink" title="1. 直接插入排序"></a>1. 直接插入排序</h2><p>直接插入排序（Straight Insertion Sorting）的基本思想：在要排序的一组数中，假设前面(n-1) [n&gt;=2] 个数已经是排好顺序的，现在要把第n个数插到前面的有序数中，使得这n个数也是排好顺序的。如此反复循环，直到全部排好顺序。</p>
-<p>代码实现：</p>
-<ol>
-<li>首先设定插入次数，即循环次数，<code>for(int i=1;i&lt;length;i++)</code>，1个数的那次不用插入。 </li>
-<li>设定插入数和得到已经排好序列的最后一个数的位数。insertNum和j=i-1。</li>
-<li>从最后一个数开始向前循环，如果插入数小于当前数，就将当前数向后移动一位。</li>
-</ol>
-<p>代码如下：</p>
-<pre><code class="java">public void insertSort(int [] a){
-        int len=a.length;//单独把数组长度拿出来，提高效率
-        int insertNum;//要插入的数
-        for(int i=1;i&lt;len;i++){//因为第一次不用，所以从1开始
-            insertNum=a[i];
-            int j=i-1;//序列元素个数
-            while(j&gt;=0 &amp;&amp; a[j]&gt;insertNum){//从后往前循环，将大于insertNum的数向后移动
-                a[j+1]=a[j];//元素向后移动
-                j--;
-            }
-            a[j+1]=insertNum;//找到位置，插入当前元素
-        }
-    }
-</code></pre>
-<h2 id="2-希尔排序"><a href="#2-希尔排序" class="headerlink" title="2. 希尔排序"></a>2. 希尔排序</h2><p> 针对直接插入排序的下效率问题，有人对此进行了改进与升级，这就是现在的希尔排序。希尔排序，也称递减增量排序算法，是插入排序的一种更高效的改进版本。希尔排序是非稳定排序算法。</p>
-<p>希尔排序是基于插入排序的以下两点性质而提出改进方法的：</p>
+        <h1 id="第11章-性能与可伸缩性"><a href="#第11章-性能与可伸缩性" class="headerlink" title="第11章 性能与可伸缩性"></a>第11章 性能与可伸缩性</h1><hr>
+<h2 id="11-1-对性能的思考"><a href="#11-1-对性能的思考" class="headerlink" title="11.1 对性能的思考"></a>11.1 对性能的思考</h2><h3 id="11-1-1-性能与可伸缩性"><a href="#11-1-1-性能与可伸缩性" class="headerlink" title="11.1.1 性能与可伸缩性"></a>11.1.1 性能与可伸缩性</h3><blockquote>
+<p>可伸缩性指的是:当增加计算资源时(例如CPU、内存、存储容量或I/O带宽)，程序的吞吐量或处理能力能相应地增加。</p>
+</blockquote>
+<h3 id="11-1-2-评估各种性能权衡因素"><a href="#11-1-2-评估各种性能权衡因素" class="headerlink" title="11.1.2 评估各种性能权衡因素"></a>11.1.2 评估各种性能权衡因素</h3><blockquote>
+<p>避免不成熟的优化。首先使程序正确，然后提高运行速度–如果它还运行得不够快。</p>
+</blockquote>
+<p>以测试为基准，不要猜测。</p>
+<h2 id="11-2-Amdahl定律"><a href="#11-2-Amdahl定律" class="headerlink" title="11.2 Amdahl定律"></a>11.2 Amdahl定律</h2><p>Amdahl定律描述的是：在增加计算资源的情况下，程序在理论上能够实现最高加速比，这个值取决于程序中可并行组件和串行组件所占的比重。</p>
+<blockquote>
+<p>在所有并发程序中都包含一些串行部分。如果你认为在你的程序中不存在串行部分，那么可任意在仔细检查一遍。</p>
+</blockquote>
+<h3 id="11-2-1-实列：在各种框架中隐藏的串行部分"><a href="#11-2-1-实列：在各种框架中隐藏的串行部分" class="headerlink" title="11.2.1 实列：在各种框架中隐藏的串行部分"></a>11.2.1 实列：在各种框架中隐藏的串行部分</h3><h3 id="11-2-2-Amdahl定律的应用"><a href="#11-2-2-Amdahl定律的应用" class="headerlink" title="11.2.2 Amdahl定律的应用"></a>11.2.2 Amdahl定律的应用</h3><h2 id="11-3-线程引入的开销"><a href="#11-3-线程引入的开销" class="headerlink" title="11.3 线程引入的开销"></a>11.3 线程引入的开销</h2><h3 id="11-3-1-上下文切换"><a href="#11-3-1-上下文切换" class="headerlink" title="11.3.1 上下文切换"></a>11.3.1 上下文切换</h3><p>切换线程上下文需要一定的开销，而在线程调度过程中需要访问由操作系统和JVM共享的数据结构。应用程序、操作系统以及JVM都使用一组相同的CPU。</p>
+<h3 id="11-3-2-内存同步"><a href="#11-3-2-内存同步" class="headerlink" title="11.3.2 内存同步"></a>11.3.2 内存同步</h3><p>同步操作的性能开销包括多个方面。在<code>synchronized</code>和<code>volatile</code>提供的可见性保证中可能会使用一些特殊指令，即内存栅栏(Memory Barrier)。内存栅栏可以刷新缓存，使缓存无效，刷新硬件的写缓冲，以及停止执行管道。</p>
+<blockquote>
+<p>不要过度担心非竞争同步带来的开销。这个基本的机制已经非常快了，并且JVM还能进行额外的优化以及进一步降低或消除开销。因此，我们应该将优化重点放在那些发生锁竞争的地方。</p>
+</blockquote>
+<h3 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h3><p>当线程无法获取某个锁或者由于某个条件等待或在I/O操作上阻塞时，需要被挂起，在这个过程中将包含两次额外的上下文切换，以及所有必要的操作系统操作和缓存操作：被阻塞的线程在其执行时间片还未用完之前就被就被交换换出去，而在随后当要获取的锁或者其他资源可用时，又再次被切换回来。（由于锁竞争而导致阻塞时，线程在持有锁时将存在一定的开销：当它释放锁时，必须告诉操作系统恢复运行阻塞的线程）。</p>
+<h2 id="11-4-减少锁的竞争"><a href="#11-4-减少锁的竞争" class="headerlink" title="11.4 减少锁的竞争"></a>11.4 减少锁的竞争</h2><blockquote>
+<p>在并发程序中，对可伸缩性的最主要威胁就是独占方式的资源锁。</p>
+</blockquote>
+<p>由3种方式可以降低锁的竞争程度：</p>
 <ul>
-<li>插入排序在对<strong>几乎已经排好序</strong>的数据操作时， 效率高， 即可以达到线性排序的效率</li>
-<li>但插入排序一般来说是低效的， 因为插入排序每次只能将数据移动一位</li>
+<li>减少锁的持有时间。</li>
+<li>降低锁的请求频率。</li>
+<li>使用带有协调机制的独占锁，这些机制允许更高的并发性。</li>
 </ul>
-<p>代码实现：</p>
-<ol>
-<li>首先确定分的组数。2</li>
-<li>. 然后对组中元素进行插入排序。</li>
-<li>然后将length/2，重复1,2步，直到length=0为止。</li>
-</ol>
-<pre><code class="java">   public void shellSort(int [] a){
-        int len=a.length;//单独把数组长度拿出来，提高效率
-        while(len!=0){
-            len=len/2;
-            for(int i=0;i&lt;len;i++){//分组
-                for(int j=i+len;j&lt;a.length;j+=len){//元素从第二个开始
-                    int k=j-len;//k为有序序列最后一位的位数
-                    int temp=a[j];//要插入的元素
-                    /*for(;k&gt;=0&amp;&amp;temp&lt;a[k];k-=len){
-                        a[k+len]=a[k];
-                    }*/
-                    while(k&gt;=0&amp;&amp;temp&lt;a[k]){//从后往前遍历
-                        a[k+len]=a[k];
-                        k-=len;//向后移动len位
-                    }
-                    a[k+len]=temp;
-                }
-            }
-        }
-    }
-</code></pre>
-<h2 id="3-简单选择排序"><a href="#3-简单选择排序" class="headerlink" title="3. 简单选择排序"></a>3. 简单选择排序</h2><p>常用于取序列中最大最小的几个数时。</p>
-<p>(如果每次比较都交换，那么就是交换排序；如果每次比较完一个循环再交换，就是简单选择排序。)遍历整个序列，将最小的数放在最前面。遍历剩下的序列，将最小的数放在最前面。重复第二步，直到只剩下一个数。</p>
-<p>代码实现：</p>
-<ol>
-<li>首先确定循环次数，并且记住当前数字和当前位置。</li>
-<li>将当前位置后面所有的数与当前数字进行对比，小数赋值给key，并记住小数的位置。</li>
-<li>比对完成后，将最小的值与第一个数的值交换。</li>
-<li>重复2、3步。</li>
-</ol>
-<pre><code class="java">    public void selectSort(int[]a){
-        int len = a.length;
-        for(int i=0;i&lt;len;i++){ //循环次数
-            int value=a[i];
-            int position = i;   // 当前位置
-            for(int j=i+1;j&lt;len;j++){   //找到最小的值和位置
-                if(a[j] &lt; value){
-                    value=a[j];
-                    position=j;
-                }
-            }
-            a[position]=a[i];   //进行交换
-            a[i]=value;
-        }
-    }
-</code></pre>
-<h2 id="4-堆排序"><a href="#4-堆排序" class="headerlink" title="4. 堆排序"></a>4. 堆排序</h2><p> 对简单选择排序的优化。</p>
-<ol>
-<li>将序列构建成大堆顶。</li>
-<li>将根节点与最后一个节点交换，然后断开最后一个节点。</li>
-<li>重复第一、二步，直到所有节点断开。</li>
-</ol>
-<p><img src="https://img-blog.csdn.net/20180808152113503?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="堆排序"></p>
-<pre><code class="java"> public  void heapSort(int[] a){
-        int len = a.length;
-        //循环建堆
-        for(int i=0;i&lt;len-1;i++){
-            // 建堆
-            buildMaxHeap(a,len-1-i);
-            // 交换堆顶和最后一个元素
-            swap(a,0,len-1-i);
-        }
-    }
-    // 交换方法
-    private  void swap(int[] data, int i, int j) {
-        int tmp = data[i];
-        data[i] = data[j];
-        data[j] = tmp;
-    }
-    // 对data数组从0到lastIndex建大顶堆
-    private void buildMaxHeap(int[] data, int lastIndex) {
-        // 从lastIndex处节点（最后一个节点）的父节点开始
-        for(int i=(lastIndex-1)/2;i&gt;=0;i--){
-            //k保存正在判断的节点
-            int k=i;
-            //如果当前k节点的子节点存在
-            while(k*2+1&lt;=lastIndex){
-                //k节点的左子节点的索引
-                int biggerIndex=2*k+1;
-                //如果biggerIndex小于lastIndex，即biggerIndex+1代表的k节点的右子节点存在
-                if(biggerIndex&lt;lastIndex){
-                    //若果右子节点的值较大
-                    if(data[biggerIndex]&lt;data[biggerIndex+1]){
-                        //biggerIndex总是记录较大子节点的索引
-                        biggerIndex++;
-                    }
-                }
-                //如果k节点的值小于其较大的子节点的值
-                if(data[k]&lt;data[biggerIndex]){
-                    //交换他们
-                    swap(data,k,biggerIndex);
-                    //将biggerIndex赋予k，开始while循环的下一次循环，重新保证k节点的值大于其左右子节点的值
-                    k=biggerIndex;
-                }else{
-                    break;
-                }
-            }
-        }
-    }
-</code></pre>
-<h2 id="5-冒泡排序"><a href="#5-冒泡排序" class="headerlink" title="5. 冒泡排序"></a>5. 冒泡排序</h2><p>序列中所有元素两两比较，将最大的放在最后面。将剩余序列中所有元素两两比较，将最大的放在最后面。重复第二步，直到只剩下一个数。</p>
-<p>代码实现：</p>
-<ol>
-<li>设置循环次数。</li>
-<li>设置开始比较的位数，和结束的位数。</li>
-<li>两两比较，将最小的放到前面去。</li>
-<li>重复2、3步，直到循环次数完毕。</li>
-</ol>
-<pre><code class="java">public void bubbleSort(int []a){
-           int len=a.length;
-           for(int i=0;i&lt;len;i++){
-               for(int j=0;j&lt;len-i-1;j++){//注意第二重循环的条件
-                   if(a[j]&gt;a[j+1]){
-                       int temp=a[j];
-                       a[j]=a[j+1];
-                       a[j+1]=temp;
-                   }
-               }
-           }
-       }
-</code></pre>
-<h2 id="6-快速排序"><a href="#6-快速排序" class="headerlink" title="6. 快速排序"></a>6. 快速排序</h2><p>选择第一个数为p，小于p的数放在左边，大于p的数放在右边。递归的将p左边和右边的数都按照第一步进行，直到不能递归。</p>
-<pre><code class="java">public void quickSort(int[]a,int start,int end){
-           if(start&lt;end){
-               int baseNum=a[start];//选基准值
-               int midNum;//记录中间值
-               int i=start;
-               int j=end;
-               do{
-                   while((a[i]&lt;baseNum)&amp;&amp;i&lt;end){
-                       i++;
-                   }
-                   while((a[j]&gt;baseNum)&amp;&amp;j&gt;start){
-                       j--;
-                   }
-                   if(i&lt;=j){
-                       midNum=a[i];
-                       a[i]=a[j];
-                       a[j]=midNum;
-                       i++;
-                       j--;
-                   }
-               }while(i&lt;=j);
-                if(start&lt;j){
-                    quickSort(a,start,j);
-                }       
-                if(end&gt;i){
-                    quickSort(a,i,end);
-                }
-           }
-       }
-</code></pre>
-<h2 id="7-归并排序"><a href="#7-归并排序" class="headerlink" title="7. 归并排序"></a>7. 归并排序</h2><p>速度仅此于快速排序，内存少的时候使用，可以进行并行计算的时候使用。</p>
-<ol>
-<li>选择相邻两个数组成一个有序序列。</li>
-<li>选择相邻的两个有序序列组成一个有序序列。</li>
-<li>重复第二步，知道全部组成一个有序序列。</li>
-</ol>
-<pre><code class="java">public  void mergeSort(int[] a, int left, int right) {  
-           int t = 1;// 每组元素个数  
-           int size = right - left + 1;  
-           while (t &lt; size) {  
-               int s = t;// 本次循环每组元素个数  
-               t = 2 * s;  
-               int i = left;  
-               while (i + (t - 1) &lt; size) {  
-                   merge(a, i, i + (s - 1), i + (t - 1));  
-                   i += t;  
-               }  
-               if (i + (s - 1) &lt; right)  
-                   merge(a, i, i + (s - 1), right);  
-           }  
-        }  
-
-        private static void merge(int[] data, int p, int q, int r) {  
-           int[] B = new int[data.length];  
-           int s = p;  
-           int t = q + 1;  
-           int k = p;  
-           while (s &lt;= q &amp;&amp; t &lt;= r) {  
-               if (data[s] &lt;= data[t]) {  
-                   B[k] = data[s];  
-                   s++;  
-               } else {  
-                   B[k] = data[t];  
-                   t++;  
-               }  
-               k++;  
-           }  
-           if (s == q + 1)  
-               B[k++] = data[t++];  
-           else  
-               B[k++] = data[s++];  
-           for (int i = p; i &lt;= r; i++)  
-               data[i] = B[i];  
-        }
-</code></pre>
-<h2 id="8-基数排序"><a href="#8-基数排序" class="headerlink" title="8. 基数排序"></a>8. 基数排序</h2><p>用于大量数，很长的数进行排序时。<br>将所有的数的个位数取出，按照个位数进行排序，构成一个序列。<br>代码实现：</p>
-<pre><code class="java">public void baseSort(int[] a) {
-               //首先确定排序的趟数;    
-               int max = a[0];
-               for (int i = 1; i &lt; a.length; i++) {
-                   if (a[i] &gt; max) {
-                       max = a[i];
-                   }
-               }
-               int time = 0;
-               //判断位数;    
-               while (max &gt; 0) {
-                   max /= 10;
-                   time++;
-               }
-               //建立10个队列;    
-               List&lt;ArrayList&lt;Integer&gt;&gt; queue = new ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();
-               for (int i = 0; i &lt; 10; i++) {
-                   ArrayList&lt;Integer&gt; queue1 = new ArrayList&lt;Integer&gt;();
-                   queue.add(queue1);
-               }
-               //进行time次分配和收集;    
-               for (int i = 0; i &lt; time; i++) {
-                   //分配数组元素;    
-                   for (int j = 0; j &lt; a.length; j++) {
-                       //得到数字的第time+1位数;  
-                       int x = a[j] % (int) Math.pow(10, i + 1) / (int) Math.pow(10, i);
-                       ArrayList&lt;Integer&gt; queue2 = queue.get(x);
-                       queue2.add(a[j]);
-                       queue.set(x, queue2);
-                   }
-                   int count = 0;//元素计数器;    
-                   //收集队列元素;    
-                   for (int k = 0; k &lt; 10; k++) {
-                       while (queue.get(k).size() &gt; 0) {
-                           ArrayList&lt;Integer&gt; queue3 = queue.get(k);
-                           a[count] = queue3.get(0);
-                           queue3.remove(0);
-                           count++;
-                       }
-                   }
-               }
-        }
-</code></pre>
-<h2 id="9-总结"><a href="#9-总结" class="headerlink" title="9. 总结"></a>9. 总结</h2><h3 id="一、稳定性"><a href="#一、稳定性" class="headerlink" title="一、稳定性"></a>一、稳定性</h3><p>稳定：冒泡排序，插入排序、规避排序和基数排序<br>不稳定：选择排序、快速排序、希尔排序、堆排序</p>
-<h3 id="二、平均时间复杂度"><a href="#二、平均时间复杂度" class="headerlink" title="二、平均时间复杂度"></a>二、平均时间复杂度</h3><p>O(n^2):直接插入排序，简单选择排序，冒泡排序。</p>
-<p>在数据规模较小时（9W内），直接插入排序，简单选择排序差不多。当数据较大时，冒泡排序算法的时间代价最高。性能为O(n^2)的算法基本上是相邻元素进行比较，基本上都是稳定的。</p>
-<p>O(nlogn):快速排序，归并排序，希尔排序，堆排序。</p>
-<p>其中，快排是最好的， 其次是归并和希尔，堆排序在数据量很大时效果明显。</p>
-<h3 id="三、排序算法的选择"><a href="#三、排序算法的选择" class="headerlink" title="三、排序算法的选择"></a>三、排序算法的选择</h3><ol>
-<li><p>数据规模较小</p>
-<p>　　（1）待排序列基本序的情况下，可以选择直接插入排序；</p>
-<p>　　（2）对稳定性不作要求宜用简单选择排序，对稳定性有要求宜用插入或冒泡</p>
-</li>
-<li><p>数据规模不是很大</p>
-</li>
-</ol>
-<p>　　（1）完全可以用内存空间，序列杂乱无序，对稳定性没有要求，快速排序，此时要付出log（N）的额外空间。</p>
-<p>　　（2）序列本身可能有序，对稳定性有要求，空间允许下，宜用归并排序</p>
-<ol start="3">
-<li><p>数据规模很大</p>
-<p>　　（1）对稳定性有求，则可考虑归并排序。</p>
-<p> 　　（2）对稳定性没要求，宜用堆排序</p>
-</li>
-<li><p>序列初始基本有序（正序），宜用直接插入，冒泡</p>
-<p>各算法复杂度如下：</p>
-</li>
-</ol>
-<p><img src="https://img-blog.csdn.net/20180808160549920?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="各算法复杂度"></p>
+<h3 id="11-4-1-缩小锁的范围（”快进快出”）"><a href="#11-4-1-缩小锁的范围（”快进快出”）" class="headerlink" title="11.4.1 缩小锁的范围（”快进快出”）"></a>11.4.1 缩小锁的范围（”快进快出”）</h3><p>降低发生竞争可能性的一种有效方式就是尽可能缩短锁的持有时间。例如，而可以将一些与锁无关的代码移出同步代码块，尤其是那些开销较大的操作，以及可能被阻塞的操作，例如I/O操作。</p>
+<h3 id="11-4-2-减小锁的粒度"><a href="#11-4-2-减小锁的粒度" class="headerlink" title="11.4.2 减小锁的粒度"></a>11.4.2 减小锁的粒度</h3><p>通过锁分段和锁分解等降低线程请求锁的频率（从而减小竞争的可能性）的技术可以减小锁的持有时间，在这些技术中将采用多个互相独立的锁来保护独立的状态变量，从而改变这些变量之前由单个锁保护的情况。</p>
+<h3 id="11-4-3-锁分段"><a href="#11-4-3-锁分段" class="headerlink" title="11.4.3 锁分段"></a>11.4.3 锁分段</h3><p>锁分段的一个劣势在于:与采用单个锁来实现独占访问相比，要获取多个锁来实现独占访问将更加困难并且开销更高。</p>
+<h3 id="11-4-4-避免热点域"><a href="#11-4-4-避免热点域" class="headerlink" title="11.4.4 避免热点域"></a>11.4.4 避免热点域</h3><h3 id="11-4-5-一些替代独占锁的方法"><a href="#11-4-5-一些替代独占锁的方法" class="headerlink" title="11.4.5 一些替代独占锁的方法"></a>11.4.5 一些替代独占锁的方法</h3><p>放弃使用独占锁来管理共享状态:</p>
+<ul>
+<li>使用并发容器</li>
+<li>读-写锁</li>
+<li>不可变对象</li>
+<li>原子对象</li>
+</ul>
+<h3 id="11-4-6-监测CPU的利用率"><a href="#11-4-6-监测CPU的利用率" class="headerlink" title="11.4.6 监测CPU的利用率"></a>11.4.6 监测CPU的利用率</h3><p>如果CPU没有得到充分利用，那么需要找到其中的原因。通常有一下几种原因:</p>
+<ul>
+<li>负载不充足。</li>
+<li>I/O密集。</li>
+<li>外部限制。</li>
+<li>锁竞争。</li>
+</ul>
+<h2 id="11-4-7-向对象池说“不”"><a href="#11-4-7-向对象池说“不”" class="headerlink" title="11.4.7 向对象池说“不”"></a>11.4.7 向对象池说“不”</h2><blockquote>
+<p>通常，对象分配操作的开销比同步的开销更低。</p>
+</blockquote>
+<h2 id="11-5-实例：比较Map的性能"><a href="#11-5-实例：比较Map的性能" class="headerlink" title="11.5 实例：比较Map的性能"></a>11.5 实例：比较Map的性能</h2><h2 id="11-6-减少上下文切换的开销"><a href="#11-6-减少上下文切换的开销" class="headerlink" title="11.6 减少上下文切换的开销"></a>11.6 减少上下文切换的开销</h2><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>由于使用线程常常是为了充分利用多个处理器的计算能力，因此并发程序性能的讨论中，童话参观更多地将侧重点放在吞吐量和可伸缩性上，而不是服务时间。Amdahl定律告诉我们，程序的可伸缩性取决于在所有代码中必须被串行执行的代码比例。因为Java程序中串行执行的主要来源是独占凡是的资源锁，因此通常可以通过以下方式来提升可伸缩性：减少锁的持有时间，降低锁的粒度，意见采用非独占锁或非阻塞锁来代替独占锁。</p>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/07/Java常用的排序算法/" data-id="cjkthgrio0000j0vtwd1ubuo2" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/21/《Java并发编程实战》-10/" data-id="cjl61a5gl000rqwvtywh2hs5y" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -429,7 +176,7 @@
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="Java常用的排序算法" ></div> 
+<div id="SOHUCS" sid="《Java并发编程实战》-10" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -447,10 +194,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-2" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Java并发编程实战》-9" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/07/《Java并发编程实战》-2/" class="article-date">
-  <time datetime="2018-08-07T07:55:26.013Z" itemprop="datePublished">2018-08-07</time>
+    <h3 href="/2018/08/20/《Java并发编程实战》-9/" class="article-date">
+  <time datetime="2018-08-20T06:29:15.250Z" itemprop="datePublished">2018-08-20</time>
 </h3>
     
   <div class="article-category">
@@ -467,7 +214,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/07/《Java并发编程实战》-2/">《Java并发编程实战》-2</a>
+      <a class="article-title" href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
     </h1>
   
 
@@ -476,83 +223,33 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="对象的共享"><a href="#对象的共享" class="headerlink" title="对象的共享"></a>对象的共享</h1><h2 id="3-1-可见性"><a href="#3-1-可见性" class="headerlink" title="3.1 可见性"></a>3.1 可见性</h2><p>在没有同步的情况下，编辑器、处理器以及运行时等都可能对操作的执行顺序进行一些意想不到的调整。在缺乏足够同步的多线程程序中，想要对内存操作的执行顺序进行判断，几乎无法得出正确的结论。</p>
-<h3 id="3-1-1-失效数据"><a href="#3-1-1-失效数据" class="headerlink" title="3.1.1 失效数据"></a>3.1.1 失效数据</h3><p>线程安全的可变整数类</p>
-<pre><code class="java">@ThreadSafe
-public class SynchronizedInteger {
-    @GuardedBy(&quot;this&quot;) private int value;
-
-   public synchronized int get() { return value; }
-   public synchronized void set(int vale) { this.value = value; }
-}
-</code></pre>
-<h3 id="3-1-2-非原子的64位操作"><a href="#3-1-2-非原子的64位操作" class="headerlink" title="3.1.2 非原子的64位操作"></a>3.1.2 非原子的64位操作</h3><p>在多线程环境中使用共享且可变的long和double等类型的变量时，应该使用关键字volatile来声明它们，或者用锁保护起来。</p>
-<h3 id="3-1-3-加锁与可见性"><a href="#3-1-3-加锁与可见性" class="headerlink" title="3.1.3 加锁与可见性"></a>3.1.3 加锁与可见性</h3><p>加锁的含义不仅仅局限于互斥行为，还包括内存可见性。为了确保所有线程都能看到共享变量的新值，所有执行读操作或者写操作的线程必须在同一个锁上同步。</p>
-<h3 id="3-1-4-Volatile变量"><a href="#3-1-4-Volatile变量" class="headerlink" title="3.1.4 Volatile变量"></a>3.1.4 Volatile变量</h3><p>仅当volatile变量能简化代码的实现以及对同步策略的验证时，才应该使用它们。如果在验证正确性时需要对可见性进行复杂的判断，那么就不要使用volatile变量。volatile变量的正确使用方式包括：确保它们自身状态的可见性，确保它们所引用对象的状态的可见性，以及标识一些重要的程序声明周期时间的发生（例如，初始化或关闭）。</p>
-<p>加锁机制既可以确保可见性又可以确保原子性，而volatile变量只能确保可见性。</p>
-<p>当且仅当满足一下所有条件时，才应该使用volatile变量：</p>
-<ul>
-<li>对变量的写入操作不依赖变量的当前值，或者你能确保只有单个线程更新变量的值。</li>
-<li>该变量不会与其他状态变量一起纳入不变性条件中。</li>
-<li>在访问变量时不需要加锁。</li>
-</ul>
-<h2 id="3-2-发布与逸出"><a href="#3-2-发布与逸出" class="headerlink" title="3.2 发布与逸出"></a>3.2 发布与逸出</h2><p>安全的对象构造过程</p>
+        <h1 id="第10章-避免活跃性危险"><a href="#第10章-避免活跃性危险" class="headerlink" title="第10章 避免活跃性危险"></a>第10章 避免活跃性危险</h1><hr>
+<h2 id="10-1-死锁"><a href="#10-1-死锁" class="headerlink" title="10.1 死锁"></a>10.1 死锁</h2><p>哲学家问题</p>
+<h3 id="10-1-1-锁顺序死锁"><a href="#10-1-1-锁顺序死锁" class="headerlink" title="10.1.1 锁顺序死锁"></a>10.1.1 锁顺序死锁</h3><blockquote>
+<p>如果所有线程以固定的顺序来获得锁，那么在线程中就不会出现锁顺序死锁问题。</p>
+</blockquote>
+<h3 id="10-1-2-动态的顺序死锁"><a href="#10-1-2-动态的顺序死锁" class="headerlink" title="10.1.2 动态的顺序死锁"></a>10.1.2 动态的顺序死锁</h3><p>通过锁顺序来避免死锁</p>
+<h3 id="10-1-3-在协助对象之间发生的死锁"><a href="#10-1-3-在协助对象之间发生的死锁" class="headerlink" title="10.1.3 在协助对象之间发生的死锁"></a>10.1.3 在协助对象之间发生的死锁</h3><p>如果在持有锁时调用某个外部方法，那么将出现活跃性问题。在这个外部方法中可能会获取其他锁(这可能会产生死锁)，或者阻塞时间过长，导致其他线程无法及时获得当前被持有的锁。</p>
+<h3 id="10-1-4-开放调用"><a href="#10-1-4-开放调用" class="headerlink" title="10.1.4 开放调用"></a>10.1.4 开放调用</h3><p>如果在调用某个方法时不需要持有锁，那么这种调用被称为开放调用(Open Call)。</p>
 <blockquote>
-<p>不要再构造过程中使this引用逸出。</p>
+<p>在程序中应尽量使用开发调用。与那些在持有锁时调用外部方法的程序相比，更易于对依赖于开放调用的程序进行死锁分析。</p>
 </blockquote>
-<h2 id="3-3-线程封闭"><a href="#3-3-线程封闭" class="headerlink" title="3.3 线程封闭"></a>3.3 线程封闭</h2><h3 id="3-1-Ad-hoc线程封闭"><a href="#3-1-Ad-hoc线程封闭" class="headerlink" title="3.1 Ad-hoc线程封闭"></a>3.1 Ad-hoc线程封闭</h3><p>Ad-hoc线程封闭是指，维护线程封闭的指责完成由程序实现来承担。</p>
-<h3 id="3-3-2-栈封闭"><a href="#3-3-2-栈封闭" class="headerlink" title="3.3.2 栈封闭"></a>3.3.2 栈封闭</h3><p>栈封闭是线程封闭的一种特例，在栈封闭中，只能通过局部变量才能访问对象。</p>
-<h3 id="3-3-3-ThreadLocal类"><a href="#3-3-3-ThreadLocal类" class="headerlink" title="3.3.3 ThreadLocal类"></a>3.3.3 ThreadLocal类</h3><p>维持线程封闭性的一种更规范方法是使用ThreadLocal，这个类能使线程中的某个值与保存值得对象关联起来。ThreadLocal提供get与set等访问接口或方法，这些方法为每个使用该变量得线程都存有一份独立得副本，因此get总是返回由当前执行线程在调用set时设置得最新值。</p>
-<p>使用ThreadLocal来维持线程封闭性</p>
-<pre><code class="java"> prvate static ThreadLocal&lt;Connection&gt; connectionHolder 
- = new ThreadLocal&lt;Connection&gt;() {
-     public Connection initalValue() {
-        return DriverManager.getConnection(DB_URL);    
-    }
- };
-
-public static Connection getConnection() {
-    return connectionHolder.get();
-}
-</code></pre>
-<h2 id="3-4-不变性"><a href="#3-4-不变性" class="headerlink" title="3.4 不变性"></a>3.4 不变性</h2><blockquote>
-<p>不可变对象一定是线程安全得。</p>
-</blockquote>
-<p>当满足一下条件时，对象才是不可变的：</p>
+<h3 id="10-1-5-资源死锁"><a href="#10-1-5-资源死锁" class="headerlink" title="10.1.5 资源死锁"></a>10.1.5 资源死锁</h3><p>当多个线程早相同的资源集合上等待时，也会发生死锁。</p>
+<h2 id="10-2-死锁的避免与诊断"><a href="#10-2-死锁的避免与诊断" class="headerlink" title="10.2 死锁的避免与诊断"></a>10.2 死锁的避免与诊断</h2><h3 id="10-2-1-支持定时的锁"><a href="#10-2-1-支持定时的锁" class="headerlink" title="10.2.1 支持定时的锁"></a>10.2.1 支持定时的锁</h3><p>显式使用Lock类中定时tryLock功能代替内置锁机制可以检测死锁和从死锁中恢复过来。</p>
+<h3 id="10-2-2-通过线程转储信息来分析死锁"><a href="#10-2-2-通过线程转储信息来分析死锁" class="headerlink" title="10.2.2 通过线程转储信息来分析死锁"></a>10.2.2 通过线程转储信息来分析死锁</h3><p>虽然防止死锁的主要责任在于你自己，但JVM仍然通过线程转储(Thread Dump)来帮助识别死锁的发生。线程转储包括各个运行中的线程的栈追踪信息，这类似发生异常时的栈追踪信息。</p>
+<h2 id="10-3-其他活跃性危险"><a href="#10-3-其他活跃性危险" class="headerlink" title="10.3 其他活跃性危险"></a>10.3 其他活跃性危险</h2><p>活跃性危险：</p>
 <ul>
-<li>对象创建以后其状态就不能修改。</li>
-<li>对象的所有域都是final类型。</li>
-<li>对象是正确创建的（在对象的创建期间，this引用没有逸出） </li>
+<li>死锁</li>
+<li>饥饿</li>
+<li>丢失信号</li>
+<li>活锁</li>
 </ul>
-<h3 id="3-4-1-Final域"><a href="#3-4-1-Final域" class="headerlink" title="3.4.1 Final域"></a>3.4.1 Final域</h3><blockquote>
-<p>正如“除非需要更高的可见性，否者应将所有的域都声明为私有域”是一个良好的编程习惯，”除非需要某个域是可变的，否则就应该将其声明为final域“也是一个良好的编程习惯。</p>
+<h3 id="10-3-1-饥饿"><a href="#10-3-1-饥饿" class="headerlink" title="10.3.1 饥饿"></a>10.3.1 饥饿</h3><p>当线程由于无法访问它所需要的资源而无法继续执行时，就发生了“饥饿”,引发饥饿的最常见资源就是CPU时钟周期。</p>
+<blockquote>
+<p>要避免使用线程优先级，因为这会增加平台依赖性，并可能导致活跃性问题。在大多数并发应用程序中，都可以使用默认的线程优先级。</p>
 </blockquote>
-<h3 id="3-4-2-实例：使用Volatile类型来发布不可变对象"><a href="#3-4-2-实例：使用Volatile类型来发布不可变对象" class="headerlink" title="3.4.2 实例：使用Volatile类型来发布不可变对象"></a>3.4.2 实例：使用Volatile类型来发布不可变对象</h3><h2 id="3-5-安全发布"><a href="#3-5-安全发布" class="headerlink" title="3.5 安全发布"></a>3.5 安全发布</h2><h3 id="3-5-1-不正确的发布：正确的对象被破坏"><a href="#3-5-1-不正确的发布：正确的对象被破坏" class="headerlink" title="3.5.1 不正确的发布：正确的对象被破坏"></a>3.5.1 不正确的发布：正确的对象被破坏</h3><h3 id="3-5-2-不可变对象与初始化安全性"><a href="#3-5-2-不可变对象与初始化安全性" class="headerlink" title="3.5.2 不可变对象与初始化安全性"></a>3.5.2 不可变对象与初始化安全性</h3><blockquote>
-<p>任何线程都可以在不需要同步的情况下安全地访问不可变对象，即使在发布这些对象时没有使用同步。</p>
-</blockquote>
-<h3 id="3-5-3-安全发布的常用模式"><a href="#3-5-3-安全发布的常用模式" class="headerlink" title="3.5.3 安全发布的常用模式"></a>3.5.3 安全发布的常用模式</h3><p>要安全地发布一个对象，对象的引用以及对象的状态必须同时对其他线程可见。一个正确构造的对象可以通过以下方式来安全地发布：</p>
-<ul>
-<li>在静态初始化函数中初始化一个对象引用</li>
-<li>将对象的引用保存到volatile类型的域或者AtomicReferance对象中。</li>
-<li>将对象的引用保存到某个正确的构造对象的final类型域中。</li>
-<li>将对象的引用保存到一个由锁保护的域中。</li>
-</ul>
-<h3 id="3-5-4-事实不可变对象"><a href="#3-5-4-事实不可变对象" class="headerlink" title="3.5.4 事实不可变对象"></a>3.5.4 事实不可变对象</h3><blockquote>
-<p>在没有额外同步的情况下，任何线程都可以安全地使用被安全发布的事实不可变对象。</p>
-</blockquote>
-<h3 id="3-5-5-可变对象"><a href="#3-5-5-可变对象" class="headerlink" title="3.5.5 可变对象"></a>3.5.5 可变对象</h3><p>对象的发布需求取决于它的可变性：</p>
-<ul>
-<li>不可变对象可以通过任意机制来发布。</li>
-<li>事实不可变对象必须通过安全方式来发布。</li>
-<li>可变对象必须通过安全方式来发布，并且必须是线程安全的或者由某个锁保护起来。</li>
-</ul>
-<p>在并发程序中使用和共享对象时，可以使用一些实用的策略，包括：</p>
-<ul>
-<li><strong>线程封闭</strong>  线程封闭的对象只能由一个线程拥有，对象被封闭在该线程中，并且只能由这个线程修改。</li>
-<li><strong>只读共享</strong> 在没有额外同步的情况下，共享的只读对象可以由多个线程并发访问，但任何线程都不能修改它。共享的只读对象包括不可变对象和事实不可变对象。</li>
-<li><strong>线程安全共享</strong> 线程安全的对象在其内部实现同步，因此多个线程可以通过对象的公有接口来进行访问而不需要进一步的同步。</li>
-<li><strong>保护对象</strong> 被保护的对象只能通过持有特定的锁来访问。保护对象包括封装在其他线程安全对象中的对象，以及已发布的并且由某个特定锁保护的对象。</li>
-</ul>
+<h3 id="10-3-2-糟糕的响应性"><a href="#10-3-2-糟糕的响应性" class="headerlink" title="10.3.2 糟糕的响应性"></a>10.3.2 糟糕的响应性</h3><h3 id="10-3-3-活锁"><a href="#10-3-3-活锁" class="headerlink" title="10.3.3 活锁"></a>10.3.3 活锁</h3><p>活锁是另一种形式的活跃性问题，该问题尽管不会阻塞线程，但也不能继续执行，因为线程将不断重复地执行相同的操作，并且总会失败。活锁通常发生在处理事务消息的应用程序中：如果蹦年成功处理某个消息，那么消息处理机制将回滚整个事务，并且将它重新发到队列的开头。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>活跃性故障时一个非常严重的问题，因为当出现活跃性故障时，除了终止应用程序之外没有其他任何机制可以邦帮助从这些故障中恢复过来。最常见的活跃性故障就是所顺序死锁。在设计时应该避免产生锁顺序死锁：确保线程在获取多个锁时采用一致的顺序。最好的解决方法是在程序中始终使用开放调用。这种大大减少需要同时持有多个锁的地方，也更容易发现这些地方。</p>
 
       
     </div>
@@ -561,7 +258,7 @@ public static Connection getConnection() {
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/07/《Java并发编程实战》-2/" data-id="cjkthgrjf000ij0vtjqm1o54j" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/20/《Java并发编程实战》-9/" data-id="cjl61a5h3001iqwvtcf3l1wj9" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -569,7 +266,7 @@ public static Connection getConnection() {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-2" ></div> 
+<div id="SOHUCS" sid="《Java并发编程实战》-9" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -587,10 +284,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-1" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Java并发编程实战》-8" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/06/《Java并发编程实战》-1/" class="article-date">
-  <time datetime="2018-08-06T08:59:00.930Z" itemprop="datePublished">2018-08-06</time>
+    <h3 href="/2018/08/16/《Java并发编程实战》-8/" class="article-date">
+  <time datetime="2018-08-16T12:44:39.282Z" itemprop="datePublished">2018-08-16</time>
 </h3>
     
   <div class="article-category">
@@ -607,7 +304,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/06/《Java并发编程实战》-1/">《Java并发编程实战》-1</a>
+      <a class="article-title" href="/2018/08/16/《Java并发编程实战》-8/">《Java并发编程实战》-8</a>
     </h1>
   
 
@@ -616,46 +313,27 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="第2章-线程安全性"><a href="#第2章-线程安全性" class="headerlink" title="第2章 线程安全性"></a>第2章 线程安全性</h1><h2 id="2-1-什么是线程安全性"><a href="#2-1-什么是线程安全性" class="headerlink" title="2.1 什么是线程安全性"></a>2.1 什么是线程安全性</h2><blockquote>
-<p>当多个线程访问某个类时，不管运行时环境采用何种调度方式或者这些线程架构如何交替执行，并且在主调用代码中不需要任何额外的同步或协同，这个类都表示出正确的行为，那么就称这个类是线程安全。</p>
+        <h1 id="图形用户界面应用程序"><a href="#图形用户界面应用程序" class="headerlink" title="图形用户界面应用程序"></a>图形用户界面应用程序</h1><hr>
+<h2 id="9-1-为什么GUI是单线程的"><a href="#9-1-为什么GUI是单线程的" class="headerlink" title="9.1 为什么GUI是单线程的"></a>9.1 为什么GUI是单线程的</h2><h3 id="9-1-1-串行时间处理"><a href="#9-1-1-串行时间处理" class="headerlink" title="9.1.1 串行时间处理"></a>9.1.1 串行时间处理</h3><h3 id="9-1。2-Swing中的单线程封闭机制"><a href="#9-1。2-Swing中的单线程封闭机制" class="headerlink" title="9.1。2 Swing中的单线程封闭机制"></a>9.1。2 Swing中的单线程封闭机制</h3><blockquote>
+<p>Swing的单线程规则是：Swing中的组件以及模型只能在这个事件分发线程中进行创建、修改以及查询。</p>
 </blockquote>
-<blockquote>
-<p>在线程安全类中封装了必要的同步机制，因此客户端无需进一步采用同步措施。</p>
-</blockquote>
-<blockquote>
-<p>无状态对象一定是线程安全的。</p>
-</blockquote>
-<h2 id="2-2-原子性"><a href="#2-2-原子性" class="headerlink" title="2.2 原子性"></a>2.2 原子性</h2><h3 id="2-2-1-竞态条件"><a href="#2-2-1-竞态条件" class="headerlink" title="2.2.1 竞态条件"></a>2.2.1 竞态条件</h3><h3 id="2-2-2-延迟初始化中的竞态条件"><a href="#2-2-2-延迟初始化中的竞态条件" class="headerlink" title="2.2.2 延迟初始化中的竞态条件"></a>2.2.2 延迟初始化中的竞态条件</h3><p>延迟初始化中的竞态条件（不要这样做）</p>
-<pre><code class="java">@NotThreadSafe
-public class LazyInitRace {
-    private ExpensiveObject instance = null;
-    public ExpensiveObject getInstance() {
-    if( instance == null)
-        instance = new ExpensiveObject();
-    return instance;
-}
+<h3 id="9-2-短时间的GUI任务"><a href="#9-2-短时间的GUI任务" class="headerlink" title="9.2 短时间的GUI任务"></a>9.2 短时间的GUI任务</h3><p>模型对象与视图对象的控制流</p>
+<pre><code class="flow">st=&gt;start: EDT
+op1=&gt;operation: 鼠标点击
+op2=&gt;operation: 动作事件
+op3=&gt;operation: 动作监听者
+op4=&gt;operation: 更新表格模型
+op5=&gt;operation: 表格修改事件
+op6=&gt;operation: 表格监听者
+op7=&gt;operation: 更新表格视图
+
+st-&gt;op1-&gt;op2-&gt;op3-&gt;op4-&gt;op5-&gt;op6-&gt;op7
+
 </code></pre>
-<h3 id="2-2-3-复合操作"><a href="#2-2-3-复合操作" class="headerlink" title="2.2.3 复合操作"></a>2.2.3 复合操作</h3><blockquote>
-<p>假定有两个操作A和B，如果从执行A的线程来看，当另一个线程执行B时，要么将B全部执行完，要么完成不执行B，那么A和B对彼此来说时原子的。原子操作是指，对于访问同一个状态的所有操作(包括该操作本身)来说，这个操作是一个以原子方式执行的操作。</p>
+<h2 id="9-3-长时间的GUI任务"><a href="#9-3-长时间的GUI任务" class="headerlink" title="9.3 长时间的GUI任务"></a>9.3 长时间的GUI任务</h2><h3 id="9-3-1-取消"><a href="#9-3-1-取消" class="headerlink" title="9.3.1 取消"></a>9.3.1 取消</h3><h3 id="9-3-2-进度标识和完成标识"><a href="#9-3-2-进度标识和完成标识" class="headerlink" title="9.3.2 进度标识和完成标识"></a>9.3.2 进度标识和完成标识</h3><h3 id="9-3-3-SwingWorker"><a href="#9-3-3-SwingWorker" class="headerlink" title="9.3.3 SwingWorker"></a>9.3.3 SwingWorker</h3><h2 id="9-4-共享数据模型"><a href="#9-4-共享数据模型" class="headerlink" title="9.4 共享数据模型"></a>9.4 共享数据模型</h2><h3 id="9-4-1-线程安全的数据模型"><a href="#9-4-1-线程安全的数据模型" class="headerlink" title="9.4.1 线程安全的数据模型"></a>9.4.1 线程安全的数据模型</h3><h3 id="9-4-2-分解数据模型"><a href="#9-4-2-分解数据模型" class="headerlink" title="9.4.2 分解数据模型"></a>9.4.2 分解数据模型</h3><blockquote>
+<p>如果体格数据模型必须被多个线程共享，而且由于阻塞，一致性或复杂度等原因而无法实现一个线程安全的模型时，可以考虑使用分解模型设计。</p>
 </blockquote>
-<blockquote>
-<p>在实际情况中，应尽可能使用现有的线程安全对象（例如AcomicLong）来管理类的状态。与非线程安全的对象相比，判断线程安全对象的可能状态及其状态转换情况要更为容易，从而也更容易维护和验证线程安全性。</p>
-</blockquote>
-<h2 id="2-3-加锁机制"><a href="#2-3-加锁机制" class="headerlink" title="2.3 加锁机制"></a>2.3 加锁机制</h2><blockquote>
-<p>要保持状态的一致性，就需要在单个原子操作中更新所有相关的状态变量。</p>
-</blockquote>
-<h3 id="2-3-1-内置锁"><a href="#2-3-1-内置锁" class="headerlink" title="2.3.1 内置锁"></a>2.3.1 内置锁</h3><h3 id="2-3-2-重入"><a href="#2-3-2-重入" class="headerlink" title="2.3.2 重入"></a>2.3.2 重入</h3><h2 id="2-4-用锁来保护状态"><a href="#2-4-用锁来保护状态" class="headerlink" title="2.4 用锁来保护状态"></a>2.4 用锁来保护状态</h2><h3 id="对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。"><a href="#对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。" class="headerlink" title="对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。"></a>对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。</h3><h3 id="每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。"><a href="#每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。" class="headerlink" title="每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。"></a>每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。</h3><h3 id="对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。"><a href="#对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。" class="headerlink" title="对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。"></a>对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。</h3><pre><code class="java"> if (!vector.contains(element) )
-     vector.add(element)
-</code></pre>
-<blockquote>
-<p>即使Vector时同步的，因为上米娜的复合操作不是原子的，所以上面的代码也是非线程安全的。</p>
-</blockquote>
-<h2 id="2-5-活跃性与性能"><a href="#2-5-活跃性与性能" class="headerlink" title="2.5 活跃性与性能"></a>2.5 活跃性与性能</h2><blockquote>
-<p>通常，在简单性与性能之间存在着互相约制因素。当实现某个同步策略时，一定不要盲目地为了性能而牺牲简单性（这可能破坏安全性）。</p>
-</blockquote>
-<blockquote>
-<p>当执行时间较长的计算或者可能无法完成的操作时(例如，网络I/O或控制台I/O)，一定不要持有锁。</p>
-</blockquote>
+<h2 id="9-5-其他形式的单线程子系统"><a href="#9-5-其他形式的单线程子系统" class="headerlink" title="9.5 其他形式的单线程子系统"></a>9.5 其他形式的单线程子系统</h2><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>所有GUI框架基本上都实现为单线程的子系统，其中所有与表现相关的代码都作为任务在事件线程中运行。由于只有一个事件线程，因此运行时间较长的任务会降低GUI程序的影响性，所以应该放在后台线程中运行。在一些辅助类(例如SwingWorkrt以及在本章中构建的BackgroundTask)中提供了对取消、进度指示以及完成指示的支持，因此对于执行时间较长的任务来说，无论在任务中包含了GUI组件还是非GUI组件，在开发时可以得到简化。</p>
 
       
     </div>
@@ -664,7 +342,7 @@ public class LazyInitRace {
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/06/《Java并发编程实战》-1/" data-id="cjkthgrjh000jj0vtewazdrpi" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/16/《Java并发编程实战》-8/" data-id="cjl61a5hd001xqwvt8q1545nk" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -672,7 +350,7 @@ public class LazyInitRace {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-1" ></div> 
+<div id="SOHUCS" sid="《Java并发编程实战》-8" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -692,7 +370,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -706,23 +384,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2018/08/13/《Java并发编程实战》-5/">《Java并发编程实战》-5</a>
+            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12 第13章 显式锁</a>
           </li>
         
           <li>
-            <a href="/2018/08/10/《Java并发编程实战》-4/">《Java并发编程实战》-4</a>
+            <a href="/2018/08/22/《Java并发编程实战》-11/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2018/08/08/《Java并发编程实战》-3/">《Java并发编程实战》-3</a>
+            <a href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
           </li>
         
           <li>
-            <a href="/2018/08/07/Java常用的排序算法/">Java常用的排序算法</a>
+            <a href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
           </li>
         
           <li>
-            <a href="/2018/08/07/《Java并发编程实战》-2/">《Java并发编程实战》-2</a>
+            <a href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
           </li>
         
       </ul>
@@ -734,7 +412,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -743,7 +421,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

@@ -1,0 +1,590 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="https://blog.csdn.net/weixin_35040169">
+<meta property="og:type" content="website">
+<meta property="og:title" content="gonefuture">
+<meta property="og:url" content="http://gonefuture.top/page/9/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="https://blog.csdn.net/weixin_35040169">
+<meta property="og:locale" content="default">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gonefuture">
+<meta name="twitter:description" content="https://blog.csdn.net/weixin_35040169">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main">
+  
+    <article id="post-jdk8-reduce" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/07/26/jdk8-reduce/" class="article-date">
+  <time datetime="2018-07-26T02:28:13.269Z" itemprop="datePublished">2018-07-26</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/jdk8-reduce/">JDK8 lambda reduce （转载自zooooooooy）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <p>今天接了一个需求，需要在302的同时，将代理的所有参数都在转发到新的页面上</p>
+<p>直接上代码</p>
+<pre><code>    Map&lt;String, String[]&gt; parameterMap = request.getParameterMap();
+    List&lt;String&gt; paramList = new ArrayList&lt;&gt;();
+    parameterMap.forEach((k,v) -&gt; {
+       paramList.add(k + &quot;=&quot; + v[0]);
+    });
+
+    String paramChain = paramList.stream().reduce((s1, s2) -&gt; s1 + &quot;&amp;&quot; + s2).get();
+    response.setStatus(302);
+    response.setHeader(&quot;Location&quot;, lxAddress + &quot;?&quot; + paramChain);
+    response.setHeader(&quot;Connection&quot;, &quot;close&quot;);
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2018/07/26/jdk8-reduce/" data-id="cjl61a5g3000bqwvtgdl8dq08" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="jdk8-reduce" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-java-scattered" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/07/26/java-scattered/" class="article-date">
+  <time datetime="2018-07-26T02:28:13.266Z" itemprop="datePublished">2018-07-26</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/java-scattered/">JAVA scatter （转载自zooooooooy）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <p>查看系统的线程上下文切换次数</p>
+<p>使用vmstat 3<br><img src="/images/TIM截图20180704163235.png" alt="vmstat"></p>
+<p>其中cs就是context switch的次数，数值越高代表上线文切换的越频繁，耗时越多。每秒的切换次数可以和进程的总线程数进行比对，如果大于线程总数代表是满负荷运转</p>
+<hr>
+<p>java 线程状态之间的跃迁<br><img src="/images/TIM截图20180704193005.png" alt="thread change"></p>
+<p>线程的各个状态及说明如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">状态名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">NEW</td>
+<td>初始状态</td>
+</tr>
+<tr>
+<td style="text-align:left">RUNNABLE</td>
+<td>运行状态</td>
+</tr>
+<tr>
+<td style="text-align:left">BLOCKED</td>
+<td>阻塞状态</td>
+</tr>
+<tr>
+<td style="text-align:left">WAITING</td>
+<td>等待状态</td>
+</tr>
+<tr>
+<td style="text-align:left">TIME_WAITING</td>
+<td>超时等待状态</td>
+</tr>
+<tr>
+<td style="text-align:left">TERMINATED</td>
+<td>终止状态</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>synchronized 关键字的使用场景</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">锁的方式</th>
+<th>锁的对象</th>
+<th>伪代码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">实例方法</td>
+<td>类的实例对象</td>
+<td>public synchronized void method</td>
+</tr>
+<tr>
+<td style="text-align:left">静态方法</td>
+<td>类对象</td>
+<td>public synchronized static void method</td>
+</tr>
+<tr>
+<td style="text-align:left">实例对象</td>
+<td>类的实例对象</td>
+<td>synchronized (this)</td>
+</tr>
+<tr>
+<td style="text-align:left">class对象</td>
+<td>类对象</td>
+<td>synchronized (A.class)</td>
+</tr>
+<tr>
+<td style="text-align:left">普通对象</td>
+<td>普通对象</td>
+<td>synchronized (o)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>mark 下 通过ReentrantLock中线程等待唤醒的状态跃迁<br><img src="/images/TIM截图20180720114120.png" alt="await|singal"></p>
+<hr>
+<p>java queue 方法</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">方法名称</th>
+<th>说明</th>
+<th>是否阻塞</th>
+<th>是否抛出异常</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">add</td>
+<td>插入</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td style="text-align:left">offer</td>
+<td>插入</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td style="text-align:left">remove</td>
+<td>删除</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td style="text-align:left">poll</td>
+<td>删除</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td style="text-align:left">element</td>
+<td>获取</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td style="text-align:left">peek</td>
+<td>获取</td>
+<td>否</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<p>blocking queue</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">方法名称</th>
+<th>说明</th>
+<th>是否阻塞</th>
+<th>是否抛出异常</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">put</td>
+<td>插入</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td style="text-align:left">offer <em>支持超时</em></td>
+<td>插入</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td style="text-align:left">take</td>
+<td>删除</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td style="text-align:left">poll <em>支持超时</em></td>
+<td>删除</td>
+<td>是</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2018/07/26/java-scattered/" data-id="cjl61a5gj000pqwvtluaym1ix" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="java-scattered" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-java-build-mode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/07/26/java-build-mode/" class="article-date">
+  <time datetime="2018-07-26T02:28:13.263Z" itemprop="datePublished">2018-07-26</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/java-build-mode/">java build mode （转载自zooooooooy）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <p>还有一种通过内部类来实现单例的方式，静态内部类只能访问外部类的静态方法和静态属性。现在一般利用这个特性来实现单例模式。应该类在初始化的时候线程是互斥的，可以完美的解决单例创建冲突的问题。</p>
+<p>借用mybatis单例的实现来看一下：</p>
+<p>Class:ParameterMapping</p>
+<p>构造方法私有化：</p>
+<p>private ParameterMapping() {<br>}</p>
+<p>静态内部类来初始化外部对象：</p>
+<p>public static class Builder {<br>    private ParameterMapping parameterMapping = new ParameterMapping();</p>
+<pre><code>public Builder(Configuration configuration, String property, TypeHandler&lt;?&gt; typeHandler) { --生成ParameterMapping对象
+  parameterMapping.configuration = configuration;
+  parameterMapping.property = property;
+  parameterMapping.typeHandler = typeHandler;
+  parameterMapping.mode = ParameterMode.IN;
+}
+
+public Builder(Configuration configuration, String property, Class&lt;?&gt; javaType) {
+  parameterMapping.configuration = configuration;
+  parameterMapping.property = property;
+  parameterMapping.javaType = javaType;
+  parameterMapping.mode = ParameterMode.IN;
+}
+</code></pre><p>}</p>
+<p>提供公共build方法来返回该单例对象：</p>
+<p>public ParameterMapping build() {<br>      resolveTypeHandler();<br>      validate();<br>      return parameterMapping;<br>}</p>
+<p>这种方式相对于一般的单例方式的实现，复杂度会相对高一点,其实是java的builder建造者模式。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2018/07/26/java-build-mode/" data-id="cjl61a5g00007qwvtt1rx4sih" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="java-build-mode" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
+    </nav>
+  
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12 第13章 显式锁</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/22/《Java并发编程实战》-11/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

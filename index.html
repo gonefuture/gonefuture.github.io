@@ -83,10 +83,10 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-《Java并发编程实战》-5" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Java并发编程实战》-12" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/13/《Java并发编程实战》-5/" class="article-date">
-  <time datetime="2018-08-13T07:32:02.057Z" itemprop="datePublished">2018-08-13</time>
+    <h3 href="/2018/08/23/《Java并发编程实战》-12/" class="article-date">
+  <time datetime="2018-08-23T03:53:32.166Z" itemprop="datePublished">2018-08-23</time>
 </h3>
     
   <div class="article-category">
@@ -103,7 +103,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/13/《Java并发编程实战》-5/">《Java并发编程实战》-5</a>
+      <a class="article-title" href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12 第13章 显式锁</a>
     </h1>
   
 
@@ -112,22 +112,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="《Java并发编程实战》-5"><a href="#《Java并发编程实战》-5" class="headerlink" title="《Java并发编程实战》-5"></a>《Java并发编程实战》-5</h1><h3 id="6-1-1-串行地执行renwu"><a href="#6-1-1-串行地执行renwu" class="headerlink" title="6.1.1 串行地执行renwu"></a>6.1.1 串行地执行renwu</h3><h3 id="6-1-2-显式地为任务创建线程"><a href="#6-1-2-显式地为任务创建线程" class="headerlink" title="6.1.2 显式地为任务创建线程"></a>6.1.2 显式地为任务创建线程</h3><h3 id="6-1-3-无限制创建线程的不足"><a href="#6-1-3-无限制创建线程的不足" class="headerlink" title="6.1.3 无限制创建线程的不足"></a>6.1.3 无限制创建线程的不足</h3><ul>
-<li>线程生命周期的开销非常高。</li>
-<li>资源消耗。</li>
-<li>稳定性。</li>
-</ul>
-<h2 id="6-2-Executir框架"><a href="#6-2-Executir框架" class="headerlink" title="6.2 Executir框架"></a>6.2 Executir框架</h2><h3 id="6-2-1-示例：基于Executor的Web服务器"><a href="#6-2-1-示例：基于Executor的Web服务器" class="headerlink" title="6.2.1 示例：基于Executor的Web服务器"></a>6.2.1 示例：基于Executor的Web服务器</h3><h3 id="6-2-2-执行策略"><a href="#6-2-2-执行策略" class="headerlink" title="6.2.2 执行策略"></a>6.2.2 执行策略</h3><blockquote>
-<p>每当看到<code>new Thread(runnable).start()</code>时，并且你希望获得一种更灵活的执行策略时，请考虑使用Excecutor来代替Thread。</p>
-</blockquote>
-<h3 id="6-2-3-线程池"><a href="#6-2-3-线程池" class="headerlink" title="6.2.3 线程池"></a>6.2.3 线程池</h3><ul>
-<li>newFixedThreadPool</li>
-<li>newCachedTheadPool</li>
-<li>newSingleThread</li>
-<li>newScheduleThreadPool</li>
-</ul>
-<h3 id="6-2-4-Executor的声明周期"><a href="#6-2-4-Executor的声明周期" class="headerlink" title="6.2.4 Executor的声明周期"></a>6.2.4 Executor的声明周期</h3><h3 id="6-2-5-延迟任务与周期任务"><a href="#6-2-5-延迟任务与周期任务" class="headerlink" title="6.2.5 延迟任务与周期任务"></a>6.2.5 延迟任务与周期任务</h3><h2 id="6-3-找出可利用的并行性"><a href="#6-3-找出可利用的并行性" class="headerlink" title="6.3 找出可利用的并行性"></a>6.3 找出可利用的并行性</h2><h3 id="6-3-1-示例：串行的页面渲染器"><a href="#6-3-1-示例：串行的页面渲染器" class="headerlink" title="6.3.1 示例：串行的页面渲染器"></a>6.3.1 示例：串行的页面渲染器</h3><h3 id="6-3-2-携带结果的任务Callable与Future"><a href="#6-3-2-携带结果的任务Callable与Future" class="headerlink" title="6.3.2 携带结果的任务Callable与Future"></a>6.3.2 携带结果的任务Callable与Future</h3><h3 id="6-3-3-实例：使用Future实现页面渲染器"><a href="#6-3-3-实例：使用Future实现页面渲染器" class="headerlink" title="6.3.3 实例：使用Future实现页面渲染器"></a>6.3.3 实例：使用Future实现页面渲染器</h3><h3 id="6-3-4-在异构任务并行化中存在的局限"><a href="#6-3-4-在异构任务并行化中存在的局限" class="headerlink" title="6.3.4 在异构任务并行化中存在的局限"></a>6.3.4 在异构任务并行化中存在的局限</h3><h3 id="6-3-6-实例：使用CompletionService实现页面渲染器"><a href="#6-3-6-实例：使用CompletionService实现页面渲染器" class="headerlink" title="6.3.6 实例：使用CompletionService实现页面渲染器"></a>6.3.6 实例：使用CompletionService实现页面渲染器</h3><h3 id="6-3-7-为任务设置时限"><a href="#6-3-7-为任务设置时限" class="headerlink" title="6.3.7 为任务设置时限"></a>6.3.7 为任务设置时限</h3><h3 id="6-3-8-示例：旅行预订门户网站"><a href="#6-3-8-示例：旅行预订门户网站" class="headerlink" title="6.3.8 示例：旅行预订门户网站"></a>6.3.8 示例：旅行预订门户网站</h3><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>Executor框架将任务提交与执行策略解耦开来，同时还支持多种不同类型的执行策略。<br>要想将应用程序分解为不同的任务时获得最大的好处，必须定义清晰的任务边界。</p>
-
+        <h1 id="第13章-显式锁"><a href="#第13章-显式锁" class="headerlink" title="第13章 显式锁"></a>第13章 显式锁</h1>
       
     </div>
     <footer class="article-footer">
@@ -135,7 +120,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/13/《Java并发编程实战》-5/" data-id="cjkthgrjl000oj0vtvdfxbajo" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/23/《Java并发编程实战》-12/" data-id="cjl61a5ge000iqwvtoub99lur" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -143,7 +128,7 @@
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-5" ></div> 
+<div id="SOHUCS" sid="《Java并发编程实战》-12" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -161,221 +146,332 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-4" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Java并发编程实战》-11" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/10/《Java并发编程实战》-4/" class="article-date">
-  <time datetime="2018-08-10T02:23:59.768Z" itemprop="datePublished">2018-08-10</time>
+    <h3 href="/2018/08/22/《Java并发编程实战》-11/" class="article-date">
+  <time datetime="2018-08-22T12:03:31.926Z" itemprop="datePublished">2018-08-22</time>
 </h3>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
   </div>
   <div class="article-inner">
   <div class="curve-down">
   <div class="fill-content">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/10/《Java并发编程实战》-4/">《Java并发编程实战》-4</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="《Java并发编程实战》-4"><a href="#《Java并发编程实战》-4" class="headerlink" title="《Java并发编程实战》-4"></a>《Java并发编程实战》-4</h1><h2 id="5-1-同步容器类"><a href="#5-1-同步容器类" class="headerlink" title="5.1 同步容器类"></a>5.1 同步容器类</h2><p>Collections.synchronizedXxx等工厂方法创建的同步实现线程安全的方式是：将它们的状态封装起来，并对每个公有方法都进行同步，使得每次只有一个线程能访问容器的状态。</p>
-<h3 id="5-5-1-同步容器的问题"><a href="#5-5-1-同步容器的问题" class="headerlink" title="5.5.1 同步容器的问题"></a>5.5.1 同步容器的问题</h3><p>在使用客户端加锁的Vector上的复合操作</p>
-<pre><code class="java">public static Object getList(Vector list) {
-    synchronized (list) {
-        int lastIndex = list.size() - 1;
-        return list.get(lastIndex);
-    }
+        <!DOCTYPE html>
+  <html>
+    <head>
+      <title>《Java并发编程实战》-11 第12章 并发程序的测试</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///C:\Users\gonefuture\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.3.5\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+      <style> 
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
 }
 
-public static void deleteLast(Vector list) {
-    synchronized (this) {
-        int lastIndex = list.size() - 1;
-        list.remove(lastIndex);
-    }
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
 }
-</code></pre>
-<h3 id="5-1-2-迭代器与ConcurrentModificationException"><a href="#5-1-2-迭代器与ConcurrentModificationException" class="headerlink" title="5.1.2 迭代器与ConcurrentModificationException"></a>5.1.2 迭代器与ConcurrentModificationException</h3><p>当容器类发现容器在迭代过程中被修改时，就会抛出一个”ConcurrentModificationException<br>“，这就是“快速失败”。</p>
-<h3 id="5-1-3-隐藏迭代器"><a href="#5-1-3-隐藏迭代器" class="headerlink" title="5.1.3 隐藏迭代器"></a>5.1.3 隐藏迭代器</h3><p>正如封装对象的状态有助于维持不变性条件，封装对象的同步机制同样有助确保实施同步策略。</p>
-<h2 id="5-2-并发容器"><a href="#5-2-并发容器" class="headerlink" title="5.2 并发容器"></a>5.2 并发容器</h2><p>通过并发容器来代替同步容器，可以极大地提高伸缩性并降低风险。</p>
-<table>
-<thead>
-<tr>
-<th>并发容器</th>
-<th>同步容器</th>
-<th>普通容器</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>BlockingQueue</td>
-<td>ConcurrentLinkedQueue</td>
-<td>PriorityQueue</td>
-<td></td>
-</tr>
-<tr>
-<td>ConcurrentHashMap, SkipListMap</td>
-<td>hashtable,  Collections.synchroniedList(TreeSet set)</td>
-<td>hashmap,SortedMap, SortedSet</td>
-<td></td>
-</tr>
-<tr>
-<td>CopyOnWriteArrayList</td>
-<td>Vector, Collections.synchroniedList(List list)</td>
-<td>ArrayList, LinkedList</td>
-<td></td>
-</tr>
-<tr>
-<td>CopyOnWriteArraySet, ConcurrentSkipListListSet</td>
-<td>Collections.synchroniedSet(Set set)</td>
-<td>LinkedHashSet, HashSet, TreeSet</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h3 id="5-2-1-ConcurrentHashMap"><a href="#5-2-1-ConcurrentHashMap" class="headerlink" title="5.2.1 ConcurrentHashMap"></a>5.2.1 ConcurrentHashMap</h3><p>ConcurrentHashMap使用更细粒度的加锁机制—<strong>分段锁</strong>来实现更大程度的共享。</p>
-<p>ConcurrentHashMap具有<strong>弱一致性</strong>(Weakly Consistent)，而非”及时失败”。</p>
-<p>只有当应用程序需要加锁Map以进行独占访问时，才应该放弃使用ConcurrentHashMap。</p>
-<h3 id="5-2-2-额外的原子Map操作"><a href="#5-2-2-额外的原子Map操作" class="headerlink" title="5.2.2 额外的原子Map操作"></a>5.2.2 额外的原子Map操作</h3><pre><code class="java">public interface ConcurrentMap&lt;K,V&gt; extends Map&lt;K,V&gt; {
-    // 仅当K没有相应的映射值时才插入
-    V putIfAbsent(K key, V value);
 
-    // 仅当K被映射到oldValue时才替换为newValue
-    boolean remove(K key, V value);
-
-    // 仅当K被映射到oldValue时才替换为newValue
-    boolean replace(K key, V oldValue, V newValue);
-
-    // 仅当K被映射到某个值时才替换为newValue
-    boolean replace(K key, V newValue);
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
 }
-</code></pre>
-<h3 id="5-2-3-CopyOnWriteArrayList"><a href="#5-2-3-CopyOnWriteArrayList" class="headerlink" title="5.2.3 CopyOnWriteArrayList"></a>5.2.3 CopyOnWriteArrayList</h3><p>CopyOnWriteArrayLsit用于替代同步List，某些情况下它提供了更好的并发行性能，并且在迭代期间不需要对容器进行加锁或复制（类似地，CopyOnWriteArraySet的作用是替代同步Set）。</p>
-<p>每当修改容器时都会复制底层数组，这需要一定的开销。</p>
-<p>仅当迭代操作远远多于修改操作时，才应该使用”写入时负责”容器。</p>
-<h2 id="5-3-阻塞队列和生产者-消费者模式"><a href="#5-3-阻塞队列和生产者-消费者模式" class="headerlink" title="5.3 阻塞队列和生产者-消费者模式"></a>5.3 阻塞队列和生产者-消费者模式</h2><p>在构建高可靠的应用程序时，有界队列是一种强大的资源管理工具:它们能抑制并防止产生过多的工作项，使应用程序在负荷过载的情况下变得更加健壮。</p>
-<p>BlockingQueue的方法:</p>
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+ 
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview   ">
+      <h1 class="mume-header" id="%E7%AC%AC12%E7%AB%A0-%E5%B9%B6%E5%8F%91%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%B5%8B%E8%AF%95">第12章 并发程序的测试</h1>
+
+<hr>
+<p>吞吐量:指一组并发任务中已完成任务所栈的比例。<br>
+响应性：指请求从发出到完成之间的时间（也成为延迟）。</p>
+<h2 class="mume-header" id="121-%E6%AD%A3%E7%A1%AE%E6%80%A7%E6%B5%8B%E8%AF%95">12.1 正确性测试</h2>
+
+<h3 class="mume-header" id="1211-%E5%9F%BA%E6%9C%AC%E7%9A%84%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">12.1.1 基本的单元测试</h3>
+
+<h3 class="mume-header" id="1212-%E5%AF%B9%E9%98%BB%E5%A1%9E%E6%93%8D%E4%BD%9C%E7%9A%84%E6%B5%8B%E8%AF%95">12.1.2 对阻塞操作的测试</h3>
+
+<h3 class="mume-header" id="1213-%E5%AE%89%E5%85%A8%E6%80%A7%E6%B5%8B%E8%AF%95">12.1.3 安全性测试</h3>
+
+<blockquote>
+<p>在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情况是，在测试属性中不需要任何同步机制。</p>
+</blockquote>
+<h3 class="mume-header" id="1214-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E7%9A%84%E6%B5%8B%E8%AF%95">12.1.4 资源管理的测试</h3>
+
+<h3 class="mume-header" id="%E4%BD%BF%E7%94%A8%E5%9B%9E%E8%B0%83">使用回调</h3>
+
+<h3 class="mume-header" id="1216-%E4%BA%A7%E7%94%9F%E8%B7%9F%E5%A4%9A%E7%9A%84%E4%BA%A4%E6%9B%BF%E6%93%8D%E4%BD%9C">12.1.6 产生跟多的交替操作</h3>
+
+<h2 class="mume-header" id="122-%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95">12.2 性能测试</h2>
+
+<h3 class="mume-header" id="1221-%E5%9C%A8puttaketest%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%AE%A1%E6%97%B6%E5%8A%9F%E8%83%BD">12.2.1 在PutTakeTest中增加计时功能</h3>
+
+<h3 class="mume-header" id="1222-%E5%A4%9A%E7%A7%8D%E7%AE%97%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83">12.2.2 多种算法的比较</h3>
+
+<h3 class="mume-header" id="%E5%93%8D%E5%BA%94%E6%80%A7%E8%A1%A1%E9%87%8F">响应性衡量</h3>
+
+<h2 class="mume-header" id="123-%E9%81%BF%E5%85%8D%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E7%9A%84%E9%99%B7%E9%98%B1">12.3 避免性能测试的陷阱</h2>
+
+<h3 class="mume-header" id="1231-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6">12.3.1 垃圾回收</h3>
+
+<h3 class="mume-header" id="1232-%E5%8A%A8%E6%80%81%E7%BC%96%E8%AF%91">12.3.2 动态编译</h3>
+
+<h3 class="mume-header" id="1233-%E5%AF%B9%E4%BB%A3%E7%A0%81%E8%B7%AF%E5%BE%84%E7%9A%84%E4%B8%8D%E7%9C%9F%E5%AE%9E%E9%87%87%E9%9B%86">12.3.3 对代码路径的不真实采集</h3>
+
+<h3 class="mume-header" id="1234-%E4%B8%8D%E7%9C%9F%E5%AE%9E%E7%9A%84%E7%AB%9E%E4%BA%89%E7%A8%8B%E5%BA%A6">12.3.4 不真实的竞争程度</h3>
+
+<h3 class="mume-header" id="1235-%E6%97%A0%E7%94%A8%E4%BB%A3%E7%A0%81%E7%9A%84%E6%B6%88%E9%99%A4">12.3.5 无用代码的消除</h3>
+
+<blockquote>
+<p>要编写有效的性能测试程序，那就需要告诉优化器不要将基准测试当作无用代码而优化掉。这就要求在程序中对每个计算结果都要通过某种方式来使用，这种方式不需要同步或者大量的计算。</p>
+</blockquote>
+<h2 class="mume-header" id="124-%E5%85%B6%E4%BB%96%E7%9A%84%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95">12.4 其他的测试方法</h2>
+
+<h3 class="mume-header" id="1241-%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5">12.4.1 代码审查</h3>
+
+<h3 class="mume-header" id="1242-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7">12.4.2 静态分析工具</h3>
+
+<h3 class="mume-header" id="1243-%E9%9D%A2%E5%90%91%E6%96%B9%E9%9D%A2%E7%9A%84%E6%B5%8B%E8%AF%95%E6%8A%80%E6%9C%AF">12.4.3 面向方面的测试技术</h3>
+
+<h3 class="mume-header" id="1244-%E5%88%86%E6%9E%90%E4%B8%8E%E7%9B%91%E6%B5%8B%E5%B7%A5%E5%85%B7">12.4.4 分析与监测工具</h3>
+
+<p>FindBUgs包含的检测器：</p>
 <ul>
-<li>put 如果队列满则阻塞</li>
-<li>take 如果队列为空则阻塞</li>
-<li>offer 如果队列满则返回一个失败状态，一般是false</li>
-<li>poll 如果队列空则返回一个表示空的数据,一般是null</li>
+<li>调用Thread.run()</li>
+<li>未被释放的锁<br>
+标准的做法是在一个人finally块中释放显式锁，否则，当发生Exception事件时，锁仍然处于未被释放的状态。</li>
+<li>空的同步块</li>
+<li>双重检查加锁<br>
+双重检查加锁时一种错误的习惯用法，其初衷是为了降低延迟初始化过程中的同步开销，该用法在读取一个共享的可变域时缺少正确的同步。</li>
+<li>在构造函数中启动一个线程。<br>
+如果在构造函数中启动一个线程，那么将可能带来子类化问题，同时还会导致this引用从构造函数中逸出。</li>
+<li>通知错误<br>
+如果一个同步块中调用了notify或notifyAll，但没有修改任何状态，那么就可能出错。</li>
+<li>条件等待中的错误<br>
+如果在调用Object.wait和Condition.await方法时没有持有锁，或者不在某个循环中，或者没有检查某些状态谓词，那么通常是一个错误。</li>
+<li>对Lock和Condition的误用</li>
+<li>在休眠或者等待的同时持有一个锁。</li>
+<li>自旋循环。<br>
+当等待某个状态转换发生时，闭锁或条件等待通常比在代码中自旋是一种更好的技术。</li>
 </ul>
-<p>BlockingQueue的多种实现:</p>
-<ul>
-<li><strong>LinkedBlockingQueue</strong> 基于链表，FIFO</li>
-<li><strong>ArrayBlockingQueue</strong> 基于数组, FIFO</li>
-<li><strong>PriorityBlockingQueue</strong> 按优先级排序的队列</li>
-<li><strong>SynchronousQueue</strong> 它不会为队列中元素维护储存空间，它维护一组线程，这些线程在等待着吧元素加入或者移出队列。</li>
-</ul>
-<h3 id="5-3-1-示例-桌面搜索"><a href="#5-3-1-示例-桌面搜索" class="headerlink" title="5.3.1 示例:桌面搜索"></a>5.3.1 示例:桌面搜索</h3><h3 id="5-3-2-串行线程封闭"><a href="#5-3-2-串行线程封闭" class="headerlink" title="5.3.2 串行线程封闭"></a>5.3.2 串行线程封闭</h3><p>对象池利用了串行线程封闭，将一个对象“借给”一个请求线程。</p>
-<p>还可以通过ConcurrentMap的原子方法remove或者AtomicReference的原子方法compareAndSet来转笔可变对象的所有的所有权（但必须确保只有一个线程能接受被转移的对象）。</p>
-<h3 id="双端队列与工作密取"><a href="#双端队列与工作密取" class="headerlink" title="双端队列与工作密取"></a>双端队列与工作密取</h3><p>Deque是一个双端队列，实现了在队头和队尾的高效插入和移除。具体实现包括ArrayList和LinkedBlockingDeque。</p>
-<p>双端队列适用于工作密取模式。</p>
-<h2 id="5-4-阻塞方法与中断方法"><a href="#5-4-阻塞方法与中断方法" class="headerlink" title="5.4 阻塞方法与中断方法"></a>5.4 阻塞方法与中断方法</h2><ul>
-<li>传递</li>
-<li>恢复中断</li>
-</ul>
-<pre><code class="java">public class TackRunnable implements Runnable {
-    try {
-            processTack(queue.take());
-        } catch (InterruptedException e) {
-            // 恢复被中断的状态
-            Thread.currentThread().interrupt();
-        }
-}
+<h2 class="mume-header" id="%E5%B0%8F%E7%BB%93">小结</h2>
 
-</code></pre>
-<h2 id="5-5-同步工具类"><a href="#5-5-同步工具类" class="headerlink" title="5.5 同步工具类"></a>5.5 同步工具类</h2><h3 id="5-5-1-闭锁"><a href="#5-5-1-闭锁" class="headerlink" title="5.5.1 闭锁"></a>5.5.1 闭锁</h3><p>CoutDwonLatch，倒计时门闩,又名闭锁、倒计时计数器，是一种同步工具类，可以延迟线程大的进度直到其到达终止状态。</p>
-<p>闭锁可以用来确保某些活动直到其他活动都完成后才能继续执行。</p>
-<ul>
-<li>确保某个计算在其需要得所有资源都被初始化之后才继续执行。二元闭锁（包括两个状态）可以用来表示“资源R已经被初始化”，而所有需要R的操作都必须现在这个闭锁上等待。</li>
-<li>确保某个服务在其依赖的所有其他服务都已经启动之后才启动。每个服务都有一个相关的二元闭锁。当启动服务S时，将首先在S依赖的其他服务的闭锁上等待，在所有依赖的服务启动后会释放锁S，这样其他依赖S的服务才能继续执行。</li>
-<li>等待直到某个操作的所有参与者（例如，在多个玩家游戏中的所有玩家）都就绪再继续执行。这种情况中，当所有玩家都准备就绪时，闭锁将到达结束状态。</li>
-</ul>
-<h3 id="5-5-2-FutureTask"><a href="#5-5-2-FutureTask" class="headerlink" title="5.5.2 FutureTask"></a>5.5.2 FutureTask</h3><p>FutureTask表示的计算是通过Callable来实现的，相当于一种可生成结果的Runnable，并且可以处于一下三种状态：</p>
-<ul>
-<li>等待运行(Wating to run)</li>
-<li>正在运行(Running)</li>
-<li>运行完成(Completed)</li>
-</ul>
-<h3 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h3><p>计数信号量用来控制同时访问某个某个特殊资源的操作数量，或者同时执行某个指定操作的数量。计算信号量还可以用来实现某种资源池，或者对容器施加边界。</p>
-<h3 id="5-5-4-栅栏"><a href="#5-5-4-栅栏" class="headerlink" title="5.5.4 栅栏"></a>5.5.4 栅栏</h3><p>栅栏类似于闭锁，他能阻塞一组线程直到某个事件发生。栅栏与闭锁的关键区别在于，所有线程必须同时到达栅栏位置，才能继续执行。闭锁用于等待事件，而栅栏用于等待其他线程线程。</p>
-<p>CyclicBarrier可以使一定数量的参与反复地在栅栏位置汇集，他在并行迭代算法中非常有用：这种算法通常将一个问题拆分成一系列相互独立的子问题。</p>
-<p>另一种形式的栅栏使Exchange，他是一种两方栅栏，各方在栅栏位置上交换数据。当两分法执行不对称的操作时，Exchanger会非常有用，例如当一个线程向缓冲区写入数据，而另一个线程从缓冲区读取数据。</p>
-<h2 id="5-6-构建高效且可伸缩的结果缓存"><a href="#5-6-构建高效且可伸缩的结果缓存" class="headerlink" title="5.6 构建高效且可伸缩的结果缓存"></a>5.6 构建高效且可伸缩的结果缓存</h2><p>使用ConcurrentHashMap和FutureTask来构架缓存</p>
-<pre><code class="java">
-public interface Computable&lt;A, V&gt; {
-    V compute(A arg) throws InterruptedExcetion;
-}
 
-public class Menoizer&lt;A, V&gt; implements Computable&lt;A, V&gt; {
-    private final ConcurrentMap&lt;A, Future&lt;V&gt;&gt; cache = new ConcurrentHashMap&lt;&gt;();
-    private final Computable&lt;A, V&gt; c;
-
-    public Menoizer(Computable&lt;A, V&gt; c) { this.c = c; }
-    while (true) {
-        Future&lt;V&gt; f = cache.get(arg);
-        if (f == null) {
-            Callable&lt;V&gt; eval = new Callable&lt;V&gt;() {
-                public V call() throws InterruptedException {
-                    return c.compute(args);
-                }
-            };
-            FutureTask&lt;V&gt; ft = new FutureTask&lt;V&gt;(eval);
-            // 复合操作（“若没有则添加”）
-            f = cache.putIfAbsent(arg, ft);
-            if(f == null) {
-                f = ft;
-                ft.run();
-            }
-        }
-        try{
-            // 若正在计算，则阻塞等待结果
-            return f.get();
-        } catch (CancellationException e) {
-            // 出现异常则去除缓存，防止缓存污染
-            cache.renove(arg,f);
-        } catch (ExecutionException e) {
-            throw launderThrowable(w.getCause())
-        }
-    }
-}
-
-</code></pre>
-<h2 id="第一部分小结"><a href="#第一部分小结" class="headerlink" title="第一部分小结"></a>第一部分小结</h2><ul>
-<li>可变状态是至关重要的。<br>  所有的并发问题都可以归结为如何协调对并发状态的访问，可变状态越少，就越容易确保线程安全。</li>
-<li>尽量将域声明为final类型，除非需要它们是可变的。</li>
-<li>不可变对象一定是线程安全的。<br>  不可变对象能极大地降低并发编程的复杂性。它们更为简单而且安全，可以任意共享而无须使用加锁或保护性复制等机制。</li>
-<li>封装有助于管理复杂性<br>  在编写线程安全的程序时，虽然可以将所有数据都保存在全局变量中，但为什么要这么做？将数据封装在对象中，更易于维持不变性条件：将同步机制封装在对象中，更易于遵循同步策略。</li>
-<li>用锁来保护每个可变变量。</li>
-<li>当保护同一个不变性条件中的所有变量时，要使用用一个锁。</li>
-<li>在执行复合操作期间，要持有锁。</li>
-<li>如果从多个线程中访问同一个可变变量没有同步机制，那么程序会出现问题。</li>
-<li>不要故作聪明地推断出不需要使用同步。</li>
-<li>在设计过程中考虑线程安全，或者在文档中明确地指出它不是线程安全的。</li>
-<li>将同步策略文档化。</li>
-</ul>
-
+      </div>
+      
+      
+    </body>
+    
+    
+    
+    
+    
+    
+    
+  </html>
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/10/《Java并发编程实战》-4/" data-id="cjkthgrjm000qj0vtyi3wn6sy" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/22/《Java并发编程实战》-11/" data-id="cjl61a5gb000fqwvtfhj2ow09" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -383,7 +479,7 @@ public class Menoizer&lt;A, V&gt; implements Computable&lt;A, V&gt; {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-4" ></div> 
+<div id="SOHUCS" sid="《Java并发编程实战》-11" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -401,10 +497,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-3" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Java并发编程实战》-11" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/08/《Java并发编程实战》-3/" class="article-date">
-  <time datetime="2018-08-08T10:26:41.448Z" itemprop="datePublished">2018-08-08</time>
+    <h3 href="/2018/08/22/《Java并发编程实战》-11/" class="article-date">
+  <time datetime="2018-08-22T10:30:28.961Z" itemprop="datePublished">2018-08-22</time>
 </h3>
     
   <div class="article-category">
@@ -421,7 +517,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/08/《Java并发编程实战》-3/">《Java并发编程实战》-3</a>
+      <a class="article-title" href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
     </h1>
   
 
@@ -430,99 +526,28 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="对象的组合"><a href="#对象的组合" class="headerlink" title="对象的组合"></a>对象的组合</h1><h2 id="4-1-设计线程安全的类"><a href="#4-1-设计线程安全的类" class="headerlink" title="4.1 设计线程安全的类"></a>4.1 设计线程安全的类</h2><p>在设计线程安全类的过程中，需要包含一下三个基本要素：</p>
+        <h1 id="第12章-并发程序的测试"><a href="#第12章-并发程序的测试" class="headerlink" title="第12章 并发程序的测试"></a>第12章 并发程序的测试</h1><hr>
+<p>吞吐量:指一组并发任务中已完成任务所栈的比例。<br>响应性：指请求从发出到完成之间的时间（也成为延迟）。</p>
+<h2 id="12-1-正确性测试"><a href="#12-1-正确性测试" class="headerlink" title="12.1 正确性测试"></a>12.1 正确性测试</h2><h3 id="12-1-1-基本的单元测试"><a href="#12-1-1-基本的单元测试" class="headerlink" title="12.1.1 基本的单元测试"></a>12.1.1 基本的单元测试</h3><h3 id="12-1-2-对阻塞操作的测试"><a href="#12-1-2-对阻塞操作的测试" class="headerlink" title="12.1.2 对阻塞操作的测试"></a>12.1.2 对阻塞操作的测试</h3><h3 id="12-1-3-安全性测试"><a href="#12-1-3-安全性测试" class="headerlink" title="12.1.3 安全性测试"></a>12.1.3 安全性测试</h3><blockquote>
+<p>在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情况是，在测试属性中不需要任何同步机制。</p>
+</blockquote>
+<h3 id="12-1-4-资源管理的测试"><a href="#12-1-4-资源管理的测试" class="headerlink" title="12.1.4 资源管理的测试"></a>12.1.4 资源管理的测试</h3><h3 id="使用回调"><a href="#使用回调" class="headerlink" title="使用回调"></a>使用回调</h3><h3 id="12-1-6-产生跟多的交替操作"><a href="#12-1-6-产生跟多的交替操作" class="headerlink" title="12.1.6 产生跟多的交替操作"></a>12.1.6 产生跟多的交替操作</h3><h2 id="12-2-性能测试"><a href="#12-2-性能测试" class="headerlink" title="12.2 性能测试"></a>12.2 性能测试</h2><h3 id="12-2-1-在PutTakeTest中增加计时功能"><a href="#12-2-1-在PutTakeTest中增加计时功能" class="headerlink" title="12.2.1 在PutTakeTest中增加计时功能"></a>12.2.1 在PutTakeTest中增加计时功能</h3><h3 id="12-2-2-多种算法的比较"><a href="#12-2-2-多种算法的比较" class="headerlink" title="12.2.2 多种算法的比较"></a>12.2.2 多种算法的比较</h3><h3 id="响应性衡量"><a href="#响应性衡量" class="headerlink" title="响应性衡量"></a>响应性衡量</h3><h2 id="12-3-避免性能测试的陷阱"><a href="#12-3-避免性能测试的陷阱" class="headerlink" title="12.3 避免性能测试的陷阱"></a>12.3 避免性能测试的陷阱</h2><h3 id="12-3-1-垃圾回收"><a href="#12-3-1-垃圾回收" class="headerlink" title="12.3.1 垃圾回收"></a>12.3.1 垃圾回收</h3><h3 id="12-3-2-动态编译"><a href="#12-3-2-动态编译" class="headerlink" title="12.3.2 动态编译"></a>12.3.2 动态编译</h3><h3 id="12-3-3-对代码路径的不真实采集"><a href="#12-3-3-对代码路径的不真实采集" class="headerlink" title="12.3.3 对代码路径的不真实采集"></a>12.3.3 对代码路径的不真实采集</h3><h3 id="12-3-4-不真实的竞争程度"><a href="#12-3-4-不真实的竞争程度" class="headerlink" title="12.3.4 不真实的竞争程度"></a>12.3.4 不真实的竞争程度</h3><h3 id="12-3-5-无用代码的消除"><a href="#12-3-5-无用代码的消除" class="headerlink" title="12.3.5 无用代码的消除"></a>12.3.5 无用代码的消除</h3><blockquote>
+<p>要编写有效的性能测试程序，那就需要告诉优化器不要将基准测试当作无用代码而优化掉。这就要求在程序中对每个计算结果都要通过某种方式来使用，这种方式不需要同步或者大量的计算。</p>
+</blockquote>
+<h2 id="12-4-其他的测试方法"><a href="#12-4-其他的测试方法" class="headerlink" title="12.4 其他的测试方法"></a>12.4 其他的测试方法</h2><h3 id="12-4-1-代码审查"><a href="#12-4-1-代码审查" class="headerlink" title="12.4.1 代码审查"></a>12.4.1 代码审查</h3><h3 id="12-4-2-静态分析工具"><a href="#12-4-2-静态分析工具" class="headerlink" title="12.4.2 静态分析工具"></a>12.4.2 静态分析工具</h3><h3 id="12-4-3-面向方面的测试技术"><a href="#12-4-3-面向方面的测试技术" class="headerlink" title="12.4.3 面向方面的测试技术"></a>12.4.3 面向方面的测试技术</h3><h3 id="12-4-4-分析与监测工具"><a href="#12-4-4-分析与监测工具" class="headerlink" title="12.4.4 分析与监测工具"></a>12.4.4 分析与监测工具</h3><p>FindBUgs包含的检测器：</p>
 <ul>
-<li>找出构成对象状态的所有变量。</li>
-<li>找出约束状态变量的不变性条件。</li>
-<li>建立对象状态的并发访问管理策略。</li>
+<li>调用Thread.run()</li>
+<li>未被释放的锁<br>  标准的做法是在一个人finally块中释放显式锁，否则，当发生Exception事件时，锁仍然处于未被释放的状态。</li>
+<li>空的同步块</li>
+<li>双重检查加锁<br>  双重检查加锁时一种错误的习惯用法，其初衷是为了降低延迟初始化过程中的同步开销，该用法在读取一个共享的可变域时缺少正确的同步。</li>
+<li>在构造函数中启动一个线程。<br>  如果在构造函数中启动一个线程，那么将可能带来子类化问题，同时还会导致this引用从构造函数中逸出。</li>
+<li>通知错误<br>  如果一个同步块中调用了notify或notifyAll，但没有修改任何状态，那么就可能出错。</li>
+<li>条件等待中的错误<br>  如果在调用Object.wait和Condition.await方法时没有持有锁，或者不在某个循环中，或者没有检查某些状态谓词，那么通常是一个错误。</li>
+<li>对Lock和Condition的误用</li>
+<li>在休眠或者等待的同时持有一个锁。</li>
+<li>自旋循环。<br>  当等待某个状态转换发生时，闭锁或条件等待通常比在代码中自旋是一种更好的技术。</li>
 </ul>
-<h3 id="4-1-1-收集同步需求"><a href="#4-1-1-收集同步需求" class="headerlink" title="4.1.1 收集同步需求"></a>4.1.1 收集同步需求</h3><blockquote>
-<p>如果不了解对象的不变性与厚颜条件，那么就不能确保线程安全性。要满足在状态变量的有效值或状态转换上的各种约束条件，就需要结组于原子性和封装性。</p>
-</blockquote>
-<h3 id="4-1-2-依赖状态的操作"><a href="#4-1-2-依赖状态的操作" class="headerlink" title="4.1.2 依赖状态的操作"></a>4.1.2 依赖状态的操作</h3><h3 id="4-13-状态的所有权"><a href="#4-13-状态的所有权" class="headerlink" title="4.13 状态的所有权"></a>4.13 状态的所有权</h3><h3 id="4-2-实例封闭"><a href="#4-2-实例封闭" class="headerlink" title="4.2 实例封闭"></a>4.2 实例封闭</h3><p>将数据封闭在对象内部，可以将数据的访问限制在对象的方法上，从而更加容易确保在访问数据时总能持有正确的锁。</p>
-<p>封闭机制更加易于构造线程安全的类，因为当封闭类的状态时，在分析类的线程安全性时就无需检查整个程序。</p>
-<h3 id="4-2-1-Java监视器模式"><a href="#4-2-1-Java监视器模式" class="headerlink" title="4.2.1 Java监视器模式"></a>4.2.1 Java监视器模式</h3><p>通过一个私有锁来保护状态</p>
-<pre><code class="java">public class PrivateLock {
-    private final Object myLock = new Object();
-    @GuardedBy(&quot;myLock&quot;) Widget widget;
-
-    void someMethod() {
-        synchronized(myLock) {
-            // 访问或修改Widget的状态
-        }
-    }
-}
-</code></pre>
-<h3 id="4-2-2-实例-车辆追踪"><a href="#4-2-2-实例-车辆追踪" class="headerlink" title="4.2.2 实例:车辆追踪"></a>4.2.2 实例:车辆追踪</h3><h2 id="4-3-线程安全性的委托"><a href="#4-3-线程安全性的委托" class="headerlink" title="4.3 线程安全性的委托"></a>4.3 线程安全性的委托</h2><h3 id="4-3-1-示例-基于委托的车辆跟踪器"><a href="#4-3-1-示例-基于委托的车辆跟踪器" class="headerlink" title="4.3.1 示例:基于委托的车辆跟踪器"></a>4.3.1 示例:基于委托的车辆跟踪器</h3><h3 id="4-3-2-独立的状态变量"><a href="#4-3-2-独立的状态变量" class="headerlink" title="4.3.2 独立的状态变量"></a>4.3.2 独立的状态变量</h3><h3 id="4-3-3-当委托失效时"><a href="#4-3-3-当委托失效时" class="headerlink" title="4.3.3 当委托失效时"></a>4.3.3 当委托失效时</h3><p>如果一个类时由多个独立且线程安全的状态变量组成，并且在所有的操作中都不包含无效状态转换，那么可以将线程安全性安全性委托给底层的状态变量。</p>
-<p>如果一个状态变量是线程安全的，并且没有任何不变性条件来约束它的值，在变量的操作上也不存在任何不允许的状态转换，那么就可以说安全地发布这个变量。</p>
-<h2 id="4-4-在现有的线程安全类中添加功能"><a href="#4-4-在现有的线程安全类中添加功能" class="headerlink" title="4.4 在现有的线程安全类中添加功能"></a>4.4 在现有的线程安全类中添加功能</h2><p>扩展Vector并增加一个”若没有则添加”方法</p>
-<pre><code class="java">@TheadSafe
-public class BetterVector&lt;E&gt; extends Vector&lt;E&gt; {
-    public synchronized boolean putIfAbsent(E x) {
-        boolean absent = !contains(x);
-        if(absent) {
-            add(x)
-        }
-        return absent;
-    }
-}
-</code></pre>
-<p>“扩展”方法比直接将代码添加到类中更加脆弱，因为现在的同步策略实现被分布到多个单独维护的源代码文件中。</p>
-<h3 id="4-4-1-客户端加锁机制"><a href="#4-4-1-客户端加锁机制" class="headerlink" title="4.4.1 客户端加锁机制"></a>4.4.1 客户端加锁机制</h3><p>非现象安全的”若没有则添加”（不要这么做）</p>
-<pre><code class="java">@NotThreadSafe
-public class ListHelper&lt;E&gt; {
-    public List&lt;E&gt; list = Colletions.synchronizedList(new ArrayList&lt;E&gt;());
-
-    pblic synchronized boolean putIfAbsent(E x) {
-        boolean absent = list.contains(x);
-        if(absent)
-            list.add(x);
-        return absent;
-    }
-}
-</code></pre>
-<p>ListHelper只是带来了同步的假象，尽管所有的链表操作都被声明为synchronized,但是却<strong>使用了不同的锁</strong>。(list本身的锁和ListHelper对象的锁)</p>
-<p>通过客户端加锁来实现“若没有则添加”（线程安全）</p>
-<pre><code class="java">@ThreadSafe
-public class ListHelper&lt;E&gt; {
-    public List&lt;E&gt; list = Colletions.synchronizedList(new ArrayList&lt;E&gt;());
-
-    pblic boolean putIfAbsent(E x) {
-        synchronized(list) {
-        boolean absent = list.contains(x);
-        if(absent)
-            list.add(x);
-        return absent;
-        }
-    }
-}
-</code></pre>
-<h3 id="4-4-2-组合"><a href="#4-4-2-组合" class="headerlink" title="4.4.2 组合"></a>4.4.2 组合</h3><p>通过组合实现“若没有则添加”</p>
-<pre><code class="java">@ThreadSafe
-public class ImporvedList&lt;T&gt; implements List&lt;T&gt; {
-    private final List&lt;T&gt; list;
-
-    public ImprovedList(List&lt;T&gt; list) { this.list = list;}
-
-    public synchronized boolean putIfAbsent(T x) {
-        boolean contains = list.contains(x);
-        if (contains)
-            list.add(x);
-        return !contains;
-    }
-
-    public synchronized void clear() {
-        lsit.clear();
-    }
-
-    // ... 按照类似的方法委托List的其他方法
-}
-</code></pre>
-<p>事实上，我们使用了Java监视器模式来封装现有的List,并且只要在类中拥有指向底层List的<strong>唯一</strong>外部引用，就能确保线程安全性。</p>
-<h2 id="4-5-将同步策略文档化"><a href="#4-5-将同步策略文档化" class="headerlink" title="4.5 将同步策略文档化"></a>4.5 将同步策略文档化</h2><blockquote>
-<p>在文档中说明客户端代码需要了解的线程安全性保证，以及代码人员需要了解的同步策略。</p>
-</blockquote>
-
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2>
       
     </div>
     <footer class="article-footer">
@@ -530,7 +555,7 @@ public class ImporvedList&lt;T&gt; implements List&lt;T&gt; {
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/08/《Java并发编程实战》-3/" data-id="cjkthgrjj000mj0vt28df1jlw" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/22/《Java并发编程实战》-11/" data-id="cjl61a5g9000dqwvtzosi5xzy" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -538,7 +563,7 @@ public class ImporvedList&lt;T&gt; implements List&lt;T&gt; {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-3" ></div> 
+<div id="SOHUCS" sid="《Java并发编程实战》-11" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -558,7 +583,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -572,23 +597,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2018/08/13/《Java并发编程实战》-5/">《Java并发编程实战》-5</a>
+            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12 第13章 显式锁</a>
           </li>
         
           <li>
-            <a href="/2018/08/10/《Java并发编程实战》-4/">《Java并发编程实战》-4</a>
+            <a href="/2018/08/22/《Java并发编程实战》-11/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2018/08/08/《Java并发编程实战》-3/">《Java并发编程实战》-3</a>
+            <a href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
           </li>
         
           <li>
-            <a href="/2018/08/07/Java常用的排序算法/">Java常用的排序算法</a>
+            <a href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
           </li>
         
           <li>
-            <a href="/2018/08/07/《Java并发编程实战》-2/">《Java并发编程实战》-2</a>
+            <a href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
           </li>
         
       </ul>
@@ -600,7 +625,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -609,7 +634,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
