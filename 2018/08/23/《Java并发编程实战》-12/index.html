@@ -5,20 +5,20 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   
-  <title>《Java并发编程实战》-12 第13章 显式锁 | gonefuture</title>
+  <title>《Java并发编程实战》-12   第13章 显式锁 | gonefuture</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="第13章 显式锁">
+  <meta name="description" content="第13章 显式锁13.1 Lock 与 ReentrantLock使用ReentrantLock来保护对象状态 Lock lock = new ReentrantLock(); ... lcok.lock() try{     // 更新对象状态     // 捕捉异常，并在必要时恢复不变性条件 } finally {     lock.unlock(); }  13.1.1 轮询锁与定时锁 if">
 <meta name="keywords" content="java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="《Java并发编程实战》-12 第13章 显式锁">
+<meta property="og:title" content="《Java并发编程实战》-12   第13章 显式锁">
 <meta property="og:url" content="http://gonefuture.top/2018/08/23/《Java并发编程实战》-12/index.html">
 <meta property="og:site_name" content="gonefuture">
-<meta property="og:description" content="第13章 显式锁">
+<meta property="og:description" content="第13章 显式锁13.1 Lock 与 ReentrantLock使用ReentrantLock来保护对象状态 Lock lock = new ReentrantLock(); ... lcok.lock() try{     // 更新对象状态     // 捕捉异常，并在必要时恢复不变性条件 } finally {     lock.unlock(); }  13.1.1 轮询锁与定时锁 if">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-23T03:54:23.956Z">
+<meta property="og:updated_time" content="2018-08-23T06:55:44.012Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="《Java并发编程实战》-12 第13章 显式锁">
-<meta name="twitter:description" content="第13章 显式锁">
+<meta name="twitter:title" content="《Java并发编程实战》-12   第13章 显式锁">
+<meta name="twitter:description" content="第13章 显式锁13.1 Lock 与 ReentrantLock使用ReentrantLock来保护对象状态 Lock lock = new ReentrantLock(); ... lcok.lock() try{     // 更新对象状态     // 捕捉异常，并在必要时恢复不变性条件 } finally {     lock.unlock(); }  13.1.1 轮询锁与定时锁 if">
   
     <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
   
@@ -103,7 +103,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      《Java并发编程实战》-12 第13章 显式锁
+      《Java并发编程实战》-12   第13章 显式锁
     </h1>
   
 
@@ -112,7 +112,46 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="第13章-显式锁"><a href="#第13章-显式锁" class="headerlink" title="第13章 显式锁"></a>第13章 显式锁</h1>
+        <h1 id="第13章-显式锁"><a href="#第13章-显式锁" class="headerlink" title="第13章 显式锁"></a>第13章 显式锁</h1><h2 id="13-1-Lock-与-ReentrantLock"><a href="#13-1-Lock-与-ReentrantLock" class="headerlink" title="13.1 Lock 与 ReentrantLock"></a>13.1 Lock 与 ReentrantLock</h2><p>使用ReentrantLock来保护对象状态</p>
+<pre><code class="java">Lock lock = new ReentrantLock();
+...
+lcok.lock()
+try{
+    // 更新对象状态
+    // 捕捉异常，并在必要时恢复不变性条件
+} finally {
+    lock.unlock();
+}
+</code></pre>
+<h2 id="13-1-1-轮询锁与定时锁"><a href="#13-1-1-轮询锁与定时锁" class="headerlink" title="13.1.1 轮询锁与定时锁"></a>13.1.1 轮询锁与定时锁</h2><pre><code class="java">
+if (!lock.tryLock(nanosToLock, NANOSECONDS)) 
+    return false;
+try {
+    return sendOnShareLine(message)
+} finally {
+    lock.unlock()
+}
+</code></pre>
+<h3 id="13-1-2-可中断的锁获取操作"><a href="#13-1-2-可中断的锁获取操作" class="headerlink" title="13.1.2 可中断的锁获取操作"></a>13.1.2 可中断的锁获取操作</h3><p>正如定时的锁获取操作能在带有事件限制的操作中使用独占锁，可中断的锁获取操作同样能在可取消的操作中使用加锁。</p>
+<h3 id="13-1-3-非块结构的加锁"><a href="#13-1-3-非块结构的加锁" class="headerlink" title="13.1.3 非块结构的加锁"></a>13.1.3 非块结构的加锁</h3><p>锁分段技术在基于散列的容器中实现了不同的散列链，以便使用不同的锁。</p>
+<h2 id="13-2-性能考虑因素"><a href="#13-2-性能考虑因素" class="headerlink" title="13.2 性能考虑因素"></a>13.2 性能考虑因素</h2><blockquote>
+<p>性能时一个不断变化的指标，内置锁和ReentrantLock在各个JDK版本都不一样。</p>
+</blockquote>
+<h2 id="13-3-公平锁"><a href="#13-3-公平锁" class="headerlink" title="13.3 公平锁"></a>13.3 公平锁</h2><p>在公平锁上，线程将按照它们发出请求的顺序来获得锁，但在非公平锁上，则允许“插队”:当一个线程请求非公平锁的时，如果在发出请求的同时该锁的状态变为可用，那么这个线程将跳过队列中所有的等待线程并获得这个锁。(在Semaphore中同样可以选择采用公平或非公平的获取顺序。)</p>
+<p>在大多数情况下，非公平锁的性能要高于公平锁的性能。</p>
+<h2 id="13-4-在synchronied和ReentrantLock之间进行选择"><a href="#13-4-在synchronied和ReentrantLock之间进行选择" class="headerlink" title="13.4 在synchronied和ReentrantLock之间进行选择"></a>13.4 在synchronied和ReentrantLock之间进行选择</h2><blockquote>
+<p>在一些内置锁无法满足需求的情况下，<code>ReentrantLock</code>可以作为一种高级工具。当需要一些高级功能时才应该使用<code>ReentrantLock</code>，这些功能包括：可定时的、可轮询的与可中断的锁获取操作，公平队列，以及非块结构的锁。否则，还是应该优先使用<code>synchronized</code>。</p>
+</blockquote>
+<h2 id="读-写锁"><a href="#读-写锁" class="headerlink" title="读-写锁"></a>读-写锁</h2><p>ReadWriteLock中的一些可选实现包括：</p>
+<ul>
+<li><strong>释放优先</strong>。当一个写入操作释放写入锁时，并且队伍中同时存在读线程和写线程，那么应该优先选择读线程，写线程，还是最先发出请求的线程？</li>
+<li><strong>读线程插队</strong>。如果锁是由读线程持有，但有写线程正在等待，那么新到达的读线程能否立即获得访问权，还是应该在写线程后面等待？如果允许线程插队到写线程之前，那么将提高并发性，但却可能造成写线程饥饿问题。</li>
+<li><strong>重入性</strong>。读取锁和写入锁是否是可重入的。</li>
+<li><strong>降级</strong>。如果一个线程持有写入锁，那么它能否在不释放该锁的情况下获得读取锁？这可能会使得写入锁被“降级”为读取锁，同时不允许其他写线程修改被保护的资源。</li>
+<li><strong>升级</strong>。读取锁能否优于其他正在等待的读线程和写线程而升级为一个写入锁？在大多数的读-写锁实现中并不支持升级，因为如果没有显式的升级操作，那么很容易造成死锁。（如果两个读线程试图同时升级为写入锁，那么二者都不会释放读取锁。）</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>与内置锁相比，显式的Lock提供了一些宽展功能，在处理锁的不可用性方面有着更高的灵活性，并且对队列行有着更好的控制。但ReentrantLock不能完全替代<code>synchronized</code>，只有在<code>synchronized</code>无法满足需求时，才应该使用它。<br>读-写允许多个读线程并发地访问被保护的对象，当访问以读取操作为主的数据结构时，他能提高程序的可伸缩性。</p>
+
       
     </div>
     <footer class="article-footer">
@@ -120,7 +159,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/23/《Java并发编程实战》-12/" data-id="cjl61a5ge000iqwvtoub99lur" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/23/《Java并发编程实战》-12/" data-id="cjl7oaoa6000uosvtz2ppms6q" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -145,7 +184,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
     <a href="/2018/08/22/《Java并发编程实战》-11/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title"></div>
+      <div class="article-nav-title">《Java并发编程实战》-11 第12章 并发程序的测试</div>
     </a>
   
 </nav>
@@ -167,11 +206,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12 第13章 显式锁</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/22/《Java并发编程实战》-11/">(no title)</a>
+            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12   第13章 显式锁</a>
           </li>
         
           <li>
@@ -184,6 +219,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
           <li>
             <a href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/16/《Java并发编程实战》-8/">《Java并发编程实战》-8</a>
           </li>
         
       </ul>
@@ -204,7 +243,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

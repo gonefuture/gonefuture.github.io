@@ -83,75 +83,6 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-jdk8-reduce" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/26/jdk8-reduce/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.269Z" itemprop="datePublished">2018-07-26</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/jdk8-reduce/">JDK8 lambda reduce （转载自zooooooooy）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <p>今天接了一个需求，需要在302的同时，将代理的所有参数都在转发到新的页面上</p>
-<p>直接上代码</p>
-<pre><code>    Map&lt;String, String[]&gt; parameterMap = request.getParameterMap();
-    List&lt;String&gt; paramList = new ArrayList&lt;&gt;();
-    parameterMap.forEach((k,v) -&gt; {
-       paramList.add(k + &quot;=&quot; + v[0]);
-    });
-
-    String paramChain = paramList.stream().reduce((s1, s2) -&gt; s1 + &quot;&amp;&quot; + s2).get();
-    response.setStatus(302);
-    response.setHeader(&quot;Location&quot;, lxAddress + &quot;?&quot; + paramChain);
-    response.setHeader(&quot;Connection&quot;, &quot;close&quot;);
-</code></pre>
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2018/07/26/jdk8-reduce/" data-id="cjl61a5g3000bqwvtgdl8dq08" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="jdk8-reduce" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
     <article id="post-java-scattered" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/07/26/java-scattered/" class="article-date">
@@ -350,7 +281,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2018/07/26/java-scattered/" data-id="cjl61a5gj000pqwvtluaym1ix" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/07/26/java-scattered/" data-id="cjl7oaoa1000nosvt3lk6styc" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -431,7 +362,7 @@ public Builder(Configuration configuration, String property, Class&lt;?&gt; java
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2018/07/26/java-build-mode/" data-id="cjl61a5g00007qwvtt1rx4sih" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/07/26/java-build-mode/" data-id="cjl7oao9c0009osvtfrd7m1m0" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -457,9 +388,111 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
+    <article id="post-hexo-oschina" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/07/26/hexo-oschina/" class="article-date">
+  <time datetime="2018-07-26T02:28:13.259Z" itemprop="datePublished">2018-07-26</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/hexo-oschina/">oschina git仓库提交webHook触发hexo博客更新 （转载自zooooooooy）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h4 id="创建一个项目"><a href="#创建一个项目" class="headerlink" title="创建一个项目"></a>创建一个项目</h4><p><img src="/images/TIM截图20180428143154.png" alt="项目界面"></p>
+<ol>
+<li>将服务器上的代码整个打包传到项目上来，使用如下命令<br> 1.1    git init<br> 1.2 git add .<br> 1.3 git commit -m ‘init’<br> 1.4 git remote add origin ‘your remote ssh address’</li>
+<li><p>后续就需要配置openresty，解决自动提交webHook触发脚本执行的功能<br> 2.1 openresty的安装可以参照官网<br> 2.2 启动还是跟nginx一样的，start nginx<br> 2.3 配置nginx的配置，执行lua脚本<br> 2.4 lua脚本中需要验证密码这一块，我暂时没处理，oschina的验证规则是在post body里面有一个参数是password，可以和自己的配置的webHook秘钥进行匹配就可以<br> 2.5 lua脚本只是简单执行依据脚本命令</p>
+<pre><code> os.execute(&quot;bash /opt/lua/hexo.sh&quot;);
+ ngx.say(&quot;OK&quot;)
+ ngx.exit(200)
+
+</code></pre><p> 2.6 主要是后续的shell命令，操作的流程是获取git 远程的代码，执行hexo的generate生成静态文件</p>
+<pre><code> #! /bin/bash
+ blog_dir=/opt/blog
+ branch=master
+ hexo=/root/.nvm/versions/node/v9.11.1/bin/hexo
+
+ cd $blog_dir
+ git reset --hard origin/$branch
+ git clean -f
+ git pull origin master
+
+ cd $blog_dir
+ $hexo generate
+ echo &quot;success&quot;
+
+</code></pre><p> 2.7 静态文件的目录是public，前面装好的openresty也可以用作服务代理，将域名的root访问路径指向到public目录即可<br> 2.8 漏了nginx的转发配置了，有两个  一个是webHook地址，一个是服务器的请求地址</p>
+<pre><code> server {
+     listen       80;
+     server_name  db101.cn;
+
+     lua_code_cache off;
+
+     location / {
+         root   /opt/blog/public;
+         index  index.html index.htm;
+     }
+
+     location /hexo/github {
+         content_by_lua_file /opt/lua/hexo.lua;
+     }
+ }
+
+</code></pre></li>
+</ol>
+<hr>
+<p>后续就可以当更新了source下面的md文件。可以直接通过域名访问到最新的更新了。也可以修改其他的主体或者配置一类的文件。当有push操作时触发webHook操作，调用服务器的地址，最终更新页面。</p>
+<p>上述步骤参考的网址 &gt; <a href="https://blog.liaol.net/" target="_blank" rel="noopener">https://blog.liaol.net/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2018/07/26/hexo-oschina/" data-id="cjl7oao9a0007osvts5zcorss" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="hexo-oschina" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -473,11 +506,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12 第13章 显式锁</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/22/《Java并发编程实战》-11/">(no title)</a>
+            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12   第13章 显式锁</a>
           </li>
         
           <li>
@@ -490,6 +519,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
           <li>
             <a href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/16/《Java并发编程实战》-8/">《Java并发编程实战》-8</a>
           </li>
         
       </ul>
@@ -510,7 +543,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
