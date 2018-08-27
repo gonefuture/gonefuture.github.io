@@ -83,6 +83,138 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-semaphore" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/07/26/semaphore/" class="article-date">
+  <time datetime="2018-07-26T02:28:13.273Z" itemprop="datePublished">2018-07-26</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/semaphore/">Semaphore （转载自zooooooooy）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <p>是一个分离的信号量计数器<br>主要核心方法有两个：</p>
+<ul>
+<li>acquire<br><em>从信号队列里面获取一个信号量，如果没有获取到则会一直阻塞到获取到信号量为止</em></li>
+<li>release<br><em>释放一个信号量回队列，这种模型相对来说比较适合池这种类型的业务需求</em></li>
+</ul>
+<p>acquire(int permits) 一次获取多个信号量<br>acquireUninterruptibly() 连续获取一个信号量<br>acquireUninterruptibly(int permits) 连续获得多个信号量</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2018/07/26/semaphore/" data-id="cjlbpfvxb000q2ovt5v84dfnv" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="semaphore" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-jdk8-reduce" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/07/26/jdk8-reduce/" class="article-date">
+  <time datetime="2018-07-26T02:28:13.269Z" itemprop="datePublished">2018-07-26</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/jdk8-reduce/">JDK8 lambda reduce （转载自zooooooooy）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <p>今天接了一个需求，需要在302的同时，将代理的所有参数都在转发到新的页面上</p>
+<p>直接上代码</p>
+<pre><code>    Map&lt;String, String[]&gt; parameterMap = request.getParameterMap();
+    List&lt;String&gt; paramList = new ArrayList&lt;&gt;();
+    parameterMap.forEach((k,v) -&gt; {
+       paramList.add(k + &quot;=&quot; + v[0]);
+    });
+
+    String paramChain = paramList.stream().reduce((s1, s2) -&gt; s1 + &quot;&amp;&quot; + s2).get();
+    response.setStatus(302);
+    response.setHeader(&quot;Location&quot;, lxAddress + &quot;?&quot; + paramChain);
+    response.setHeader(&quot;Connection&quot;, &quot;close&quot;);
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2018/07/26/jdk8-reduce/" data-id="cjlbpfvwv000e2ovtg7nyxqkp" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="jdk8-reduce" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
     <article id="post-java-scattered" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/07/26/java-scattered/" class="article-date">
@@ -281,7 +413,7 @@
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2018/07/26/java-scattered/" data-id="cjl7oaoa1000nosvt3lk6styc" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/07/26/java-scattered/" data-id="cjlbpfvwk00072ovt209hv3oy" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -307,192 +439,9 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-java-build-mode" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/26/java-build-mode/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.263Z" itemprop="datePublished">2018-07-26</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/java-build-mode/">java build mode （转载自zooooooooy）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <p>还有一种通过内部类来实现单例的方式，静态内部类只能访问外部类的静态方法和静态属性。现在一般利用这个特性来实现单例模式。应该类在初始化的时候线程是互斥的，可以完美的解决单例创建冲突的问题。</p>
-<p>借用mybatis单例的实现来看一下：</p>
-<p>Class:ParameterMapping</p>
-<p>构造方法私有化：</p>
-<p>private ParameterMapping() {<br>}</p>
-<p>静态内部类来初始化外部对象：</p>
-<p>public static class Builder {<br>    private ParameterMapping parameterMapping = new ParameterMapping();</p>
-<pre><code>public Builder(Configuration configuration, String property, TypeHandler&lt;?&gt; typeHandler) { --生成ParameterMapping对象
-  parameterMapping.configuration = configuration;
-  parameterMapping.property = property;
-  parameterMapping.typeHandler = typeHandler;
-  parameterMapping.mode = ParameterMode.IN;
-}
-
-public Builder(Configuration configuration, String property, Class&lt;?&gt; javaType) {
-  parameterMapping.configuration = configuration;
-  parameterMapping.property = property;
-  parameterMapping.javaType = javaType;
-  parameterMapping.mode = ParameterMode.IN;
-}
-</code></pre><p>}</p>
-<p>提供公共build方法来返回该单例对象：</p>
-<p>public ParameterMapping build() {<br>      resolveTypeHandler();<br>      validate();<br>      return parameterMapping;<br>}</p>
-<p>这种方式相对于一般的单例方式的实现，复杂度会相对高一点,其实是java的builder建造者模式。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2018/07/26/java-build-mode/" data-id="cjl7oao9c0009osvtfrd7m1m0" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="java-build-mode" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-hexo-oschina" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/26/hexo-oschina/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.259Z" itemprop="datePublished">2018-07-26</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/hexo-oschina/">oschina git仓库提交webHook触发hexo博客更新 （转载自zooooooooy）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h4 id="创建一个项目"><a href="#创建一个项目" class="headerlink" title="创建一个项目"></a>创建一个项目</h4><p><img src="/images/TIM截图20180428143154.png" alt="项目界面"></p>
-<ol>
-<li>将服务器上的代码整个打包传到项目上来，使用如下命令<br> 1.1    git init<br> 1.2 git add .<br> 1.3 git commit -m ‘init’<br> 1.4 git remote add origin ‘your remote ssh address’</li>
-<li><p>后续就需要配置openresty，解决自动提交webHook触发脚本执行的功能<br> 2.1 openresty的安装可以参照官网<br> 2.2 启动还是跟nginx一样的，start nginx<br> 2.3 配置nginx的配置，执行lua脚本<br> 2.4 lua脚本中需要验证密码这一块，我暂时没处理，oschina的验证规则是在post body里面有一个参数是password，可以和自己的配置的webHook秘钥进行匹配就可以<br> 2.5 lua脚本只是简单执行依据脚本命令</p>
-<pre><code> os.execute(&quot;bash /opt/lua/hexo.sh&quot;);
- ngx.say(&quot;OK&quot;)
- ngx.exit(200)
-
-</code></pre><p> 2.6 主要是后续的shell命令，操作的流程是获取git 远程的代码，执行hexo的generate生成静态文件</p>
-<pre><code> #! /bin/bash
- blog_dir=/opt/blog
- branch=master
- hexo=/root/.nvm/versions/node/v9.11.1/bin/hexo
-
- cd $blog_dir
- git reset --hard origin/$branch
- git clean -f
- git pull origin master
-
- cd $blog_dir
- $hexo generate
- echo &quot;success&quot;
-
-</code></pre><p> 2.7 静态文件的目录是public，前面装好的openresty也可以用作服务代理，将域名的root访问路径指向到public目录即可<br> 2.8 漏了nginx的转发配置了，有两个  一个是webHook地址，一个是服务器的请求地址</p>
-<pre><code> server {
-     listen       80;
-     server_name  db101.cn;
-
-     lua_code_cache off;
-
-     location / {
-         root   /opt/blog/public;
-         index  index.html index.htm;
-     }
-
-     location /hexo/github {
-         content_by_lua_file /opt/lua/hexo.lua;
-     }
- }
-
-</code></pre></li>
-</ol>
-<hr>
-<p>后续就可以当更新了source下面的md文件。可以直接通过域名访问到最新的更新了。也可以修改其他的主体或者配置一类的文件。当有push操作时触发webHook操作，调用服务器的地址，最终更新页面。</p>
-<p>上述步骤参考的网址 &gt; <a href="https://blog.liaol.net/" target="_blank" rel="noopener">https://blog.liaol.net/</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2018/07/26/hexo-oschina/" data-id="cjl7oao9a0007osvts5zcorss" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="hexo-oschina" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -506,6 +455,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2018/08/27/《Java并发编程实战》-14/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/24/《Java并发编程实战》-13/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
+          </li>
+        
+          <li>
             <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12   第13章 显式锁</a>
           </li>
         
@@ -517,14 +474,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
           </li>
         
-          <li>
-            <a href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/16/《Java并发编程实战》-8/">《Java并发编程实战》-8</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -534,7 +483,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -543,7 +492,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

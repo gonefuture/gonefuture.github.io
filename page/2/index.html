@@ -83,6 +83,201 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-《Java并发编程实战》-11" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/22/《Java并发编程实战》-11/" class="article-date">
+  <time datetime="2018-08-22T10:30:28.961Z" itemprop="datePublished">2018-08-22</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="第12章-并发程序的测试"><a href="#第12章-并发程序的测试" class="headerlink" title="第12章 并发程序的测试"></a>第12章 并发程序的测试</h1><hr>
+<p>吞吐量:指一组并发任务中已完成任务所栈的比例。<br>响应性：指请求从发出到完成之间的时间（也成为延迟）。</p>
+<h2 id="12-1-正确性测试"><a href="#12-1-正确性测试" class="headerlink" title="12.1 正确性测试"></a>12.1 正确性测试</h2><h3 id="12-1-1-基本的单元测试"><a href="#12-1-1-基本的单元测试" class="headerlink" title="12.1.1 基本的单元测试"></a>12.1.1 基本的单元测试</h3><h3 id="12-1-2-对阻塞操作的测试"><a href="#12-1-2-对阻塞操作的测试" class="headerlink" title="12.1.2 对阻塞操作的测试"></a>12.1.2 对阻塞操作的测试</h3><h3 id="12-1-3-安全性测试"><a href="#12-1-3-安全性测试" class="headerlink" title="12.1.3 安全性测试"></a>12.1.3 安全性测试</h3><blockquote>
+<p>在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情况是，在测试属性中不需要任何同步机制。</p>
+</blockquote>
+<h3 id="12-1-4-资源管理的测试"><a href="#12-1-4-资源管理的测试" class="headerlink" title="12.1.4 资源管理的测试"></a>12.1.4 资源管理的测试</h3><h3 id="使用回调"><a href="#使用回调" class="headerlink" title="使用回调"></a>使用回调</h3><h3 id="12-1-6-产生跟多的交替操作"><a href="#12-1-6-产生跟多的交替操作" class="headerlink" title="12.1.6 产生跟多的交替操作"></a>12.1.6 产生跟多的交替操作</h3><h2 id="12-2-性能测试"><a href="#12-2-性能测试" class="headerlink" title="12.2 性能测试"></a>12.2 性能测试</h2><h3 id="12-2-1-在PutTakeTest中增加计时功能"><a href="#12-2-1-在PutTakeTest中增加计时功能" class="headerlink" title="12.2.1 在PutTakeTest中增加计时功能"></a>12.2.1 在PutTakeTest中增加计时功能</h3><h3 id="12-2-2-多种算法的比较"><a href="#12-2-2-多种算法的比较" class="headerlink" title="12.2.2 多种算法的比较"></a>12.2.2 多种算法的比较</h3><h3 id="响应性衡量"><a href="#响应性衡量" class="headerlink" title="响应性衡量"></a>响应性衡量</h3><h2 id="12-3-避免性能测试的陷阱"><a href="#12-3-避免性能测试的陷阱" class="headerlink" title="12.3 避免性能测试的陷阱"></a>12.3 避免性能测试的陷阱</h2><h3 id="12-3-1-垃圾回收"><a href="#12-3-1-垃圾回收" class="headerlink" title="12.3.1 垃圾回收"></a>12.3.1 垃圾回收</h3><h3 id="12-3-2-动态编译"><a href="#12-3-2-动态编译" class="headerlink" title="12.3.2 动态编译"></a>12.3.2 动态编译</h3><h3 id="12-3-3-对代码路径的不真实采集"><a href="#12-3-3-对代码路径的不真实采集" class="headerlink" title="12.3.3 对代码路径的不真实采集"></a>12.3.3 对代码路径的不真实采集</h3><h3 id="12-3-4-不真实的竞争程度"><a href="#12-3-4-不真实的竞争程度" class="headerlink" title="12.3.4 不真实的竞争程度"></a>12.3.4 不真实的竞争程度</h3><h3 id="12-3-5-无用代码的消除"><a href="#12-3-5-无用代码的消除" class="headerlink" title="12.3.5 无用代码的消除"></a>12.3.5 无用代码的消除</h3><blockquote>
+<p>要编写有效的性能测试程序，那就需要告诉优化器不要将基准测试当作无用代码而优化掉。这就要求在程序中对每个计算结果都要通过某种方式来使用，这种方式不需要同步或者大量的计算。</p>
+</blockquote>
+<h2 id="12-4-其他的测试方法"><a href="#12-4-其他的测试方法" class="headerlink" title="12.4 其他的测试方法"></a>12.4 其他的测试方法</h2><h3 id="12-4-1-代码审查"><a href="#12-4-1-代码审查" class="headerlink" title="12.4.1 代码审查"></a>12.4.1 代码审查</h3><h3 id="12-4-2-静态分析工具"><a href="#12-4-2-静态分析工具" class="headerlink" title="12.4.2 静态分析工具"></a>12.4.2 静态分析工具</h3><h3 id="12-4-3-面向方面的测试技术"><a href="#12-4-3-面向方面的测试技术" class="headerlink" title="12.4.3 面向方面的测试技术"></a>12.4.3 面向方面的测试技术</h3><h3 id="12-4-4-分析与监测工具"><a href="#12-4-4-分析与监测工具" class="headerlink" title="12.4.4 分析与监测工具"></a>12.4.4 分析与监测工具</h3><p>FindBUgs包含的检测器：</p>
+<ul>
+<li>调用Thread.run()</li>
+<li>未被释放的锁<br>  标准的做法是在一个人finally块中释放显式锁，否则，当发生Exception事件时，锁仍然处于未被释放的状态。</li>
+<li>空的同步块</li>
+<li>双重检查加锁<br>  双重检查加锁时一种错误的习惯用法，其初衷是为了降低延迟初始化过程中的同步开销，该用法在读取一个共享的可变域时缺少正确的同步。</li>
+<li>在构造函数中启动一个线程。<br>  如果在构造函数中启动一个线程，那么将可能带来子类化问题，同时还会导致this引用从构造函数中逸出。</li>
+<li>通知错误<br>  如果一个同步块中调用了notify或notifyAll，但没有修改任何状态，那么就可能出错。</li>
+<li>条件等待中的错误<br>  如果在调用Object.wait和Condition.await方法时没有持有锁，或者不在某个循环中，或者没有检查某些状态谓词，那么通常是一个错误。</li>
+<li>对Lock和Condition的误用</li>
+<li>在休眠或者等待的同时持有一个锁。</li>
+<li>自旋循环。<br>  当等待某个状态转换发生时，闭锁或条件等待通常比在代码中自旋是一种更好的技术。</li>
+</ul>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/22/《Java并发编程实战》-11/" data-id="cjlbpfvxg000t2ovtzslneisj" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-11" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-《Java并发编程实战》-10" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/21/《Java并发编程实战》-10/" class="article-date">
+  <time datetime="2018-08-21T07:58:09.447Z" itemprop="datePublished">2018-08-21</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="第11章-性能与可伸缩性"><a href="#第11章-性能与可伸缩性" class="headerlink" title="第11章 性能与可伸缩性"></a>第11章 性能与可伸缩性</h1><hr>
+<h2 id="11-1-对性能的思考"><a href="#11-1-对性能的思考" class="headerlink" title="11.1 对性能的思考"></a>11.1 对性能的思考</h2><h3 id="11-1-1-性能与可伸缩性"><a href="#11-1-1-性能与可伸缩性" class="headerlink" title="11.1.1 性能与可伸缩性"></a>11.1.1 性能与可伸缩性</h3><blockquote>
+<p>可伸缩性指的是:当增加计算资源时(例如CPU、内存、存储容量或I/O带宽)，程序的吞吐量或处理能力能相应地增加。</p>
+</blockquote>
+<h3 id="11-1-2-评估各种性能权衡因素"><a href="#11-1-2-评估各种性能权衡因素" class="headerlink" title="11.1.2 评估各种性能权衡因素"></a>11.1.2 评估各种性能权衡因素</h3><blockquote>
+<p>避免不成熟的优化。首先使程序正确，然后提高运行速度–如果它还运行得不够快。</p>
+</blockquote>
+<p>以测试为基准，不要猜测。</p>
+<h2 id="11-2-Amdahl定律"><a href="#11-2-Amdahl定律" class="headerlink" title="11.2 Amdahl定律"></a>11.2 Amdahl定律</h2><p>Amdahl定律描述的是：在增加计算资源的情况下，程序在理论上能够实现最高加速比，这个值取决于程序中可并行组件和串行组件所占的比重。</p>
+<blockquote>
+<p>在所有并发程序中都包含一些串行部分。如果你认为在你的程序中不存在串行部分，那么可任意在仔细检查一遍。</p>
+</blockquote>
+<h3 id="11-2-1-实列：在各种框架中隐藏的串行部分"><a href="#11-2-1-实列：在各种框架中隐藏的串行部分" class="headerlink" title="11.2.1 实列：在各种框架中隐藏的串行部分"></a>11.2.1 实列：在各种框架中隐藏的串行部分</h3><h3 id="11-2-2-Amdahl定律的应用"><a href="#11-2-2-Amdahl定律的应用" class="headerlink" title="11.2.2 Amdahl定律的应用"></a>11.2.2 Amdahl定律的应用</h3><h2 id="11-3-线程引入的开销"><a href="#11-3-线程引入的开销" class="headerlink" title="11.3 线程引入的开销"></a>11.3 线程引入的开销</h2><h3 id="11-3-1-上下文切换"><a href="#11-3-1-上下文切换" class="headerlink" title="11.3.1 上下文切换"></a>11.3.1 上下文切换</h3><p>切换线程上下文需要一定的开销，而在线程调度过程中需要访问由操作系统和JVM共享的数据结构。应用程序、操作系统以及JVM都使用一组相同的CPU。</p>
+<h3 id="11-3-2-内存同步"><a href="#11-3-2-内存同步" class="headerlink" title="11.3.2 内存同步"></a>11.3.2 内存同步</h3><p>同步操作的性能开销包括多个方面。在<code>synchronized</code>和<code>volatile</code>提供的可见性保证中可能会使用一些特殊指令，即内存栅栏(Memory Barrier)。内存栅栏可以刷新缓存，使缓存无效，刷新硬件的写缓冲，以及停止执行管道。</p>
+<blockquote>
+<p>不要过度担心非竞争同步带来的开销。这个基本的机制已经非常快了，并且JVM还能进行额外的优化以及进一步降低或消除开销。因此，我们应该将优化重点放在那些发生锁竞争的地方。</p>
+</blockquote>
+<h3 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h3><p>当线程无法获取某个锁或者由于某个条件等待或在I/O操作上阻塞时，需要被挂起，在这个过程中将包含两次额外的上下文切换，以及所有必要的操作系统操作和缓存操作：被阻塞的线程在其执行时间片还未用完之前就被就被交换换出去，而在随后当要获取的锁或者其他资源可用时，又再次被切换回来。（由于锁竞争而导致阻塞时，线程在持有锁时将存在一定的开销：当它释放锁时，必须告诉操作系统恢复运行阻塞的线程）。</p>
+<h2 id="11-4-减少锁的竞争"><a href="#11-4-减少锁的竞争" class="headerlink" title="11.4 减少锁的竞争"></a>11.4 减少锁的竞争</h2><blockquote>
+<p>在并发程序中，对可伸缩性的最主要威胁就是独占方式的资源锁。</p>
+</blockquote>
+<p>由3种方式可以降低锁的竞争程度：</p>
+<ul>
+<li>减少锁的持有时间。</li>
+<li>降低锁的请求频率。</li>
+<li>使用带有协调机制的独占锁，这些机制允许更高的并发性。</li>
+</ul>
+<h3 id="11-4-1-缩小锁的范围（”快进快出”）"><a href="#11-4-1-缩小锁的范围（”快进快出”）" class="headerlink" title="11.4.1 缩小锁的范围（”快进快出”）"></a>11.4.1 缩小锁的范围（”快进快出”）</h3><p>降低发生竞争可能性的一种有效方式就是尽可能缩短锁的持有时间。例如，而可以将一些与锁无关的代码移出同步代码块，尤其是那些开销较大的操作，以及可能被阻塞的操作，例如I/O操作。</p>
+<h3 id="11-4-2-减小锁的粒度"><a href="#11-4-2-减小锁的粒度" class="headerlink" title="11.4.2 减小锁的粒度"></a>11.4.2 减小锁的粒度</h3><p>通过锁分段和锁分解等降低线程请求锁的频率（从而减小竞争的可能性）的技术可以减小锁的持有时间，在这些技术中将采用多个互相独立的锁来保护独立的状态变量，从而改变这些变量之前由单个锁保护的情况。</p>
+<h3 id="11-4-3-锁分段"><a href="#11-4-3-锁分段" class="headerlink" title="11.4.3 锁分段"></a>11.4.3 锁分段</h3><p>锁分段的一个劣势在于:与采用单个锁来实现独占访问相比，要获取多个锁来实现独占访问将更加困难并且开销更高。</p>
+<h3 id="11-4-4-避免热点域"><a href="#11-4-4-避免热点域" class="headerlink" title="11.4.4 避免热点域"></a>11.4.4 避免热点域</h3><h3 id="11-4-5-一些替代独占锁的方法"><a href="#11-4-5-一些替代独占锁的方法" class="headerlink" title="11.4.5 一些替代独占锁的方法"></a>11.4.5 一些替代独占锁的方法</h3><p>放弃使用独占锁来管理共享状态:</p>
+<ul>
+<li>使用并发容器</li>
+<li>读-写锁</li>
+<li>不可变对象</li>
+<li>原子对象</li>
+</ul>
+<h3 id="11-4-6-监测CPU的利用率"><a href="#11-4-6-监测CPU的利用率" class="headerlink" title="11.4.6 监测CPU的利用率"></a>11.4.6 监测CPU的利用率</h3><p>如果CPU没有得到充分利用，那么需要找到其中的原因。通常有一下几种原因:</p>
+<ul>
+<li>负载不充足。</li>
+<li>I/O密集。</li>
+<li>外部限制。</li>
+<li>锁竞争。</li>
+</ul>
+<h2 id="11-4-7-向对象池说“不”"><a href="#11-4-7-向对象池说“不”" class="headerlink" title="11.4.7 向对象池说“不”"></a>11.4.7 向对象池说“不”</h2><blockquote>
+<p>通常，对象分配操作的开销比同步的开销更低。</p>
+</blockquote>
+<h2 id="11-5-实例：比较Map的性能"><a href="#11-5-实例：比较Map的性能" class="headerlink" title="11.5 实例：比较Map的性能"></a>11.5 实例：比较Map的性能</h2><h2 id="11-6-减少上下文切换的开销"><a href="#11-6-减少上下文切换的开销" class="headerlink" title="11.6 减少上下文切换的开销"></a>11.6 减少上下文切换的开销</h2><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>由于使用线程常常是为了充分利用多个处理器的计算能力，因此并发程序性能的讨论中，童话参观更多地将侧重点放在吞吐量和可伸缩性上，而不是服务时间。Amdahl定律告诉我们，程序的可伸缩性取决于在所有代码中必须被串行执行的代码比例。因为Java程序中串行执行的主要来源是独占凡是的资源锁，因此通常可以通过以下方式来提升可伸缩性：减少锁的持有时间，降低锁的粒度，意见采用非独占锁或非阻塞锁来代替独占锁。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/21/《Java并发编程实战》-10/" data-id="cjlbpfvxn00142ovtkqwbkku9" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-10" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
     <article id="post-《Java并发编程实战》-9" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/08/20/《Java并发编程实战》-9/" class="article-date">
@@ -147,7 +342,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/20/《Java并发编程实战》-9/" data-id="cjl7oaoak001fosvtb2dwgs4o" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/20/《Java并发编程实战》-9/" data-id="cjlbpfvxy001k2ovt8to736rs" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -173,203 +368,9 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-8" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/16/《Java并发编程实战》-8/" class="article-date">
-  <time datetime="2018-08-16T12:44:39.282Z" itemprop="datePublished">2018-08-16</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/16/《Java并发编程实战》-8/">《Java并发编程实战》-8</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="图形用户界面应用程序"><a href="#图形用户界面应用程序" class="headerlink" title="图形用户界面应用程序"></a>图形用户界面应用程序</h1><hr>
-<h2 id="9-1-为什么GUI是单线程的"><a href="#9-1-为什么GUI是单线程的" class="headerlink" title="9.1 为什么GUI是单线程的"></a>9.1 为什么GUI是单线程的</h2><h3 id="9-1-1-串行时间处理"><a href="#9-1-1-串行时间处理" class="headerlink" title="9.1.1 串行时间处理"></a>9.1.1 串行时间处理</h3><h3 id="9-1。2-Swing中的单线程封闭机制"><a href="#9-1。2-Swing中的单线程封闭机制" class="headerlink" title="9.1。2 Swing中的单线程封闭机制"></a>9.1。2 Swing中的单线程封闭机制</h3><blockquote>
-<p>Swing的单线程规则是：Swing中的组件以及模型只能在这个事件分发线程中进行创建、修改以及查询。</p>
-</blockquote>
-<h3 id="9-2-短时间的GUI任务"><a href="#9-2-短时间的GUI任务" class="headerlink" title="9.2 短时间的GUI任务"></a>9.2 短时间的GUI任务</h3><p>模型对象与视图对象的控制流</p>
-<pre><code class="flow">st=&gt;start: EDT
-op1=&gt;operation: 鼠标点击
-op2=&gt;operation: 动作事件
-op3=&gt;operation: 动作监听者
-op4=&gt;operation: 更新表格模型
-op5=&gt;operation: 表格修改事件
-op6=&gt;operation: 表格监听者
-op7=&gt;operation: 更新表格视图
-
-st-&gt;op1-&gt;op2-&gt;op3-&gt;op4-&gt;op5-&gt;op6-&gt;op7
-
-</code></pre>
-<h2 id="9-3-长时间的GUI任务"><a href="#9-3-长时间的GUI任务" class="headerlink" title="9.3 长时间的GUI任务"></a>9.3 长时间的GUI任务</h2><h3 id="9-3-1-取消"><a href="#9-3-1-取消" class="headerlink" title="9.3.1 取消"></a>9.3.1 取消</h3><h3 id="9-3-2-进度标识和完成标识"><a href="#9-3-2-进度标识和完成标识" class="headerlink" title="9.3.2 进度标识和完成标识"></a>9.3.2 进度标识和完成标识</h3><h3 id="9-3-3-SwingWorker"><a href="#9-3-3-SwingWorker" class="headerlink" title="9.3.3 SwingWorker"></a>9.3.3 SwingWorker</h3><h2 id="9-4-共享数据模型"><a href="#9-4-共享数据模型" class="headerlink" title="9.4 共享数据模型"></a>9.4 共享数据模型</h2><h3 id="9-4-1-线程安全的数据模型"><a href="#9-4-1-线程安全的数据模型" class="headerlink" title="9.4.1 线程安全的数据模型"></a>9.4.1 线程安全的数据模型</h3><h3 id="9-4-2-分解数据模型"><a href="#9-4-2-分解数据模型" class="headerlink" title="9.4.2 分解数据模型"></a>9.4.2 分解数据模型</h3><blockquote>
-<p>如果体格数据模型必须被多个线程共享，而且由于阻塞，一致性或复杂度等原因而无法实现一个线程安全的模型时，可以考虑使用分解模型设计。</p>
-</blockquote>
-<h2 id="9-5-其他形式的单线程子系统"><a href="#9-5-其他形式的单线程子系统" class="headerlink" title="9.5 其他形式的单线程子系统"></a>9.5 其他形式的单线程子系统</h2><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>所有GUI框架基本上都实现为单线程的子系统，其中所有与表现相关的代码都作为任务在事件线程中运行。由于只有一个事件线程，因此运行时间较长的任务会降低GUI程序的影响性，所以应该放在后台线程中运行。在一些辅助类(例如SwingWorkrt以及在本章中构建的BackgroundTask)中提供了对取消、进度指示以及完成指示的支持，因此对于执行时间较长的任务来说，无论在任务中包含了GUI组件还是非GUI组件，在开发时可以得到简化。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/16/《Java并发编程实战》-8/" data-id="cjl7oaoai001cosvt6vdbl4ni" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-8" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-《Java并发编程实战》-7" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/16/《Java并发编程实战》-7/" class="article-date">
-  <time datetime="2018-08-16T09:44:27.744Z" itemprop="datePublished">2018-08-16</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/16/《Java并发编程实战》-7/">《Java并发编程实战》-7</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="第8章-线程池的使用"><a href="#第8章-线程池的使用" class="headerlink" title="第8章 线程池的使用"></a>第8章 线程池的使用</h1><hr>
-<h2 id="8-1-在任务与执行策略之间的隐形耦合"><a href="#8-1-在任务与执行策略之间的隐形耦合" class="headerlink" title="8.1 在任务与执行策略之间的隐形耦合"></a>8.1 在任务与执行策略之间的隐形耦合</h2><p>并非所有的任务有些任务需要明确地指明执行策略，包括：</p>
-<ul>
-<li>依赖性任务</li>
-<li>使用线程封闭机制的任务。</li>
-<li>对应时间敏感的任务。</li>
-<li>使用ThreadLocal的任务</li>
-</ul>
-<blockquote>
-<p>在一些任务中，需要拥有或排除某种特定的执行策略。如果某些任务依赖于其他的任务，那么会要求线程池足够大，从而确保它们依赖任务不会被放入等待队列中或者被拒绝，而采用线程封闭机制的任务需要串行执行。通过将这些需求写入文档，将来的代码维护人员就不会由于使用了某种不合适的执行策略而破坏安全性或活跃性。</p>
-</blockquote>
-<h3 id="8-1-1-线程饥饿死锁"><a href="#8-1-1-线程饥饿死锁" class="headerlink" title="8.1.1 线程饥饿死锁"></a>8.1.1 线程饥饿死锁</h3><blockquote>
-<p>每当提交了一个有依赖性的Executor任务时，要清楚地知道可能会出现线程“饥饿”死锁，因此需要在代码或配置Executor的配置文件中记录线程池的大小限制或配置限制。</p>
-</blockquote>
-<h3 id="8-1-2-运行时间较长的任务"><a href="#8-1-2-运行时间较长的任务" class="headerlink" title="8.1.2 运行时间较长的任务"></a>8.1.2 运行时间较长的任务</h3><p>如果任务阻塞的时间过长，那么即使不出现死锁，线程池的响应性也会变得糟糕。</p>
-<p>定任务等待资源得时间，而不是无限制地等待可以缓解执行时间较长得任务造成的影响。</p>
-<h2 id="8-2-设置线程池得大小"><a href="#8-2-设置线程池得大小" class="headerlink" title="8.2 设置线程池得大小"></a>8.2 设置线程池得大小</h2><p>一般情况下正确地设置线程池的大小（假设有n个CPU）：</p>
-<ul>
-<li>计算密集型： 2n+1</li>
-<li>I/O密集型：2n</li>
-</ul>
-<h2 id="8-3-配置ThreadPoolExecutor"><a href="#8-3-配置ThreadPoolExecutor" class="headerlink" title="8.3 配置ThreadPoolExecutor"></a>8.3 配置ThreadPoolExecutor</h2><p>ThreadPoolExecutor的通用构造函数</p>
-<pre><code class="java">public ThreadPoolExecutor(int corePoolSize,
-                        int maximumPollSize,
-                        long keepAliveTime,
-                        BlockingQueue&lt;Runnable&gt; workQueue,
-                        ThreadFactory threadFactory,
-                        RejectedExecutionHandler handler)
-                        { ... }
-</code></pre>
-<h3 id="线程的创建与销毁"><a href="#线程的创建与销毁" class="headerlink" title="线程的创建与销毁"></a>线程的创建与销毁</h3><p>基本大小(Core Poll Size)是线程池的目标大小，即在没有任务执行时线程池的大小，并且只有在工作队列满了的情况下才会创建超过这个数量的线程。</p>
-<p>线程池的最大大小(maximumPoolSize)表示可同时活动的线程数量的上限。如果某个线程的空闲事件超过了存活时间，那么将标记为可回收，并且当线程池的当前大小超过了基本大小时，这个线程将被终止。</p>
-<h3 id="管理队列任务"><a href="#管理队列任务" class="headerlink" title="管理队列任务"></a>管理队列任务</h3><p> ThreadPoolExecutor允许提供一个BlockingQueue来保存等待执行的任务。基本的任务排队方法有3种：无界队列、有界队列和同步移交(Synchronous Handoff)。</p>
-<blockquote>
-<p>对于Executor,newCachedThreadPool工厂方法时一种很好的默认选择，他能提供比固定大小的线程更好的排队性能.当需要限制当前任务的数量以满足资源管理需求时，那么可以选择固定大小的线程池，就像在接受网络客户请求的服务器应用程序中，如果不进行限制，那么很容易发生过载问题。</p>
-</blockquote>
-<h3 id="8-3-3-饱和策略"><a href="#8-3-3-饱和策略" class="headerlink" title="8.3.3 饱和策略"></a>8.3.3 饱和策略</h3><p>每种RejectedExecutionHandler的实现包含有不用的饱和策略：</p>
-<ul>
-<li>Abort策略：默认策略，新任务提交时直接抛出未检查的异常RejectedExecutionException，该异常可由调用者捕获。</li>
-<li>CallerRunPolicy 为调节机制，既不抛弃任务也不抛出异常，而是将某些任务回退到调用者。不会在线程池的线程中执行新的任务，而是在调用exector的线程中运行新的任务。</li>
-<li>Discard策略：新提交的任务被抛弃。<br>DiscardOldest策略：队列的是“队头”的任务，然后尝试提交新的任务。（不适合工作队列为优先队列场景）。</li>
-</ul>
-<h3 id="8-3-4-线程工厂"><a href="#8-3-4-线程工厂" class="headerlink" title="8.3.4 线程工厂"></a>8.3.4 线程工厂</h3><h2 id="8-4-扩展ThreadPoolExecutor"><a href="#8-4-扩展ThreadPoolExecutor" class="headerlink" title="8.4 扩展ThreadPoolExecutor"></a>8.4 扩展ThreadPoolExecutor</h2><p>实例：给线程池添加统计信息</p>
-<h2 id="8-5-递归算法的并行化"><a href="#8-5-递归算法的并行化" class="headerlink" title="8.5 递归算法的并行化"></a>8.5 递归算法的并行化</h2><p>实例：谜题框架</p>
-<blockquote>
-<p>对于并发执行的任务，EXecutor框架是一种强大且灵活的框架。它提供了大量可调节的选项，例如创建线程和关闭线程的策略，处理队列任务的策略，处理过多任务的策略，并且提供了几个钩子方法来扩展它的行为。然而，与大多数功能强大的框架一样，其中有些设置参数并不能很好地工作，某些类型的任务需要特定的执行策略，而一些参数组合则可能产生奇怪的结果。</p>
-</blockquote>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/16/《Java并发编程实战》-7/" data-id="cjl7oaoac0013osvtus1q62qz" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-7" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -383,6 +384,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2018/08/27/《Java并发编程实战》-14/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/24/《Java并发编程实战》-13/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
+          </li>
+        
+          <li>
             <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12   第13章 显式锁</a>
           </li>
         
@@ -394,14 +403,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
           </li>
         
-          <li>
-            <a href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/16/《Java并发编程实战》-8/">《Java并发编程实战》-8</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -411,7 +412,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -420,7 +421,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

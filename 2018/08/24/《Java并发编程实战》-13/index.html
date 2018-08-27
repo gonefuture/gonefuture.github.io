@@ -5,18 +5,20 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   
-  <title>gonefuture</title>
+  <title>《Java并发编程实战》-14   第14章 构建自定义的同步工具 | gonefuture</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="https://blog.csdn.net/weixin_35040169">
-<meta property="og:type" content="website">
-<meta property="og:title" content="gonefuture">
-<meta property="og:url" content="http://gonefuture.top/index.html">
+  <meta name="description" content="第14章 构建自定义的同步工具 14.1 状态依赖性的管理依赖状态的操作可以一直阻塞直到可以继续执行，这比使它们先失败再实现起来要更为方便且更不容易出错。内置的条件队列可以使线程一直阻塞，直到对象进入某个进程可以继续执行的状态，并且当被阻塞的线程可以执行时再唤醒它们。 14.1.1 实例：将前提条件的失败传递给调用者14.1.2 实列：通过轮询与休眠来实现简单的阻塞14.1.3 条件队列条件队列使">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Java并发编程实战》-14   第14章 构建自定义的同步工具">
+<meta property="og:url" content="http://gonefuture.top/2018/08/24/《Java并发编程实战》-13/index.html">
 <meta property="og:site_name" content="gonefuture">
-<meta property="og:description" content="https://blog.csdn.net/weixin_35040169">
+<meta property="og:description" content="第14章 构建自定义的同步工具 14.1 状态依赖性的管理依赖状态的操作可以一直阻塞直到可以继续执行，这比使它们先失败再实现起来要更为方便且更不容易出错。内置的条件队列可以使线程一直阻塞，直到对象进入某个进程可以继续执行的状态，并且当被阻塞的线程可以执行时再唤醒它们。 14.1.1 实例：将前提条件的失败传递给调用者14.1.2 实列：通过轮询与休眠来实现简单的阻塞14.1.3 条件队列条件队列使">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-08-24T09:29:53.152Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="gonefuture">
-<meta name="twitter:description" content="https://blog.csdn.net/weixin_35040169">
+<meta name="twitter:title" content="《Java并发编程实战》-14   第14章 构建自定义的同步工具">
+<meta name="twitter:description" content="第14章 构建自定义的同步工具 14.1 状态依赖性的管理依赖状态的操作可以一直阻塞直到可以继续执行，这比使它们先失败再实现起来要更为方便且更不容易出错。内置的条件队列可以使线程一直阻塞，直到对象进入某个进程可以继续执行的状态，并且当被阻塞的线程可以执行时再唤醒它们。 14.1.1 实例：将前提条件的失败传递给调用者14.1.2 实列：通过轮询与休眠来实现简单的阻塞14.1.3 条件队列条件队列使">
   
     <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
   
@@ -81,76 +83,7 @@
 </header>
 
     <div class="outer">
-      <section id="main">
-  
-    <article id="post-《Java并发编程实战》-14" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/27/《Java并发编程实战》-14/" class="article-date">
-  <time datetime="2018-08-27T02:47:15.099Z" itemprop="datePublished">2018-08-27</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/27/《Java并发编程实战》-14/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="第15章-原子变量与非阻塞同步机制"><a href="#第15章-原子变量与非阻塞同步机制" class="headerlink" title="第15章 原子变量与非阻塞同步机制"></a>第15章 原子变量与非阻塞同步机制</h1><hr>
-<h2 id="15-1-锁得劣势"><a href="#15-1-锁得劣势" class="headerlink" title="15.1 锁得劣势"></a>15.1 锁得劣势</h2><p>如果在基于锁的类中包含有细粒度的操作（例如同步容器类，在其他大多数方法中只包含了少量操作），那么当在锁上存在着激烈的竞争时，调度开销与工作开销的比值会非常高。</p>
-<p>与锁相比，volatile变量是一种更轻量级的同步机制，因为在使用这些变量时不会发生上下文切换或线程调度等操作。</p>
-<p>锁定还存在其他以下缺点。当一个线程正在等待锁时，它不能做任何其他事情。</p>
-<h2 id="15-2-硬件对并发的支持"><a href="#15-2-硬件对并发的支持" class="headerlink" title="15.2 硬件对并发的支持"></a>15.2 硬件对并发的支持</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/27/《Java并发编程实战》-14/" data-id="cjlbpfvxe000r2ovt02hevr6g" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-14" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-《Java并发编程实战》-13" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main"><article id="post-《Java并发编程实战》-13" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/08/24/《Java并发编程实战》-13/" class="article-date">
   <time datetime="2018-08-24T08:01:46.303Z" itemprop="datePublished">2018-08-24</time>
@@ -169,8 +102,8 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/24/《Java并发编程实战》-13/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
+    <h1 class="article-title" itemprop="name">
+      《Java并发编程实战》-14   第14章 构建自定义的同步工具
     </h1>
   
 
@@ -234,121 +167,32 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
   </div>
   
-</article>
-
-
-
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-《Java并发编程实战》-12" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/23/《Java并发编程实战》-12/" class="article-date">
-  <time datetime="2018-08-23T03:53:32.166Z" itemprop="datePublished">2018-08-23</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
+    <a href="/2018/08/27/《Java并发编程实战》-14/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12   第13章 显式锁</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="第13章-显式锁"><a href="#第13章-显式锁" class="headerlink" title="第13章 显式锁"></a>第13章 显式锁</h1><hr>
-<h2 id="13-1-Lock-与-ReentrantLock"><a href="#13-1-Lock-与-ReentrantLock" class="headerlink" title="13.1 Lock 与 ReentrantLock"></a>13.1 Lock 与 ReentrantLock</h2><p>使用ReentrantLock来保护对象状态</p>
-<pre><code class="java">Lock lock = new ReentrantLock();
-...
-lcok.lock()
-try{
-    // 更新对象状态
-    // 捕捉异常，并在必要时恢复不变性条件
-} finally {
-    lock.unlock();
-}
-</code></pre>
-<h2 id="13-1-1-轮询锁与定时锁"><a href="#13-1-1-轮询锁与定时锁" class="headerlink" title="13.1.1 轮询锁与定时锁"></a>13.1.1 轮询锁与定时锁</h2><pre><code class="java">
-if (!lock.tryLock(nanosToLock, NANOSECONDS)) 
-    return false;
-try {
-    return sendOnShareLine(message)
-} finally {
-    lock.unlock()
-}
-</code></pre>
-<h3 id="13-1-2-可中断的锁获取操作"><a href="#13-1-2-可中断的锁获取操作" class="headerlink" title="13.1.2 可中断的锁获取操作"></a>13.1.2 可中断的锁获取操作</h3><p>正如定时的锁获取操作能在带有事件限制的操作中使用独占锁，可中断的锁获取操作同样能在可取消的操作中使用加锁。</p>
-<h3 id="13-1-3-非块结构的加锁"><a href="#13-1-3-非块结构的加锁" class="headerlink" title="13.1.3 非块结构的加锁"></a>13.1.3 非块结构的加锁</h3><p>锁分段技术在基于散列的容器中实现了不同的散列链，以便使用不同的锁。</p>
-<h2 id="13-2-性能考虑因素"><a href="#13-2-性能考虑因素" class="headerlink" title="13.2 性能考虑因素"></a>13.2 性能考虑因素</h2><blockquote>
-<p>性能时一个不断变化的指标，内置锁和ReentrantLock在各个JDK版本都不一样。</p>
-</blockquote>
-<h2 id="13-3-公平锁"><a href="#13-3-公平锁" class="headerlink" title="13.3 公平锁"></a>13.3 公平锁</h2><p>在公平锁上，线程将按照它们发出请求的顺序来获得锁，但在非公平锁上，则允许“插队”:当一个线程请求非公平锁的时，如果在发出请求的同时该锁的状态变为可用，那么这个线程将跳过队列中所有的等待线程并获得这个锁。(在Semaphore中同样可以选择采用公平或非公平的获取顺序。)</p>
-<p>在大多数情况下，非公平锁的性能要高于公平锁的性能。</p>
-<h2 id="13-4-在synchronied和ReentrantLock之间进行选择"><a href="#13-4-在synchronied和ReentrantLock之间进行选择" class="headerlink" title="13.4 在synchronied和ReentrantLock之间进行选择"></a>13.4 在synchronied和ReentrantLock之间进行选择</h2><blockquote>
-<p>在一些内置锁无法满足需求的情况下，<code>ReentrantLock</code>可以作为一种高级工具。当需要一些高级功能时才应该使用<code>ReentrantLock</code>，这些功能包括：可定时的、可轮询的与可中断的锁获取操作，公平队列，以及非块结构的锁。否则，还是应该优先使用<code>synchronized</code>。</p>
-</blockquote>
-<h2 id="读-写锁"><a href="#读-写锁" class="headerlink" title="读-写锁"></a>读-写锁</h2><p>ReadWriteLock中的一些可选实现包括：</p>
-<ul>
-<li><strong>释放优先</strong>。当一个写入操作释放写入锁时，并且队伍中同时存在读线程和写线程，那么应该优先选择读线程，写线程，还是最先发出请求的线程？</li>
-<li><strong>读线程插队</strong>。如果锁是由读线程持有，但有写线程正在等待，那么新到达的读线程能否立即获得访问权，还是应该在写线程后面等待？如果允许线程插队到写线程之前，那么将提高并发性，但却可能造成写线程饥饿问题。</li>
-<li><strong>重入性</strong>。读取锁和写入锁是否是可重入的。</li>
-<li><strong>降级</strong>。如果一个线程持有写入锁，那么它能否在不释放该锁的情况下获得读取锁？这可能会使得写入锁被“降级”为读取锁，同时不允许其他写线程修改被保护的资源。</li>
-<li><strong>升级</strong>。读取锁能否优于其他正在等待的读线程和写线程而升级为一个写入锁？在大多数的读-写锁实现中并不支持升级，因为如果没有显式的升级操作，那么很容易造成死锁。（如果两个读线程试图同时升级为写入锁，那么二者都不会释放读取锁。）</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>与内置锁相比，显式的Lock提供了一些宽展功能，在处理锁的不可用性方面有着更高的灵活性，并且对队列行有着更好的控制。但ReentrantLock不能完全替代<code>synchronized</code>，只有在<code>synchronized</code>无法满足需求时，才应该使用它。<br>读-写允许多个读线程并发地访问被保护的对象，当访问以读取操作为主的数据结构时，他能提高程序的可伸缩性。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/23/《Java并发编程实战》-12/" data-id="cjlbpfvww000f2ovt6p2am8zs" class="article-share-link">Share</a>
+          《Java并发编程实战》-14   第14章 构建自定义的同步工具
         
       </div>
-    </footer>
-  </div>
-  </div>
+    </a>
+  
+  
+    <a href="/2018/08/23/《Java并发编程实战》-12/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《Java并发编程实战》-12   第13章 显式锁</div>
+    </a>
+  
+</nav>
 
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-12" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
   
 </article>
 
 
 
 
-
-  
-  
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
-  
 </section>
       
       <aside id="sidebar">

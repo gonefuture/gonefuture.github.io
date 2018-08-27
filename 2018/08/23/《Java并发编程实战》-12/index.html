@@ -7,18 +7,18 @@
   
   <title>《Java并发编程实战》-12   第13章 显式锁 | gonefuture</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="第13章 显式锁13.1 Lock 与 ReentrantLock使用ReentrantLock来保护对象状态 Lock lock = new ReentrantLock(); ... lcok.lock() try{     // 更新对象状态     // 捕捉异常，并在必要时恢复不变性条件 } finally {     lock.unlock(); }  13.1.1 轮询锁与定时锁 if">
+  <meta name="description" content="第13章 显式锁 13.1 Lock 与 ReentrantLock使用ReentrantLock来保护对象状态 Lock lock = new ReentrantLock(); ... lcok.lock() try{     // 更新对象状态     // 捕捉异常，并在必要时恢复不变性条件 } finally {     lock.unlock(); }  13.1.1 轮询锁与定时锁 i">
 <meta name="keywords" content="java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《Java并发编程实战》-12   第13章 显式锁">
 <meta property="og:url" content="http://gonefuture.top/2018/08/23/《Java并发编程实战》-12/index.html">
 <meta property="og:site_name" content="gonefuture">
-<meta property="og:description" content="第13章 显式锁13.1 Lock 与 ReentrantLock使用ReentrantLock来保护对象状态 Lock lock = new ReentrantLock(); ... lcok.lock() try{     // 更新对象状态     // 捕捉异常，并在必要时恢复不变性条件 } finally {     lock.unlock(); }  13.1.1 轮询锁与定时锁 if">
+<meta property="og:description" content="第13章 显式锁 13.1 Lock 与 ReentrantLock使用ReentrantLock来保护对象状态 Lock lock = new ReentrantLock(); ... lcok.lock() try{     // 更新对象状态     // 捕捉异常，并在必要时恢复不变性条件 } finally {     lock.unlock(); }  13.1.1 轮询锁与定时锁 i">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-23T06:55:44.012Z">
+<meta property="og:updated_time" content="2018-08-24T08:01:57.212Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Java并发编程实战》-12   第13章 显式锁">
-<meta name="twitter:description" content="第13章 显式锁13.1 Lock 与 ReentrantLock使用ReentrantLock来保护对象状态 Lock lock = new ReentrantLock(); ... lcok.lock() try{     // 更新对象状态     // 捕捉异常，并在必要时恢复不变性条件 } finally {     lock.unlock(); }  13.1.1 轮询锁与定时锁 if">
+<meta name="twitter:description" content="第13章 显式锁 13.1 Lock 与 ReentrantLock使用ReentrantLock来保护对象状态 Lock lock = new ReentrantLock(); ... lcok.lock() try{     // 更新对象状态     // 捕捉异常，并在必要时恢复不变性条件 } finally {     lock.unlock(); }  13.1.1 轮询锁与定时锁 i">
   
     <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
   
@@ -112,7 +112,8 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="第13章-显式锁"><a href="#第13章-显式锁" class="headerlink" title="第13章 显式锁"></a>第13章 显式锁</h1><h2 id="13-1-Lock-与-ReentrantLock"><a href="#13-1-Lock-与-ReentrantLock" class="headerlink" title="13.1 Lock 与 ReentrantLock"></a>13.1 Lock 与 ReentrantLock</h2><p>使用ReentrantLock来保护对象状态</p>
+        <h1 id="第13章-显式锁"><a href="#第13章-显式锁" class="headerlink" title="第13章 显式锁"></a>第13章 显式锁</h1><hr>
+<h2 id="13-1-Lock-与-ReentrantLock"><a href="#13-1-Lock-与-ReentrantLock" class="headerlink" title="13.1 Lock 与 ReentrantLock"></a>13.1 Lock 与 ReentrantLock</h2><p>使用ReentrantLock来保护对象状态</p>
 <pre><code class="java">Lock lock = new ReentrantLock();
 ...
 lcok.lock()
@@ -159,7 +160,7 @@ try {
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/23/《Java并发编程实战》-12/" data-id="cjl7oaoa6000uosvtz2ppms6q" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/23/《Java并发编程实战》-12/" data-id="cjlbpfvww000f2ovt6p2am8zs" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -180,6 +181,15 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
     
 <nav id="article-nav">
+  
+    <a href="/2018/08/24/《Java并发编程实战》-13/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          《Java并发编程实战》-14   第14章 构建自定义的同步工具
+        
+      </div>
+    </a>
   
   
     <a href="/2018/08/22/《Java并发编程实战》-11/" id="article-nav-older" class="article-nav-link-wrap">
@@ -206,6 +216,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2018/08/27/《Java并发编程实战》-14/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/24/《Java并发编程实战》-13/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
+          </li>
+        
+          <li>
             <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12   第13章 显式锁</a>
           </li>
         
@@ -217,14 +235,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
           </li>
         
-          <li>
-            <a href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/16/《Java并发编程实战》-8/">《Java并发编程实战》-8</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -234,7 +244,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -243,7 +253,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
