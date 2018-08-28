@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="gonefuture">
 <meta property="og:description" content="第14章 构建自定义的同步工具 14.1 状态依赖性的管理依赖状态的操作可以一直阻塞直到可以继续执行，这比使它们先失败再实现起来要更为方便且更不容易出错。内置的条件队列可以使线程一直阻塞，直到对象进入某个进程可以继续执行的状态，并且当被阻塞的线程可以执行时再唤醒它们。 14.1.1 实例：将前提条件的失败传递给调用者14.1.2 实列：通过轮询与休眠来实现简单的阻塞14.1.3 条件队列条件队列使">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-24T09:29:53.152Z">
+<meta property="og:updated_time" content="2018-08-27T08:47:38.445Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Java并发编程实战》-14   第14章 构建自定义的同步工具">
 <meta name="twitter:description" content="第14章 构建自定义的同步工具 14.1 状态依赖性的管理依赖状态的操作可以一直阻塞直到可以继续执行，这比使它们先失败再实现起来要更为方便且更不容易出错。内置的条件队列可以使线程一直阻塞，直到对象进入某个进程可以继续执行的状态，并且当被阻塞的线程可以执行时再唤醒它们。 14.1.1 实例：将前提条件的失败传递给调用者14.1.2 实列：通过轮询与休眠来实现简单的阻塞14.1.3 条件队列条件队列使">
@@ -139,7 +139,36 @@
 <li><strong>单进单出</strong>。 在条件变量上的每次通知，最多只能唤醒一个线程来执行。</li>
 </ul>
 <h3 id="14-2-5-示例：阀门类"><a href="#14-2-5-示例：阀门类" class="headerlink" title="14.2.5 示例：阀门类"></a>14.2.5 示例：阀门类</h3><h3 id="14-2-6-子类的安全性问题"><a href="#14-2-6-子类的安全性问题" class="headerlink" title="14.2.6 子类的安全性问题"></a>14.2.6 子类的安全性问题</h3><h3 id="封装条件队列"><a href="#封装条件队列" class="headerlink" title="封装条件队列"></a>封装条件队列</h3><h3 id="14-2-8-入口协议与出口协议"><a href="#14-2-8-入口协议与出口协议" class="headerlink" title="14.2.8 入口协议与出口协议"></a>14.2.8 入口协议与出口协议</h3><h2 id="14-3-显式的Condition对象"><a href="#14-3-显式的Condition对象" class="headerlink" title="14.3 显式的Condition对象"></a>14.3 显式的Condition对象</h2><p>特别注意：在Condition对象中，与wait、notify和notifyAll方法对应的分别时await、signal和aignalAll。但是，Condition对Object进行了扩展，因而它也包含wait和notify方法，一定要确保使用正确的版本–await和signal。</p>
-<h2 id="14-4-Synchronizer剖析"><a href="#14-4-Synchronizer剖析" class="headerlink" title="14.4 Synchronizer剖析"></a>14.4 Synchronizer剖析</h2><h2 id="14-5-AbstractQueuedSynchronizer"><a href="#14-5-AbstractQueuedSynchronizer" class="headerlink" title="14.5 AbstractQueuedSynchronizer"></a>14.5 AbstractQueuedSynchronizer</h2><h2 id="14-6-java-util-concurrent同步器类中的AQS"><a href="#14-6-java-util-concurrent同步器类中的AQS" class="headerlink" title="14.6 java.util.concurrent同步器类中的AQS"></a>14.6 java.util.concurrent同步器类中的AQS</h2><h3 id="14-6-1-ReentrantLock"><a href="#14-6-1-ReentrantLock" class="headerlink" title="14.6.1 ReentrantLock"></a>14.6.1 ReentrantLock</h3><h3 id="14-6-2-Semaphore与CountDownLatch"><a href="#14-6-2-Semaphore与CountDownLatch" class="headerlink" title="14.6.2 Semaphore与CountDownLatch"></a>14.6.2 Semaphore与CountDownLatch</h3><h3 id="14-6-3-FutureTask"><a href="#14-6-3-FutureTask" class="headerlink" title="14.6.3 FutureTask"></a>14.6.3 FutureTask</h3><h3 id="14-6-4-ReentrantReadWriteLock"><a href="#14-6-4-ReentrantReadWriteLock" class="headerlink" title="14.6.4 ReentrantReadWriteLock"></a>14.6.4 ReentrantReadWriteLock</h3><h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>要实现一个依赖状态的类 —- 如果没有满足依赖状态的前提，那么这个类的方法必须阻塞，那么最好的方式是基于现有的库类来构建，例如Semaphore.BlockingQueue或CountDownLatch。然而，有时候现有的库类不能提供足够的功能，在这种情况下，可以使用内置的条件队列、显示的Condition对象或者AbstractQueueSynchronizer来构建自己的同步器。</p>
+<h2 id="14-4-Synchronizer剖析"><a href="#14-4-Synchronizer剖析" class="headerlink" title="14.4 Synchronizer剖析"></a>14.4 Synchronizer剖析</h2><p>AQS是一个用于构建锁和同步器的框架，许多同步器都可以通过AQS很容易并且高效地构造出来。不仅<code>ReentrantLock</code>和<code>Semaphore</code>是基于AQS构建的，还包括<code>CountDownLatch</code>、<code>ReentrantReadWriteLock</code>、<code>SynchronousQueue</code>和<code>FutureTask</code>。</p>
+<h2 id="14-5-AbstractQueuedSynchronizer"><a href="#14-5-AbstractQueuedSynchronizer" class="headerlink" title="14.5 AbstractQueuedSynchronizer"></a>14.5 AbstractQueuedSynchronizer</h2><p>在基于AQS构建的同步器类中，最基本的操作包括各种形式的获取操作和释放操作。</p>
+<p>一个简单的闭锁 使用AbstractQueueSynchronizer实现的二元闭锁</p>
+<pre><code class="java">@ThreadSafe
+public class OneShotLatch {
+    private final Sync sync = new Sync();
+    public void signal() {  sync.releaseShared(0) }
+    public void await() throws InterruptedException {
+        sync.acquireSharedInterruptibly(0);
+    }
+    private class Sync extends AbstractQueueSynchronizer {
+        protected int tryAcquireShared(int ignored) {
+            // 如果闭锁式开的(state == 1),那么这个操作操作将成功，否则将失败
+            return (getState() == 1) ? 1 : -1;
+        }
+
+        protected boolean tryReleaseShared(int ignored) {
+            setState(1);    // 现在打开闭锁
+            retrun true;    // 现在其他的线程可以获取该闭锁
+        }
+    }
+}
+</code></pre>
+<p>在OneShotLatch中，AQS状态用来表示闭锁状态–关闭(0)或者打开(1)。<br>acquireSharedInterruptibly方法在处理失败的方式，是把这个线程放入等待线程队列中。</p>
+<h2 id="14-6-java-util-concurrent同步器类中的AQS"><a href="#14-6-java-util-concurrent同步器类中的AQS" class="headerlink" title="14.6 java.util.concurrent同步器类中的AQS"></a>14.6 java.util.concurrent同步器类中的AQS</h2><h3 id="14-6-1-ReentrantLock"><a href="#14-6-1-ReentrantLock" class="headerlink" title="14.6.1 ReentrantLock"></a>14.6.1 ReentrantLock</h3><p>Lock.newCondition将返回一个新的ConditionObject实例，这是AQS的一个内部类。</p>
+<h3 id="14-6-2-Semaphore与CountDownLatch"><a href="#14-6-2-Semaphore与CountDownLatch" class="headerlink" title="14.6.2 Semaphore与CountDownLatch"></a>14.6.2 Semaphore与CountDownLatch</h3><p>Semaphore将AQS的同步状态用于保存当前可用许可的数量。<br>CountdownLatch使用AQS的方式与Semaphore很相似:在同步状态中保存的是当前的计数值。</p>
+<h3 id="14-6-3-FutureTask"><a href="#14-6-3-FutureTask" class="headerlink" title="14.6.3 FutureTask"></a>14.6.3 FutureTask</h3><p>在FutureTask中，AQS同步状态被用来保存任务的状态，例如，正在运行、已经完成或已取消。</p>
+<h3 id="14-6-4-ReentrantReadWriteLock"><a href="#14-6-4-ReentrantReadWriteLock" class="headerlink" title="14.6.4 ReentrantReadWriteLock"></a>14.6.4 ReentrantReadWriteLock</h3><p>ReentrantReadwriteLock使用了一个16位的状态来表示写入锁的计数，并且使用了另一个16位的状态来表示读取锁的技术。在读取锁的操作将使用共享的获取方法与释放方法，在写入锁上的操作将使用独占的获取方法与释放方法。</p>
+<p>AQS在内部维护一个等待线程队列，其中记录了某个线程请求的是独占访问还是共享访问。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>要实现一个依赖状态的类 —- 如果没有满足依赖状态的前提，那么这个类的方法必须阻塞，那么最好的方式是基于现有的库类来构建，例如Semaphore.BlockingQueue或CountDownLatch。然而，有时候现有的库类不能提供足够的功能，在这种情况下，可以使用内置的条件队列、显示的Condition对象或者AbstractQueueSynchronizer来构建自己的同步器。</p>
 
       
     </div>
@@ -148,7 +177,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/24/《Java并发编程实战》-13/" data-id="cjlbpfvx3000l2ovtgf8wp6ja" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/24/《Java并发编程实战》-13/" data-id="cjldix4fq000nmwvto9mgalsa" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -204,23 +233,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2018/08/28/零碎的知识点-6/">零碎的知识点-6</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/28/零碎的知识点-5/">零碎的知识点-5</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/28/《Java并发编程实战》-15/">《Java并发编程实战》-15   第16章 Java内存模型</a>
+          </li>
+        
+          <li>
             <a href="/2018/08/27/《Java并发编程实战》-14/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
           </li>
         
           <li>
             <a href="/2018/08/24/《Java并发编程实战》-13/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12   第13章 显式锁</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
           </li>
         
       </ul>
@@ -232,7 +261,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -241,7 +270,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

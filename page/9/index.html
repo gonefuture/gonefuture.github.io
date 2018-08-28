@@ -83,12 +83,16 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-semaphore" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Thinking in Java 》读书笔记-11" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/07/26/semaphore/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.273Z" itemprop="datePublished">2018-07-26</time>
+    <h3 href="/2018/07/30/《Thinking in Java 》读书笔记-11/" class="article-date">
+  <time datetime="2018-07-30T10:11:35.454Z" itemprop="datePublished">2018-07-30</time>
 </h3>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
   </div>
   <div class="article-inner">
   <div class="curve-down">
@@ -99,7 +103,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/semaphore/">Semaphore （转载自zooooooooy）</a>
+      <a class="article-title" href="/2018/07/30/《Thinking in Java 》读书笔记-11/">《Thinking in Java 》读书笔记-11</a>
     </h1>
   
 
@@ -108,19 +112,78 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <p>是一个分离的信号量计数器<br>主要核心方法有两个：</p>
-<ul>
-<li>acquire<br><em>从信号队列里面获取一个信号量，如果没有获取到则会一直阻塞到获取到信号量为止</em></li>
-<li>release<br><em>释放一个信号量回队列，这种模型相对来说比较适合池这种类型的业务需求</em></li>
+        <h1 id="第11章-持有对象"><a href="#第11章-持有对象" class="headerlink" title="第11章 持有对象"></a>第11章 持有对象</h1><hr>
+<h2 id="11-1-泛型和类型安全的容器"><a href="#11-1-泛型和类型安全的容器" class="headerlink" title="11.1 泛型和类型安全的容器"></a>11.1 泛型和类型安全的容器</h2><h2 id="1-2-基本概念"><a href="#1-2-基本概念" class="headerlink" title="1.2 基本概念"></a>1.2 基本概念</h2><ul>
+<li>Collection</li>
+<li>Map</li>
+<li>List</li>
 </ul>
-<p>acquire(int permits) 一次获取多个信号量<br>acquireUninterruptibly() 连续获取一个信号量<br>acquireUninterruptibly(int permits) 连续获得多个信号量</p>
+<h2 id="1-3添加一组元素"><a href="#1-3添加一组元素" class="headerlink" title="1.3添加一组元素"></a>1.3添加一组元素</h2><p>构建一个不包含元素的Collection，然后调用Collection.addAll()这种方式，运行速度快，也比较方便，是首先方式。</p>
+<p>使用Array.asList()可以使用<strong>显式类型参数</strong>说明产生的List的实际的目标类型。</p>
+<h2 id="1-4-容器的打印"><a href="#1-4-容器的打印" class="headerlink" title="1.4 容器的打印"></a>1.4 容器的打印</h2><p>使用Arrays.toString()来产生数组的可打印表示。</p>
+<h2 id="11-5-List"><a href="#11-5-List" class="headerlink" title="11.5 List"></a>11.5 List</h2><ul>
+<li><p>基本的ArrayList，它长于随机访问元素，但是在List的中间插入移动元素时较慢。</p>
+</li>
+<li><p>LinkedList,它通过代价较低的在List中间进行的插入和删除操作，提供了优化的顺序访问。LinkedList在随机访问方面相对比较慢，但它的特性较ArrayList更大。</p>
+</li>
+</ul>
+<h2 id="11-6-迭代器"><a href="#11-6-迭代器" class="headerlink" title="11.6 迭代器"></a>11.6 迭代器</h2><p>Java的iterator()要求容器返回一个Iterator。Iterator将准备好返回序列的第一个元素。</p>
+<ol>
+<li>使用方法iterator()要求容器返回一个Iterator.Iterator将准备好返回序列的第一个元素。</li>
+<li>使用next()获得序列中的下一个元素。</li>
+<li>使用hashNext()检查序列中是否还有元素。</li>
+<li>使用remove()将迭代器新近返回的元素删除。</li>
+</ol>
+<p>Iterator可以移除由next()产生的最后一个元素，这意味着在调用remove()之前必须先调用next()。</p>
+<h2 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h2><p>LinkedList具有能够直接实现栈的所有功能的方法，因此可以直接将LinkedList作为栈使用。</p>
+<p>peek()方法提供栈顶元素，但是并不将其从栈顶移除，而pop()将移除并返回栈顶元素。</p>
+<h2 id="11-9-Set"><a href="#11-9-Set" class="headerlink" title="11.9 Set"></a>11.9 Set</h2><p>Set不保存重复的元素。</p>
+<p>TreeSet将元素储存在红-黑树数据结构中，有序。</p>
+<p>HashSet使用的是散列函数，无序。</p>
+<p>LinkedHashList因为查询速度的原因使用散列，但是也使用了链表来维护元素的插入顺序。</p>
+<h2 id="11-10-Map"><a href="#11-10-Map" class="headerlink" title="11.10 Map"></a>11.10 Map</h2><p>Map可以用keySet()返回它的键的Set，用valueSet()它的值的Collection。</p>
+<ul>
+<li><p>HashMap</p>
+</li>
+<li><p>TreeMap</p>
+</li>
+<li><p>LinkedHashMap</p>
+</li>
+</ul>
+<h2 id="11-111-Queue"><a href="#11-111-Queue" class="headerlink" title="11.111 Queue"></a>11.111 Queue</h2><p>  队列是一个典型的先进先出的容器。</p>
+<h3 id="11-11-1-PriorityQueue"><a href="#11-11-1-PriorityQueue" class="headerlink" title="11.11.1 PriorityQueue"></a>11.11.1 PriorityQueue</h3><p>优先队列声明下一个弹出元素是最需要的元素（具有最高的优先级）。</p>
+<h2 id="Collection和Iterator"><a href="#Collection和Iterator" class="headerlink" title="Collection和Iterator"></a>Collection和Iterator</h2><p>Collection是描述所有序列容器的共性的跟接口，它可能被认为是一个“附属接口”，即因为要表示其他若干个接口的共性而出现的接口。</p>
+<p>实现Collection就意味着需要提供iterator()方法。</p>
+<p>Collection可以生成Iterator，而List可以生成ListIterator。</p>
+<h2 id="11-13-Foreach与迭代器"><a href="#11-13-Foreach与迭代器" class="headerlink" title="11.13 Foreach与迭代器"></a>11.13 Foreach与迭代器</h2><p>foreach语法主要用于数组和实现了Iterable接口的对象。</p>
+<h3 id="11-13-1-适配器方法惯用法"><a href="#11-13-1-适配器方法惯用法" class="headerlink" title="11.13.1 适配器方法惯用法"></a>11.13.1 适配器方法惯用法</h3><p>由Arrays.asList()产生的List对象会使用底层数组作为其物理实现。只要你执行的操作会修改这个List，并且你不想原来的数组被修改，那么你应该在另一个容器中创建一个副本。</p>
+<h2 id="11-14-总结"><a href="#11-14-总结" class="headerlink" title="11.14 总结"></a>11.14 总结</h2><ol>
+<li><p>数组将数字与对象联系起来。它保存类型明确的对象，查询对象时，不需要对结果做类型转换。他可以是多维的，可以保存基本类型的数组。但是，数组一旦生成，其容量就不能改变。</p>
+</li>
+<li><p>Collection保存单一的元素，而Map保存相关的键值对。有了Java的泛型，你就可可以指定容器中存放的对象类型，因此你就不会将错误类型的对象放置到容器中，并且自从容器中获取元素时，不必进行类型转换。各种Collection和各种Map都可以在你向其中添加更多的元素时，紫红调整其尺寸。容器不能持有基本类型，但是自动包装机制会仔细地执行基本类型到容器中所持有的包装其类型之间的双向转换。</p>
+</li>
+<li><p>像数组一样，List也建立数字索引与对象的关联，因此，数组和List都是排好序的容器。List能够自动扩充容量。</p>
+</li>
+<li><p>如果要进行大量的随机访问，就使用ArrayList；如果要经常从表中插入或删除元素，则应该使用LinkedList。</p>
+</li>
+<li><p>各种Queue以及栈的行为，由LinkedList提供支持。</p>
+</li>
+<li><p>Map是一种将对象（而非数字）与对象相关联的设计。HashMap设计用来快速访问；而TreeMap保持“键”始终处于排序状态，所以没有HashMap快。LinkedHashMap保持元素插入的顺序，但是也通过散列提供快速访问能力。</p>
+</li>
+<li><p>Set不接受重复元素。HashSet提供组块的查询速度，而TreeSet保持元素处于排序状态，LinkedHashSet以插入顺序保存元素。</p>
+</li>
+<li><p>新程序中不应该使用过时的Vector、Hashtable和Stack。</p>
+</li>
+</ol>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2018/07/26/semaphore/" data-id="cjlbpfvxb000q2ovt5v84dfnv" class="article-share-link">Share</a>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/07/30/《Thinking in Java 》读书笔记-11/" data-id="cjldix4hg002gmwvt7u939oey" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -128,7 +191,7 @@
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="semaphore" ></div> 
+<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-11" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -146,12 +209,16 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-jdk8-reduce" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Thinking in Java 》读书笔记-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/07/26/jdk8-reduce/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.269Z" itemprop="datePublished">2018-07-26</time>
+    <h3 href="/2018/07/30/《Thinking in Java 》读书笔记-1/" class="article-date">
+  <time datetime="2018-07-30T07:03:58.070Z" itemprop="datePublished">2018-07-30</time>
 </h3>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
   </div>
   <div class="article-inner">
   <div class="curve-down">
@@ -162,7 +229,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/jdk8-reduce/">JDK8 lambda reduce （转载自zooooooooy）</a>
+      <a class="article-title" href="/2018/07/30/《Thinking in Java 》读书笔记-1/">《Thinking in Java 》读书笔记-1</a>
     </h1>
   
 
@@ -171,25 +238,26 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <p>今天接了一个需求，需要在302的同时，将代理的所有参数都在转发到新的页面上</p>
-<p>直接上代码</p>
-<pre><code>    Map&lt;String, String[]&gt; parameterMap = request.getParameterMap();
-    List&lt;String&gt; paramList = new ArrayList&lt;&gt;();
-    parameterMap.forEach((k,v) -&gt; {
-       paramList.add(k + &quot;=&quot; + v[0]);
-    });
+        <h1 id="第一章-对象导论"><a href="#第一章-对象导论" class="headerlink" title="第一章 对象导论"></a>第一章 对象导论</h1><h2 id="1-1-抽象过程"><a href="#1-1-抽象过程" class="headerlink" title="1.1 抽象过程"></a>1.1 抽象过程</h2><ul>
+<li>万物皆对象。</li>
+<li>程序是对象的集合，它们通过发送消息来告知彼此索要做的。</li>
+<li>每个对象都有自己的由其他对象所构成的储存。</li>
+<li>每个对象都拥有其类型。</li>
+<li>某个特定类型的所有对象都可以接受同样的消息。</li>
+</ul>
+<h2 id="1-2-每个对象都要有一个接口"><a href="#1-2-每个对象都要有一个接口" class="headerlink" title="1.2 每个对象都要有一个接口"></a>1.2 每个对象都要有一个接口</h2><h2 id="1-3-每个对象都提供服务"><a href="#1-3-每个对象都提供服务" class="headerlink" title="1.3 每个对象都提供服务"></a>1.3 每个对象都提供服务</h2><h2 id="1-4-被隐藏的具体实现"><a href="#1-4-被隐藏的具体实现" class="headerlink" title="1.4 被隐藏的具体实现"></a>1.4 被隐藏的具体实现</h2><h2 id="1-5-复用具体实现"><a href="#1-5-复用具体实现" class="headerlink" title="1.5 复用具体实现"></a>1.5 复用具体实现</h2><h2 id="1-6-继承"><a href="#1-6-继承" class="headerlink" title="1.6 继承"></a>1.6 继承</h2><h3 id="1-6-1-“is-a”和”like-a”"><a href="#1-6-1-“is-a”和”like-a”" class="headerlink" title="1.6.1 “is-a”和”like-a”"></a>1.6.1 “is-a”和”like-a”</h3><h2 id="1-7-伴随多态的可互换对象"><a href="#1-7-伴随多态的可互换对象" class="headerlink" title="1.7 伴随多态的可互换对象"></a>1.7 伴随多态的可互换对象</h2><h2 id="1-8-单根继承结构"><a href="#1-8-单根继承结构" class="headerlink" title="1.8 单根继承结构"></a>1.8 单根继承结构</h2><h2 id="1-9-容器"><a href="#1-9-容器" class="headerlink" title="1.9 容器"></a>1.9 容器</h2><h2 id="1-10-对象的创建和生命期"><a href="#1-10-对象的创建和生命期" class="headerlink" title="1.10 对象的创建和生命期"></a>1.10 对象的创建和生命期</h2><h2 id="1-11-异常处理：处理错误"><a href="#1-11-异常处理：处理错误" class="headerlink" title="1.11 异常处理：处理错误"></a>1.11 异常处理：处理错误</h2><h2 id="1-12-并发编程"><a href="#1-12-并发编程" class="headerlink" title="1.12 并发编程"></a>1.12 并发编程</h2><h2 id="1-13-Java与Internet"><a href="#1-13-Java与Internet" class="headerlink" title="1.13 Java与Internet"></a>1.13 Java与Internet</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>过程式编程：<br>  &emsp;数据定义和函数调用</li>
+<li>面向对象编程：<br>  &emsp;用来表示问题空间概念的对象（而不是有关计算机表示方式的相关内容），以及发送给这些对象的用来表示在此空间内的行为的消息。</li>
+</ul>
 
-    String paramChain = paramList.stream().reduce((s1, s2) -&gt; s1 + &quot;&amp;&quot; + s2).get();
-    response.setStatus(302);
-    response.setHeader(&quot;Location&quot;, lxAddress + &quot;?&quot; + paramChain);
-    response.setHeader(&quot;Connection&quot;, &quot;close&quot;);
-</code></pre>
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2018/07/26/jdk8-reduce/" data-id="cjlbpfvwv000e2ovtg7nyxqkp" class="article-share-link">Share</a>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/07/30/《Thinking in Java 》读书笔记-1/" data-id="cjldix4gv001tmwvt0d6x14at" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -197,7 +265,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="jdk8-reduce" ></div> 
+<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-1" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -215,10 +283,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-java-scattered" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-springboot-summary" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/07/26/java-scattered/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.266Z" itemprop="datePublished">2018-07-26</time>
+    <h3 href="/2018/07/26/springboot-summary/" class="article-date">
+  <time datetime="2018-07-26T02:28:13.276Z" itemprop="datePublished">2018-07-26</time>
 </h3>
     
   </div>
@@ -231,7 +299,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/java-scattered/">JAVA scatter （转载自zooooooooy）</a>
+      <a class="article-title" href="/2018/07/26/springboot-summary/">springboot （转载自zooooooooy）</a>
     </h1>
   
 
@@ -240,180 +308,135 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <p>查看系统的线程上下文切换次数</p>
-<p>使用vmstat 3<br><img src="/images/TIM截图20180704163235.png" alt="vmstat"></p>
-<p>其中cs就是context switch的次数，数值越高代表上线文切换的越频繁，耗时越多。每秒的切换次数可以和进程的总线程数进行比对，如果大于线程总数代表是满负荷运转</p>
+        <h3 id="springMVC"><a href="#springMVC" class="headerlink" title="springMVC"></a>springMVC</h3><p>springboot提供了开箱即用的web mvc，项目中用到的是gradle，只需要引用两个包就可以了</p>
+<pre><code>compile(&#39;org.springframework.boot:spring-boot-starter&#39;)
+compile(&#39;org.springframework.boot:spring-boot-starter-web&#39;)
+</code></pre><p>并不需要做什么其他配置，就可以启动web项目，编写restful接口。还是有一些需要个性化定制的功能需要我们手动去配置。有一些并不是springboot独有，配置的时候都是采用代码代替xml的方式。问题记录如下：</p>
+<ul>
+<li><p>Json序列化，<br>springmvc都是需要配置的，之前都是通过xml来配置。在springboot里面需要自定义MessageConverter。注册bean的方式加载到spring消息转换器里面，默认是放置到转换器队列的最前面优先解析。<br>springmvc默认的json解析器是Jackson,我这边算是先继承MappingJackson2HttpMessageConverter，修改覆盖初始方法来定制化项目需要的json格式化规则。</p>
+<pre><code>public class JsonMessageConverter extends MappingJackson2HttpMessageConverter {
+
+       @Override
+       protected void init(ObjectMapper objectMapper) {
+           objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+           objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+           objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
+           objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+           objectMapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+           objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+
+           objectMapper.setDateFormat(new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;));
+
+           super.init(objectMapper);
+       }
+   }
+
+</code></pre><p>后面需要将这个注册到spring bean管理里面。在configuration类里面注册</p>
+<pre><code>@Bean
+public HttpMessageConverters customConverters() {
+   return new HttpMessageConverters(new JsonMessageConverter());
+}
+
+</code></pre></li>
+<li><p>UTF8编码<br>同样是在configuration类里面注册，其实configuration就相当于spring的一个xml文件，每个方法相当于定义的一个bean，方法之间是可以互相依赖的。spring已经考虑到这点，不用担心依赖的时候破坏单例的特性。</p>
+<pre><code>@Bean
+public CharacterEncodingFilter encodingFilter() {
+
+   CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
+   encodingFilter.setEncoding(&quot;UTF-8&quot;);
+   encodingFilter.setForceEncoding(true);
+   return encodingFilter;
+}
+
+</code></pre></li>
+<li><p>拦截器<br>用到拦截器的时候，需要继承WebMvcConfigurerAdapter，通过适配器的模式，覆盖相应的方法。当然同时这个类需要标注为configuration类。</p>
+<p>| 方法 |<br>|——–|<br>|configurePathMatch|<br>|configureContentNegotiation|<br>|configureAsyncSupport|<br>|configureDefaultServletHandling|<br>|addFormatters|<br>|addInterceptors|<br>|addResourceHandlers|<br>|addCorsMappings|<br>|addViewControllers|<br>|configureViewResolvers|<br>|addArgumentResolvers|<br>|addReturnValueHandlers|<br>|configureMessageConverters|<br>|extendMessageConverters|<br>|configureHandlerExceptionResolvers|<br>|extendHandlerExceptionResolvers|<br>|getValidator|<br>|getMessageCodesResolver|<br>拦截器添加选择覆盖addInterceptors</p>
+<pre><code>@Override
+public void addInterceptors(InterceptorRegistry registry) {
+   registry.addInterceptor(new MappedInterceptor(new String[]{&quot;/**&quot;}, new String[]{&quot;&quot;},
+           new MvcInterceptor()));
+}
+</code></pre><p>MvcInterceptor是自定义的拦截器，如果需要用到url拦截的功能，需要使用spring带的MappedInterceptor定义拦截的url和排除的url<br>项目中还用到了addArgumentResolvers，addReturnValueHandlers就不一一列举了。</p>
+</li>
+</ul>
+<h3 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h3><ul>
+<li><p>属性文件<br>使用@PropertySources({@PropertySource(value = “classpath:setting.properties”)})来引入，不过这个不是springboot里面的东西。</p>
+</li>
+<li><p>项目分布</p>
+<ul>
+<li>css,js前端等用到的组件都分布在public下面或者static下面<br>需要渲染的模板定义在templates里面，安利一下我正在使用的模板<a href="http://www.mitchellbosecke.com/pebble/documentation/guide/basic-usage" target="_blank" rel="noopener">pebble</a></li>
+<li>数据库使用的是mybatis，sql还是写在xml里面在，始终觉得在代码里面写sql比较别扭。</li>
+<li><p>打包工具使用的是gradle，第一次接触，感觉还是不错，在编译速度上超过了maven。</p>
+<pre><code>compile(&#39;org.springframework.boot:spring-boot-starter&#39;)
+compile(&#39;org.springframework.boot:spring-boot-starter-log4j2&#39;)
+compile(&#39;org.springframework.boot:spring-boot-starter-web&#39;) {
+  //exclude group:&#39;org.springframework.boot&#39;,module:&quot;spring-boot-starter-tomcat&quot;
+}
+compile(&#39;org.springframework.boot:spring-boot-devtools&#39;)
+compile(&#39;org.springframework.boot:spring-boot-starter-test&#39;)
+compile(&#39;org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.0&#39;)
+
+compile(&#39;mysql:mysql-connector-java:6.0.5&#39;)
+compile(&#39;com.zaxxer:HikariCP:2.6.1&#39;)
+
+compile(&#39;org.projectlombok:lombok:1.16.16&#39;)
+
+//token
+compile(&quot;io.jsonwebtoken:jjwt:0.7.0&quot;)
+
+//bean copy
+compile(&#39;commons-beanutils:commons-beanutils:1.9.3&#39;)
+
+//apache commons lang3
+compile(&#39;org.apache.commons:commons-lang3:3.6&#39;)
+
+compile(&#39;javax.validation:validation-api:2.0.0.CR2&#39;)
+
+testCompile(&#39;junit:junit:4.12&#39;)
+
+</code></pre><p>项目中用到的jar包如上，springboot的版本号定义在buildscript里面在。使用的是1.5.2</p>
+</li>
+</ul>
+</li>
+<li><p>项目发布<br>项目还是采用外置的tomcat发布，需要在启动类Application继承SpringBootServletInitializer，覆盖</p>
+<pre><code>@Override
+protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+   return builder.sources(Application.class);
+}
+
+</code></pre><p>发布的脚本上gradle clean build -x test</p>
+</li>
+<li>profile配置<br>使用了gradle，在dev环境和prod环境的配置上，相对来说是没有maven好使的，<br>需要启动的时候在环境变量里面配置-Dspring.profiles.active=dev<br>其他的跟平常的spring开发还都是保持一致的。随着后续功能的开发慢慢会涉及到更多springboot的功能，个人感觉在开发效率上还是提升了不少。</li>
+</ul>
 <hr>
-<p>java 线程状态之间的跃迁<br><img src="/images/TIM截图20180704193005.png" alt="thread change"></p>
-<p>线程的各个状态及说明如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">状态名称</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">NEW</td>
-<td>初始状态</td>
-</tr>
-<tr>
-<td style="text-align:left">RUNNABLE</td>
-<td>运行状态</td>
-</tr>
-<tr>
-<td style="text-align:left">BLOCKED</td>
-<td>阻塞状态</td>
-</tr>
-<tr>
-<td style="text-align:left">WAITING</td>
-<td>等待状态</td>
-</tr>
-<tr>
-<td style="text-align:left">TIME_WAITING</td>
-<td>超时等待状态</td>
-</tr>
-<tr>
-<td style="text-align:left">TERMINATED</td>
-<td>终止状态</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>synchronized 关键字的使用场景</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">锁的方式</th>
-<th>锁的对象</th>
-<th>伪代码</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">实例方法</td>
-<td>类的实例对象</td>
-<td>public synchronized void method</td>
-</tr>
-<tr>
-<td style="text-align:left">静态方法</td>
-<td>类对象</td>
-<td>public synchronized static void method</td>
-</tr>
-<tr>
-<td style="text-align:left">实例对象</td>
-<td>类的实例对象</td>
-<td>synchronized (this)</td>
-</tr>
-<tr>
-<td style="text-align:left">class对象</td>
-<td>类对象</td>
-<td>synchronized (A.class)</td>
-</tr>
-<tr>
-<td style="text-align:left">普通对象</td>
-<td>普通对象</td>
-<td>synchronized (o)</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>mark 下 通过ReentrantLock中线程等待唤醒的状态跃迁<br><img src="/images/TIM截图20180720114120.png" alt="await|singal"></p>
-<hr>
-<p>java queue 方法</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">方法名称</th>
-<th>说明</th>
-<th>是否阻塞</th>
-<th>是否抛出异常</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">add</td>
-<td>插入</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style="text-align:left">offer</td>
-<td>插入</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style="text-align:left">remove</td>
-<td>删除</td>
-<td>否</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">poll</td>
-<td>删除</td>
-<td>否</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">element</td>
-<td>获取</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td style="text-align:left">peek</td>
-<td>获取</td>
-<td>否</td>
-<td>是</td>
-</tr>
-</tbody>
-</table>
-<p>blocking queue</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">方法名称</th>
-<th>说明</th>
-<th>是否阻塞</th>
-<th>是否抛出异常</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">put</td>
-<td>插入</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">offer <em>支持超时</em></td>
-<td>插入</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">take</td>
-<td>删除</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td style="text-align:left">poll <em>支持超时</em></td>
-<td>删除</td>
-<td>是</td>
-<td>否</td>
-</tr>
-</tbody>
-</table>
+<p>后续研究了下gradle的分环境打包方式，参数网上的例子，操作步骤如下</p>
+<ul>
+<li>添加配置文件config.groovy<br>environments {<br>   dev {<br>   }<br>   prod {<br>   }<br>}<br>在dev和prod写不同环境下的变量值，按照groovy的方式</li>
+<li>在build.gradle获取打包时指定的环境参数<pre><code>ext {
+   profile = System.properties[&#39;spring.profiles.active&#39;]
+}
+</code></pre></li>
+<li><p>读取config.groovy对应环境的的变量值</p>
+<pre><code>def loadGroovyConfig(){
+   def configFile = file(&#39;config.groovy&#39;)
+   new ConfigSlurper(profile).parse(configFile.toURL()).toProperties()
+}
+
+processResources {
+   from(sourceSets.main.resources.srcDirs) {
+       filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: loadGroovyConfig())
+   }
+}
+</code></pre></li>
+<li>变量覆盖如图<br><img src="/images/TIM截图20180605114425.png" alt="log4j2"><br>后续打包还是按照正常的方式，指定-Dspring.profiles.active=dev或者prod就可以</li>
+</ul>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2018/07/26/java-scattered/" data-id="cjlbpfvwk00072ovt209hv3oy" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/07/26/springboot-summary/" data-id="cjldix4fr000pmwvt7eyckntg" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -421,7 +444,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="java-scattered" ></div> 
+<div id="SOHUCS" sid="springboot-summary" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -441,7 +464,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -455,23 +478,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2018/08/28/零碎的知识点-6/">零碎的知识点-6</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/28/零碎的知识点-5/">零碎的知识点-5</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/28/《Java并发编程实战》-15/">《Java并发编程实战》-15   第16章 Java内存模型</a>
+          </li>
+        
+          <li>
             <a href="/2018/08/27/《Java并发编程实战》-14/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
           </li>
         
           <li>
             <a href="/2018/08/24/《Java并发编程实战》-13/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12   第13章 显式锁</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
           </li>
         
       </ul>
@@ -483,7 +506,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -492,7 +515,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

@@ -7,18 +7,18 @@
   
   <title>《Java并发编程实战》-11 第12章 并发程序的测试 | gonefuture</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="第12章 并发程序的测试 吞吐量:指一组并发任务中已完成任务所栈的比例。响应性：指请求从发出到完成之间的时间（也成为延迟）。 12.1 正确性测试12.1.1 基本的单元测试12.1.2 对阻塞操作的测试12.1.3 安全性测试 在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情">
+  <meta name="description" content="第12章 并发程序的测试 吞吐量:指一组并发任务中已完成任务所栈的比例。响应性：指请求从发出到完成之间的时间（也成为延迟）。 12.1 正确性测试在为某个并发类设计单元测试时，首先需要执行与测试串行类时相同的分析—找出需要检查的不变性条件和后验条件。 12.1.1 基本的单元测试在测试集中包含一组串行测试通常是有帮助的，因为它们有助于在开始分析数据竞争之前找出与并发无关性的问题。 12.1.2 对">
 <meta name="keywords" content="java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《Java并发编程实战》-11 第12章 并发程序的测试">
 <meta property="og:url" content="http://gonefuture.top/2018/08/22/《Java并发编程实战》-11/index.html">
 <meta property="og:site_name" content="gonefuture">
-<meta property="og:description" content="第12章 并发程序的测试 吞吐量:指一组并发任务中已完成任务所栈的比例。响应性：指请求从发出到完成之间的时间（也成为延迟）。 12.1 正确性测试12.1.1 基本的单元测试12.1.2 对阻塞操作的测试12.1.3 安全性测试 在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情">
+<meta property="og:description" content="第12章 并发程序的测试 吞吐量:指一组并发任务中已完成任务所栈的比例。响应性：指请求从发出到完成之间的时间（也成为延迟）。 12.1 正确性测试在为某个并发类设计单元测试时，首先需要执行与测试串行类时相同的分析—找出需要检查的不变性条件和后验条件。 12.1.1 基本的单元测试在测试集中包含一组串行测试通常是有帮助的，因为它们有助于在开始分析数据竞争之前找出与并发无关性的问题。 12.1.2 对">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-23T03:49:55.496Z">
+<meta property="og:updated_time" content="2018-08-28T04:28:07.531Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Java并发编程实战》-11 第12章 并发程序的测试">
-<meta name="twitter:description" content="第12章 并发程序的测试 吞吐量:指一组并发任务中已完成任务所栈的比例。响应性：指请求从发出到完成之间的时间（也成为延迟）。 12.1 正确性测试12.1.1 基本的单元测试12.1.2 对阻塞操作的测试12.1.3 安全性测试 在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情">
+<meta name="twitter:description" content="第12章 并发程序的测试 吞吐量:指一组并发任务中已完成任务所栈的比例。响应性：指请求从发出到完成之间的时间（也成为延迟）。 12.1 正确性测试在为某个并发类设计单元测试时，首先需要执行与测试串行类时相同的分析—找出需要检查的不变性条件和后验条件。 12.1.1 基本的单元测试在测试集中包含一组串行测试通常是有帮助的，因为它们有助于在开始分析数据竞争之前找出与并发无关性的问题。 12.1.2 对">
   
     <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
   
@@ -114,13 +114,27 @@
         
         <h1 id="第12章-并发程序的测试"><a href="#第12章-并发程序的测试" class="headerlink" title="第12章 并发程序的测试"></a>第12章 并发程序的测试</h1><hr>
 <p>吞吐量:指一组并发任务中已完成任务所栈的比例。<br>响应性：指请求从发出到完成之间的时间（也成为延迟）。</p>
-<h2 id="12-1-正确性测试"><a href="#12-1-正确性测试" class="headerlink" title="12.1 正确性测试"></a>12.1 正确性测试</h2><h3 id="12-1-1-基本的单元测试"><a href="#12-1-1-基本的单元测试" class="headerlink" title="12.1.1 基本的单元测试"></a>12.1.1 基本的单元测试</h3><h3 id="12-1-2-对阻塞操作的测试"><a href="#12-1-2-对阻塞操作的测试" class="headerlink" title="12.1.2 对阻塞操作的测试"></a>12.1.2 对阻塞操作的测试</h3><h3 id="12-1-3-安全性测试"><a href="#12-1-3-安全性测试" class="headerlink" title="12.1.3 安全性测试"></a>12.1.3 安全性测试</h3><blockquote>
+<h2 id="12-1-正确性测试"><a href="#12-1-正确性测试" class="headerlink" title="12.1 正确性测试"></a>12.1 正确性测试</h2><p>在为某个并发类设计单元测试时，首先需要执行与测试串行类时相同的分析—找出需要检查的不变性条件和后验条件。</p>
+<h3 id="12-1-1-基本的单元测试"><a href="#12-1-1-基本的单元测试" class="headerlink" title="12.1.1 基本的单元测试"></a>12.1.1 基本的单元测试</h3><p>在测试集中包含一组串行测试通常是有帮助的，因为它们有助于在开始分析数据竞争之前找出与并发无关性的问题。</p>
+<h3 id="12-1-2-对阻塞操作的测试"><a href="#12-1-2-对阻塞操作的测试" class="headerlink" title="12.1.2 对阻塞操作的测试"></a>12.1.2 对阻塞操作的测试</h3><p>在测试并发的基本属性时，需要引入多个线程。</p>
+<p>Thread.getState的返回结果不能用于并发控制，它能限制测试的有效性—其主要作用还是作为调试信息的来源。</p>
+<h3 id="12-1-3-安全性测试"><a href="#12-1-3-安全性测试" class="headerlink" title="12.1.3 安全性测试"></a>12.1.3 安全性测试</h3><blockquote>
 <p>在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情况是，在测试属性中不需要任何同步机制。</p>
 </blockquote>
-<h3 id="12-1-4-资源管理的测试"><a href="#12-1-4-资源管理的测试" class="headerlink" title="12.1.4 资源管理的测试"></a>12.1.4 资源管理的测试</h3><h3 id="使用回调"><a href="#使用回调" class="headerlink" title="使用回调"></a>使用回调</h3><h3 id="12-1-6-产生跟多的交替操作"><a href="#12-1-6-产生跟多的交替操作" class="headerlink" title="12.1.6 产生跟多的交替操作"></a>12.1.6 产生跟多的交替操作</h3><h2 id="12-2-性能测试"><a href="#12-2-性能测试" class="headerlink" title="12.2 性能测试"></a>12.2 性能测试</h2><h3 id="12-2-1-在PutTakeTest中增加计时功能"><a href="#12-2-1-在PutTakeTest中增加计时功能" class="headerlink" title="12.2.1 在PutTakeTest中增加计时功能"></a>12.2.1 在PutTakeTest中增加计时功能</h3><h3 id="12-2-2-多种算法的比较"><a href="#12-2-2-多种算法的比较" class="headerlink" title="12.2.2 多种算法的比较"></a>12.2.2 多种算法的比较</h3><h3 id="响应性衡量"><a href="#响应性衡量" class="headerlink" title="响应性衡量"></a>响应性衡量</h3><h2 id="12-3-避免性能测试的陷阱"><a href="#12-3-避免性能测试的陷阱" class="headerlink" title="12.3 避免性能测试的陷阱"></a>12.3 避免性能测试的陷阱</h2><h3 id="12-3-1-垃圾回收"><a href="#12-3-1-垃圾回收" class="headerlink" title="12.3.1 垃圾回收"></a>12.3.1 垃圾回收</h3><h3 id="12-3-2-动态编译"><a href="#12-3-2-动态编译" class="headerlink" title="12.3.2 动态编译"></a>12.3.2 动态编译</h3><h3 id="12-3-3-对代码路径的不真实采集"><a href="#12-3-3-对代码路径的不真实采集" class="headerlink" title="12.3.3 对代码路径的不真实采集"></a>12.3.3 对代码路径的不真实采集</h3><h3 id="12-3-4-不真实的竞争程度"><a href="#12-3-4-不真实的竞争程度" class="headerlink" title="12.3.4 不真实的竞争程度"></a>12.3.4 不真实的竞争程度</h3><h3 id="12-3-5-无用代码的消除"><a href="#12-3-5-无用代码的消除" class="headerlink" title="12.3.5 无用代码的消除"></a>12.3.5 无用代码的消除</h3><blockquote>
+<h3 id="12-1-4-资源管理的测试"><a href="#12-1-4-资源管理的测试" class="headerlink" title="12.1.4 资源管理的测试"></a>12.1.4 资源管理的测试</h3><h3 id="12-1-5-使用回调"><a href="#12-1-5-使用回调" class="headerlink" title="12.1.5 使用回调"></a>12.1.5 使用回调</h3><p>回调函数的执行通常是在对象生命周期的一些已知位置上，并且在这些位置上非常适合判断不变性是否被破坏。</p>
+<h3 id="12-1-6-产生跟多的交替操作"><a href="#12-1-6-产生跟多的交替操作" class="headerlink" title="12.1.6 产生跟多的交替操作"></a>12.1.6 产生跟多的交替操作</h3><p>在访问共享状态的操作中，使用Thread.yield将产生更多的上下文切换（这项技术是平台相关的）。</p>
+<h2 id="12-2-性能测试"><a href="#12-2-性能测试" class="headerlink" title="12.2 性能测试"></a>12.2 性能测试</h2><h3 id="12-2-1-在PutTakeTest中增加计时功能"><a href="#12-2-1-在PutTakeTest中增加计时功能" class="headerlink" title="12.2.1 在PutTakeTest中增加计时功能"></a>12.2.1 在PutTakeTest中增加计时功能</h3><h3 id="12-2-2-多种算法的比较"><a href="#12-2-2-多种算法的比较" class="headerlink" title="12.2.2 多种算法的比较"></a>12.2.2 多种算法的比较</h3><h3 id="响应性衡量"><a href="#响应性衡量" class="headerlink" title="响应性衡量"></a>响应性衡量</h3><p>如果能获取更小的服务时间变动性，那么更长的平均时间是有意义的，“可预测需性”同样是一个非常有价值的性能特征。<br>除非线程由于密集的同步需求而被持续地阻塞，否则非公平的信号量通常能实现更好的吞吐量。</p>
+<h2 id="12-3-避免性能测试的陷阱"><a href="#12-3-避免性能测试的陷阱" class="headerlink" title="12.3 避免性能测试的陷阱"></a>12.3 避免性能测试的陷阱</h2><h3 id="12-3-1-垃圾回收"><a href="#12-3-1-垃圾回收" class="headerlink" title="12.3.1 垃圾回收"></a>12.3.1 垃圾回收</h3><p>垃圾回收的执行时序是无法预测的，因此在执行测试时，垃圾回收器可能在任何时刻运行。</p>
+<h3 id="12-3-2-动态编译"><a href="#12-3-2-动态编译" class="headerlink" title="12.3.2 动态编译"></a>12.3.2 动态编译</h3><p>当某个类第一次被加载时，JVM会通过解释字节码的方式执行它。在某个时刻，如果一个方法运行的次数足够多，那么动态编译器会将它编译为机器代码，当编译完成后，代码的执行方式将从解释执行变成直接执行。</p>
+<h3 id="12-3-3-对代码路径的不真实采集"><a href="#12-3-3-对代码路径的不真实采集" class="headerlink" title="12.3.3 对代码路径的不真实采集"></a>12.3.3 对代码路径的不真实采集</h3><p>运行时编译器根据收集到的信息对已编译的代码进行优化。JVM可以与执行过程特定的信息来生成更优的代码，这个意味着在编译某个程序的方法M时生成的代码，将可能与编译另一个不同程序中的方法M时生成的代码不同。</p>
+<h3 id="12-3-4-不真实的竞争程度"><a href="#12-3-4-不真实的竞争程度" class="headerlink" title="12.3.4 不真实的竞争程度"></a>12.3.4 不真实的竞争程度</h3><p>并发的应用程序可以交替执行两种不同的类型的工作：访问共享数据（例如从共享工作队列中取出下一个任务）以及执行线程本地的计算（例如，执行任务，并假设任务本身不会访问共享数据）。</p>
+<h3 id="12-3-5-无用代码的消除"><a href="#12-3-5-无用代码的消除" class="headerlink" title="12.3.5 无用代码的消除"></a>12.3.5 无用代码的消除</h3><blockquote>
 <p>要编写有效的性能测试程序，那就需要告诉优化器不要将基准测试当作无用代码而优化掉。这就要求在程序中对每个计算结果都要通过某种方式来使用，这种方式不需要同步或者大量的计算。</p>
 </blockquote>
-<h2 id="12-4-其他的测试方法"><a href="#12-4-其他的测试方法" class="headerlink" title="12.4 其他的测试方法"></a>12.4 其他的测试方法</h2><h3 id="12-4-1-代码审查"><a href="#12-4-1-代码审查" class="headerlink" title="12.4.1 代码审查"></a>12.4.1 代码审查</h3><h3 id="12-4-2-静态分析工具"><a href="#12-4-2-静态分析工具" class="headerlink" title="12.4.2 静态分析工具"></a>12.4.2 静态分析工具</h3><h3 id="12-4-3-面向方面的测试技术"><a href="#12-4-3-面向方面的测试技术" class="headerlink" title="12.4.3 面向方面的测试技术"></a>12.4.3 面向方面的测试技术</h3><h3 id="12-4-4-分析与监测工具"><a href="#12-4-4-分析与监测工具" class="headerlink" title="12.4.4 分析与监测工具"></a>12.4.4 分析与监测工具</h3><p>FindBUgs包含的检测器：</p>
+<h2 id="12-4-其他的测试方法"><a href="#12-4-其他的测试方法" class="headerlink" title="12.4 其他的测试方法"></a>12.4 其他的测试方法</h2><p>测试的目标不是更多地发现错误，而是提高代码按照预期方式工作的可信度。</p>
+<h3 id="12-4-1-代码审查"><a href="#12-4-1-代码审查" class="headerlink" title="12.4.1 代码审查"></a>12.4.1 代码审查</h3><p>多人参与的代码审查通常是不可替代的（另一方面，代码审查也不能取代测试）。</p>
+<h3 id="12-4-2-静态分析工具"><a href="#12-4-2-静态分析工具" class="headerlink" title="12.4.2 静态分析工具"></a>12.4.2 静态分析工具</h3><p>静态分析工具能生成一个警告列表，其中包含的警告信息必须通过手工方式进行检查，从而确定这些警告是否表示真正的错误。</p>
+<p>FindBUgs包含的检测器：</p>
 <ul>
 <li>调用Thread.run()</li>
 <li>未被释放的锁<br>  标准的做法是在一个人finally块中释放显式锁，否则，当发生Exception事件时，锁仍然处于未被释放的状态。</li>
@@ -133,7 +147,10 @@
 <li>在休眠或者等待的同时持有一个锁。</li>
 <li>自旋循环。<br>  当等待某个状态转换发生时，闭锁或条件等待通常比在代码中自旋是一种更好的技术。</li>
 </ul>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2>
+<h3 id="12-4-3-面向方面的测试技术"><a href="#12-4-3-面向方面的测试技术" class="headerlink" title="12.4.3 面向方面的测试技术"></a>12.4.3 面向方面的测试技术</h3><p>AOP可以用来确保不变性条件不被破坏，或者与同步策略的某些方面保持一直。</p>
+<h3 id="12-4-4-分析与监测工具"><a href="#12-4-4-分析与监测工具" class="headerlink" title="12.4.4 分析与监测工具"></a>12.4.4 分析与监测工具</h3><p>分析工具通常为能给出程序内部的详细信息，为每个线程提供一个事件线显示，并且用颜色区分不同的线程状态（可运行，由于等待某个锁为阻塞，由于等待I/O操作而阻塞等等）。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>要测试并发程序的正确性可能非常困难，因为并发程序的许多故障模式哦都是一些低概率事件，它们对于执行时序、负载情况以及其他难以出现的条件都非常敏感。</p>
+
       
     </div>
     <footer class="article-footer">
@@ -141,7 +158,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/22/《Java并发编程实战》-11/" data-id="cjlbpfvxg000t2ovtzslneisj" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/22/《Java并发编程实战》-11/" data-id="cjldix4fj000hmwvtozlwuph4" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -197,23 +214,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2018/08/28/零碎的知识点-6/">零碎的知识点-6</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/28/零碎的知识点-5/">零碎的知识点-5</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/28/《Java并发编程实战》-15/">《Java并发编程实战》-15   第16章 Java内存模型</a>
+          </li>
+        
+          <li>
             <a href="/2018/08/27/《Java并发编程实战》-14/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
           </li>
         
           <li>
             <a href="/2018/08/24/《Java并发编程实战》-13/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12   第13章 显式锁</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
           </li>
         
       </ul>
@@ -225,7 +242,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -234,7 +251,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

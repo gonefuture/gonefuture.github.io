@@ -16,7 +16,7 @@
 <meta property="og:description" content="《Thinking in Java 》读书笔记-1717.1 完整的容器分类法 17.2 填充容器Collections.nCopies()和Collection.fill()都可以用单个对象的引用来填充Collection，并且所有引用都被设置为指向相同的的对象。fill()方法的用处更为有限，它只能替换已经在List中存在的元素，而不能添加新的元素。 17.2.1 一种Generator解决方">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://img-blog.csdn.net/20180801173227921?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:updated_time" content="2018-08-01T13:06:41.454Z">
+<meta property="og:updated_time" content="2018-08-28T06:15:11.831Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Thinking in Java 》读书笔记-17">
 <meta name="twitter:description" content="《Thinking in Java 》读书笔记-1717.1 完整的容器分类法 17.2 填充容器Collections.nCopies()和Collection.fill()都可以用单个对象的引用来填充Collection，并且所有引用都被设置为指向相同的的对象。fill()方法的用处更为有限，它只能替换已经在List中存在的元素，而不能添加新的元素。 17.2.1 一种Generator解决方">
@@ -118,7 +118,32 @@
 <h2 id="17-2-填充容器"><a href="#17-2-填充容器" class="headerlink" title="17.2 填充容器"></a>17.2 填充容器</h2><p>Collections.nCopies()和Collection.fill()都可以用单个对象的引用来填充Collection，并且所有引用都被设置为指向相同的的对象。<br>fill()方法的用处更为有限，它只能替换已经在List中存在的元素，而不能添加新的元素。</p>
 <h3 id="17-2-1-一种Generator解决方案"><a href="#17-2-1-一种Generator解决方案" class="headerlink" title="17.2.1 一种Generator解决方案"></a>17.2.1 一种Generator解决方案</h3><p>所有的Collection子类型都有一个接受另一个Collection对象的构造器。</p>
 <h3 id="17-2-2-Map生成器"><a href="#17-2-2-Map生成器" class="headerlink" title="17.2.2 Map生成器"></a>17.2.2 Map生成器</h3><h3 id="未获支持的操作"><a href="#未获支持的操作" class="headerlink" title="未获支持的操作"></a>未获支持的操作</h3><h3 id="17-2-3-使用Abstract类"><a href="#17-2-3-使用Abstract类" class="headerlink" title="17.2.3 使用Abstract类"></a>17.2.3 使用Abstract类</h3><h2 id="17-3-Collection的功能方法"><a href="#17-3-Collection的功能方法" class="headerlink" title="17.3 Collection的功能方法"></a>17.3 Collection的功能方法</h2><h2 id="17-4-可选操作"><a href="#17-4-可选操作" class="headerlink" title="17.4 可选操作"></a>17.4 可选操作</h2><p>执行各种不同的添加和移除的方法在Collection接口中都是可选操作。<br>使用Arrays.asList()生成的List,基于一个固定大小的数组，仅支持那些不会改变数组大小的操作。</p>
-<h2 id="17-5-List的功能方法"><a href="#17-5-List的功能方法" class="headerlink" title="17.5 List的功能方法"></a>17.5 List的功能方法</h2><h2 id="17-6-Set和存储顺序"><a href="#17-6-Set和存储顺序" class="headerlink" title="17.6 Set和存储顺序"></a>17.6 Set和存储顺序</h2><p>接口    描述<br>| Set    | 存入Set的每一个元素都必须是唯一的，因为Set不保存重复元素．加入Set的元素必须定义equals()方法以确保对象的唯一性. Set和Collection有完全一样的接口.Set接口不保证维护元素的次序. |<br>| —— | —— | —— |<br>| HashSet *    | 为快速查找而设计的Set.存入HashSet的元素必须定义HashCode()方法. |<br>|TreeSet | 保持次序的Set,底层为树结构.使用它可以从Set中提取有序的序列.元素必须实现Comparable接口 |<br>| LinkedHashSet    | 具有HashSet的查询速度,且内部使用链表维护元素的顺序.于是在使用迭代器遍历Set时,结果会按元素插入的次序显示.元素也必须定义hashCode()方法. |</p>
+<h2 id="17-5-List的功能方法"><a href="#17-5-List的功能方法" class="headerlink" title="17.5 List的功能方法"></a>17.5 List的功能方法</h2><h2 id="17-6-Set和存储顺序"><a href="#17-6-Set和存储顺序" class="headerlink" title="17.6 Set和存储顺序"></a>17.6 Set和存储顺序</h2><table>
+<thead>
+<tr>
+<th>接口</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Set</td>
+<td>存入Set的每一个元素都必须是唯一的，因为Set不保存重复元素．加入Set的元素必须定义equals()方法以确保对象的唯一性. Set和Collection有完全一样的接口.Set接口不保证维护元素的次序.</td>
+</tr>
+<tr>
+<td>HashSet *</td>
+<td>为快速查找而设计的Set.存入HashSet的元素必须定义HashCode()方法.</td>
+</tr>
+<tr>
+<td>TreeSet</td>
+<td>保持次序的Set,底层为树结构.使用它可以从Set中提取有序的序列.元素必须实现Comparable接口</td>
+</tr>
+<tr>
+<td>LinkedHashSet</td>
+<td>具有HashSet的查询速度,且内部使用链表维护元素的顺序.于是在使用迭代器遍历Set时,结果会按元素插入的次序显示.元素也必须定义hashCode()方法.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="17-7-队列"><a href="#17-7-队列" class="headerlink" title="17.7 队列"></a>17.7 队列</h2><h3 id="17-7-1-优先级队列"><a href="#17-7-1-优先级队列" class="headerlink" title="17.7.1 优先级队列"></a>17.7.1 优先级队列</h3><h2 id="17-8-理解Map"><a href="#17-8-理解Map" class="headerlink" title="17.8 理解Map"></a>17.8 理解Map</h2><h2 id="17-9-散列与散列码"><a href="#17-9-散列与散列码" class="headerlink" title="17.9 散列与散列码"></a>17.9 散列与散列码</h2><p>散列的价值在于速度。我们使用数组来保存键的信息，这个信息并不是键本身，而是通过键对象生成一个数字(散列码)，作为数组下标。由于数组的容量是固定的，而散列容器的大小是可变的，所以不同的键可以产生相同的数组下标(散列码)。也就是说，可能会有冲突(当然也有特例，比如EnumMap和EnumSet)。所以，数组的值存放着一个保存所有相同散列码的值的list(引用)。然后对list中的值使用equals进行线性查询。如果散列函数设计的比较好的话，数组的每个位置只有较少的值，并且浪费空间也小。于是，查询过程就是首先计算键的散列码得到数组下标，然后内存寻址(时间复杂度为O(1)，赋值)找到数组的值，再遍历list(时间复杂度为O(n)，线性查询)即可。即hashCode和equals共同确定了对象的唯一性。</p>
 <p>所有类都继承于Object。Object的hashCode方法生成的散列码，实际上是默认使用对象的地址计算散列码；而Object的equals方法实际上就是地址比较(==)。显然，当我们在使用散列容器(如HashMap的Key，HashSet等)时，我们自定义的类中还继承Object的hashCode和equals是不行的。必须重写hashCode和equals方法。好的hashCode()应该产生分布均匀的散列码。</p>
 <h2 id="17-10-选择接口的不同实现"><a href="#17-10-选择接口的不同实现" class="headerlink" title="17.10 选择接口的不同实现"></a>17.10 选择接口的不同实现</h2><h2 id="17-11-实用方法"><a href="#17-11-实用方法" class="headerlink" title="17.11 实用方法"></a>17.11 实用方法</h2><h2 id="17-12-持有引用"><a href="#17-12-持有引用" class="headerlink" title="17.12 持有引用"></a>17.12 持有引用</h2><ul>
@@ -140,7 +165,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/01/《Thinking in Java 》读书笔记-17/" data-id="cjlbpfvy4001v2ovtjzy5l30q" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/01/《Thinking in Java 》读书笔记-17/" data-id="cjldix4gn001nmwvtrjqdlhbi" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -196,23 +221,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2018/08/28/零碎的知识点-6/">零碎的知识点-6</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/28/零碎的知识点-5/">零碎的知识点-5</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/28/《Java并发编程实战》-15/">《Java并发编程实战》-15   第16章 Java内存模型</a>
+          </li>
+        
+          <li>
             <a href="/2018/08/27/《Java并发编程实战》-14/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
           </li>
         
           <li>
             <a href="/2018/08/24/《Java并发编程实战》-13/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12   第13章 显式锁</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
           </li>
         
       </ul>
@@ -224,7 +249,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -233,7 +258,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
