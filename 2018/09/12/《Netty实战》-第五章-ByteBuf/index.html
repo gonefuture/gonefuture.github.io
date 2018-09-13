@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>《Netty实战》-第五章-ByteBuf | gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="《Netty实战》-第五章-ByteBuf 5.1 ByteBuf的APINetty的数据处理API通过两个组件暴露—abstract class ByteBuf和interface ByteBufHolder。下面是一些ByteBuf API的优点：  他可以被用户自定义的缓冲区类型扩展 通过内置的复合缓冲区类型实现了透明的零拷贝 容量可以按需增长（类似于JDK的StringBuilder） 在">
+<meta name="keywords" content="Netty,Java,NIO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Netty实战》-第五章-ByteBuf">
+<meta property="og:url" content="http://gonefuture.top/2018/09/12/《Netty实战》-第五章-ByteBuf/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="《Netty实战》-第五章-ByteBuf 5.1 ByteBuf的APINetty的数据处理API通过两个组件暴露—abstract class ByteBuf和interface ByteBufHolder。下面是一些ByteBuf API的优点：  他可以被用户自定义的缓冲区类型扩展 通过内置的复合缓冲区类型实现了透明的零拷贝 容量可以按需增长（类似于JDK的StringBuilder） 在">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-09-13T09:06:13.439Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Netty实战》-第五章-ByteBuf">
+<meta name="twitter:description" content="《Netty实战》-第五章-ByteBuf 5.1 ByteBuf的APINetty的数据处理API通过两个组件暴露—abstract class ByteBuf和interface ByteBufHolder。下面是一些ByteBuf API的优点：  他可以被用户自定义的缓冲区类型扩展 通过内置的复合缓冲区类型实现了透明的零拷贝 容量可以按需增长（类似于JDK的StringBuilder） 在">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-《Netty实战》-第五章-ByteBuf" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/09/12/《Netty实战》-第五章-ByteBuf/" class="article-date">
+  <time datetime="2018-09-12T10:14:25.452Z" itemprop="datePublished">2018-09-12</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《Netty实战》-第五章-ByteBuf
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="《Netty实战》-第五章-ByteBuf"><a href="#《Netty实战》-第五章-ByteBuf" class="headerlink" title="《Netty实战》-第五章-ByteBuf"></a>《Netty实战》-第五章-ByteBuf</h1><hr>
+<h2 id="5-1-ByteBuf的API"><a href="#5-1-ByteBuf的API" class="headerlink" title="5.1 ByteBuf的API"></a>5.1 ByteBuf的API</h2><p>Netty的数据处理API通过两个组件暴露—abstract class ByteBuf和interface ByteBufHolder。<br>下面是一些ByteBuf API的优点：</p>
+<ul>
+<li>他可以被用户自定义的缓冲区类型扩展</li>
+<li>通过内置的复合缓冲区类型实现了透明的零拷贝</li>
+<li>容量可以按需增长（类似于JDK的StringBuilder）</li>
+<li>在读和写这两种模式之间切换不需要调用ByteBuffer的flip()方式</li>
+<li>读和写使用不同了的索引</li>
+<li>支持方法的链式调用</li>
+<li>支持引用计数</li>
+<li>支持池化</li>
+</ul>
+<p>其他类可用于管理ByteBuf实例的分配，以及执行各种针对数据容器本身和它所持有的数据的操作。</p>
+<hr>
+<h2 id="5-2-ByteBuf类-——-Netty的数据容器"><a href="#5-2-ByteBuf类-——-Netty的数据容器" class="headerlink" title="5.2 ByteBuf类 —— Netty的数据容器"></a>5.2 ByteBuf类 —— Netty的数据容器</h2><h3 id="5-2-1-它是如何工作的"><a href="#5-2-1-它是如何工作的" class="headerlink" title="5.2.1 它是如何工作的"></a>5.2.1 它是如何工作的</h3><p>ByteBuf维护两个不同的索引：一个用于读取，一个用于写入。</p>
+<p>名称以read或者write开头的ByteBuf方法，将会推进其对应的索引，而名称以set或者get开头的操作则不会。后面的这些方法将一个参数传入的一个相对索引上执行操作。</p>
+<h3 id="5-2-2-ByteBuf的使用模式"><a href="#5-2-2-ByteBuf的使用模式" class="headerlink" title="5.2.2 ByteBuf的使用模式"></a>5.2.2 ByteBuf的使用模式</h3><ol>
+<li>堆缓冲区<br> 最常用的ByteBuf模式是将数据储存在JVM的堆空间中。这种模式被成为支撑数组。</li>
+<li>直接缓冲区<br> 直接缓冲区是另一种ButeBuf模式，在垃圾回收之外。<br>3.复合缓冲区<br> 复合缓冲区为多个ByteBuf提供了一个聚合视图，</li>
+</ol>
+<h2 id="5-3-字节级操作"><a href="#5-3-字节级操作" class="headerlink" title="5.3 字节级操作"></a>5.3 字节级操作</h2><h3 id="5-3-1-随机访问索引"><a href="#5-3-1-随机访问索引" class="headerlink" title="5.3.1 随机访问索引"></a>5.3.1 随机访问索引</h3><p>BuyteBuf的索引是从零开始的：第一个字节的索引是0，最后一个字节的索引总是capacity()-1</p>
+<h3 id="5-3-2-顺序访问索引"><a href="#5-3-2-顺序访问索引" class="headerlink" title="5.3.2 顺序访问索引"></a>5.3.2 顺序访问索引</h3><p>ByteBuf同时具有读索引和写索引，但是JDK的ByteBuffer却只有一个索引，这也是为甚恶魔必须调用filp()方法来在读模式和写模式之间进行切换的原因。</p>
+<h3 id="5-3-3-可丢弃字节"><a href="#5-3-3-可丢弃字节" class="headerlink" title="5.3.3 可丢弃字节"></a>5.3.3 可丢弃字节</h3><h3 id="5-3-4-可读字节"><a href="#5-3-4-可读字节" class="headerlink" title="5.3.4 可读字节"></a>5.3.4 可读字节</h3><p>ByteBuf的可读字节分段储存例如实际数据。新分配的、包管理的或者复制的缓冲区的默认的readerIndex的值为0。</p>
+<h3 id="5-3-5-可写字节"><a href="#5-3-5-可写字节" class="headerlink" title="5.3.5 可写字节"></a>5.3.5 可写字节</h3><p>可写字节分段是指一个拥有未定义内容的、写入就绪的内存区域。新分配的缓冲区的writerIndex的默认值为0。</p>
+<h3 id="5-3-6-索引管理"><a href="#5-3-6-索引管理" class="headerlink" title="5.3.6 索引管理"></a>5.3.6 索引管理</h3><h3 id="5-3-7-查找管理"><a href="#5-3-7-查找管理" class="headerlink" title="5.3.7 查找管理"></a>5.3.7 查找管理</h3><p>调用clear()比调用discardReadBytes()轻量得多，因为它将只是重置索引而不会复制任何得内存。</p>
+<h3 id="5-3-7-查找操作"><a href="#5-3-7-查找操作" class="headerlink" title="5.3.7 查找操作"></a>5.3.7 查找操作</h3><p>indexOf()方法可以用来确定指定值得索引的方法。</p>
+<h3 id="5-3-8-派生缓冲区"><a href="#5-3-8-派生缓冲区" class="headerlink" title="5.3.8 派生缓冲区"></a>5.3.8 派生缓冲区</h3><p>派生缓冲区为ByteBuf提供了专门的方式来呈现其内容的视图。这类视图是通过一下方法被创建的：</p>
+<ul>
+<li>duplicate()</li>
+<li>slice()</li>
+<li>slice(int, int)</li>
+<li>Unpoooled.unmodifiableBuffer { … }</li>
+<li>order(ByteOrder)</li>
+<li>readSlice(int)</li>
+</ul>
+<p>每个这些方法都将返回一个新的ByteBuf实例，它具有自己的读索引、写索引和标记索引。</p>
+<p><strong>BYteBuf复制</strong> 如果需要一个现有缓冲区的真实副本，请使用copy()或者copy(int, int)方法。不同于派生缓冲区，由于这个调用所返回的ByteBuf拥有独立的数据副本。</p>
+<h3 id="5-3-9-读-写操作"><a href="#5-3-9-读-写操作" class="headerlink" title="5.3.9 读/写操作"></a>5.3.9 读/写操作</h3><p>netty有两种类别的读/写操作。</p>
+<ul>
+<li>get()和set()操作，从给定的索引开始，并且保持索引不变。</li>
+<li>read()和write()操作，从给定的索引开始，并且会根据已经访问过的字节数对索引进行掉整。</li>
+</ul>
+<h3 id="5-3-10-更多的操作"><a href="#5-3-10-更多的操作" class="headerlink" title="5.3.10 更多的操作"></a>5.3.10 更多的操作</h3><h2 id="ByteBufHolder接口"><a href="#ByteBufHolder接口" class="headerlink" title="ByteBufHolder接口"></a>ByteBufHolder接口</h2><p>ByteBufHolder有几种用于访问底层数据和引用计算的方法。</p>
+<h2 id="5-5-ByteBuf分配"><a href="#5-5-ByteBuf分配" class="headerlink" title="5.5 ByteBuf分配"></a>5.5 ByteBuf分配</h2><h3 id="5-5-1-按需分配：ByteBufAllocator接口"><a href="#5-5-1-按需分配：ByteBufAllocator接口" class="headerlink" title="5.5.1 按需分配：ByteBufAllocator接口"></a>5.5.1 按需分配：ByteBufAllocator接口</h3><p> 为了降低分配和释放内存的开销，Netty通过interface ByteBufAllocator实现了(ByteBuf的)池化，它可以用来分配我们所描述过的任意类型的ByteBuf实例。使用池化是应用程序的决定，其并不会以任何方式改变ByteBuf API(的语义)。</p>
+<p> Netty提供了两种ByteBufAllocator的实现：<strong>PooledByteBufAllocator</strong>和<strong>UnpooledByteBufAllocator</strong>。前者池化了ByteBuf的实例以提高性能并最大限度地减少内存碎片.此实现使用了一种为jemalloc的已被大量现代操作系统所采用的高效方法来分配内存。后者的实现不池化ByteBuf实例，并且在每次被它调用时都会返回一个新的实例。</p>
+<h3 id="5-5-2-Unpooled缓冲区"><a href="#5-5-2-Unpooled缓冲区" class="headerlink" title="5.5.2 Unpooled缓冲区"></a>5.5.2 Unpooled缓冲区</h3><p>Unpooled的工具类提供了静态的辅助方法来创建未池化的ByteBuf实例。</p>
+<h3 id="5-5-3-ByteBufUtil类"><a href="#5-5-3-ByteBufUtil类" class="headerlink" title="5.5.3 ByteBufUtil类"></a>5.5.3 ByteBufUtil类</h3><p>ByteBufUtil.hexdump()方法以十六进制的表示形式打印bytebuf的内容。</p>
+<h2 id="5-6-引用计算"><a href="#5-6-引用计算" class="headerlink" title="5.6 引用计算"></a>5.6 引用计算</h2><p>引用计算是一种通过在某个对象所持有的资源不再被其他对象引用时释放该对象所持有的资源来优化内存使用和性能的技术。ByteBuf和BytebufHolder引入了引用计数计数，它们都实现了interface ReferenceCounted。</p>
+<h2 id="5-7-小结"><a href="#5-7-小结" class="headerlink" title="5.7 小结"></a>5.7 小结</h2><p>ByteBuf的要点：</p>
+<ul>
+<li>使用不同的读索引和写索引来控制数据访问。</li>
+<li>使用内存的不同方式——基于字节数组和直接缓冲区</li>
+<li>通过CompositeByteBuf生成多个ByteBuf的聚合视图</li>
+<li>数据访问方法——搜索、切片以及复制</li>
+<li>读、写、获取和设置API</li>
+<li>ByteBufAllocator池化和引用计算</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NIO/">NIO</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty/">Netty</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/09/12/《Netty实战》-第五章-ByteBuf/" data-id="cjm0croow001ks0vte4l114qb" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Netty实战》-第五章-ByteBuf" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/09/11/游戏开发-基于netty的文字冒险游戏-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">游戏开发-基于netty的冒险游戏-1</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/09/12/《Netty实战》-第五章-ByteBuf/">《Netty实战》-第五章-ByteBuf</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/11/游戏开发-基于netty的文字冒险游戏-1/">游戏开发-基于netty的冒险游戏-1</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/28/零碎的知识点-6/">零碎的知识点-6</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/28/零碎的知识点-5/">零碎的知识点-5</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/28/《Java并发编程实战》-15/">《Java并发编程实战》-15   第16章 Java内存模型</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

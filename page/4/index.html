@@ -83,6 +83,207 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-《Java并发编程实战》-10" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/21/《Java并发编程实战》-10/" class="article-date">
+  <time datetime="2018-08-21T07:58:09.447Z" itemprop="datePublished">2018-08-21</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="第11章-性能与可伸缩性"><a href="#第11章-性能与可伸缩性" class="headerlink" title="第11章 性能与可伸缩性"></a>第11章 性能与可伸缩性</h1><hr>
+<h2 id="11-1-对性能的思考"><a href="#11-1-对性能的思考" class="headerlink" title="11.1 对性能的思考"></a>11.1 对性能的思考</h2><h3 id="11-1-1-性能与可伸缩性"><a href="#11-1-1-性能与可伸缩性" class="headerlink" title="11.1.1 性能与可伸缩性"></a>11.1.1 性能与可伸缩性</h3><blockquote>
+<p>可伸缩性指的是:当增加计算资源时(例如CPU、内存、存储容量或I/O带宽)，程序的吞吐量或处理能力能相应地增加。</p>
+</blockquote>
+<h3 id="11-1-2-评估各种性能权衡因素"><a href="#11-1-2-评估各种性能权衡因素" class="headerlink" title="11.1.2 评估各种性能权衡因素"></a>11.1.2 评估各种性能权衡因素</h3><blockquote>
+<p>避免不成熟的优化。首先使程序正确，然后提高运行速度–如果它还运行得不够快。</p>
+</blockquote>
+<p>以测试为基准，不要猜测。</p>
+<h2 id="11-2-Amdahl定律"><a href="#11-2-Amdahl定律" class="headerlink" title="11.2 Amdahl定律"></a>11.2 Amdahl定律</h2><p>Amdahl定律描述的是：在增加计算资源的情况下，程序在理论上能够实现最高加速比，这个值取决于程序中可并行组件和串行组件所占的比重。</p>
+<blockquote>
+<p>在所有并发程序中都包含一些串行部分。如果你认为在你的程序中不存在串行部分，那么可任意在仔细检查一遍。</p>
+</blockquote>
+<h3 id="11-2-1-实列：在各种框架中隐藏的串行部分"><a href="#11-2-1-实列：在各种框架中隐藏的串行部分" class="headerlink" title="11.2.1 实列：在各种框架中隐藏的串行部分"></a>11.2.1 实列：在各种框架中隐藏的串行部分</h3><h3 id="11-2-2-Amdahl定律的应用"><a href="#11-2-2-Amdahl定律的应用" class="headerlink" title="11.2.2 Amdahl定律的应用"></a>11.2.2 Amdahl定律的应用</h3><h2 id="11-3-线程引入的开销"><a href="#11-3-线程引入的开销" class="headerlink" title="11.3 线程引入的开销"></a>11.3 线程引入的开销</h2><h3 id="11-3-1-上下文切换"><a href="#11-3-1-上下文切换" class="headerlink" title="11.3.1 上下文切换"></a>11.3.1 上下文切换</h3><p>切换线程上下文需要一定的开销，而在线程调度过程中需要访问由操作系统和JVM共享的数据结构。应用程序、操作系统以及JVM都使用一组相同的CPU。</p>
+<h3 id="11-3-2-内存同步"><a href="#11-3-2-内存同步" class="headerlink" title="11.3.2 内存同步"></a>11.3.2 内存同步</h3><p>同步操作的性能开销包括多个方面。在<code>synchronized</code>和<code>volatile</code>提供的可见性保证中可能会使用一些特殊指令，即内存栅栏(Memory Barrier)。内存栅栏可以刷新缓存，使缓存无效，刷新硬件的写缓冲，以及停止执行管道。</p>
+<blockquote>
+<p>不要过度担心非竞争同步带来的开销。这个基本的机制已经非常快了，并且JVM还能进行额外的优化以及进一步降低或消除开销。因此，我们应该将优化重点放在那些发生锁竞争的地方。</p>
+</blockquote>
+<h3 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h3><p>当线程无法获取某个锁或者由于某个条件等待或在I/O操作上阻塞时，需要被挂起，在这个过程中将包含两次额外的上下文切换，以及所有必要的操作系统操作和缓存操作：被阻塞的线程在其执行时间片还未用完之前就被就被交换换出去，而在随后当要获取的锁或者其他资源可用时，又再次被切换回来。（由于锁竞争而导致阻塞时，线程在持有锁时将存在一定的开销：当它释放锁时，必须告诉操作系统恢复运行阻塞的线程）。</p>
+<h2 id="11-4-减少锁的竞争"><a href="#11-4-减少锁的竞争" class="headerlink" title="11.4 减少锁的竞争"></a>11.4 减少锁的竞争</h2><blockquote>
+<p>在并发程序中，对可伸缩性的最主要威胁就是独占方式的资源锁。</p>
+</blockquote>
+<p>由3种方式可以降低锁的竞争程度：</p>
+<ul>
+<li>减少锁的持有时间。</li>
+<li>降低锁的请求频率。</li>
+<li>使用带有协调机制的独占锁，这些机制允许更高的并发性。</li>
+</ul>
+<h3 id="11-4-1-缩小锁的范围（”快进快出”）"><a href="#11-4-1-缩小锁的范围（”快进快出”）" class="headerlink" title="11.4.1 缩小锁的范围（”快进快出”）"></a>11.4.1 缩小锁的范围（”快进快出”）</h3><p>降低发生竞争可能性的一种有效方式就是尽可能缩短锁的持有时间。例如，而可以将一些与锁无关的代码移出同步代码块，尤其是那些开销较大的操作，以及可能被阻塞的操作，例如I/O操作。</p>
+<h3 id="11-4-2-减小锁的粒度"><a href="#11-4-2-减小锁的粒度" class="headerlink" title="11.4.2 减小锁的粒度"></a>11.4.2 减小锁的粒度</h3><p>通过锁分段和锁分解等降低线程请求锁的频率（从而减小竞争的可能性）的技术可以减小锁的持有时间，在这些技术中将采用多个互相独立的锁来保护独立的状态变量，从而改变这些变量之前由单个锁保护的情况。</p>
+<h3 id="11-4-3-锁分段"><a href="#11-4-3-锁分段" class="headerlink" title="11.4.3 锁分段"></a>11.4.3 锁分段</h3><p>锁分段的一个劣势在于:与采用单个锁来实现独占访问相比，要获取多个锁来实现独占访问将更加困难并且开销更高。</p>
+<h3 id="11-4-4-避免热点域"><a href="#11-4-4-避免热点域" class="headerlink" title="11.4.4 避免热点域"></a>11.4.4 避免热点域</h3><h3 id="11-4-5-一些替代独占锁的方法"><a href="#11-4-5-一些替代独占锁的方法" class="headerlink" title="11.4.5 一些替代独占锁的方法"></a>11.4.5 一些替代独占锁的方法</h3><p>放弃使用独占锁来管理共享状态:</p>
+<ul>
+<li>使用并发容器</li>
+<li>读-写锁</li>
+<li>不可变对象</li>
+<li>原子对象</li>
+</ul>
+<h3 id="11-4-6-监测CPU的利用率"><a href="#11-4-6-监测CPU的利用率" class="headerlink" title="11.4.6 监测CPU的利用率"></a>11.4.6 监测CPU的利用率</h3><p>如果CPU没有得到充分利用，那么需要找到其中的原因。通常有一下几种原因:</p>
+<ul>
+<li>负载不充足。</li>
+<li>I/O密集。</li>
+<li>外部限制。</li>
+<li>锁竞争。</li>
+</ul>
+<h2 id="11-4-7-向对象池说“不”"><a href="#11-4-7-向对象池说“不”" class="headerlink" title="11.4.7 向对象池说“不”"></a>11.4.7 向对象池说“不”</h2><blockquote>
+<p>通常，对象分配操作的开销比同步的开销更低。</p>
+</blockquote>
+<h2 id="11-5-实例：比较Map的性能"><a href="#11-5-实例：比较Map的性能" class="headerlink" title="11.5 实例：比较Map的性能"></a>11.5 实例：比较Map的性能</h2><h2 id="11-6-减少上下文切换的开销"><a href="#11-6-减少上下文切换的开销" class="headerlink" title="11.6 减少上下文切换的开销"></a>11.6 减少上下文切换的开销</h2><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>由于使用线程常常是为了充分利用多个处理器的计算能力，因此并发程序性能的讨论中，童话参观更多地将侧重点放在吞吐量和可伸缩性上，而不是服务时间。Amdahl定律告诉我们，程序的可伸缩性取决于在所有代码中必须被串行执行的代码比例。因为Java程序中串行执行的主要来源是独占凡是的资源锁，因此通常可以通过以下方式来提升可伸缩性：减少锁的持有时间，降低锁的粒度，意见采用非独占锁或非阻塞锁来代替独占锁。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/21/《Java并发编程实战》-10/" data-id="cjm0cronx000ps0vtbjd51tna" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-10" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-《Java并发编程实战》-9" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/20/《Java并发编程实战》-9/" class="article-date">
+  <time datetime="2018-08-20T06:29:15.250Z" itemprop="datePublished">2018-08-20</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="第10章-避免活跃性危险"><a href="#第10章-避免活跃性危险" class="headerlink" title="第10章 避免活跃性危险"></a>第10章 避免活跃性危险</h1><hr>
+<h2 id="10-1-死锁"><a href="#10-1-死锁" class="headerlink" title="10.1 死锁"></a>10.1 死锁</h2><p>哲学家问题</p>
+<h3 id="10-1-1-锁顺序死锁"><a href="#10-1-1-锁顺序死锁" class="headerlink" title="10.1.1 锁顺序死锁"></a>10.1.1 锁顺序死锁</h3><blockquote>
+<p>如果所有线程以固定的顺序来获得锁，那么在线程中就不会出现锁顺序死锁问题。</p>
+</blockquote>
+<h3 id="10-1-2-动态的顺序死锁"><a href="#10-1-2-动态的顺序死锁" class="headerlink" title="10.1.2 动态的顺序死锁"></a>10.1.2 动态的顺序死锁</h3><p>通过锁顺序来避免死锁</p>
+<h3 id="10-1-3-在协助对象之间发生的死锁"><a href="#10-1-3-在协助对象之间发生的死锁" class="headerlink" title="10.1.3 在协助对象之间发生的死锁"></a>10.1.3 在协助对象之间发生的死锁</h3><p>如果在持有锁时调用某个外部方法，那么将出现活跃性问题。在这个外部方法中可能会获取其他锁(这可能会产生死锁)，或者阻塞时间过长，导致其他线程无法及时获得当前被持有的锁。</p>
+<h3 id="10-1-4-开放调用"><a href="#10-1-4-开放调用" class="headerlink" title="10.1.4 开放调用"></a>10.1.4 开放调用</h3><p>如果在调用某个方法时不需要持有锁，那么这种调用被称为开放调用(Open Call)。</p>
+<blockquote>
+<p>在程序中应尽量使用开发调用。与那些在持有锁时调用外部方法的程序相比，更易于对依赖于开放调用的程序进行死锁分析。</p>
+</blockquote>
+<h3 id="10-1-5-资源死锁"><a href="#10-1-5-资源死锁" class="headerlink" title="10.1.5 资源死锁"></a>10.1.5 资源死锁</h3><p>当多个线程早相同的资源集合上等待时，也会发生死锁。</p>
+<h2 id="10-2-死锁的避免与诊断"><a href="#10-2-死锁的避免与诊断" class="headerlink" title="10.2 死锁的避免与诊断"></a>10.2 死锁的避免与诊断</h2><h3 id="10-2-1-支持定时的锁"><a href="#10-2-1-支持定时的锁" class="headerlink" title="10.2.1 支持定时的锁"></a>10.2.1 支持定时的锁</h3><p>显式使用Lock类中定时tryLock功能代替内置锁机制可以检测死锁和从死锁中恢复过来。</p>
+<h3 id="10-2-2-通过线程转储信息来分析死锁"><a href="#10-2-2-通过线程转储信息来分析死锁" class="headerlink" title="10.2.2 通过线程转储信息来分析死锁"></a>10.2.2 通过线程转储信息来分析死锁</h3><p>虽然防止死锁的主要责任在于你自己，但JVM仍然通过线程转储(Thread Dump)来帮助识别死锁的发生。线程转储包括各个运行中的线程的栈追踪信息，这类似发生异常时的栈追踪信息。</p>
+<h2 id="10-3-其他活跃性危险"><a href="#10-3-其他活跃性危险" class="headerlink" title="10.3 其他活跃性危险"></a>10.3 其他活跃性危险</h2><p>活跃性危险：</p>
+<ul>
+<li>死锁</li>
+<li>饥饿</li>
+<li>丢失信号</li>
+<li>活锁</li>
+</ul>
+<h3 id="10-3-1-饥饿"><a href="#10-3-1-饥饿" class="headerlink" title="10.3.1 饥饿"></a>10.3.1 饥饿</h3><p>当线程由于无法访问它所需要的资源而无法继续执行时，就发生了“饥饿”,引发饥饿的最常见资源就是CPU时钟周期。</p>
+<blockquote>
+<p>要避免使用线程优先级，因为这会增加平台依赖性，并可能导致活跃性问题。在大多数并发应用程序中，都可以使用默认的线程优先级。</p>
+</blockquote>
+<h3 id="10-3-2-糟糕的响应性"><a href="#10-3-2-糟糕的响应性" class="headerlink" title="10.3.2 糟糕的响应性"></a>10.3.2 糟糕的响应性</h3><h3 id="10-3-3-活锁"><a href="#10-3-3-活锁" class="headerlink" title="10.3.3 活锁"></a>10.3.3 活锁</h3><p>活锁是另一种形式的活跃性问题，该问题尽管不会阻塞线程，但也不能继续执行，因为线程将不断重复地执行相同的操作，并且总会失败。活锁通常发生在处理事务消息的应用程序中：如果蹦年成功处理某个消息，那么消息处理机制将回滚整个事务，并且将它重新发到队列的开头。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>活跃性故障时一个非常严重的问题，因为当出现活跃性故障时，除了终止应用程序之外没有其他任何机制可以邦帮助从这些故障中恢复过来。最常见的活跃性故障就是所顺序死锁。在设计时应该避免产生锁顺序死锁：确保线程在获取多个锁时采用一致的顺序。最好的解决方法是在程序中始终使用开放调用。这种大大减少需要同时持有多个锁的地方，也更容易发现这些地方。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/20/《Java并发编程实战》-9/" data-id="cjm0crop0001qs0vtfp0vl4o9" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-9" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
     <article id="post-《Java并发编程实战》-8" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/08/16/《Java并发编程实战》-8/" class="article-date">
@@ -141,7 +342,7 @@ st-&gt;op1-&gt;op2-&gt;op3-&gt;op4-&gt;op5-&gt;op6-&gt;op7
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/16/《Java并发编程实战》-8/" data-id="cjldix4gr001qmwvtu65007c1" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/16/《Java并发编程实战》-8/" data-id="cjm0crooy001ns0vtdzbdgsam" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -167,282 +368,9 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-7" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/16/《Java并发编程实战》-7/" class="article-date">
-  <time datetime="2018-08-16T09:44:27.744Z" itemprop="datePublished">2018-08-16</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/16/《Java并发编程实战》-7/">《Java并发编程实战》-7</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="第8章-线程池的使用"><a href="#第8章-线程池的使用" class="headerlink" title="第8章 线程池的使用"></a>第8章 线程池的使用</h1><hr>
-<h2 id="8-1-在任务与执行策略之间的隐形耦合"><a href="#8-1-在任务与执行策略之间的隐形耦合" class="headerlink" title="8.1 在任务与执行策略之间的隐形耦合"></a>8.1 在任务与执行策略之间的隐形耦合</h2><p>并非所有的任务有些任务需要明确地指明执行策略，包括：</p>
-<ul>
-<li>依赖性任务</li>
-<li>使用线程封闭机制的任务。</li>
-<li>对应时间敏感的任务。</li>
-<li>使用ThreadLocal的任务</li>
-</ul>
-<blockquote>
-<p>在一些任务中，需要拥有或排除某种特定的执行策略。如果某些任务依赖于其他的任务，那么会要求线程池足够大，从而确保它们依赖任务不会被放入等待队列中或者被拒绝，而采用线程封闭机制的任务需要串行执行。通过将这些需求写入文档，将来的代码维护人员就不会由于使用了某种不合适的执行策略而破坏安全性或活跃性。</p>
-</blockquote>
-<h3 id="8-1-1-线程饥饿死锁"><a href="#8-1-1-线程饥饿死锁" class="headerlink" title="8.1.1 线程饥饿死锁"></a>8.1.1 线程饥饿死锁</h3><blockquote>
-<p>每当提交了一个有依赖性的Executor任务时，要清楚地知道可能会出现线程“饥饿”死锁，因此需要在代码或配置Executor的配置文件中记录线程池的大小限制或配置限制。</p>
-</blockquote>
-<h3 id="8-1-2-运行时间较长的任务"><a href="#8-1-2-运行时间较长的任务" class="headerlink" title="8.1.2 运行时间较长的任务"></a>8.1.2 运行时间较长的任务</h3><p>如果任务阻塞的时间过长，那么即使不出现死锁，线程池的响应性也会变得糟糕。</p>
-<p>定任务等待资源得时间，而不是无限制地等待可以缓解执行时间较长得任务造成的影响。</p>
-<h2 id="8-2-设置线程池得大小"><a href="#8-2-设置线程池得大小" class="headerlink" title="8.2 设置线程池得大小"></a>8.2 设置线程池得大小</h2><p>一般情况下正确地设置线程池的大小（假设有n个CPU）：</p>
-<ul>
-<li>计算密集型： 2n+1</li>
-<li>I/O密集型：2n</li>
-</ul>
-<h2 id="8-3-配置ThreadPoolExecutor"><a href="#8-3-配置ThreadPoolExecutor" class="headerlink" title="8.3 配置ThreadPoolExecutor"></a>8.3 配置ThreadPoolExecutor</h2><p>ThreadPoolExecutor的通用构造函数</p>
-<pre><code class="java">public ThreadPoolExecutor(int corePoolSize,
-                        int maximumPollSize,
-                        long keepAliveTime,
-                        BlockingQueue&lt;Runnable&gt; workQueue,
-                        ThreadFactory threadFactory,
-                        RejectedExecutionHandler handler)
-                        { ... }
-</code></pre>
-<h3 id="线程的创建与销毁"><a href="#线程的创建与销毁" class="headerlink" title="线程的创建与销毁"></a>线程的创建与销毁</h3><p>基本大小(Core Poll Size)是线程池的目标大小，即在没有任务执行时线程池的大小，并且只有在工作队列满了的情况下才会创建超过这个数量的线程。</p>
-<p>线程池的最大大小(maximumPoolSize)表示可同时活动的线程数量的上限。如果某个线程的空闲事件超过了存活时间，那么将标记为可回收，并且当线程池的当前大小超过了基本大小时，这个线程将被终止。</p>
-<h3 id="管理队列任务"><a href="#管理队列任务" class="headerlink" title="管理队列任务"></a>管理队列任务</h3><p> ThreadPoolExecutor允许提供一个BlockingQueue来保存等待执行的任务。基本的任务排队方法有3种：无界队列、有界队列和同步移交(Synchronous Handoff)。</p>
-<blockquote>
-<p>对于Executor,newCachedThreadPool工厂方法时一种很好的默认选择，他能提供比固定大小的线程更好的排队性能.当需要限制当前任务的数量以满足资源管理需求时，那么可以选择固定大小的线程池，就像在接受网络客户请求的服务器应用程序中，如果不进行限制，那么很容易发生过载问题。</p>
-</blockquote>
-<h3 id="8-3-3-饱和策略"><a href="#8-3-3-饱和策略" class="headerlink" title="8.3.3 饱和策略"></a>8.3.3 饱和策略</h3><p>每种RejectedExecutionHandler的实现包含有不用的饱和策略：</p>
-<ul>
-<li>Abort策略：默认策略，新任务提交时直接抛出未检查的异常RejectedExecutionException，该异常可由调用者捕获。</li>
-<li>CallerRunPolicy 为调节机制，既不抛弃任务也不抛出异常，而是将某些任务回退到调用者。不会在线程池的线程中执行新的任务，而是在调用exector的线程中运行新的任务。</li>
-<li>Discard策略：新提交的任务被抛弃。<br>DiscardOldest策略：队列的是“队头”的任务，然后尝试提交新的任务。（不适合工作队列为优先队列场景）。</li>
-</ul>
-<h3 id="8-3-4-线程工厂"><a href="#8-3-4-线程工厂" class="headerlink" title="8.3.4 线程工厂"></a>8.3.4 线程工厂</h3><h2 id="8-4-扩展ThreadPoolExecutor"><a href="#8-4-扩展ThreadPoolExecutor" class="headerlink" title="8.4 扩展ThreadPoolExecutor"></a>8.4 扩展ThreadPoolExecutor</h2><p>实例：给线程池添加统计信息</p>
-<h2 id="8-5-递归算法的并行化"><a href="#8-5-递归算法的并行化" class="headerlink" title="8.5 递归算法的并行化"></a>8.5 递归算法的并行化</h2><p>实例：谜题框架</p>
-<blockquote>
-<p>对于并发执行的任务，EXecutor框架是一种强大且灵活的框架。它提供了大量可调节的选项，例如创建线程和关闭线程的策略，处理队列任务的策略，处理过多任务的策略，并且提供了几个钩子方法来扩展它的行为。然而，与大多数功能强大的框架一样，其中有些设置参数并不能很好地工作，某些类型的任务需要特定的执行策略，而一些参数组合则可能产生奇怪的结果。</p>
-</blockquote>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/16/《Java并发编程实战》-7/" data-id="cjldix4gg001hmwvtcq34zm4p" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-7" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-《Java并发编程实战》-6" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/15/《Java并发编程实战》-6/" class="article-date">
-  <time datetime="2018-08-15T02:46:56.268Z" itemprop="datePublished">2018-08-15</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/15/《Java并发编程实战》-6/">《Java并发编程实战》-6</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="取消与关闭"><a href="#取消与关闭" class="headerlink" title="取消与关闭"></a>取消与关闭</h1><hr>
-<p>行为良好的软件能够完善地处理失败,关闭和取消等过程。</p>
-<h2 id="7-1任务取消"><a href="#7-1任务取消" class="headerlink" title="7.1任务取消"></a>7.1任务取消</h2><p>取消某个操作的原因:</p>
-<ul>
-<li>用户请求取消</li>
-<li>有时间限制的操作</li>
-<li>应用程序时间</li>
-<li>错误</li>
-<li>关闭</li>
-</ul>
-<h3 id="7-1-1-中断"><a href="#7-1-1-中断" class="headerlink" title="7.1.1 中断"></a>7.1.1 中断</h3><p>在Java的API或语言规范中，并没有将中断与任何取消语言关联起来，但实际是激昂，如果在取消之外的其他操作中使用中断，那么都是不合适的，并且很难支撑起更大的应用。</p>
-<pre><code class="java">public class Thread {
-    // 中断目标线程
-    public void  interupt() { ... }
-    // 返回目标线程的中断状态
-    public boolean isInterrupted() { ...}
-    // 静态， 将清楚当前线程的中断状态，并返回它之前的值，这也是清楚中断状态的唯一方法
-    public static boolean interrupted() { ... }
-}
-</code></pre>
-<p>非阻塞状态下中断时，它的中断状态将被设置，中断操作将变得“有粘性” – 如果不触发InterruptedEXception，那么中断状态将一直保持，直到明确地清除中断状态。</p>
-<blockquote>
-<p>调用interrupt并不意味着立刻停止目标线程正在进行的工作，而只是传递了请求中断的消息。中断操作并不会真正地中断一个正在运行的线程，而只是发出中断请求，然后由线程在下一个合适的时刻中断自己（这些时刻也被称为取消点）。</p>
-</blockquote>
-<p>通常，中断是实现取消的最合理方式。</p>
-<p>通过中断来取消。</p>
-<pre><code class="java">class PrimeProducer extends Thread {
-    private final BlockingQueue&lt;BigInteger&gt; queue;
-
-    PrimeProducer(BlockingQueue&lt;BigInteger&gt; queue) {
-        this.queue = queue;
-    }
-
-    public void run() {
-        BigInteger p = BigInteger.ONE;
-        while (!Thread.currentThread().isInterrupted()) {
-            queue.put( p = p.nextProbablePrime());
-        } catch (InterruptedException consumed) {
-            /* 允许线程推出 */
-        }
-    }
-
-    public void cancel() { interrupt(); }
-
-}
-</code></pre>
-<h3 id="7-1-2-响应中断"><a href="#7-1-2-响应中断" class="headerlink" title="7.1.2 响应中断"></a>7.1.2 响应中断</h3><p>两种实用策略可以用于处理InterruptedException</p>
-<ul>
-<li>传递异常 (可能在执行某个特定于任务的清除操作之后)，从而使你的方法也可以成为可中断的阻塞方法。</li>
-<li>恢复中断状态，从而使调用栈中的上层代码能够对其进行处理。</li>
-</ul>
-<blockquote>
-<p>只有实现了线程中断策略的代码才可以屏蔽中断请求，在常规的任务和库代码中都不应该屏蔽中断请求。</p>
-</blockquote>
-<p>不可取消的任务在推出前恢复中断</p>
-<pre><code class="java">public Task getNextTask(BlockingQueue&lt;Task&gt; queue) {
-    boolean interrupted = false;
-    try {
-        try {
-            return queue.take();
-        } catch (InterruptedException e) {
-            interrupted = ture;
-        }
-    } finally {
-        if (interrupted) 
-            Thread.currentThread().interrupt();
-    }
-}
-</code></pre>
-<h3 id="7-1-4-示例：计时器运行"><a href="#7-1-4-示例：计时器运行" class="headerlink" title="7.1.4 示例：计时器运行"></a>7.1.4 示例：计时器运行</h3><h3 id="7-1-5-通过Future来实现取消"><a href="#7-1-5-通过Future来实现取消" class="headerlink" title="7.1.5 通过Future来实现取消"></a>7.1.5 通过Future来实现取消</h3><blockquote>
-<p>当Future.get()抛出InterruptedException或TimeoutException时，如果你知道不再需要结果，那么就可以调用Future.cancel来取消任务。</p>
-</blockquote>
-<h3 id="7-1-6-处理不可中断的阻塞"><a href="#7-1-6-处理不可中断的阻塞" class="headerlink" title="7.1.6 处理不可中断的阻塞"></a>7.1.6 处理不可中断的阻塞</h3><ul>
-<li>Java.io包中的同步Socket I/O。</li>
-<li>java.io包的同步I/O。</li>
-<li>Selector的异步I/O。</li>
-<li>获取某个锁。</li>
-</ul>
-<h3 id="7-1-7-采用newTaskFor来封装非标准的取消"><a href="#7-1-7-采用newTaskFor来封装非标准的取消" class="headerlink" title="7.1.7 采用newTaskFor来封装非标准的取消"></a>7.1.7 采用newTaskFor来封装非标准的取消</h3><h2 id="7-2-停止基于线程的服务"><a href="#7-2-停止基于线程的服务" class="headerlink" title="7.2 停止基于线程的服务"></a>7.2 停止基于线程的服务</h2><blockquote>
-<p>对于持有线程的服务，只要服务的存在时间大于创建线程的方法的存在时间，那么就应该提供生命周期的方法。</p>
-</blockquote>
-<h3 id="7-2-1-示例：日志服务"><a href="#7-2-1-示例：日志服务" class="headerlink" title="7.2.1 示例：日志服务"></a>7.2.1 示例：日志服务</h3><h3 id="7-2-2-关闭ExecutorService"><a href="#7-2-2-关闭ExecutorService" class="headerlink" title="7.2.2 关闭ExecutorService"></a>7.2.2 关闭ExecutorService</h3><h3 id="7-2-3-“毒丸”对象"><a href="#7-2-3-“毒丸”对象" class="headerlink" title="7.2.3 “毒丸”对象"></a>7.2.3 “毒丸”对象</h3><h3 id="7-2-4-示例：只执行一次的服务"><a href="#7-2-4-示例：只执行一次的服务" class="headerlink" title="7.2.4 示例：只执行一次的服务"></a>7.2.4 示例：只执行一次的服务</h3><h3 id="7-2-5-shutdownNow的局限性"><a href="#7-2-5-shutdownNow的局限性" class="headerlink" title="7.2.5 shutdownNow的局限性"></a>7.2.5 shutdownNow的局限性</h3><h2 id="7-3-处理非正常的线程终止"><a href="#7-3-处理非正常的线程终止" class="headerlink" title="7.3 处理非正常的线程终止"></a>7.3 处理非正常的线程终止</h2><h3 id="未捕获异常的处理"><a href="#未捕获异常的处理" class="headerlink" title="未捕获异常的处理"></a>未捕获异常的处理</h3><p>将异常写入日志的UncaughtExceptionHandler</p>
-<pre><code class="java">public class UEHLogger implements THread.UncaughtExceptionHandler {
-    public void uncaughtException(Thread t, Throwable e) {
-        Logger logger = Logger.getAnonymousLogger();
-        logger.log(Level.SEVERE, 
-        &quot;Thread terminated with exception: &quot; + t.getName(), e);
-    }
-}
-</code></pre>
-<blockquote>
-<p>在运行时间较长的应用程序中，通常会为所有线程的未捕获异常指定同一个异常处理器，并且该处理器至少会将异常信息记录到日志中。</p>
-</blockquote>
-<h2 id="7-4-JVM关闭"><a href="#7-4-JVM关闭" class="headerlink" title="7.4 JVM关闭"></a>7.4 JVM关闭</h2><h3 id="7-4-1-关闭钩子"><a href="#7-4-1-关闭钩子" class="headerlink" title="7.4.1 关闭钩子"></a>7.4.1 关闭钩子</h3><h3 id="7-4-2-守护线程"><a href="#7-4-2-守护线程" class="headerlink" title="7.4.2 守护线程"></a>7.4.2 守护线程</h3><blockquote>
-<p>此外，守护线程通常不能用来代替应用程序管理中各个服务的生命周期。</p>
-</blockquote>
-<h3 id="7-4-3-终结器"><a href="#7-4-3-终结器" class="headerlink" title="7.4.3 终结器"></a>7.4.3 终结器</h3><blockquote>
-<p>避免使用终结器。</p>
-</blockquote>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>在任务、线程、服务以及应用程序等模块中的生命周期结束问题，可能会增加它们在设计和实现时的负责性。Java并没有提供某种抢占式的机制来取消操作或者终结线程。相反，它提供了一种协作式的中断机制来实现取消操作，但这要依赖于如何构建取消操作的协议，以及能否始终遵循这些协议。通过使用FutureTask和Executor框架，可以帮助我们构建可取消的任务和服务。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/15/《Java并发编程实战》-6/" data-id="cjldix4gd001emwvtqo7j2m5r" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-6" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -456,6 +384,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2018/09/12/《Netty实战》-第五章-ByteBuf/">《Netty实战》-第五章-ByteBuf</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/11/游戏开发-基于netty的文字冒险游戏-1/">游戏开发-基于netty的冒险游戏-1</a>
+          </li>
+        
+          <li>
             <a href="/2018/08/28/零碎的知识点-6/">零碎的知识点-6</a>
           </li>
         
@@ -467,14 +403,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2018/08/28/《Java并发编程实战》-15/">《Java并发编程实战》-15   第16章 Java内存模型</a>
           </li>
         
-          <li>
-            <a href="/2018/08/27/《Java并发编程实战》-14/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/24/《Java并发编程实战》-13/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -484,7 +412,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -493,7 +421,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
