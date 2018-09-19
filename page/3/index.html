@@ -83,6 +83,107 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-《Java并发编程实战》-14" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/27/《Java并发编程实战》-14/" class="article-date">
+  <time datetime="2018-08-27T02:47:15.099Z" itemprop="datePublished">2018-08-27</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/27/《Java并发编程实战》-14/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="第15章-原子变量与非阻塞同步机制"><a href="#第15章-原子变量与非阻塞同步机制" class="headerlink" title="第15章 原子变量与非阻塞同步机制"></a>第15章 原子变量与非阻塞同步机制</h1><hr>
+<h2 id="15-1-锁得劣势"><a href="#15-1-锁得劣势" class="headerlink" title="15.1 锁得劣势"></a>15.1 锁得劣势</h2><p>如果在基于锁的类中包含有细粒度的操作（例如同步容器类，在其他大多数方法中只包含了少量操作），那么当在锁上存在着激烈的竞争时，调度开销与工作开销的比值会非常高。</p>
+<p>与锁相比，volatile变量是一种更轻量级的同步机制，因为在使用这些变量时不会发生上下文切换或线程调度等操作。</p>
+<p>锁定还存在其他以下缺点。当一个线程正在等待锁时，它不能做任何其他事情。</p>
+<h2 id="15-2-硬件对并发的支持"><a href="#15-2-硬件对并发的支持" class="headerlink" title="15.2 硬件对并发的支持"></a>15.2 硬件对并发的支持</h2><p>现在几乎所有的现代处理器中都包含了某种形式的原子读-改-写指令，例如比较并交换(Compare-and-Swap)或者关联加载/条件储存(Load-Linked/Store-Conditional)。操作系统和JVM使用这些指令来实现锁和并发的数据结构。</p>
+<h3 id="15-2-1-比较并交换"><a href="#15-2-1-比较并交换" class="headerlink" title="15.2.1 比较并交换"></a>15.2.1 比较并交换</h3><p>CAS是一项乐观的技术，它希望能成功地执行更新操作，并且如果有另一个线程在最近一次检测后更新了该值，那么CAS能检测到这个错误。</p>
+<p>当多个线程尝试使用CAS同时更新一个变量时，只有其中一个线程能更新变量的值，而其他线程都将失败。然而，失败的线程并不会被挂起(这与获取锁的情况不同：当获取锁失败时，线程将被挂起来)，而是被告知在这次竞争中失败。</p>
+<p>CAS的典型使用模式是：首先从V中读取值A，并根据A计算新值B，然后再通过CAS以原子方式将V中的值由A变成B（只要在这期间没有任何其他线程将V的值修改为其他值）。</p>
+<h3 id="15-2-2-非阻塞的计算器"><a href="#15-2-2-非阻塞的计算器" class="headerlink" title="15.2.2 非阻塞的计算器"></a>15.2.2 非阻塞的计算器</h3><p>一个很管用的经验法则是 ：在大多数处理器上，在无竞争的锁获取和释放的“快速代码路径”上的开销，大约是CAS开销的两倍。</p>
+<h3 id="15-2-3-JVM对CAS的支持"><a href="#15-2-3-JVM对CAS的支持" class="headerlink" title="15.2.3 JVM对CAS的支持"></a>15.2.3 JVM对CAS的支持</h3><p>在原子变量类（例如<code>java.util.cocurrent.atomic中的AtomicXxx</code>）中使用了底层的JVM支持为数字类型和引用类型提供一种高效的CAS操作，而在<code>java.util.concurrent</code>中大多数类在实现时则直接或间接地使用了这些原子变量类。</p>
+<h2 id="15-3-原子变量类"><a href="#15-3-原子变量类" class="headerlink" title="15.3 原子变量类"></a>15.3 原子变量类</h2><p>原子变量比锁的粒度更细，量级更轻，并且对于多处理器系统上实现高性能的并发代码来说时非常关键的。</p>
+<p>java中共有12个原子变量类，可分为4组：</p>
+<ul>
+<li>标量类(Scalar)<br>  AtomicInteger、 AtomicLOng、 AtomicBoolean以及AtomicReference。这些类都支持CAS,但是它们不宜用作基于散列的容器中的键值。</li>
+<li>更新器类</li>
+<li>数组类<br>  原子数组类（只支持Integer、Long和Reference版本）中的元素可以实现原子更新。</li>
+<li>复合变量。</li>
+</ul>
+<h3 id="15-3。1-原子变量是一种”更好的volatile”"><a href="#15-3。1-原子变量是一种”更好的volatile”" class="headerlink" title="15.3。1 原子变量是一种”更好的volatile”"></a>15.3。1 原子变量是一种”更好的volatile”</h3><p>原子变量相比<code>volatile</code>修饰的变量更有原子安全性。</p>
+<h3 id="性能比较：锁与原子变量"><a href="#性能比较：锁与原子变量" class="headerlink" title="性能比较：锁与原子变量"></a>性能比较：锁与原子变量</h3><p>在中低难度的竞争下，原子变量能提供更高的可伸缩性，而在高清度的竞争下，锁能够更有效地避免竞争。</p>
+<h3 id="15-4-1-非阻塞的栈"><a href="#15-4-1-非阻塞的栈" class="headerlink" title="15.4.1 非阻塞的栈"></a>15.4.1 非阻塞的栈</h3><p>栈是通过compareAndSet来修改的，因此将采用原子操作来更新top的引用，或者在发现存在其他线程干扰的情况下，修改操作将失败。</p>
+<h3 id="15-4-2-非阻塞的链表"><a href="#15-4-2-非阻塞的链表" class="headerlink" title="15.4.2 非阻塞的链表"></a>15.4.2 非阻塞的链表</h3><h3 id="15-4-2-原子的域更新器"><a href="#15-4-2-原子的域更新器" class="headerlink" title="15.4.2 原子的域更新器"></a>15.4.2 原子的域更新器</h3><p>原子的域更新类表示现有volatile域的一种基于反射的“视图”，从而能够在已有的volatile域上使用CAS。在更新器类中没有构造函数，要创建一个更新器对象，可以调用newUpdater工厂方法，并制定类和域的名字。</p>
+<p>在ConcurrentLinkedQueue中使用原子的域更新器</p>
+<pre><code class="java">private class Node&lt;E&gt; {
+    private final E item;
+    private volatile Node&lt;E&gt; next;
+    public Node(E item) {
+        this.item = item;
+    }
+}
+private static AtomicReferencePieldUpdater&lt;Node, Node&gt; nextUpdater
+    = AtomicReferenceFiledUpdater(Node.class, Node.class, &quot;next&quot;);
+</code></pre>
+<p>几乎在所有情况下，普通原子变量的性能都很不错，只有在很少的情况下才需要使用原子的域更新器.（如果在执行原子更新的同时还需要维持现有类的串行化形式，那么原子的域更新器将非常有用。）</p>
+<h3 id="15-4-4-ABA问题"><a href="#15-4-4-ABA问题" class="headerlink" title="15.4.4 ABA问题"></a>15.4.4 ABA问题</h3><p>ABA问题是一种异常现象：如果在算法中的接地点可以被循环使用，那么在使用“比较并交换”指令时就可能出现这种问题（主要在没有垃圾回收机制的环境中）。</p>
+<p>AtomicStampedReference（以及AtomicMarkableReference）支持在两个变量上执行原子的条件更新。</p>
+<p>AtomicStampedReference将更新一个“对象-引用”二元组，通过在引用上加上“版本号”，从而避免ABA问题。<br>类似地，AtomicMarkableReference将更新一个“对象引用-布尔值”二元组，在某些算法中将通过这种二元组使节点保存在链表中同时又将其标记为“已删除的节点”。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>非阻塞算法通过底层的并发原语（例如比较并交换而不是锁）来维持线程的安全性。这些底层的原语通过原子变量类向外公开，这些类也用做一种“更好的volatile变量”，从而为整数和对象引用提供原子的更新操作。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/27/《Java并发编程实战》-14/" data-id="cjm8x69w2001bagvthar79t9e" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-14" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
     <article id="post-《Java并发编程实战》-13" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/08/24/《Java并发编程实战》-13/" class="article-date">
@@ -177,7 +278,7 @@ public class OneShotLatch {
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/24/《Java并发编程实战》-13/" data-id="cjm0croo4000us0vtml802gyf" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/24/《Java并发编程实战》-13/" data-id="cjm8x69vg000vagvt5ydyapjr" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -280,7 +381,7 @@ try {
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/23/《Java并发编程实战》-12/" data-id="cjm0croo0000rs0vt5hlr80p3" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/23/《Java并发编程实战》-12/" data-id="cjm8x69vi000xagvtpi64q76h" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -289,107 +390,6 @@ try {
 
 <!--PC和WAP自适应版-->
 <div id="SOHUCS" sid="《Java并发编程实战》-12" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-《Java并发编程实战》-11" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/22/《Java并发编程实战》-11/" class="article-date">
-  <time datetime="2018-08-22T10:30:28.961Z" itemprop="datePublished">2018-08-22</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="第12章-并发程序的测试"><a href="#第12章-并发程序的测试" class="headerlink" title="第12章 并发程序的测试"></a>第12章 并发程序的测试</h1><hr>
-<p>吞吐量:指一组并发任务中已完成任务所栈的比例。<br>响应性：指请求从发出到完成之间的时间（也成为延迟）。</p>
-<h2 id="12-1-正确性测试"><a href="#12-1-正确性测试" class="headerlink" title="12.1 正确性测试"></a>12.1 正确性测试</h2><p>在为某个并发类设计单元测试时，首先需要执行与测试串行类时相同的分析—找出需要检查的不变性条件和后验条件。</p>
-<h3 id="12-1-1-基本的单元测试"><a href="#12-1-1-基本的单元测试" class="headerlink" title="12.1.1 基本的单元测试"></a>12.1.1 基本的单元测试</h3><p>在测试集中包含一组串行测试通常是有帮助的，因为它们有助于在开始分析数据竞争之前找出与并发无关性的问题。</p>
-<h3 id="12-1-2-对阻塞操作的测试"><a href="#12-1-2-对阻塞操作的测试" class="headerlink" title="12.1.2 对阻塞操作的测试"></a>12.1.2 对阻塞操作的测试</h3><p>在测试并发的基本属性时，需要引入多个线程。</p>
-<p>Thread.getState的返回结果不能用于并发控制，它能限制测试的有效性—其主要作用还是作为调试信息的来源。</p>
-<h3 id="12-1-3-安全性测试"><a href="#12-1-3-安全性测试" class="headerlink" title="12.1.3 安全性测试"></a>12.1.3 安全性测试</h3><blockquote>
-<p>在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情况是，在测试属性中不需要任何同步机制。</p>
-</blockquote>
-<h3 id="12-1-4-资源管理的测试"><a href="#12-1-4-资源管理的测试" class="headerlink" title="12.1.4 资源管理的测试"></a>12.1.4 资源管理的测试</h3><h3 id="12-1-5-使用回调"><a href="#12-1-5-使用回调" class="headerlink" title="12.1.5 使用回调"></a>12.1.5 使用回调</h3><p>回调函数的执行通常是在对象生命周期的一些已知位置上，并且在这些位置上非常适合判断不变性是否被破坏。</p>
-<h3 id="12-1-6-产生跟多的交替操作"><a href="#12-1-6-产生跟多的交替操作" class="headerlink" title="12.1.6 产生跟多的交替操作"></a>12.1.6 产生跟多的交替操作</h3><p>在访问共享状态的操作中，使用Thread.yield将产生更多的上下文切换（这项技术是平台相关的）。</p>
-<h2 id="12-2-性能测试"><a href="#12-2-性能测试" class="headerlink" title="12.2 性能测试"></a>12.2 性能测试</h2><h3 id="12-2-1-在PutTakeTest中增加计时功能"><a href="#12-2-1-在PutTakeTest中增加计时功能" class="headerlink" title="12.2.1 在PutTakeTest中增加计时功能"></a>12.2.1 在PutTakeTest中增加计时功能</h3><h3 id="12-2-2-多种算法的比较"><a href="#12-2-2-多种算法的比较" class="headerlink" title="12.2.2 多种算法的比较"></a>12.2.2 多种算法的比较</h3><h3 id="响应性衡量"><a href="#响应性衡量" class="headerlink" title="响应性衡量"></a>响应性衡量</h3><p>如果能获取更小的服务时间变动性，那么更长的平均时间是有意义的，“可预测需性”同样是一个非常有价值的性能特征。<br>除非线程由于密集的同步需求而被持续地阻塞，否则非公平的信号量通常能实现更好的吞吐量。</p>
-<h2 id="12-3-避免性能测试的陷阱"><a href="#12-3-避免性能测试的陷阱" class="headerlink" title="12.3 避免性能测试的陷阱"></a>12.3 避免性能测试的陷阱</h2><h3 id="12-3-1-垃圾回收"><a href="#12-3-1-垃圾回收" class="headerlink" title="12.3.1 垃圾回收"></a>12.3.1 垃圾回收</h3><p>垃圾回收的执行时序是无法预测的，因此在执行测试时，垃圾回收器可能在任何时刻运行。</p>
-<h3 id="12-3-2-动态编译"><a href="#12-3-2-动态编译" class="headerlink" title="12.3.2 动态编译"></a>12.3.2 动态编译</h3><p>当某个类第一次被加载时，JVM会通过解释字节码的方式执行它。在某个时刻，如果一个方法运行的次数足够多，那么动态编译器会将它编译为机器代码，当编译完成后，代码的执行方式将从解释执行变成直接执行。</p>
-<h3 id="12-3-3-对代码路径的不真实采集"><a href="#12-3-3-对代码路径的不真实采集" class="headerlink" title="12.3.3 对代码路径的不真实采集"></a>12.3.3 对代码路径的不真实采集</h3><p>运行时编译器根据收集到的信息对已编译的代码进行优化。JVM可以与执行过程特定的信息来生成更优的代码，这个意味着在编译某个程序的方法M时生成的代码，将可能与编译另一个不同程序中的方法M时生成的代码不同。</p>
-<h3 id="12-3-4-不真实的竞争程度"><a href="#12-3-4-不真实的竞争程度" class="headerlink" title="12.3.4 不真实的竞争程度"></a>12.3.4 不真实的竞争程度</h3><p>并发的应用程序可以交替执行两种不同的类型的工作：访问共享数据（例如从共享工作队列中取出下一个任务）以及执行线程本地的计算（例如，执行任务，并假设任务本身不会访问共享数据）。</p>
-<h3 id="12-3-5-无用代码的消除"><a href="#12-3-5-无用代码的消除" class="headerlink" title="12.3.5 无用代码的消除"></a>12.3.5 无用代码的消除</h3><blockquote>
-<p>要编写有效的性能测试程序，那就需要告诉优化器不要将基准测试当作无用代码而优化掉。这就要求在程序中对每个计算结果都要通过某种方式来使用，这种方式不需要同步或者大量的计算。</p>
-</blockquote>
-<h2 id="12-4-其他的测试方法"><a href="#12-4-其他的测试方法" class="headerlink" title="12.4 其他的测试方法"></a>12.4 其他的测试方法</h2><p>测试的目标不是更多地发现错误，而是提高代码按照预期方式工作的可信度。</p>
-<h3 id="12-4-1-代码审查"><a href="#12-4-1-代码审查" class="headerlink" title="12.4.1 代码审查"></a>12.4.1 代码审查</h3><p>多人参与的代码审查通常是不可替代的（另一方面，代码审查也不能取代测试）。</p>
-<h3 id="12-4-2-静态分析工具"><a href="#12-4-2-静态分析工具" class="headerlink" title="12.4.2 静态分析工具"></a>12.4.2 静态分析工具</h3><p>静态分析工具能生成一个警告列表，其中包含的警告信息必须通过手工方式进行检查，从而确定这些警告是否表示真正的错误。</p>
-<p>FindBUgs包含的检测器：</p>
-<ul>
-<li>调用Thread.run()</li>
-<li>未被释放的锁<br>  标准的做法是在一个人finally块中释放显式锁，否则，当发生Exception事件时，锁仍然处于未被释放的状态。</li>
-<li>空的同步块</li>
-<li>双重检查加锁<br>  双重检查加锁时一种错误的习惯用法，其初衷是为了降低延迟初始化过程中的同步开销，该用法在读取一个共享的可变域时缺少正确的同步。</li>
-<li>在构造函数中启动一个线程。<br>  如果在构造函数中启动一个线程，那么将可能带来子类化问题，同时还会导致this引用从构造函数中逸出。</li>
-<li>通知错误<br>  如果一个同步块中调用了notify或notifyAll，但没有修改任何状态，那么就可能出错。</li>
-<li>条件等待中的错误<br>  如果在调用Object.wait和Condition.await方法时没有持有锁，或者不在某个循环中，或者没有检查某些状态谓词，那么通常是一个错误。</li>
-<li>对Lock和Condition的误用</li>
-<li>在休眠或者等待的同时持有一个锁。</li>
-<li>自旋循环。<br>  当等待某个状态转换发生时，闭锁或条件等待通常比在代码中自旋是一种更好的技术。</li>
-</ul>
-<h3 id="12-4-3-面向方面的测试技术"><a href="#12-4-3-面向方面的测试技术" class="headerlink" title="12.4.3 面向方面的测试技术"></a>12.4.3 面向方面的测试技术</h3><p>AOP可以用来确保不变性条件不被破坏，或者与同步策略的某些方面保持一直。</p>
-<h3 id="12-4-4-分析与监测工具"><a href="#12-4-4-分析与监测工具" class="headerlink" title="12.4.4 分析与监测工具"></a>12.4.4 分析与监测工具</h3><p>分析工具通常为能给出程序内部的详细信息，为每个线程提供一个事件线显示，并且用颜色区分不同的线程状态（可运行，由于等待某个锁为阻塞，由于等待I/O操作而阻塞等等）。</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>要测试并发程序的正确性可能非常困难，因为并发程序的许多故障模式哦都是一些低概率事件，它们对于执行时序、负载情况以及其他难以出现的条件都非常敏感。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/22/《Java并发编程实战》-11/" data-id="cjm0cronv000os0vtcz2d4kxf" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-11" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -423,6 +423,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2018/09/19/Netty, SpringBoot, MyBatis搭建游戏服务器 - 1/">Netty, SpringBoot, MyBatis搭建游戏服务器 - 1</a>
+          </li>
+        
+          <li>
             <a href="/2018/09/12/《Netty实战》-第五章-ByteBuf/">《Netty实战》-第五章-ByteBuf</a>
           </li>
         
@@ -438,10 +442,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2018/08/28/零碎的知识点-5/">零碎的知识点-5</a>
           </li>
         
-          <li>
-            <a href="/2018/08/28/《Java并发编程实战》-15/">《Java并发编程实战》-15   第16章 Java内存模型</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -451,7 +451,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -460,7 +460,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
