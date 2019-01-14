@@ -83,6 +83,279 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-《Java并发编程实战》-7" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/16/《Java并发编程实战》-7/" class="article-date">
+  <time datetime="2018-08-16T09:44:27.744Z" itemprop="datePublished">2018-08-16</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/16/《Java并发编程实战》-7/">《Java并发编程实战》-7</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="第8章-线程池的使用"><a href="#第8章-线程池的使用" class="headerlink" title="第8章 线程池的使用"></a>第8章 线程池的使用</h1><hr>
+<h2 id="8-1-在任务与执行策略之间的隐形耦合"><a href="#8-1-在任务与执行策略之间的隐形耦合" class="headerlink" title="8.1 在任务与执行策略之间的隐形耦合"></a>8.1 在任务与执行策略之间的隐形耦合</h2><p>并非所有的任务有些任务需要明确地指明执行策略，包括：</p>
+<ul>
+<li>依赖性任务</li>
+<li>使用线程封闭机制的任务。</li>
+<li>对应时间敏感的任务。</li>
+<li>使用ThreadLocal的任务</li>
+</ul>
+<blockquote>
+<p>在一些任务中，需要拥有或排除某种特定的执行策略。如果某些任务依赖于其他的任务，那么会要求线程池足够大，从而确保它们依赖任务不会被放入等待队列中或者被拒绝，而采用线程封闭机制的任务需要串行执行。通过将这些需求写入文档，将来的代码维护人员就不会由于使用了某种不合适的执行策略而破坏安全性或活跃性。</p>
+</blockquote>
+<h3 id="8-1-1-线程饥饿死锁"><a href="#8-1-1-线程饥饿死锁" class="headerlink" title="8.1.1 线程饥饿死锁"></a>8.1.1 线程饥饿死锁</h3><blockquote>
+<p>每当提交了一个有依赖性的Executor任务时，要清楚地知道可能会出现线程“饥饿”死锁，因此需要在代码或配置Executor的配置文件中记录线程池的大小限制或配置限制。</p>
+</blockquote>
+<h3 id="8-1-2-运行时间较长的任务"><a href="#8-1-2-运行时间较长的任务" class="headerlink" title="8.1.2 运行时间较长的任务"></a>8.1.2 运行时间较长的任务</h3><p>如果任务阻塞的时间过长，那么即使不出现死锁，线程池的响应性也会变得糟糕。</p>
+<p>定任务等待资源得时间，而不是无限制地等待可以缓解执行时间较长得任务造成的影响。</p>
+<h2 id="8-2-设置线程池得大小"><a href="#8-2-设置线程池得大小" class="headerlink" title="8.2 设置线程池得大小"></a>8.2 设置线程池得大小</h2><p>一般情况下正确地设置线程池的大小（假设有n个CPU）：</p>
+<ul>
+<li>计算密集型： 2n+1</li>
+<li>I/O密集型：2n</li>
+</ul>
+<h2 id="8-3-配置ThreadPoolExecutor"><a href="#8-3-配置ThreadPoolExecutor" class="headerlink" title="8.3 配置ThreadPoolExecutor"></a>8.3 配置ThreadPoolExecutor</h2><p>ThreadPoolExecutor的通用构造函数</p>
+<pre><code class="java">public ThreadPoolExecutor(int corePoolSize,
+                        int maximumPollSize,
+                        long keepAliveTime,
+                        BlockingQueue&lt;Runnable&gt; workQueue,
+                        ThreadFactory threadFactory,
+                        RejectedExecutionHandler handler)
+                        { ... }
+</code></pre>
+<h3 id="线程的创建与销毁"><a href="#线程的创建与销毁" class="headerlink" title="线程的创建与销毁"></a>线程的创建与销毁</h3><p>基本大小(Core Poll Size)是线程池的目标大小，即在没有任务执行时线程池的大小，并且只有在工作队列满了的情况下才会创建超过这个数量的线程。</p>
+<p>线程池的最大大小(maximumPoolSize)表示可同时活动的线程数量的上限。如果某个线程的空闲事件超过了存活时间，那么将标记为可回收，并且当线程池的当前大小超过了基本大小时，这个线程将被终止。</p>
+<h3 id="管理队列任务"><a href="#管理队列任务" class="headerlink" title="管理队列任务"></a>管理队列任务</h3><p> ThreadPoolExecutor允许提供一个BlockingQueue来保存等待执行的任务。基本的任务排队方法有3种：无界队列、有界队列和同步移交(Synchronous Handoff)。</p>
+<blockquote>
+<p>对于Executor,newCachedThreadPool工厂方法时一种很好的默认选择，他能提供比固定大小的线程更好的排队性能.当需要限制当前任务的数量以满足资源管理需求时，那么可以选择固定大小的线程池，就像在接受网络客户请求的服务器应用程序中，如果不进行限制，那么很容易发生过载问题。</p>
+</blockquote>
+<h3 id="8-3-3-饱和策略"><a href="#8-3-3-饱和策略" class="headerlink" title="8.3.3 饱和策略"></a>8.3.3 饱和策略</h3><p>每种RejectedExecutionHandler的实现包含有不用的饱和策略：</p>
+<ul>
+<li>Abort策略：默认策略，新任务提交时直接抛出未检查的异常RejectedExecutionException，该异常可由调用者捕获。</li>
+<li>CallerRunPolicy 为调节机制，既不抛弃任务也不抛出异常，而是将某些任务回退到调用者。不会在线程池的线程中执行新的任务，而是在调用exector的线程中运行新的任务。</li>
+<li>Discard策略：新提交的任务被抛弃。<br>DiscardOldest策略：队列的是“队头”的任务，然后尝试提交新的任务。（不适合工作队列为优先队列场景）。</li>
+</ul>
+<h3 id="8-3-4-线程工厂"><a href="#8-3-4-线程工厂" class="headerlink" title="8.3.4 线程工厂"></a>8.3.4 线程工厂</h3><h2 id="8-4-扩展ThreadPoolExecutor"><a href="#8-4-扩展ThreadPoolExecutor" class="headerlink" title="8.4 扩展ThreadPoolExecutor"></a>8.4 扩展ThreadPoolExecutor</h2><p>实例：给线程池添加统计信息</p>
+<h2 id="8-5-递归算法的并行化"><a href="#8-5-递归算法的并行化" class="headerlink" title="8.5 递归算法的并行化"></a>8.5 递归算法的并行化</h2><p>实例：谜题框架</p>
+<blockquote>
+<p>对于并发执行的任务，EXecutor框架是一种强大且灵活的框架。它提供了大量可调节的选项，例如创建线程和关闭线程的策略，处理队列任务的策略，处理过多任务的策略，并且提供了几个钩子方法来扩展它的行为。然而，与大多数功能强大的框架一样，其中有些设置参数并不能很好地工作，某些类型的任务需要特定的执行策略，而一些参数组合则可能产生奇怪的结果。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/16/《Java并发编程实战》-7/" data-id="cjqw29et3002gacvtzi5se1jn" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-7" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-《Java并发编程实战》-6" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/15/《Java并发编程实战》-6/" class="article-date">
+  <time datetime="2018-08-15T02:46:56.268Z" itemprop="datePublished">2018-08-15</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/15/《Java并发编程实战》-6/">《Java并发编程实战》-6</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="取消与关闭"><a href="#取消与关闭" class="headerlink" title="取消与关闭"></a>取消与关闭</h1><hr>
+<p>行为良好的软件能够完善地处理失败,关闭和取消等过程。</p>
+<h2 id="7-1任务取消"><a href="#7-1任务取消" class="headerlink" title="7.1任务取消"></a>7.1任务取消</h2><p>取消某个操作的原因:</p>
+<ul>
+<li>用户请求取消</li>
+<li>有时间限制的操作</li>
+<li>应用程序时间</li>
+<li>错误</li>
+<li>关闭</li>
+</ul>
+<h3 id="7-1-1-中断"><a href="#7-1-1-中断" class="headerlink" title="7.1.1 中断"></a>7.1.1 中断</h3><p>在Java的API或语言规范中，并没有将中断与任何取消语言关联起来，但实际是激昂，如果在取消之外的其他操作中使用中断，那么都是不合适的，并且很难支撑起更大的应用。</p>
+<pre><code class="java">public class Thread {
+    // 中断目标线程
+    public void  interupt() { ... }
+    // 返回目标线程的中断状态
+    public boolean isInterrupted() { ...}
+    // 静态， 将清楚当前线程的中断状态，并返回它之前的值，这也是清楚中断状态的唯一方法
+    public static boolean interrupted() { ... }
+}
+</code></pre>
+<p>非阻塞状态下中断时，它的中断状态将被设置，中断操作将变得“有粘性” – 如果不触发InterruptedEXception，那么中断状态将一直保持，直到明确地清除中断状态。</p>
+<blockquote>
+<p>调用interrupt并不意味着立刻停止目标线程正在进行的工作，而只是传递了请求中断的消息。中断操作并不会真正地中断一个正在运行的线程，而只是发出中断请求，然后由线程在下一个合适的时刻中断自己（这些时刻也被称为取消点）。</p>
+</blockquote>
+<p>通常，中断是实现取消的最合理方式。</p>
+<p>通过中断来取消。</p>
+<pre><code class="java">class PrimeProducer extends Thread {
+    private final BlockingQueue&lt;BigInteger&gt; queue;
+
+    PrimeProducer(BlockingQueue&lt;BigInteger&gt; queue) {
+        this.queue = queue;
+    }
+
+    public void run() {
+        BigInteger p = BigInteger.ONE;
+        while (!Thread.currentThread().isInterrupted()) {
+            queue.put( p = p.nextProbablePrime());
+        } catch (InterruptedException consumed) {
+            /* 允许线程推出 */
+        }
+    }
+
+    public void cancel() { interrupt(); }
+
+}
+</code></pre>
+<h3 id="7-1-2-响应中断"><a href="#7-1-2-响应中断" class="headerlink" title="7.1.2 响应中断"></a>7.1.2 响应中断</h3><p>两种实用策略可以用于处理InterruptedException</p>
+<ul>
+<li>传递异常 (可能在执行某个特定于任务的清除操作之后)，从而使你的方法也可以成为可中断的阻塞方法。</li>
+<li>恢复中断状态，从而使调用栈中的上层代码能够对其进行处理。</li>
+</ul>
+<blockquote>
+<p>只有实现了线程中断策略的代码才可以屏蔽中断请求，在常规的任务和库代码中都不应该屏蔽中断请求。</p>
+</blockquote>
+<p>不可取消的任务在推出前恢复中断</p>
+<pre><code class="java">public Task getNextTask(BlockingQueue&lt;Task&gt; queue) {
+    boolean interrupted = false;
+    try {
+        try {
+            return queue.take();
+        } catch (InterruptedException e) {
+            interrupted = ture;
+        }
+    } finally {
+        if (interrupted) 
+            Thread.currentThread().interrupt();
+    }
+}
+</code></pre>
+<h3 id="7-1-4-示例：计时器运行"><a href="#7-1-4-示例：计时器运行" class="headerlink" title="7.1.4 示例：计时器运行"></a>7.1.4 示例：计时器运行</h3><h3 id="7-1-5-通过Future来实现取消"><a href="#7-1-5-通过Future来实现取消" class="headerlink" title="7.1.5 通过Future来实现取消"></a>7.1.5 通过Future来实现取消</h3><blockquote>
+<p>当Future.get()抛出InterruptedException或TimeoutException时，如果你知道不再需要结果，那么就可以调用Future.cancel来取消任务。</p>
+</blockquote>
+<h3 id="7-1-6-处理不可中断的阻塞"><a href="#7-1-6-处理不可中断的阻塞" class="headerlink" title="7.1.6 处理不可中断的阻塞"></a>7.1.6 处理不可中断的阻塞</h3><ul>
+<li>Java.io包中的同步Socket I/O。</li>
+<li>java.io包的同步I/O。</li>
+<li>Selector的异步I/O。</li>
+<li>获取某个锁。</li>
+</ul>
+<h3 id="7-1-7-采用newTaskFor来封装非标准的取消"><a href="#7-1-7-采用newTaskFor来封装非标准的取消" class="headerlink" title="7.1.7 采用newTaskFor来封装非标准的取消"></a>7.1.7 采用newTaskFor来封装非标准的取消</h3><h2 id="7-2-停止基于线程的服务"><a href="#7-2-停止基于线程的服务" class="headerlink" title="7.2 停止基于线程的服务"></a>7.2 停止基于线程的服务</h2><blockquote>
+<p>对于持有线程的服务，只要服务的存在时间大于创建线程的方法的存在时间，那么就应该提供生命周期的方法。</p>
+</blockquote>
+<h3 id="7-2-1-示例：日志服务"><a href="#7-2-1-示例：日志服务" class="headerlink" title="7.2.1 示例：日志服务"></a>7.2.1 示例：日志服务</h3><h3 id="7-2-2-关闭ExecutorService"><a href="#7-2-2-关闭ExecutorService" class="headerlink" title="7.2.2 关闭ExecutorService"></a>7.2.2 关闭ExecutorService</h3><h3 id="7-2-3-“毒丸”对象"><a href="#7-2-3-“毒丸”对象" class="headerlink" title="7.2.3 “毒丸”对象"></a>7.2.3 “毒丸”对象</h3><h3 id="7-2-4-示例：只执行一次的服务"><a href="#7-2-4-示例：只执行一次的服务" class="headerlink" title="7.2.4 示例：只执行一次的服务"></a>7.2.4 示例：只执行一次的服务</h3><h3 id="7-2-5-shutdownNow的局限性"><a href="#7-2-5-shutdownNow的局限性" class="headerlink" title="7.2.5 shutdownNow的局限性"></a>7.2.5 shutdownNow的局限性</h3><h2 id="7-3-处理非正常的线程终止"><a href="#7-3-处理非正常的线程终止" class="headerlink" title="7.3 处理非正常的线程终止"></a>7.3 处理非正常的线程终止</h2><h3 id="未捕获异常的处理"><a href="#未捕获异常的处理" class="headerlink" title="未捕获异常的处理"></a>未捕获异常的处理</h3><p>将异常写入日志的UncaughtExceptionHandler</p>
+<pre><code class="java">public class UEHLogger implements THread.UncaughtExceptionHandler {
+    public void uncaughtException(Thread t, Throwable e) {
+        Logger logger = Logger.getAnonymousLogger();
+        logger.log(Level.SEVERE, 
+        &quot;Thread terminated with exception: &quot; + t.getName(), e);
+    }
+}
+</code></pre>
+<blockquote>
+<p>在运行时间较长的应用程序中，通常会为所有线程的未捕获异常指定同一个异常处理器，并且该处理器至少会将异常信息记录到日志中。</p>
+</blockquote>
+<h2 id="7-4-JVM关闭"><a href="#7-4-JVM关闭" class="headerlink" title="7.4 JVM关闭"></a>7.4 JVM关闭</h2><h3 id="7-4-1-关闭钩子"><a href="#7-4-1-关闭钩子" class="headerlink" title="7.4.1 关闭钩子"></a>7.4.1 关闭钩子</h3><h3 id="7-4-2-守护线程"><a href="#7-4-2-守护线程" class="headerlink" title="7.4.2 守护线程"></a>7.4.2 守护线程</h3><blockquote>
+<p>此外，守护线程通常不能用来代替应用程序管理中各个服务的生命周期。</p>
+</blockquote>
+<h3 id="7-4-3-终结器"><a href="#7-4-3-终结器" class="headerlink" title="7.4.3 终结器"></a>7.4.3 终结器</h3><blockquote>
+<p>避免使用终结器。</p>
+</blockquote>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>在任务、线程、服务以及应用程序等模块中的生命周期结束问题，可能会增加它们在设计和实现时的负责性。Java并没有提供某种抢占式的机制来取消操作或者终结线程。相反，它提供了一种协作式的中断机制来实现取消操作，但这要依赖于如何构建取消操作的协议，以及能否始终遵循这些协议。通过使用FutureTask和Executor框架，可以帮助我们构建可取消的任务和服务。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/15/《Java并发编程实战》-6/" data-id="cjqw29esf001aacvttydo1x5c" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-6" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
     <article id="post-零碎的知识点-4" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/08/14/零碎的知识点-4/" class="article-date">
@@ -556,7 +829,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/14/零碎的知识点-4/" data-id="cjm8x69x8002yagvtph9ji5yr" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/14/零碎的知识点-4/" data-id="cjqw29eut003facvtv4qk7cyp" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -582,355 +855,9 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-零碎的知识点-3" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/14/零碎的知识点-3/" class="article-date">
-  <time datetime="2018-08-14T09:26:06.062Z" itemprop="datePublished">2018-08-14</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/零碎的知识点/">零碎的知识点</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/14/零碎的知识点-3/">零碎的知识点-3</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="零碎的知识点-3"><a href="#零碎的知识点-3" class="headerlink" title="零碎的知识点-3"></a>零碎的知识点-3</h1><hr>
-<h2 id="TCP拥塞控制-慢启动、拥塞避免、快重传、快启动"><a href="#TCP拥塞控制-慢启动、拥塞避免、快重传、快启动" class="headerlink" title="TCP拥塞控制-慢启动、拥塞避免、快重传、快启动"></a>TCP拥塞控制-慢启动、拥塞避免、快重传、快启动</h2><p>一般原理：发生拥塞控制的原因：资源(带宽、交换节点的缓存、处理机)的需求&gt;可用资源。</p>
-<p>作用：拥塞控制就是为了防止过多的数据注入到网络中，这样可以使网络中的路由器或者链路不至于过载。拥塞控制要做的都有一个前提：就是网络能够承受现有的网络负荷。</p>
-<p>对比流量控制：拥塞控制是一个全局的过程，涉及到所有的主机、路由器、以及降低网络相关的所有因素。流量控制往往指点对点通信量的控制。是端对端的问题。</p>
-<p><strong>拥塞窗口</strong>：发送方为一个动态变化的窗口叫做拥塞窗口，拥塞窗口的大小取决于网络的拥塞程度。发送方让自己的发送窗口等于拥塞窗口，但是发送窗口不是一直等于拥塞窗口的，在网络情况好的时候，拥塞窗口不断的增加，发送方的窗口自然也随着增加，但是接受方的接受能力有限，在发送方的窗口达到某个大小时就不在发生变化了。</p>
-<p>发送方如果知道网络拥塞了呢？发送方发送一些报文段时，如果发送方没有在时间间隔内收到接收方的确认报文段，则就可以人为网络出现了拥塞。</p>
-<p><strong>慢启动算法的思路</strong>：主机开发发送数据报时，如果立即将大量的数据注入到网络中，可能会出现网络的拥塞。慢启动算法就是在主机刚开始发送数据报的时候先探测一下网络的状况，如果网络状况良好，发送方每发送一次文段都能正确的接受确认报文段。那么就从小到大的增加拥塞窗口的大小，即增加发送窗口的大小。</p>
-<p><img src="https://img-blog.csdn.net/20180808175025408?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="慢开始和拥塞避免算法的实现举例"></p>
-<p><strong>拥塞避免</strong>：为了防止cwnd增加过快而导致网络拥塞，所以需要设置一个<strong>慢开始门限</strong>ssthresh状态变量（拥塞控制的标识）,它的用法：</p>
-<pre><code>               1. 当cwnd &lt; ssthresh,使用慢启动算法，
-
-               2. 当cwnd &gt; ssthresh,使用拥塞控制算法，停用慢启动算法。
-
-               3. 当cwnd = ssthresh，这两个算法都可以。
-</code></pre><p>拥塞避免的思路：是让cwnd缓慢的增加而不是加倍的增长，每经历过一次往返时间就使cwnd增加1，而不是加倍，这样使cwnd缓慢的增长，比慢启动要慢的多。</p>
-<p>无论是慢启动算法还是拥塞避免算法，只要判断网络出现拥塞，就要把慢启动开始门限(ssthresh)设置为设置为发送窗口的一半（&gt;=2），cwnd(拥塞窗口)设置为1，然后在使用慢启动算法，这样做的目的能迅速的减少主机向网络中传输数据，使发生拥塞的路由器能够把队列中堆积的分组处理完毕。拥塞窗口是按照线性的规律增长，比慢启动算法拥塞窗口增长块的多。</p>
-<p><strong>快重传</strong>：快重传算法要求首先接收方收到一个失序的报文段后就立刻发出重复确认，而不要等待自己发送数据时才进行捎带确认。接收方成功的接受了发送方发送来的M1、M2并且分别给发送了ACK，现在接收方没有收到M3，而接收到了M4，显然接收方不能确认M4，因为M4是失序的报文段。如果根据可靠性传输原理接收方什么都不做，但是按照快速重传算法，在收到M4、M5等报文段的时候，不断重复的向发送方发送M2的ACK,如果接收方一连收到三个重复的ACK,那么发送方不必等待重传计时器到期，由于发送方尽早重传未被确认的报文段。</p>
-<p><img src="https://img-blog.csdn.net/20180808175132761?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="快重传示意图"></p>
-<p><strong>快恢复</strong>：</p>
-<ol>
-<li>当发送发连续接收到三个确认时，就执行乘法减小算法，把慢启动开始门限（ssthresh）减半，但是接下来并不执行慢开始算法。</li>
-<li>此时不执行慢启动算法，而是把cwnd设置为ssthresh的一半， 然后执行拥塞避免算法，使拥塞窗口缓慢增大。</li>
-</ol>
-<p><img src="https://img-blog.csdn.net/20180808175548267?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="快恢复"></p>
-<hr>
-<h2 id="TCP报头"><a href="#TCP报头" class="headerlink" title="TCP报头"></a>TCP报头</h2><p>TCP/IP协议栈主要分为四层:应用层、传输层、网络层、数据链路层,每层都有相应的协议，如下图</p>
-<p><img src="https://img-blog.csdn.net/20180809093940441?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP/IP协议体系"></p>
-<p>TCP数据报头格式：<br><img src="https://img-blog.csdn.net/20180809101737547?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP数据报头格式"></p>
-<ul>
-<li>端口号：32位，16位源端口+16位目的端口， 最大端口为65536</li>
-<li>位序号：32位，也称顺序号，简写位SEQ。</li>
-<li><strong>确认序号</strong>：32位，简写为ACK，在握手阶段，确认序号将发送方的序号加1作为回答。</li>
-<li>数据偏移：规定了整个报头的长度。</li>
-<li>6位标志字段：<ul>
-<li>ACK 置1时表示确认号（为合法，为0的时候表示数据段不包含确认信息，确认号被忽略。</li>
-<li>RST 置1时重建连接。如果接收到RST位时候，通常发生了某些错误。</li>
-<li>SYN 置1时用来发起一个连接。</li>
-<li>FIN 置1时表示发端完成发送任务。用来释放连接，表明发送方已经没有数据发送了。</li>
-<li>URG 紧急指针，告诉接收TCP模块紧要指针域指着紧要数据。注：一般不使用。</li>
-<li>PSH 置1时请求的数据段在接收方得到后就可直接送到应用程序，而不必等到缓冲区满时才传送。注：一般不使用。</li>
-</ul>
-</li>
-<li><strong>检验和</strong>：16位，检验和覆盖了整个的TCP报文段： TCP首部和TCP数据。这是一个强制性的字段，一定是由发端计算和存储，并由收端进行验证。</li>
-<li>紧急指针：16位，一般不用。</li>
-<li>可选与变长选项：通常为空，可根据首部长度推算。用于发送方与接收方协商最大报文段长度（MSS，1460是以太网默认的大小），或在高速网络环境下作窗口调节因子时使用。首部字段还定义了一个时间戳选项。</li>
-</ul>
-<hr>
-<h2 id="UDP报头"><a href="#UDP报头" class="headerlink" title="UDP报头"></a>UDP报头</h2><p>UDP协议也是传输层协议，它是无连接，不保证可靠的传输层协议。<br><img src="https://img-blog.csdn.net/20180809100821202?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="UDP报头"></p>
-<ul>
-<li>源端口：16位，源端口是一个大于1023的16位数字，由基于UDP应用程序的用户进程随机选择。</li>
-<li>目的端口：16位，</li>
-<li>数据包长度：16位，指明了包括首部在内的UDP报文段长度。UDP长字段的值是UDP报文头的长度(8字节)与UDP所携带数据长度的总和。</li>
-<li>校验和：16位，是指整个UDP报文头和UDP所带的数据的校验和（也包括伪报文头）。伪报文头不包括在真正的UDP报文头中，但是它可以保证UDP数据被正确的主机收到了。因在校验和中加入了伪头标，故ICMP除能防止单纯数据差错之外，对IP分组也具有保护作用。</li>
-</ul>
-<hr>
-<h2 id="DNS解析过程"><a href="#DNS解析过程" class="headerlink" title="DNS解析过程"></a>DNS解析过程</h2><p>DNS（Domain Name System，域名系统），DNS协议运行在<strong>UDP协议</strong>之上，使用端口号53。</p>
-<p>主机解析域名的顺序</p>
-<ol>
-<li>浏览器缓存：浏览器会按照一定的频率缓存DNS记录。</li>
-<li>操作系统缓存：如果浏览器缓存中找不到需要的DNS记录，那就去操作系统中找（如/etc/hosts文件）。</li>
-<li>路由缓存：路由器也有DNS缓存。</li>
-<li>ISP的DNS服务器：ISP是互联网服务提供商(Internet Service Provider)的简称，ISP有专门的DNS服务器应对DNS查询请求。</li>
-<li>根服务器：ISP的DNS服务器还找不到的话，它就会向根服务器发出请求，进行递归查询（DNS服务器先问根域名服务器.com域名服务器的IP地址，然后再问.com域名服务器，依次类推）。（root -&gt; com -&gt; baidu.com）</li>
-</ol>
-<hr>
-<h2 id="get和post请求的区别"><a href="#get和post请求的区别" class="headerlink" title="get和post请求的区别"></a>get和post请求的区别</h2><p>GET的语义是请求获取指定的资源。GET方法是安全、<strong>幂等</strong>、可缓存的（除非有 Cache-ControlHeader的约束）,GET方法的报文主体没有任何语义。</p>
-<p>POST的语义是根据请求负荷（报文主体）对指定的资源做出处理，具体的处理方式视资源类型而不同。POST不安全，<strong>不幂等</strong>，（大部分实现）不可缓存。</p>
-<ul>
-<li>GET后退按钮/刷新无害，POST数据会被重新提交（浏览器应该告知用户数据会被重新提交）。</li>
-<li>GET书签可收藏，POST为书签不可收藏。</li>
-<li>GET能被缓存，POST不能缓存 。</li>
-<li>GET编码类型application/x-www-form-url，POST编码类型encodedapplication/x-www-form-urlencoded 或 multipart/form-data。为二进制数据使用多重编码。</li>
-<li>GET历史参数保留在浏览器历史中。POST参数不会保存在浏览器历史中。</li>
-<li>GET对数据长度有限制，当发送数据时，GET 方法向 URL 添加数据；URL 的长度是受限制的（URL 的最大长度是 2048 个字符）。POST无限制。</li>
-<li>GET只允许 ASCII 字符。POST没有限制。也允许二进制数据。与 POST 相比，GET 的安全性较差，因为所发送的数据是 URL 的一部分。在发送密码或其他敏感信息时绝不要使用 GET ！</li>
-</ul>
-<hr>
-<h2 id="http和https区别，https在请求时额外的过程，https是如何保证数据安全的"><a href="#http和https区别，https在请求时额外的过程，https是如何保证数据安全的" class="headerlink" title="http和https区别，https在请求时额外的过程，https是如何保证数据安全的"></a>http和https区别，https在请求时额外的过程，https是如何保证数据安全的</h2><p>http是应用层协议，它会将要传输的数据以明文的方式给传输层，这样显然不安全。https则是在应用层与传输层之间又加了一层，该层遵守SSL/TLS协议。</p>
-<p>加密的方式有两种，</p>
-<ul>
-<li>对称加密：对称加密速度快，但是加密和解密的钥匙是相同的。</li>
-<li>非对称加密，算法更加复杂，速度慢，加密和解密钥匙不相同。</li>
-</ul>
-<p>在https中，加密过程大致如下：<br>首先服务器将公钥给浏览器，浏览器拿到公钥之后，生成一个“会话密钥”，这个会话密钥属于对称加密，然后用公钥加密这个“会话密钥”发送给服务器，最后，在数据传输的过程中，就用这个会话密钥来加密数据。打个比方：我有二把钥匙，我把其中一把钥匙放在信封里，然后把信封交给你。但是这个信封只有你能打开。</p>
-<p>上述的过程是在3次握手中完成，采用明文发送，握手完成以后，客户端和服务端就约定好了“会话密钥”，以后的数据传输，就采用这个会话密钥加密。</p>
-<p>在上述的过程中要注意<br>公钥怎么给客户端？<br>如果公钥A在发送给客户端的过程中，被截取，被黑客替换成了公钥B，以后的事情可想而知，你就会用公钥B加密“会话密钥”，然后。。。你的隐私就被窃取喽。对于这个问题，要引入证书和数据签名的概念。</p>
-<hr>
-<h2 id="Java正则表达式"><a href="#Java正则表达式" class="headerlink" title="Java正则表达式"></a>Java正则表达式</h2><p>java.util.regex 包主要包括以下三个类：</p>
-<ul>
-<li><p>Pattern 类：<br>pattern 对象是一个正则表达式的编译表示。Pattern 类没有公共构造方法。要创建一个 Pattern 对象，你必须首先调用其公共静态编译方法，它返回一个 Pattern 对象。该方法接受一个正则表达式作为它的第一个参数。</p>
-</li>
-<li><p>Matcher 类：<br>Matcher 对象是对输入字符串进行解释和匹配操作的引擎。与Pattern 类一样，Matcher 也没有公共构造方法。你需要调用 Pattern 对象的 matcher 方法来获得一个 Matcher 对象。</p>
-</li>
-</ul>
-<p>PatternSyntaxException：<br>PatternSyntaxException 是一个非强制异常类，它表示一个正则表达式模式中的语法错误。</p>
-<h3 id="捕获组"><a href="#捕获组" class="headerlink" title="捕获组"></a>捕获组</h3><p>捕获组是把多个字符当一个单独单元进行处理的方法，它通过对括号内的字符分组来创建。</p>
-<pre><code class="java">      // 按指定模式在字符串查找
-      String line = &quot;This order was placed for QT3000! OK?&quot;;
-      String pattern = &quot;(\\D*)(\\d+)(.*)&quot;;
-
-      // 创建 Pattern 对象
-      Pattern r = Pattern.compile(pattern);
-
-      // 现在创建 matcher 对象
-      Matcher m = r.matcher(line);
-      if (m.find( )) {
-         System.out.println(&quot;Found value: &quot; + m.group(0) );
-         System.out.println(&quot;Found value: &quot; + m.group(1) );
-         System.out.println(&quot;Found value: &quot; + m.group(2) );
-         System.out.println(&quot;Found value: &quot; + m.group(3) ); 
-      } else {
-         System.out.println(&quot;NO MATCH&quot;);
-      }
-</code></pre>
-<p><strong>切记，要先调用find( )方法才能调用group()方法</strong></p>
-<hr>
-<h2 id="初步理解AQS"><a href="#初步理解AQS" class="headerlink" title="初步理解AQS"></a>初步理解AQS</h2><p>AQS全称AbstractQueuedSynchronizer，它是concurrent包中最重要的基础设施类之一，负责作为模板类向业务层提供对临界区的管理。AQS定义了一套多线程访问共享资源的同步器框架，许多同步类实现都依赖于它，如常用的ReentrantLock/Semaphore/CountDownLatch/FutureTask。</p>
-<p>它维护了一个volatile int state（代表共享资源）和一个FIFO线程等待队列（多线程争用资源被阻塞时会进入此队列）。这里volatile是核心关键词，具体volatile的语义，</p>
-<p>AQS定义两种资源共享方式：Exclusive（独占，只有一个线程能执行，如ReentrantLock）和Share（共享，多个线程可同时执行，如Semaphore/CountDownLatch）。</p>
-<p>以ReentrantLock为例，state初始化为0，表示未锁定状态。A线程lock()时，会调用tryAcquire()独占该锁并将state+1。此后，其他线程再tryAcquire()时就会失败，直到A线程unlock()到state=0（即释放锁）为止，其它线程才有机会获取该锁。当然，释放锁之前，A线程自己是可以重复获取此锁的（state会累加），这就是可重入的概念。但要注意，获取多少次就要释放多么次，这样才能保证state是能回到零态的。</p>
-<p>再以CountDownLatch以例，任务分为N个子线程去执行，state也初始化为N（注意N要与线程个数一致）。这N个子线程是并行执行的，每个子线程执行完后countDown()一次，state会CAS减1。等到所有子线程都执行完后(即state=0)，会unpark()主调用线程，然后主调用线程就会从await()函数返回，继续后余动作。</p>
-<p>一般来说，自定义同步器要么是独占方法，要么是共享方式，他们也只需实现tryAcquire-tryRelease、tryAcquireShared-tryReleaseShared中的一种即可。但AQS也支持自定义同步器同时实现独占和共享两种方式，如ReentrantReadWriteLock。</p>
-<table>
-<thead>
-<tr>
-<th>类名</th>
-<th>互斥锁</th>
-<th>资源</th>
-<th>如何访问</th>
-<th>备注</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mutex</td>
-<td>互斥锁</td>
-<td>1</td>
-<td>仅排他</td>
-<td>出现在AQS类的注释中</td>
-</tr>
-<tr>
-<td>Semaphore</td>
-<td>信号量</td>
-<td>可指定（构造参数permits）</td>
-<td>仅共享</td>
-</tr>
-<tr>
-<td>ReentrantReadWriteLock</td>
-<td>读写（可重入）锁</td>
-<td>无上限（实际为16位unsigned short）</td>
-<td>读写共享访问，写锁排他访问</td>
-<td>可重入</td>
-</tr>
-</tbody>
-</table>
-<h3 id="复用AQS"><a href="#复用AQS" class="headerlink" title="复用AQS"></a>复用AQS</h3><p>Step1/3. 定义state。<br>state是一个int，它没有具体语义，但作为AQS的核心成员变量，可根据业务类的需要赋予state具体的语义。</p>
-<p>| 方法 | 简介 |<br>| getState() | 读状态 | setState (int newState) | 写状态 |<br>| compareAndSetState (int expect, int update) | CAS写状态 |</p>
-<p>Step2/3. 新建内部类Sync，继承自AQS并按需实现钩子方法</p>
-<table>
-<thead>
-<tr>
-<th>钩子方法</th>
-<th>简介</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>tryAcquire (int arg)</td>
-<td>排他获取(资源数)</td>
-</tr>
-<tr>
-<td>tryRelease(int arg)</td>
-<td>排他释放(资源数)</td>
-</tr>
-<tr>
-<td>tryAcquireShared(int arg)</td>
-<td>共享获取(资源数)</td>
-</tr>
-<tr>
-<td>tryReleaseShared(int arg)</td>
-<td>共享释放(资源数)</td>
-</tr>
-<tr>
-<td>isHeldExclusively()</td>
-<td>是否排他状态</td>
-</tr>
-</tbody>
-</table>
-<p>Step3/3. 业务类把业务方法的实现委托给Sync。Sync可以直接使用继承自AQS的模板方法。</p>
-<h3 id="AQS内部细节"><a href="#AQS内部细节" class="headerlink" title="AQS内部细节"></a>AQS内部细节</h3><h4 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h4><p>AQS实现了一个FIFO队列，用于管理等候在临界区外的线程。队列的每个节点保留了线程信息，因此线程可以安然休眠，待临界区的资源可用时再次唤醒。注意，队列的存在并不保证公平，因为AQS并不确保被唤醒的队首线程能进入临界区，唤醒过程中可能会被其它尚未入队的竞争线程抢占先机。</p>
-<h4 id="线程控制"><a href="#线程控制" class="headerlink" title="线程控制"></a>线程控制</h4><p>线程的休眠和唤醒是通过<strong>LockSupport.park()</strong>和<strong>LockSupport.unpark()</strong>实现的。LockSupport是整个concurrent包最底层的API之一。在AQS的注释中写到，如果你对其排队机制不满，可以重新定义队列的数据结构并通过LockSupport调度。</p>
-<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><p>数据结构：双向链表构成的FIFO队列（链表是其物理结构，队列是其逻辑用途。注释中称其为CLH Lock队列的变种，而CLH Lock常用于实现自旋锁，其确保无饥饿性和公平性）</p>
-<p><img src="https://img-blog.csdn.net/20180814120858456?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="CLH Lock 队列"></p>
-<hr>
-<h2 id="LockSupport的park和unpark的基本使用-以及对线程中断的响应性"><a href="#LockSupport的park和unpark的基本使用-以及对线程中断的响应性" class="headerlink" title="LockSupport的park和unpark的基本使用,以及对线程中断的响应性"></a>LockSupport的park和unpark的基本使用,以及对线程中断的响应性</h2><p>  LockSupport是JDK中比较底层的类，用来创建锁和其他同步工具类的基本线程阻塞原语。java锁和同步器框架的核心AQS:AbstractQueuedSynchronizer，就是通过调用LockSupport.park()和LockSupport.unpark()实现线程的阻塞和唤醒的。LockSupport很类似于二元信号量(只有1个许可证可供使用)，如果这个许可还没有被占用，当前线程获取许可并继续执行；如果许可已经被占用，当前线程阻塞，等待获取许可。</p>
-<p>许可默认是被占用的。</p>
-<p>LockSupport是不可重入。</p>
-<p>线程如果因为调用park而阻塞的话，能够响应中断请求(中断状态被设置成true)，但是不会抛出InterruptedException。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/14/零碎的知识点-3/" data-id="cjm8x69x3002qagvtjn7hp0ld" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="零碎的知识点-3" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-《Java并发编程实战》-5" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/13/《Java并发编程实战》-5/" class="article-date">
-  <time datetime="2018-08-13T07:32:02.057Z" itemprop="datePublished">2018-08-13</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/13/《Java并发编程实战》-5/">《Java并发编程实战》-5</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="《Java并发编程实战》-5"><a href="#《Java并发编程实战》-5" class="headerlink" title="《Java并发编程实战》-5"></a>《Java并发编程实战》-5</h1><hr>
-<h3 id="6-1-1-串行地执行renwu"><a href="#6-1-1-串行地执行renwu" class="headerlink" title="6.1.1 串行地执行renwu"></a>6.1.1 串行地执行renwu</h3><h3 id="6-1-2-显式地为任务创建线程"><a href="#6-1-2-显式地为任务创建线程" class="headerlink" title="6.1.2 显式地为任务创建线程"></a>6.1.2 显式地为任务创建线程</h3><h3 id="6-1-3-无限制创建线程的不足"><a href="#6-1-3-无限制创建线程的不足" class="headerlink" title="6.1.3 无限制创建线程的不足"></a>6.1.3 无限制创建线程的不足</h3><ul>
-<li>线程生命周期的开销非常高。</li>
-<li>资源消耗。</li>
-<li>稳定性。</li>
-</ul>
-<h2 id="6-2-Executir框架"><a href="#6-2-Executir框架" class="headerlink" title="6.2 Executir框架"></a>6.2 Executir框架</h2><h3 id="6-2-1-示例：基于Executor的Web服务器"><a href="#6-2-1-示例：基于Executor的Web服务器" class="headerlink" title="6.2.1 示例：基于Executor的Web服务器"></a>6.2.1 示例：基于Executor的Web服务器</h3><h3 id="6-2-2-执行策略"><a href="#6-2-2-执行策略" class="headerlink" title="6.2.2 执行策略"></a>6.2.2 执行策略</h3><blockquote>
-<p>每当看到<code>new Thread(runnable).start()</code>时，并且你希望获得一种更灵活的执行策略时，请考虑使用Excecutor来代替Thread。</p>
-</blockquote>
-<h3 id="6-2-3-线程池"><a href="#6-2-3-线程池" class="headerlink" title="6.2.3 线程池"></a>6.2.3 线程池</h3><ul>
-<li><strong>newFixedThreadPool</strong> 创建一个固定长度的线程池，每当提交一个任务时就创建一个线程，直到达到线程池的最大数量，这时线程池的规模将不再变化（如果某个线程由于发生了未预期的Exception而结束，那么线程池会补充一个新的线程）。</li>
-<li><strong>newCachedTheadPool</strong> 创建一个可缓存的线程池，如果线程池的当前规模超过了处理需求时，那么将回收空闲的线程，而当需求增加时，则可以添加新的线程，线程的规模不存在任何限制。</li>
-<li><strong>newSingleThread</strong> 一个单线程的Executor,它创建单个工作者线程来执行任务，如果这个线程异常结束，会创建另一个线程来代替。newSingleThreadExecutir能确保依照任务在队列中的顺序来串行执行（例如FIFO、LIFO、优先级）。</li>
-<li><strong>newScheduleThreadPool</strong> 创建一个固定长度的线程池，而且以延迟或定时的方式执行任务，类是于Timer。</li>
-</ul>
-<h3 id="6-2-4-Executor的生命周期"><a href="#6-2-4-Executor的生命周期" class="headerlink" title="6.2.4 Executor的生命周期"></a>6.2.4 Executor的生命周期</h3><ul>
-<li>运行</li>
-<li>关闭</li>
-<li>已终止</li>
-</ul>
-<h3 id="6-2-5-延迟任务与周期任务"><a href="#6-2-5-延迟任务与周期任务" class="headerlink" title="6.2.5 延迟任务与周期任务"></a>6.2.5 延迟任务与周期任务</h3><h2 id="6-3-找出可利用的并行性"><a href="#6-3-找出可利用的并行性" class="headerlink" title="6.3 找出可利用的并行性"></a>6.3 找出可利用的并行性</h2><h3 id="6-3-1-示例：串行的页面渲染器"><a href="#6-3-1-示例：串行的页面渲染器" class="headerlink" title="6.3.1 示例：串行的页面渲染器"></a>6.3.1 示例：串行的页面渲染器</h3><h3 id="6-3-2-携带结果的任务Callable与Future"><a href="#6-3-2-携带结果的任务Callable与Future" class="headerlink" title="6.3.2 携带结果的任务Callable与Future"></a>6.3.2 携带结果的任务Callable与Future</h3><h3 id="6-3-3-实例：使用Future实现页面渲染器"><a href="#6-3-3-实例：使用Future实现页面渲染器" class="headerlink" title="6.3.3 实例：使用Future实现页面渲染器"></a>6.3.3 实例：使用Future实现页面渲染器</h3><h3 id="6-3-4-在异构任务并行化中存在的局限"><a href="#6-3-4-在异构任务并行化中存在的局限" class="headerlink" title="6.3.4 在异构任务并行化中存在的局限"></a>6.3.4 在异构任务并行化中存在的局限</h3><h3 id="6-3-5-CompletionService-Executor与BlockingQueue"><a href="#6-3-5-CompletionService-Executor与BlockingQueue" class="headerlink" title="6.3.5 CompletionService:Executor与BlockingQueue"></a>6.3.5 CompletionService:Executor与BlockingQueue</h3><p>CompletionService将Execute和BlockingQueue的功能融合在一起。ExecutorCompletionService实现了CompletionSeervice,并将计算部分委托给一个Executor。</p>
-<h3 id="6-3-6-实例：使用CompletionService实现页面渲染器"><a href="#6-3-6-实例：使用CompletionService实现页面渲染器" class="headerlink" title="6.3.6 实例：使用CompletionService实现页面渲染器"></a>6.3.6 实例：使用CompletionService实现页面渲染器</h3><h3 id="6-3-7-为任务设置时限"><a href="#6-3-7-为任务设置时限" class="headerlink" title="6.3.7 为任务设置时限"></a>6.3.7 为任务设置时限</h3><h3 id="6-3-8-示例：旅行预订门户网站"><a href="#6-3-8-示例：旅行预订门户网站" class="headerlink" title="6.3.8 示例：旅行预订门户网站"></a>6.3.8 示例：旅行预订门户网站</h3><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>Executor框架将任务提交与执行策略解耦开来，同时还支持多种不同类型的执行策略。<br>要想将应用程序分解为不同的任务时获得最大的好处，必须定义清晰的任务边界。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/13/《Java并发编程实战》-5/" data-id="cjm8x69wf001qagvteaeejgau" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-5" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -944,6 +871,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2019/01/14/2019-1-14-开发笔记/">2019-1-14-开发笔记 Executors.newSingleThreadScheduledExecutor</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/20/Netty消息分发和业务逻辑分离/">Netty消息分发和业务逻辑分离</a>
+          </li>
+        
+          <li>
             <a href="/2018/09/19/Netty, SpringBoot, MyBatis搭建游戏服务器 - 1/">Netty, SpringBoot, MyBatis搭建游戏服务器 - 1</a>
           </li>
         
@@ -955,14 +890,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2018/09/11/游戏开发-基于netty的文字冒险游戏-1/">游戏开发-基于netty的冒险游戏-1</a>
           </li>
         
-          <li>
-            <a href="/2018/08/28/零碎的知识点-6/">零碎的知识点-6</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/28/零碎的知识点-5/">零碎的知识点-5</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -972,7 +899,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">26</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -981,7 +908,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
@@ -1002,7 +929,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2018 WeiJian Qian
+      &copy; 2019 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>

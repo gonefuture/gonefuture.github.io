@@ -83,6 +83,203 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-2019-1-14-开发笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/01/14/2019-1-14-开发笔记/" class="article-date">
+  <time datetime="2019-01-14T07:47:42.122Z" itemprop="datePublished">2019-01-14</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/开发笔记/">开发笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/14/2019-1-14-开发笔记/">2019-1-14-开发笔记 Executors.newSingleThreadScheduledExecutor</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="Executors-newSingleThreadScheduledExecutor异常后执行停止，不显示任何报错信息"><a href="#Executors-newSingleThreadScheduledExecutor异常后执行停止，不显示任何报错信息" class="headerlink" title="Executors.newSingleThreadScheduledExecutor异常后执行停止，不显示任何报错信息"></a>Executors.newSingleThreadScheduledExecutor异常后执行停止，不显示任何报错信息</h1><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>使用newSingleThreadScheduledExecutor作为场景执行器执行任务时，发现客户端没有返回数据，后端日志也没有显示任何异常。</p>
+<p>于是，在调用的方法每个阶段打印前调用打log，发现方法执行到一个阶段就停止打印了。</p>
+<p>拍卖行竞拍的代码，执行时log只打印 1.</p>
+<pre><code class="java">    /**
+     *  竞拍物品
+     * @param player 玩家
+     * @param auctionItem  拍卖品
+     * @param price 出价
+     */
+    private void bidAuctionItem(Player player, AuctionItem auctionItem, int price) {
+        log.debug(&quot;1&quot;);
+        Integer auctionMoney = auctionItem.getBiddersMap().get(player.getId());
+        log.debug(&quot;2&quot;);
+        if (Objects.isNull(auctionMoney)) {
+            //  第一次竞拍
+            auctionItem.addBidder(player,price);
+            player.moneyChange(price);
+        } else {
+            auctionItem.addBidder(player,price);
+            // 减去继续竞的差价
+            player.moneyChange(-(price-auctionItem.getAuctionPrice()));
+        }
+        log.debug(&quot;3&quot;);
+        notificationManager.notifyPlayer(player,MessageFormat.format(&quot;叫价功成。当前拍卖品价格是{0}&quot;,
+                auctionItem.getAuctionPrice()));
+        log.debug(&quot;4&quot;);
+    }
+</code></pre>
+<p>执行这个方法的线程是一个场景执行器，</p>
+<pre><code class="java">
+    private static ThreadFactory sceneThreadFactory = new ThreadFactoryBuilder()
+            .setNameFormat(&quot;scene-loop-%d&quot;).build();
+    /** 通过一个场景一个线程处理器的方法保证每个场景的指令循序 */
+    ExecutorService singleThreadSchedule = Executors.newSingleThreadScheduledExecutor(sceneThreadFactory);
+
+</code></pre>
+<p>场景执行器开始执行任务的代码。</p>
+<pre><code class="java">    // 玩家在场景内则用场景的执行器执行
+    Optional.ofNullable(player).map(Player::getCurrentScene).ifPresent(
+        scene -&gt; scene.getSingleThreadSchedule().execute(
+                () -&gt; controller.handle(ctx,msg))
+    );
+
+</code></pre>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>在网上查询后发现，在JDK的源码，在源码的Java doc中的发现了如下一句话：</p>
+<blockquote>
+<p>If any execution of the task encounters an exception, subsequent executions are suppressed.Otherwise, the task will only terminate via cancellation or termination of the executor.</p>
+</blockquote>
+<p>也就是说：</p>
+<blockquote>
+<p>如果定时任务执行过程中遇到发生异常，则后面的任务将不再执行。</p>
+</blockquote>
+<p>而且，异常也不会被捕获并打印信息。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>我的解决方式是直接在执行任务时使用try/catch。</p>
+<pre><code class="java">    // 玩家在场景内则用场景的执行器执行
+    Optional.ofNullable(player).map(Player::getCurrentScene).ifPresent(
+        scene -&gt; scene.getSingleThreadSchedule().execute(
+                () -&gt; {
+                    log.debug(&quot;{}  {} 的 {} 在执行命令 {}&quot;,scene.getSingleThreadSchedule(),
+                            scene.getName(),player.getName(),new String(msg.getContent()));
+                    try {
+                        controller.handle(ctx,msg);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+        })
+    );
+</code></pre>
+<p>报错信息终于显示出来了。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>这个问题折腾了我好久，方法执行到一半不执行我就猜测是出现了异常，但是异常没有被捕获。这件事教训我以后使用ExecutorService的实现类都要注意异常处理。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2019/01/14/2019-1-14-开发笔记/" data-id="cjqw29er40000acvtywimnm0h" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="2019-1-14-开发笔记" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-Netty消息分发和业务逻辑分离" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/09/20/Netty消息分发和业务逻辑分离/" class="article-date">
+  <time datetime="2018-09-20T10:27:36.909Z" itemprop="datePublished">2018-09-20</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/游戏开发/">游戏开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/20/Netty消息分发和业务逻辑分离/">Netty消息分发和业务逻辑分离</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="Netty消息分发和业务逻辑分离"><a href="#Netty消息分发和业务逻辑分离" class="headerlink" title="Netty消息分发和业务逻辑分离"></a>Netty消息分发和业务逻辑分离</h1><hr>
+<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty/">Netty</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/09/20/Netty消息分发和业务逻辑分离/" data-id="cjqw29erm000bacvtaran6otf" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="Netty消息分发和业务逻辑分离" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
     <article id="post-Netty, SpringBoot, MyBatis搭建游戏服务器 - 1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/09/19/Netty, SpringBoot, MyBatis搭建游戏服务器 - 1/" class="article-date">
@@ -636,7 +833,7 @@ public class GameServer {
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MyBatis/">MyBatis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty/">Netty</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/09/19/Netty, SpringBoot, MyBatis搭建游戏服务器 - 1/" data-id="cjm8x69uv0006agvtqtfevnu8" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/09/19/Netty, SpringBoot, MyBatis搭建游戏服务器 - 1/" data-id="cjqw29erg0005acvta57c08xb" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -662,216 +859,9 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Netty实战》-第五章-ByteBuf" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/09/12/《Netty实战》-第五章-ByteBuf/" class="article-date">
-  <time datetime="2018-09-12T10:14:25.452Z" itemprop="datePublished">2018-09-12</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/12/《Netty实战》-第五章-ByteBuf/">《Netty实战》-第五章-ByteBuf</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="《Netty实战》-第五章-ByteBuf"><a href="#《Netty实战》-第五章-ByteBuf" class="headerlink" title="《Netty实战》-第五章-ByteBuf"></a>《Netty实战》-第五章-ByteBuf</h1><hr>
-<h2 id="5-1-ByteBuf的API"><a href="#5-1-ByteBuf的API" class="headerlink" title="5.1 ByteBuf的API"></a>5.1 ByteBuf的API</h2><p>Netty的数据处理API通过两个组件暴露—abstract class ByteBuf和interface ByteBufHolder。<br>下面是一些ByteBuf API的优点：</p>
-<ul>
-<li>他可以被用户自定义的缓冲区类型扩展</li>
-<li>通过内置的复合缓冲区类型实现了透明的零拷贝</li>
-<li>容量可以按需增长（类似于JDK的StringBuilder）</li>
-<li>在读和写这两种模式之间切换不需要调用ByteBuffer的flip()方式</li>
-<li>读和写使用不同了的索引</li>
-<li>支持方法的链式调用</li>
-<li>支持引用计数</li>
-<li>支持池化</li>
-</ul>
-<p>其他类可用于管理ByteBuf实例的分配，以及执行各种针对数据容器本身和它所持有的数据的操作。</p>
-<hr>
-<h2 id="5-2-ByteBuf类-——-Netty的数据容器"><a href="#5-2-ByteBuf类-——-Netty的数据容器" class="headerlink" title="5.2 ByteBuf类 —— Netty的数据容器"></a>5.2 ByteBuf类 —— Netty的数据容器</h2><h3 id="5-2-1-它是如何工作的"><a href="#5-2-1-它是如何工作的" class="headerlink" title="5.2.1 它是如何工作的"></a>5.2.1 它是如何工作的</h3><p>ByteBuf维护两个不同的索引：一个用于读取，一个用于写入。</p>
-<p>名称以read或者write开头的ByteBuf方法，将会推进其对应的索引，而名称以set或者get开头的操作则不会。后面的这些方法将一个参数传入的一个相对索引上执行操作。</p>
-<h3 id="5-2-2-ByteBuf的使用模式"><a href="#5-2-2-ByteBuf的使用模式" class="headerlink" title="5.2.2 ByteBuf的使用模式"></a>5.2.2 ByteBuf的使用模式</h3><ol>
-<li>堆缓冲区<br> 最常用的ByteBuf模式是将数据储存在JVM的堆空间中。这种模式被成为支撑数组。</li>
-<li>直接缓冲区<br> 直接缓冲区是另一种ButeBuf模式，在垃圾回收之外。<br>3.复合缓冲区<br> 复合缓冲区为多个ByteBuf提供了一个聚合视图，</li>
-</ol>
-<h2 id="5-3-字节级操作"><a href="#5-3-字节级操作" class="headerlink" title="5.3 字节级操作"></a>5.3 字节级操作</h2><h3 id="5-3-1-随机访问索引"><a href="#5-3-1-随机访问索引" class="headerlink" title="5.3.1 随机访问索引"></a>5.3.1 随机访问索引</h3><p>BuyteBuf的索引是从零开始的：第一个字节的索引是0，最后一个字节的索引总是capacity()-1</p>
-<h3 id="5-3-2-顺序访问索引"><a href="#5-3-2-顺序访问索引" class="headerlink" title="5.3.2 顺序访问索引"></a>5.3.2 顺序访问索引</h3><p>ByteBuf同时具有读索引和写索引，但是JDK的ByteBuffer却只有一个索引，这也是为甚恶魔必须调用filp()方法来在读模式和写模式之间进行切换的原因。</p>
-<h3 id="5-3-3-可丢弃字节"><a href="#5-3-3-可丢弃字节" class="headerlink" title="5.3.3 可丢弃字节"></a>5.3.3 可丢弃字节</h3><h3 id="5-3-4-可读字节"><a href="#5-3-4-可读字节" class="headerlink" title="5.3.4 可读字节"></a>5.3.4 可读字节</h3><p>ByteBuf的可读字节分段储存例如实际数据。新分配的、包管理的或者复制的缓冲区的默认的readerIndex的值为0。</p>
-<h3 id="5-3-5-可写字节"><a href="#5-3-5-可写字节" class="headerlink" title="5.3.5 可写字节"></a>5.3.5 可写字节</h3><p>可写字节分段是指一个拥有未定义内容的、写入就绪的内存区域。新分配的缓冲区的writerIndex的默认值为0。</p>
-<h3 id="5-3-6-索引管理"><a href="#5-3-6-索引管理" class="headerlink" title="5.3.6 索引管理"></a>5.3.6 索引管理</h3><h3 id="5-3-7-查找管理"><a href="#5-3-7-查找管理" class="headerlink" title="5.3.7 查找管理"></a>5.3.7 查找管理</h3><p>调用clear()比调用discardReadBytes()轻量得多，因为它将只是重置索引而不会复制任何得内存。</p>
-<h3 id="5-3-7-查找操作"><a href="#5-3-7-查找操作" class="headerlink" title="5.3.7 查找操作"></a>5.3.7 查找操作</h3><p>indexOf()方法可以用来确定指定值得索引的方法。</p>
-<h3 id="5-3-8-派生缓冲区"><a href="#5-3-8-派生缓冲区" class="headerlink" title="5.3.8 派生缓冲区"></a>5.3.8 派生缓冲区</h3><p>派生缓冲区为ByteBuf提供了专门的方式来呈现其内容的视图。这类视图是通过一下方法被创建的：</p>
-<ul>
-<li>duplicate()</li>
-<li>slice()</li>
-<li>slice(int, int)</li>
-<li>Unpoooled.unmodifiableBuffer { … }</li>
-<li>order(ByteOrder)</li>
-<li>readSlice(int)</li>
-</ul>
-<p>每个这些方法都将返回一个新的ByteBuf实例，它具有自己的读索引、写索引和标记索引。</p>
-<p><strong>BYteBuf复制</strong> 如果需要一个现有缓冲区的真实副本，请使用copy()或者copy(int, int)方法。不同于派生缓冲区，由于这个调用所返回的ByteBuf拥有独立的数据副本。</p>
-<h3 id="5-3-9-读-写操作"><a href="#5-3-9-读-写操作" class="headerlink" title="5.3.9 读/写操作"></a>5.3.9 读/写操作</h3><p>netty有两种类别的读/写操作。</p>
-<ul>
-<li>get()和set()操作，从给定的索引开始，并且保持索引不变。</li>
-<li>read()和write()操作，从给定的索引开始，并且会根据已经访问过的字节数对索引进行掉整。</li>
-</ul>
-<h3 id="5-3-10-更多的操作"><a href="#5-3-10-更多的操作" class="headerlink" title="5.3.10 更多的操作"></a>5.3.10 更多的操作</h3><h2 id="ByteBufHolder接口"><a href="#ByteBufHolder接口" class="headerlink" title="ByteBufHolder接口"></a>ByteBufHolder接口</h2><p>ByteBufHolder有几种用于访问底层数据和引用计算的方法。</p>
-<h2 id="5-5-ByteBuf分配"><a href="#5-5-ByteBuf分配" class="headerlink" title="5.5 ByteBuf分配"></a>5.5 ByteBuf分配</h2><h3 id="5-5-1-按需分配：ByteBufAllocator接口"><a href="#5-5-1-按需分配：ByteBufAllocator接口" class="headerlink" title="5.5.1 按需分配：ByteBufAllocator接口"></a>5.5.1 按需分配：ByteBufAllocator接口</h3><p> 为了降低分配和释放内存的开销，Netty通过interface ByteBufAllocator实现了(ByteBuf的)池化，它可以用来分配我们所描述过的任意类型的ByteBuf实例。使用池化是应用程序的决定，其并不会以任何方式改变ByteBuf API(的语义)。</p>
-<p> Netty提供了两种ByteBufAllocator的实现：<strong>PooledByteBufAllocator</strong>和<strong>UnpooledByteBufAllocator</strong>。前者池化了ByteBuf的实例以提高性能并最大限度地减少内存碎片.此实现使用了一种为jemalloc的已被大量现代操作系统所采用的高效方法来分配内存。后者的实现不池化ByteBuf实例，并且在每次被它调用时都会返回一个新的实例。</p>
-<h3 id="5-5-2-Unpooled缓冲区"><a href="#5-5-2-Unpooled缓冲区" class="headerlink" title="5.5.2 Unpooled缓冲区"></a>5.5.2 Unpooled缓冲区</h3><p>Unpooled的工具类提供了静态的辅助方法来创建未池化的ByteBuf实例。</p>
-<h3 id="5-5-3-ByteBufUtil类"><a href="#5-5-3-ByteBufUtil类" class="headerlink" title="5.5.3 ByteBufUtil类"></a>5.5.3 ByteBufUtil类</h3><p>ByteBufUtil.hexdump()方法以十六进制的表示形式打印bytebuf的内容。</p>
-<h2 id="5-6-引用计算"><a href="#5-6-引用计算" class="headerlink" title="5.6 引用计算"></a>5.6 引用计算</h2><p>引用计算是一种通过在某个对象所持有的资源不再被其他对象引用时释放该对象所持有的资源来优化内存使用和性能的技术。ByteBuf和BytebufHolder引入了引用计数计数，它们都实现了interface ReferenceCounted。</p>
-<h2 id="5-7-小结"><a href="#5-7-小结" class="headerlink" title="5.7 小结"></a>5.7 小结</h2><p>ByteBuf的要点：</p>
-<ul>
-<li>使用不同的读索引和写索引来控制数据访问。</li>
-<li>使用内存的不同方式——基于字节数组和直接缓冲区</li>
-<li>通过CompositeByteBuf生成多个ByteBuf的聚合视图</li>
-<li>数据访问方法——搜索、切片以及复制</li>
-<li>读、写、获取和设置API</li>
-<li>ByteBufAllocator池化和引用计算</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NIO/">NIO</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty/">Netty</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/09/12/《Netty实战》-第五章-ByteBuf/" data-id="cjm8x69wp0025agvtiw81a5fq" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Netty实战》-第五章-ByteBuf" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-游戏开发-基于netty的文字冒险游戏-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/09/11/游戏开发-基于netty的文字冒险游戏-1/" class="article-date">
-  <time datetime="2018-09-11T04:18:59.634Z" itemprop="datePublished">2018-09-11</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/游戏开发/">游戏开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/11/游戏开发-基于netty的文字冒险游戏-1/">游戏开发-基于netty的冒险游戏-1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="游戏开发-基于netty的文字冒险游戏-1"><a href="#游戏开发-基于netty的文字冒险游戏-1" class="headerlink" title="游戏开发-基于netty的文字冒险游戏-1"></a>游戏开发-基于netty的文字冒险游戏-1</h1><hr>
-<h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>现在要设计一个多人在线迷宫移动游戏，多个人可以同时在迷宫中冒险、交流、触发剧情。</p>
-<h3 id="登陆系统"><a href="#登陆系统" class="headerlink" title="登陆系统"></a>登陆系统</h3><p>待开发</p>
-<h3 id="角色信息系统"><a href="#角色信息系统" class="headerlink" title="角色信息系统"></a>角色信息系统</h3><p>待开发</p>
-<h3 id="场景及角色移动系统"><a href="#场景及角色移动系统" class="headerlink" title="场景及角色移动系统"></a>场景及角色移动系统</h3><p>玩家可以前后左右移动，移动时遇到迷宫边界或者障碍则进行提示。<br>遇到其他玩家，这提示相同的双方的身份。<br>实时刷新迷宫中角色、障碍物、NPC、怪物、建筑的位置。</p>
-<h2 id="战斗系统"><a href="#战斗系统" class="headerlink" title="战斗系统"></a>战斗系统</h2><p>待开发</p>
-<hr>
-<h2 id="总体设计"><a href="#总体设计" class="headerlink" title="总体设计"></a>总体设计</h2><h3 id="数据库设计"><a href="#数据库设计" class="headerlink" title="数据库设计"></a>数据库设计</h3><h3 id="数据库设计-1"><a href="#数据库设计-1" class="headerlink" title="数据库设计"></a>数据库设计</h3><table>
-<thead>
-<tr>
-<th>表名</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h2 id="模块设计"><a href="#模块设计" class="headerlink" title="模块设计"></a>模块设计</h2><h3 id="场景及角色移动"><a href="#场景及角色移动" class="headerlink" title="场景及角色移动"></a>场景及角色移动</h3><p>用枚举数组来模拟游戏地图，每个枚举对象代表游戏地图的一个点的状态，如道路、山岭、河流、旅馆。</p>
-<h2 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h2><h2 id="客户端代码"><a href="#客户端代码" class="headerlink" title="客户端代码"></a>客户端代码</h2><pre><code class="java">
-
-</code></pre>
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/netty/">netty</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏开发/">游戏开发</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/09/11/游戏开发-基于netty的文字冒险游戏-1/" data-id="cjm8x69wn0022agvtfc555kps" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="游戏开发-基于netty的文字冒险游戏-1" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -885,6 +875,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2019/01/14/2019-1-14-开发笔记/">2019-1-14-开发笔记 Executors.newSingleThreadScheduledExecutor</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/20/Netty消息分发和业务逻辑分离/">Netty消息分发和业务逻辑分离</a>
+          </li>
+        
+          <li>
             <a href="/2018/09/19/Netty, SpringBoot, MyBatis搭建游戏服务器 - 1/">Netty, SpringBoot, MyBatis搭建游戏服务器 - 1</a>
           </li>
         
@@ -896,14 +894,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2018/09/11/游戏开发-基于netty的文字冒险游戏-1/">游戏开发-基于netty的冒险游戏-1</a>
           </li>
         
-          <li>
-            <a href="/2018/08/28/零碎的知识点-6/">零碎的知识点-6</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/28/零碎的知识点-5/">零碎的知识点-5</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -913,7 +903,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">26</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -922,7 +912,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
@@ -943,7 +933,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2018 WeiJian Qian
+      &copy; 2019 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
