@@ -83,6 +83,90 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-《Java并发编程实战》-8" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/16/《Java并发编程实战》-8/" class="article-date">
+  <time datetime="2018-08-16T12:44:39.282Z" itemprop="datePublished">2018-08-16</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/16/《Java并发编程实战》-8/">《Java并发编程实战》-8</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="图形用户界面应用程序"><a href="#图形用户界面应用程序" class="headerlink" title="图形用户界面应用程序"></a>图形用户界面应用程序</h1><hr>
+<h2 id="9-1-为什么GUI是单线程的"><a href="#9-1-为什么GUI是单线程的" class="headerlink" title="9.1 为什么GUI是单线程的"></a>9.1 为什么GUI是单线程的</h2><h3 id="9-1-1-串行时间处理"><a href="#9-1-1-串行时间处理" class="headerlink" title="9.1.1 串行时间处理"></a>9.1.1 串行时间处理</h3><h3 id="9-1。2-Swing中的单线程封闭机制"><a href="#9-1。2-Swing中的单线程封闭机制" class="headerlink" title="9.1。2 Swing中的单线程封闭机制"></a>9.1。2 Swing中的单线程封闭机制</h3><blockquote>
+<p>Swing的单线程规则是：Swing中的组件以及模型只能在这个事件分发线程中进行创建、修改以及查询。</p>
+</blockquote>
+<h3 id="9-2-短时间的GUI任务"><a href="#9-2-短时间的GUI任务" class="headerlink" title="9.2 短时间的GUI任务"></a>9.2 短时间的GUI任务</h3><p>模型对象与视图对象的控制流</p>
+<pre><code class="flow">st=&gt;start: EDT
+op1=&gt;operation: 鼠标点击
+op2=&gt;operation: 动作事件
+op3=&gt;operation: 动作监听者
+op4=&gt;operation: 更新表格模型
+op5=&gt;operation: 表格修改事件
+op6=&gt;operation: 表格监听者
+op7=&gt;operation: 更新表格视图
+
+st-&gt;op1-&gt;op2-&gt;op3-&gt;op4-&gt;op5-&gt;op6-&gt;op7
+
+</code></pre>
+<h2 id="9-3-长时间的GUI任务"><a href="#9-3-长时间的GUI任务" class="headerlink" title="9.3 长时间的GUI任务"></a>9.3 长时间的GUI任务</h2><h3 id="9-3-1-取消"><a href="#9-3-1-取消" class="headerlink" title="9.3.1 取消"></a>9.3.1 取消</h3><h3 id="9-3-2-进度标识和完成标识"><a href="#9-3-2-进度标识和完成标识" class="headerlink" title="9.3.2 进度标识和完成标识"></a>9.3.2 进度标识和完成标识</h3><h3 id="9-3-3-SwingWorker"><a href="#9-3-3-SwingWorker" class="headerlink" title="9.3.3 SwingWorker"></a>9.3.3 SwingWorker</h3><h2 id="9-4-共享数据模型"><a href="#9-4-共享数据模型" class="headerlink" title="9.4 共享数据模型"></a>9.4 共享数据模型</h2><h3 id="9-4-1-线程安全的数据模型"><a href="#9-4-1-线程安全的数据模型" class="headerlink" title="9.4.1 线程安全的数据模型"></a>9.4.1 线程安全的数据模型</h3><h3 id="9-4-2-分解数据模型"><a href="#9-4-2-分解数据模型" class="headerlink" title="9.4.2 分解数据模型"></a>9.4.2 分解数据模型</h3><blockquote>
+<p>如果体格数据模型必须被多个线程共享，而且由于阻塞，一致性或复杂度等原因而无法实现一个线程安全的模型时，可以考虑使用分解模型设计。</p>
+</blockquote>
+<h2 id="9-5-其他形式的单线程子系统"><a href="#9-5-其他形式的单线程子系统" class="headerlink" title="9.5 其他形式的单线程子系统"></a>9.5 其他形式的单线程子系统</h2><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>所有GUI框架基本上都实现为单线程的子系统，其中所有与表现相关的代码都作为任务在事件线程中运行。由于只有一个事件线程，因此运行时间较长的任务会降低GUI程序的影响性，所以应该放在后台线程中运行。在一些辅助类(例如SwingWorkrt以及在本章中构建的BackgroundTask)中提供了对取消、进度指示以及完成指示的支持，因此对于执行时间较长的任务来说，无论在任务中包含了GUI组件还是非GUI组件，在开发时可以得到简化。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/16/《Java并发编程实战》-8/" data-id="cjs7cbdb400250kvtzqk2v8fp" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-8" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
     <article id="post-《Java并发编程实战》-7" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/08/16/《Java并发编程实战》-7/" class="article-date">
@@ -167,7 +251,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/16/《Java并发编程实战》-7/" data-id="cjqw29et3002gacvtzi5se1jn" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/16/《Java并发编程实战》-7/" data-id="cjs7cbdat001p0kvtyel8m8g5" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -330,7 +414,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/15/《Java并发编程实战》-6/" data-id="cjqw29esf001aacvttydo1x5c" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/15/《Java并发编程实战》-6/" data-id="cjs7cbdav001s0kvtqitosyat" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -339,505 +423,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 <!--PC和WAP自适应版-->
 <div id="SOHUCS" sid="《Java并发编程实战》-6" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-零碎的知识点-4" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/14/零碎的知识点-4/" class="article-date">
-  <time datetime="2018-08-14T09:27:56.528Z" itemprop="datePublished">2018-08-14</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/零碎的知识点/">零碎的知识点</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/14/零碎的知识点-4/">零碎的知识点-4</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="零碎的知识点-4"><a href="#零碎的知识点-4" class="headerlink" title="零碎的知识点-4"></a>零碎的知识点-4</h1><hr>
-<h2 id="select、poll、epoll之间的区别总结"><a href="#select、poll、epoll之间的区别总结" class="headerlink" title="select、poll、epoll之间的区别总结"></a>select、poll、epoll之间的区别总结</h2><p>select、poll、epoll都是IO多路复用的机制。I/O多路复用就通过一种机制，可以监视多个描述符，一旦某个描述符就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作。但select，poll，epoll本质上都是同步I/O，因为他们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的，而异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间。</p>
-<h3 id="select的几大缺点："><a href="#select的几大缺点：" class="headerlink" title="select的几大缺点："></a>select的几大缺点：</h3><ol>
-<li>每次调用select，都需要把fd集合从用户态拷贝到内核态，这个开销在fd很多时会很大</li>
-<li>同时每次调用select都需要在内核遍历传递进来的所有fd，这个开销在fd很多时也很大</li>
-<li>select支持的文件描述符数量太小了，默认是1024</li>
-</ol>
-<h3 id="poll实现"><a href="#poll实现" class="headerlink" title="poll实现"></a>poll实现</h3><p>poll的实现和select非常相似，只是描述fd集合的方式不同，poll使用pollfd结构而不是select的fd_set结构，相比select模型，poll使用链表保存文件描述符，因此没有了监视文件数量的限制，但其他三个缺点依然存在。</p>
-<h3 id="epoll-事件驱动"><a href="#epoll-事件驱动" class="headerlink" title="epoll (事件驱动)"></a>epoll (事件驱动)</h3><p>epoll既然是对select和poll的改进，就应该能避免上述的三个缺点。那epoll都是怎么解决的呢？在此之前，我们先看一下epoll和select和poll的调用接口上的不同，select和poll都只提供了一个函数——select或者poll函数。而epoll提供了三个函数，epoll_create,epoll_ctl和epoll_wait，epoll_create是创建一个epoll句柄；epoll_ctl是注册要监听的事件类型；epoll_wait则是等待事件的产生。</p>
-<p>总结：</p>
-<ol>
-<li><p>select，poll实现需要自己不断轮询所有fd集合，直到设备就绪，期间可能要睡眠和唤醒多次交替。而epoll其实也需要调用 epoll_wait不断轮询就绪链表，期间也可能多次睡眠和唤醒交替，但是它是设备就绪时，调用回调函数，把就绪fd放入就绪链表中，并唤醒在 epoll_wait中进入睡眠的进程。虽然都要睡眠和交替，但是select和poll在“醒着”的时候要遍历整个fd集合，而epoll在“醒着”的 时候只要判断一下就绪链表是否为空就行了，这节省了大量的CPU时间。这就是回调机制带来的性能提升。</p>
-</li>
-<li><p>select，poll每次调用都要把fd集合从用户态往内核态拷贝一次，并且要把current往设备等待队列中挂一次，而epoll只要 一次拷贝，而且把current往等待队列上挂也只挂一次（在epoll_wait的开始，注意这里的等待队列并不是设备等待队列，只是一个epoll内 部定义的等待队列）。这也能节省不少的开销。</p>
-</li>
-</ol>
-<hr>
-<h2 id="Top-K-问题"><a href="#Top-K-问题" class="headerlink" title="Top K 问题"></a>Top K 问题</h2><h3 id="堆排解法"><a href="#堆排解法" class="headerlink" title="堆排解法"></a>堆排解法</h3><p>堆排序利用的大(小)堆顶所有节点元素都比父节点小(大)的性质来实现的。<br>既然一个大顶堆的顶是最大的元素，那我们要找最小的K个元素，是不是可以先建立一个包含K个元素的堆，然后遍历集合，如果集合的元素比堆顶元素小（说明它目前应该在K个最小之列），那就用该元素来替换堆顶元素，同时维护该堆的性质，那在遍历结束的时候，堆中包含的K个元素是不是就是我们要找的最小的K个元素？</p>
-<h4 id="实现："><a href="#实现：" class="headerlink" title="实现："></a>实现：</h4><p>在堆排的基础上，稍作了修改，buildHeap和heapify函数都是一样的实现。<br>速记口诀：最小的K个用最大堆，最大的K个用最小堆。</p>
-<pre><code class="java">public class TopK {
-
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-        int[] a = { 1, 17, 3, 4, 5, 6, 7, 16, 9, 10, 11, 12, 13, 14, 15, 8 };
-        int[] b = topK(a, 4);
-        for (int i = 0; i &lt; b.length; i++) {
-            System.out.print(b[i] + &quot;, &quot;);
-        }
-    }
-
-    public static void heapify(int[] array, int index, int length) {
-        int left = index * 2 + 1;
-        int right = index * 2 + 2;
-        int largest = index;
-        if (left &lt; length &amp;&amp; array[left] &gt; array[index]) {
-            largest = left;
-        }
-        if (right &lt; length &amp;&amp; array[right] &gt; array[largest]) {
-            largest = right;
-        }
-        if (index != largest) {
-            swap(array, largest, index);
-            heapify(array, largest, length);
-        }
-    }
-
-    public static void swap(int[] array, int a, int b) {
-        int temp = array[a];
-        array[a] = array[b];
-        array[b] = temp;
-    }
-
-    public static void buildHeap(int[] array) {
-        int length = array.length;
-        for (int i = length / 2 - 1; i &gt;= 0; i--) {
-            heapify(array, i, length);
-        }
-    }
-
-    public static void setTop(int[] array, int top) {
-        array[0] = top;
-        heapify(array, 0, array.length);
-    }
-
-    public static int[] topK(int[] array, int k) {
-        int[] top = new int[k];
-        for (int i = 0; i &lt; k; i++) {
-            top[i] = array[i];
-        }
-        //先建堆，然后依次比较剩余元素与堆顶元素的大小，比堆顶小的， 说明它应该在堆中出现，则用它来替换掉堆顶元素，然后沉降。
-        buildHeap(top);
-        for (int j = k; j &lt; array.length; j++) {
-            int temp = top[0];
-            if (array[j] &lt; temp) {
-                setTop(top, array[j]);
-            }
-        }
-        return top;
-    }
-}
-</code></pre>
-<h3 id="快排解法"><a href="#快排解法" class="headerlink" title="快排解法"></a>快排解法</h3><p>用快排的思想来解Top K问题，必然要运用到”分治”结果的使用上。我们知道，分治函数会返回一个position，在position左边的数都比第position个数小，在position右边的数都比第position大。我们不妨不断调用分治函数，直到它输出的position = K-1，此时position前面的K个数（0到K-1）就是要找的前K个数。</p>
-<h4 id="实现：-1"><a href="#实现：-1" class="headerlink" title="实现："></a>实现：</h4><p>“分治”还是原来的那个分治，关键是getTopK的逻辑</p>
-<pre><code class="java">public class TopK {
-
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-        int[] array = { 9, 3, 1, 10, 5, 7, 6, 2, 8, 0 };
-        getTopK(array, 4);
-        for (int i = 0; i &lt; array.length; i++) {
-            System.out.print(array[i] + &quot;, &quot;);
-        }
-    }
-
-    // 分治
-    public static int partition(int[] array, int low, int high) {
-        if (array != null &amp;&amp; low &lt; high) {
-            int flag = array[low];
-            while (low &lt; high) {
-                while (low &lt; high &amp;&amp; array[high] &gt;= flag) {
-                    high--;
-                }
-                array[low] = array[high];
-                while (low &lt; high &amp;&amp; array[low] &lt;= flag) {
-                    low++;
-                }
-                array[high] = array[low];
-            }
-            array[low] = flag;
-            return low;
-        }
-        return 0;
-    }
-
-    public static void getTopK(int[] array, int k) {
-        if (array != null &amp;&amp; array.length &gt; 0) {
-            int low = 0;
-            int high = array.length - 1;
-            int index = partition(array, low, high);
-            //不断调整分治的位置，直到position = k-1
-            while (index != k - 1) {
-                //大了，往前调整
-                if (index &gt; k - 1) {
-                    high = index - 1;
-                    index = partition(array, low, high);
-                }
-                //小了，往后调整
-                if (index &lt; k - 1) {
-                    low = index + 1;
-                    index = partition(array, low, high);
-                }
-            }
-        }
-    }
-}
-</code></pre>
-<h2 id="CAP-理论-、BASE思想-最终一致性和五分钟原则"><a href="#CAP-理论-、BASE思想-最终一致性和五分钟原则" class="headerlink" title="CAP 理论 、BASE思想, 最终一致性和五分钟原则"></a>CAP 理论 、BASE思想, 最终一致性和五分钟原则</h2><h3 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h3><ul>
-<li>C : Consisitency 一致性</li>
-<li>A: Availablity 可用性（指得事快速获取数据）</li>
-<li>P: Tolerance of network Partition 分区容忍性（分布式）</li>
-</ul>
-<p>定理：任何分布式系统只可同时满足二点，没法三者兼顾。三者只能选其二。</p>
-<ul>
-<li>CA: 传统关系数据库</li>
-<li>AP：key-value 数据库</li>
-</ul>
-<h3 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h3><p>关系数据库的ACID模型拥有 高一致性 + 可用性 很难进行分区：</p>
-<ul>
-<li>Atomicity原子性：一个事务中所有操作都必须全部完成，要么全部不完成。</li>
-<li>Consistency一致性: 在事务开始或结束时，数据库应该在一致状态。</li>
-<li>Isolation隔离层:  事务将假定只有它自己在操作数据库，彼此不知晓。</li>
-<li>Durability:  一旦事务完成，就不能返回。</li>
-</ul>
-<p>跨数据库两段提交事务：2PC (two-phase commit)， 2PC is the anti-scalability pattern (Pat Helland) 是反可伸缩模式的，JavaEE中的JTA事务可以支持2PC。因为2PC是反模式，尽量不要使用2PC，使用BASE来回避。</p>
-<h3 id="BASE思想"><a href="#BASE思想" class="headerlink" title="BASE思想"></a>BASE思想</h3><p>BASE模型反ACID模型，完全不同ACID模型，牺牲高一致性，获得可用性或可靠性：</p>
-<ul>
-<li>Basically Available基本可用。支持分区失败(e.g. sharding碎片划分数据库)</li>
-<li><strong>Soft state</strong>软状态 状态可以有一段时间不同步，异步。</li>
-<li>E</li>
-<li>ventually consistent最终一致，最终数据是一致的就可以了，而不是时时高一致。</li>
-</ul>
-<h3 id="最终一致性"><a href="#最终一致性" class="headerlink" title="最终一致性"></a>最终一致性</h3><blockquote>
-<p>过程松，结果紧，最终结果必须保持一致性 。（DNS系统）</p>
-</blockquote>
-<ul>
-<li>强一致性 任何时刻，所有节点中的数据是一样的。用一时间点，你在节点A中获取到key1的值与节点B中获取到key1的值应该都是一样的。</li>
-<li>弱一致性 包含多种不同的实现，目前分布式系统中广泛实现的是最终一致性。（其他还有因果一致性）</li>
-</ul>
-<h3 id="I-O的五分钟法则"><a href="#I-O的五分钟法则" class="headerlink" title="I/O的五分钟法则"></a>I/O的五分钟法则</h3><p>如果一个数据的访问周期在5分钟以内则存放在内存中，否则应该存放在硬盘中。</p>
-<hr>
-<h2 id="Spring-生命周期"><a href="#Spring-生命周期" class="headerlink" title="Spring 生命周期"></a>Spring 生命周期</h2><p>对于普通的Java对象，当new的时候创建对象，当它没有任何引用的时候被垃圾回收机制回收。而由Spring IoC容器托管的对象，它们的生命周期完全由容器控制。Spring中每个Bean的生命周期如下：<br><img src="https://img-blog.csdn.net/20180816100931434?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="Spring生命周期"></p>
-<ol>
-<li>实例化Bean<br>对于BeanFactory容器，当客户向容器请求一个尚未初始化的bean时，或初始化bean的时候需要注入另一个尚未初始化的依赖时，容器就会调用createBean进行实例化。 对于ApplicationContext容器，当容器启动结束后，便实例化所有的bean。 容器通过获取BeanDefinition对象中的信息进行实例化。并且这一步仅仅是简单的实例化，并未进行依赖注入。 实例化对象被包装在BeanWrapper对象中，BeanWrapper提供了设置对象属性的接口，从而避免了使用反射机制设置属性。</li>
-<li>设置对象属性（依赖注入）<br>实例化后的对象被封装在BeanWrapper对象中，并且此时对象仍然是一个原生的状态，并没有进行依赖注入。 紧接着，Spring根据BeanDefinition中的信息进行依赖注入。 并且通过BeanWrapper提供的设置属性的接口完成依赖注入。</li>
-<li>注入Aware接口<br>紧接着，Spring会检测该对象是否实现了xxxAware接口，并将相关的xxxAware实例注入给bean,包括包括了BeanNameAware、BeanFactoryAware，ApplicationContextAware接口。</li>
-<li>BeanPostProcessor<br>当经过上述几个步骤后，bean对象已经被正确构造，但如果你想要对象被使用前再进行一些自定义的处理，就可以通过BeanPostProcessor接口实现。 该接口提供了两个函数：postProcessBeforeInitialzation( Object bean, String beanName ) 当前正在初始化的bean对象会被传递进来，我们就可以对这个bean作任何处理。 这个函数会先于InitialzationBean执行，因此称为前置处理。 所有Aware接口的注入就是在这一步完成的。postProcessAfterInitialzation( Object bean, String beanName ) 当前正在初始化的bean对象会被传递进来，我们就可以对这个bean作任何处理。 这个函数会在InitialzationBean完成后执行，因此称为后置处理。</li>
-<li>InitializingBean与init-method<br>当BeanPostProcessor的前置处理完成后就会进入本阶段。 InitializingBean接口只有一个函数：afterPropertiesSet()这一阶段也可以在bean正式构造完成前增加我们自定义的逻辑，但它与前置处理不同，由于该函数并不会把当前bean对象传进来，因此在这一步没办法处理对象本身，只能增加一些额外的逻辑。 若要使用它，我们需要让bean实现该接口，并把要增加的逻辑写在该函数中。然后Spring会在前置处理完成后检测当前bean是否实现了该接口，并执行afterPropertiesSet函数。当然，Spring为了降低对客户代码的侵入性，给bean的配置提供了init-method属性，该属性指定了在这一阶段需要执行的函数名。Spring便会在初始化阶段执行我们设置的函数。init-method本质上仍然使用了InitializingBean接口。</li>
-<li>DisposableBean<br>和destroy-method和init-method一样，通过给destroy-method指定函数，就可以在bean销毁前执行指定的逻辑。</li>
-</ol>
-<hr>
-<h2 id="Spring容器中Bean的作用域"><a href="#Spring容器中Bean的作用域" class="headerlink" title="Spring容器中Bean的作用域"></a>Spring容器中Bean的作用域</h2><p>当通过Spring容器创建一个Bean实例时，不仅可以完成Bean实例的实例化，还可以为Bean指定特定的作用域。Spring支持如下5种作用域：</p>
-<ul>
-<li><strong>singleton</strong>：单例模式，在整个Spring IoC容器中，使用singleton定义的Bean将只有一个实例</li>
-<li><strong>prototype</strong>：原型模式，每次通过容器的getBean方法获取prototype定义的Bean时，都将产生一个新的Bean实例</li>
-<li><strong>request</strong>：对于每次HTTP请求，使用request定义的Bean都将产生一个新实例，即每次HTTP请求将会产生不同的Bean实例。只有在Web应用中使用Spring时，该作用域才有效</li>
-<li><strong>session</strong>：对于每次HTTP Session，使用session定义的Bean豆浆产生一个新实例。同样只有在Web应用中使用Spring时，该作用域才有效</li>
-<li><strong>globalsession</strong>：每个全局的HTTP Session，使用session定义的Bean都将产生一个新实例。典型情况下，仅在使用portlet context的时候有效。同样只有在Web应用中使用Spring时，该作用域才有效</li>
-</ul>
-<p>其中比较常用的是singleton和prototype两种作用域。<br>对于singleton作用域的Bean，每次请求该Bean都将获得相同的实例。容器负责跟踪Bean实例的状态，负责维护Bean实例的生命周期行为；<br>如果一个Bean被设置成prototype作用域，程序每次请求该id的Bean，Spring都会新建一个Bean实例，然后返回给程序。在这种情况下，Spring容器仅仅使用new 关键字创建Bean实例，一旦创建成功，容器不在跟踪实例，也不会维护Bean实例的状态。</p>
-<p>如果不指定Bean的作用域，Spring默认使用singleton作用域。</p>
-<hr>
-<h2 id="SpringMVC执行流程"><a href="#SpringMVC执行流程" class="headerlink" title="SpringMVC执行流程"></a>SpringMVC执行流程</h2><h3 id="组件介绍："><a href="#组件介绍：" class="headerlink" title="组件介绍："></a>组件介绍：</h3><ul>
-<li>DispatcherServlet<br>前端控制器，作用就是接收请求，响应结果，相当于转发器 </li>
-<li>HandleMapping<br>处理器映射器，作用就是根据请求的URL查找Handler </li>
-<li>HandlerAdapter<br>处理器适配器，作用就是按照特定的规则去执行Handler，也就是开发Handler时需要满足HandlerAdapter的规则，这样HandlerAdapter才能执行Handler。 </li>
-<li>View resolver<br>视图解析器，作用根据逻辑视图解析成真正的视图（view） </li>
-<li>view<br>视图，是一个接口，其实现类能支持不同的view类型，jsp、freemarker、Excel等 </li>
-</ul>
-<p>执行过程文字描述 </p>
-<ol>
-<li><p>用户发起请求到前端控制器<code>DispatcherServlet</code></p>
-</li>
-<li><p><code>DispatcherServlet</code>请求处理器映射器<code>HandlerMapping</code>查找Handler<br>可以是根据xml查找，也可以是根据注解查找 </p>
-</li>
-<li><p><code>HandlerMapping</code>向<code>DispatcherServlet</code>返回一个执行链<code>HandlerExecutionChain</code>，包含<code>HandlerInterception</code>和<strong><code>Handler</code></strong></p>
-</li>
-<li><p><code>HandlerMapping</code>调用处理器适配器<code>HandlerAdapter</code>去执行Handler </p>
-</li>
-<li><p>处理器适配器去执行<code>Handler</code></p>
-</li>
-<li><p>Handler执行完给处理器适配器返回<code>ModelAndView</code><br><code>ModelAndView</code>是SpringMVC框架的一个底层对象，包括Model和View </p>
-</li>
-<li><p>处理器适配器给<code>DispatcherServlet</code>返回<code>ModelAndView</code></p>
-</li>
-<li><p><code>DispatcherServlet</code>请求视图解析器<code>View resolver</code>进行视图解析<br>根据逻辑视图解析成真正的物理视图（jsp等） </p>
-</li>
-<li><p>视图解析器向<code>DispatcherServlet</code>返回view </p>
-</li>
-<li><p><code>DispatcherServlet</code>进行视图渲染 </p>
-</li>
-<li><p><code>DispatcherServlet</code>向用户响应结果</p>
-</li>
-</ol>
-<p><img src="https://img-blog.csdn.net/20180816120507132?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="SpringMVC执行流程"></p>
-<hr>
-<h2 id="Java内存模型与共享变量可见性"><a href="#Java内存模型与共享变量可见性" class="headerlink" title="Java内存模型与共享变量可见性"></a>Java内存模型与共享变量可见性</h2><h3 id="Java内存模型-JMM"><a href="#Java内存模型-JMM" class="headerlink" title="Java内存模型(JMM)"></a>Java内存模型(JMM)</h3><p>Java内存模型的主要目标：定义在虚拟机中将<strong>变量</strong>储存到内存和从内存中取出变量这样的底层细节。<br>注意：上边的变量指的是共享变量(实例字段、静态字段、数组对象元素)，不包括线程私有变量(局部变量、方法参数)，因为私有变量不会存在竞争关系。</p>
-<p><img src="https://img-blog.csdn.net/20180816142838887?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="JMM"></p>
-<p>说明：</p>
-<ul>
-<li>所有共享变量存于主内存</li>
-<li>每一条线程都有自己的工作内存（就是上图所说的本地内存）</li>
-<li>工作内存中保存了被该线程使用到的变量的主内存副本</li>
-</ul>
-<p>注意：</p>
-<ul>
-<li>线程对变量的操作都要在工作内存中进行，不能直接操作主内存</li>
-<li>不同的线程之间无法直接访问对方的工作内存中的变量</li>
-<li>不同线程之间的变量的传递必须通过主内存</li>
-</ul>
-<h3 id="8条内存屏障指令"><a href="#8条内存屏障指令" class="headerlink" title="8条内存屏障指令"></a>8条内存屏障指令</h3><ul>
-<li>lock(锁定): 作用于主内存，把一个变量标识为一条线程独占的状态</li>
-<li>unlock(解锁): 作用于主内存，把一个处于锁定的变量解锁。</li>
-<li>use(使用): 作用于工作内存的变量，把工作内存中一个变量的值传递给执行引擎，每当虚拟机遇到一个需要使用到变量的值的字节码指令时将会执行这个操作。</li>
-<li>assign(赋值): 作用于工作内存的变量，它把一个从执行引擎接收到的值赋给工作内存的变量，每当虚拟机遇到一个变量复制的字节码指令时执行只个操作。</li>
-</ul>
-<p>下表的四条是与volatile实现内存的可见性直接相关的四条(store、write、read、load)</p>
-<ul>
-<li>store: 把工作内存中的变量的值传到主内存变量中。</li>
-<li>write: 把store操作从工作内存中得到的变量放到主内存的变量中</li>
-<li>read: 把一个变量的值从主内存中传输到线程的工作内存</li>
-<li>load: 把read操作从主内存中获取到的变量放到工作内存的变量中去</li>
-</ul>
-<p>注意：</p>
-<ul>
-<li>一个变量在同一时刻只允许一条线程对其进行lock操作</li>
-<li>lock操作会将该变量在所有线程工作内存中的变量副本清空，否则就起不到锁的作用了</li>
-<li>lock操作可被同一条线程多次进行，lock几次，就要unlock几次（可重入锁）</li>
-<li>unlock之前必须先执行store-write</li>
-<li>store-write必须成对出现（工作内存–&gt;主内存）</li>
-<li>read-load必须成对出现（主内存–&gt;工作内存）</li>
-</ul>
-<h3 id="内存访问重排序与Java内存模型"><a href="#内存访问重排序与Java内存模型" class="headerlink" title="内存访问重排序与Java内存模型"></a>内存访问重排序与Java内存模型</h3><p>根据Java内存模型中的规定，可以总结出以下几条happens-before规则。Happens-before的前后两个操作不会被重排序且后者对前者的内存可见。</p>
-<ul>
-<li>程序次序法则：线程中的每个动作A都happens-before于该线程中的每一个动作B，其中，在程序中，所有的动作B都能出现在A之后。</li>
-<li>监视器锁法则：对一个监视器锁的解锁 happens-before于每一个后续对同一监视器锁的加锁。</li>
-<li>volatile变量法则：对volatile域的写入操作happens-before于每一个后续对同一个域的读写操作。</li>
-<li>线程启动法则：在一个线程里，对Thread.start的调用会happens-before于每个启动线程的动作。</li>
-<li>线程终结法则：线程中的任何动作都happens-before于其他线程检测到这个线程已经终结、或者从Thread.join调用中成功返回，或Thread.isAlive返回false。</li>
-<li>中断法则：一个线程调用另一个线程的interrupt happens-before于被中断的线程发现中断。</li>
-<li>终结法则：一个对象的构造函数的结束happens-before于这个对象finalizer的开始。</li>
-<li>传递性：如果A happens-before于B，且B happens-before于C，则A happens-before于C</li>
-</ul>
-<h3 id="实现内存可见性："><a href="#实现内存可见性：" class="headerlink" title="实现内存可见性："></a>实现内存可见性：</h3><p>要实现共享变量的可见性，必须保证两点</p>
-<ul>
-<li>线程修改后的共享变量值能够及时从工作内存中刷新到主内存中</li>
-<li><p>其他线程能够及时把共享变量的最新值从主内存更新到自己的工作内存中<br>*</p>
-<h4 id="synchronized实现可见性"><a href="#synchronized实现可见性" class="headerlink" title="synchronized实现可见性"></a>synchronized实现可见性</h4><p>synchronized能够实现：</p>
-<ul>
-<li>原子性（同步）</li>
-<li>可见性</li>
-</ul>
-</li>
-</ul>
-<p>JMM关于synchronized的两条规定：</p>
-<ul>
-<li>线程解锁前，必须把共享变量的最新值刷新到主内存中</li>
-<li>线程加锁时，将清空工作内存中共享变量的值，从而使用共享变量时需要从主存中重新读取最新的值</li>
-</ul>
-<p>线程解锁前对共享变量的修改在下次加锁时对其他线程可见</p>
-<p>线程执行互斥代码的过程</p>
-<ol>
-<li>获得互斥锁</li>
-<li>清空工作内存</li>
-<li>从主内存拷贝变量的最新副本到工作内存</li>
-<li>执行代码</li>
-<li>将更改后的共享变量的值刷新到主内存中</li>
-<li>释放互斥锁</li>
-</ol>
-<h4 id="volatile实现可见性"><a href="#volatile实现可见性" class="headerlink" title="volatile实现可见性"></a>volatile实现可见性</h4><p>volatile关键字：</p>
-<ul>
-<li>能够保证volatile变量的可见性</li>
-<li>不能保证volatile变量复合操作的原子</li>
-</ul>
-<p>volatile如何实现内存的可见性 ：</p>
-<p>深入来说：通过加入<strong>内存屏障</strong>和<strong>禁止重排序优化</strong>来实现的</p>
-<ul>
-<li>在每个volatile写操作前插入StoreStore屏障，在写操作后插入StoreLoad屏障<ul>
-<li>在每个volatile读操作前插入LoadLoad屏障，在读操作后插入LoadStore屏障</li>
-</ul>
-</li>
-</ul>
-<p>通俗地讲：volatile变量在每次被线程访问时，都强迫从主内存中重读该变量的值，而当该变量发生变化时，又会强迫将最新的值刷新到主内存。这样任何时刻，不同的线程总能看到该变量的最新值。</p>
-<p>线程写volatile变量的过程：</p>
-<ol>
-<li>改变线程工作内存中volatile变量副本的值</li>
-<li>将改变后的副本的值从工作内存刷新到主内存</li>
-</ol>
-<p>线程读volatile变量的过程：</p>
-<ol>
-<li>从主内存中读取volatile变量的最新值到线程的工作内存中</li>
-<li>从工作内存中读取volatile变量的副本</li>
-</ol>
-<p>synchronized vs volatile</p>
-<ul>
-<li>volatile不需要加锁，比synchronized更轻量级，不会阻塞线程</li>
-<li>synchronized既能保证可见性，又能保证原子性，而volatile只能保证可见性，无法保证原子性</li>
-</ul>
-<hr>
-<h2 id="可作为GC-Root的对象"><a href="#可作为GC-Root的对象" class="headerlink" title="可作为GC Root的对象"></a>可作为GC Root的对象</h2><p>在Java虚拟机中判断一个对象是否可以被回收，有一种做法叫<strong>可达性分析</strong>算法，也就是从GC Root到各个对象，如果GC Root到某个对象还有可达的引用链，那么这个对象就还不能被回收，否则就等着被收割吧。</p>
-<p>所谓“GC roots”，或者说tracing GC的“根集合”，就是<strong>一组必须活跃的引用</strong>。<br>例如说，这些引用可能包括：</p>
-<ul>
-<li>所有Java线程当前活跃的栈帧里指向GC堆里的对象的引用；换句话说，当前所有正在被调用的方法的引用类型的<strong>参数</strong>/<strong>局部变量</strong>/<strong>临时值</strong>。</li>
-<li>VM的一些静态数据结构里指向GC堆里的对象的引用，例如说HotSpot VM里的Universe里有很多这样的引用。</li>
-<li>JNI handles，包括global handles和local handles</li>
-<li>（看情况）所有当前被加载的Java类</li>
-<li>（看情况）Java类的引用类型静态变量</li>
-<li>（看情况）Java类的运行时常量池里的引用类型常量（String或Class类型）</li>
-<li>（看情况）String常量池（StringTable）里的引用</li>
-</ul>
-<p>Tracing GC的根本思路就是：给定一个集合的引用作为根出发，通过引用关系遍历对象图，能被遍历到的（可到达的）对象就被判定为存活，其余对象（也就是没有被遍历到的）就自然被判定为死亡。注意再注意：tracing GC的本质是通过找出所有活对象来把其余空间认定为“无用”，而不是找出所有死掉的对象并回收它们占用的空间。</p>
-<hr>
-<h2 id="幂等性"><a href="#幂等性" class="headerlink" title="幂等性"></a>幂等性</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>幂等性原本是数学上的概念，即使公式：<code>f(x)=f(f(x))</code>  能够成立的数学性质。用在编程领域，则意为对同一个系统，使用同样的条件，一次请求和重复的多次请求对系统资源的影响是一致的。</p>
-<h3 id="幂等的常用思路"><a href="#幂等的常用思路" class="headerlink" title="幂等的常用思路"></a>幂等的常用思路</h3><h4 id="1-MVCC："><a href="#1-MVCC：" class="headerlink" title="1. MVCC："></a>1. MVCC：</h4><p>多版本并发控制，乐观锁的一种实现，在数据更新时需要去比较持有数据的版本号，版本号不一致的操作无法成功。例如博客点赞次数自动+1的接口：</p>
-<pre><code class="java">public boolean addCount(Long id, Long version);
-</code></pre>
-<pre><code class="sql">UPDATE blogTable SET count=count+1,version=version+1 WHERE id=321 AND version=123
-</code></pre>
-<p>每一个version只有一次执行成功的机会，一旦失败必须重新获取。</p>
-<h4 id="2-去重表"><a href="#2-去重表" class="headerlink" title="2. 去重表"></a>2. 去重表</h4><p>利用数据库表单的特性来实现幂等，常用的一个思路是在表上构建唯一性索引，保证某一类数据一旦执行完毕，后续同样的请求再也无法成功写入。</p>
-<p>例子还是上述的博客点赞问题，要想防止一个人重复点赞，可以设计一张表，将博客id与用户id绑定建立唯一索引，每当用户点赞时就往表中写入一条数据，这样重复点赞的数据就无法写入。</p>
-<h4 id="3-TOKEN机制："><a href="#3-TOKEN机制：" class="headerlink" title="3. TOKEN机制："></a>3. TOKEN机制：</h4><p>这种机制就比较重要了，适用范围较广，有多种不同的实现方式。其核心思想是为每一次操作生成一个唯一性的凭证，也就是token。<strong>一个token在操作的每一个阶段只有一次执行权</strong>，一旦执行成功则保存执行结果。对重复的请求，返回同一个结果。</p>
-<p>以电商平台为例子，电商平台上的订单id就是最适合的token。当用户下单时，会经历多个环节，比如生成订单，减库存，减优惠券等等。</p>
-<p>每一个环节执行时都先检测一下该订单id是否已经执行过这一步骤，对未执行的请求，执行操作并缓存结果，而对已经执行过的id，则直接返回之前的执行结果，不做任何操作。这样可以在最大程度上避免操作的重复执行问题，缓存起来的执行结果也能用于事务的控制等。</p>
-<hr>
-<h2 id="MySQL锁机制"><a href="#MySQL锁机制" class="headerlink" title="MySQL锁机制"></a>MySQL锁机制</h2><p>MySQL有三种锁的级别：页级、表级、行级。</p>
-<ul>
-<li>MyISAM 表级锁（table-level locking）</li>
-<li>MEMORY 表级锁（table-level locking）</li>
-<li>BDB 页面锁（page-levellocking），但也支持表级锁；</li>
-<li>InnoDB  既支持行级锁（row-level locking），也支持表级锁，但默认情况下是采用行级锁。</li>
-</ul>
-<p>以下讲的都是在innodb引擎的前提下。</p>
-<ol>
-<li>共享锁（Share Locks，即S锁），使用方式select … LOCK IN SHARE MODE<br>SELECT … FOR UPDATE同时只能有一个在语句执行，另一个会阻塞；SELECT … LOCK IN SHARE MODE可以多个同时执行（这也是和for update最大的区别）</li>
-</ol>
-<ol start="2">
-<li>排它锁（Exclusive Locks，即X锁），使用方式：select … FOR UPDATE<br>select … for update锁住的行记录，其它事务不可修改，如果有修改会wait直到锁释放（事务commit）或超时</li>
-</ol>
-<hr>
-<h2 id="MySQL-乐观锁与悲观锁"><a href="#MySQL-乐观锁与悲观锁" class="headerlink" title="MySQL 乐观锁与悲观锁"></a>MySQL 乐观锁与悲观锁</h2><h3 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h3><p>悲观锁（Pessimistic Lock），顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会block直到它拿到锁。</p>
-<h3 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h3><p>乐观锁（Optimistic Lock），顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在提交更新的时候会判断一下在此期间别人有没有去更新这个数据。乐观锁适用于读多写少的应用场景，这样可以提高吞吐量。</p>
-<p>乐观锁：假设不会发生并发冲突，只在提交操作时检查是否违反数据完整性。</p>
-<p>乐观锁一般来说有以下2种方式：</p>
-<ol>
-<li><p>使用数据版本（Version）记录机制实现，这是乐观锁最常用的一种实现方式。何谓数据版本？即为数据增加一个版本标识，一般是通过为数据库表增加一个数字类型的 “version” 字段来实现。当读取数据时，将version字段的值一同读出，数据每更新一次，对此version值加一。当我们提交更新的时候，判断数据库表对应记录的当前版本信息与第一次取出来的version值进行比对，如果数据库表当前版本号与第一次取出来的version值相等，则予以更新，否则认为是过期数据。</p>
-</li>
-<li><p>使用时间戳（timestamp）。乐观锁定的第二种实现方式和第一种差不多，同样是在需要乐观锁控制的table中增加一个字段，名称无所谓，字段类型使用时间戳（timestamp）, 和上面的version类似，也是在更新提交的时候检查当前数据库中数据的时间戳和自己更新前取到的时间戳进行对比，如果一致则OK，否则就是版本冲突。</p>
-</li>
-</ol>
-<h3 id="MySQL隐式和显示锁定"><a href="#MySQL隐式和显示锁定" class="headerlink" title="MySQL隐式和显示锁定"></a>MySQL隐式和显示锁定</h3><p>MySQL InnoDB采用的是两阶段锁定协议（two-phase locking protocol）。在事务执行过程中，随时都可以执行锁定，锁只有在执行 COMMIT或者ROLLBACK的时候才会释放，并且所有的锁是在同一时刻被释放。前面描述的锁定都是隐式锁定，InnoDB会根据事务隔离级别在需要的时候自动加锁。</p>
-<p>另外，InnoDB也支持通过特定的语句进行显示锁定，这些语句不属于SQL规范：</p>
-<ul>
-<li><code>SELECT ... LOCK IN SHARE MODE</code><br>是IS锁(意向共享锁)，即在符合条件的rows上都加了共享锁，这样的话，其他session可以读取这些记录，也可以继续添加IS锁，但是无法修改这些记录直到你这个加锁的session执行完成(否则直接锁等待超时)。 </li>
-<li><code>SELECT ... FOR UPDATE</code><br>是IX锁(意向排它锁),一种<code>行级锁</code>，一旦用户对某个行施加了行级加锁，则该用户可以查询也可以更新被加锁的数据行，其它用户只能查询但不能更新被加锁的数据行。真正对表进行更新时，是以独占方式锁表，一直到提交或复原该事务为止。行锁永远是独占方式锁。</li>
-</ul>
-<p>总结：经过测试， 这两种模式加锁的<strong>表</strong>无数据的情况下，锁不会起作用，必须加锁的表必须有数据。 lock in share mode 也叫<strong>间隙锁</strong>，带where 条件加锁，where字段是整型并且是主键，会变成行锁。</p>
-<h3 id="乐观锁与悲观锁的区别"><a href="#乐观锁与悲观锁的区别" class="headerlink" title="乐观锁与悲观锁的区别"></a>乐观锁与悲观锁的区别</h3><p>乐观锁的思路一般是表中增加版本字段，更新时where语句中增加版本的判断，算是一种CAS（Compare And Swep）操作，商品库存场景中number起到了版本控制（相当于version）的作用（ AND number=#{number}）。</p>
-<p>悲观锁之所以是悲观，在于他认为本次操作会发生并发冲突，所以一开始就对商品加上锁（SELECT … FOR UPDATE），然后就可以安心的做判断和更新，因为这时候不会有别人更新这条商品库存。</p>
-<hr>
-<h2 id="消费者的推拉模式"><a href="#消费者的推拉模式" class="headerlink" title="消费者的推拉模式"></a>消费者的推拉模式</h2><p>消息中间件的主要功能是消息的路由(Routing)和缓存(Buffering)。在AMQP中提供类似功能的两种域模型：Exchange 和 Message queue。</p>
-<p>JMS中定义了两种消息模型：点对点（point to point， queue）和发布/订阅（publish/subscribe，topic）。主要区别就是是否能重复消费。</p>
-<h3 id="点对点：Queue，不可重复消费"><a href="#点对点：Queue，不可重复消费" class="headerlink" title="点对点：Queue，不可重复消费"></a>点对点：Queue，不可重复消费</h3><p>消息生产者生产消息发送到queue中，然后消息消费者从queue中取出并且消费消息。消息被消费以后，queue中<strong>不再有存储</strong>，所以消息消费者不可能消费到已经被消费的消息。<br>Queue支持存在多个消费者，但是对一个消息而言，只会有一个消费者可以消费。<br>注：Kafka不遵守JMS协议，所以Kafka实际应用中，很可能会需要ack(确认)，然后多个消费者能够会同时消费。。需要具体看。</p>
-<h3 id="发布-订阅：Topic，可以重复消费"><a href="#发布-订阅：Topic，可以重复消费" class="headerlink" title="发布/订阅：Topic，可以重复消费"></a>发布/订阅：Topic，可以重复消费</h3><p>消息生产者（发布）将消息发布到topic中，同时有多个消息消费者（订阅）消费该消息。<br>和点对点方式不同，发布到topic的消息会被所有订阅者消费。</p>
-<p>支持订阅组的发布订阅模式：</p>
-<p>发布订阅模式下，当发布者消息量很大时，显然单个订阅者的处理能力是不足的。实际上现实场景中是多个订阅者节点组成一个订阅组负载均衡消费topic消息即分组订阅，这样订阅者很容易实现消费能力线性扩展。</p>
-<h3 id="消费者获取消息：Push和Pull"><a href="#消费者获取消息：Push和Pull" class="headerlink" title="消费者获取消息：Push和Pull"></a>消费者获取消息：Push和Pull</h3><ul>
-<li>Push方式：由消息中间件主动地将消息推送给消费者；</li>
-<li>Pull方式：由消费者主动向消息中间件拉取消息。</li>
-</ul>
-<p>流行模型比较：</p>
-<ul>
-<li>RabbitMQ<br>既支持内存队列也支持持久化队列，消费端为<strong>Push</strong>模型，消费状态和订阅关系由服务端负责维护，消息消费完后立即删除，不保留历史消息。</li>
-<li>Kafka<br>只支持消息持久化，消费端为<strong>Pull</strong>模型，消费状态和订阅关系由客户端端负责维护，消息消费完后不会立即删除，会保留历史消息。</li>
-<li>ActiveMQ<br>一条消息从producer端发出之后，一旦被broker正确保存，那么它将会被consumer消费，然后ACK，broker端才会删除；不过当消息过期或者存储设备溢出时，也会终结它。</li>
-</ul>
-<hr>
-<h2 id="高并发系统的限流，缓存，降级"><a href="#高并发系统的限流，缓存，降级" class="headerlink" title="高并发系统的限流，缓存，降级"></a>高并发系统的限流，缓存，降级</h2><h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p>在大型高并发系统中，如果没有缓存数据库将分分钟被爆，系统也会瞬间瘫痪。使用缓存不单单能够提升系统访问速度、提高并发访问量，也是<strong>保护数据库、保护系统</strong>的有效方式。<br>大型网站一般主要是“读”，缓存的使用很容易被想到。在大型“写”系统中，缓存也常常扮演者非常重要的角色。比如累积一些数据批量写入，内存里面的缓存队列（生产消费），以及HBase写数据的机制等等也都是通过缓存提升系统的吞吐量或者实现系统的保护措施。甚至消息中间件，你也可以认为是一种分布式的数据缓存。</p>
-<h3 id="降级"><a href="#降级" class="headerlink" title="降级"></a>降级</h3><p>服务降级是当服务器压力剧增的情况下，根据当前业务情况及流量对一些服务和页面有策略的降级，以此<strong>释放服务器资源以保证核心任务的正常运行</strong>。降级往往会指定不同的级别，面临不同的异常等级执行不同的处理。根据服务方式：可以拒接服务，可以延迟服务，也有时候可以随机服务。根据服务范围：可以砍掉某个功能，也可以砍掉某些模块。总之服务降级需要根据不同的业务需求采用不同的降级策略。主要的目的就是服务虽然有损但是总比没有好。</p>
-<h3 id="限流"><a href="#限流" class="headerlink" title="限流"></a>限流</h3><p>限流可以认为服务降级的一种，限流就是限制系统的输入和输出流量已达到保护系统的目的。一般来说系统的吞吐量是可以被测算的，为了保证系统的稳定运行，一旦达到的需要限制的阈值，就需要限制流量并采取一些措施以完成限制流量的目的。比如：延迟处理，拒绝处理，或者部分拒绝处理等等。</p>
-<h4 id="限流算法"><a href="#限流算法" class="headerlink" title="限流算法"></a>限流算法</h4><ol>
-<li><p>计数器<br>计数器是最简单粗暴的算法。比如某个服务最多只能每秒钟处理100个请求。我们可以设置一个1秒钟的滑动窗口，窗口中有10个格子，每个格子100毫秒，每100毫秒移动一次，每次移动都需要记录当前服务请求的次数。内存中需要保存10次的次数。可以用数据结构LinkedList来实现。格子每次移动的时候判断一次，当前访问次数和LinkedList中最后一个相差是否超过100，如果超过就需要限流了。</p>
-</li>
-<li><p>漏桶<br>漏桶算法即leaky bucket是一种非常常用的限流算法，可以用来实现流量整形（Traffic Shaping）和流量控制（Traffic Policing）。</p>
-</li>
-</ol>
-<p>漏桶算法的主要概念如下：</p>
-<ol>
-<li>一个固定容量的漏桶，按照常量固定速率流出水滴；</li>
-<li>如果桶是空的，则不需流出水滴；<br>3.可以以任意速率流入水滴到漏桶；</li>
-<li>如果流入水滴超出了桶的容量，则流入的水滴溢出了（被丢弃），而漏桶容量是不变的</li>
-</ol>
-<p>漏桶算法比较好实现，在单机系统中可以使用队列来实现，在分布式环境中消息中间件或者Redis都是可选的方案。</p>
-<ol start="3">
-<li>令牌桶</li>
-</ol>
-<p>令牌桶算法是一个存放固定容量令牌（token）的桶，按照固定速率往桶里添加令牌。令牌桶算法基本可以用下面的几个概念来描述：</p>
-<ol>
-<li>令牌将按照固定的速率被放入令牌桶中。比如每秒放10个。</li>
-<li>桶中最多存放b个令牌，当桶满时，新添加的令牌被丢弃或拒绝。</li>
-<li>当一个n个字节大小的数据包到达，将从桶中删除n个令牌，接着数据包被发送到网络上。</li>
-<li>如果桶中的令牌不足n个，则不会删除令牌，且该数据包将被限流（要么丢弃，要么缓冲区等待）。</li>
-</ol>
-<p>漏桶和令牌桶的比较</p>
-<p>令牌桶可以在运行时控制和调整数据处理的速率，处理某时的突发流量。放令牌的频率增加可以提升整体数据处理的速度，而通过每次获取令牌的个数增加或者放慢令牌的发放速度和降低整体数据处理速度。而漏桶不行，因为它的流出速率是固定的，程序处理速度也是固定的。</p>
-<p>整体而言，令牌桶算法更优，但是实现更为复杂一些。</p>
-<hr>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/14/零碎的知识点-4/" data-id="cjqw29eut003facvtv4qk7cyp" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="零碎的知识点-4" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -871,6 +456,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2019/02/16/《网络游戏核心技术与实战》笔记-1/">《网络游戏核心技术与实战》笔记-1</a>
+          </li>
+        
+          <li>
             <a href="/2019/01/14/2019-1-14-开发笔记/">2019-1-14-开发笔记 Executors.newSingleThreadScheduledExecutor</a>
           </li>
         
@@ -886,10 +475,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2018/09/12/《Netty实战》-第五章-ByteBuf/">《Netty实战》-第五章-ByteBuf</a>
           </li>
         
-          <li>
-            <a href="/2018/09/11/游戏开发-基于netty的文字冒险游戏-1/">游戏开发-基于netty的冒险游戏-1</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -899,7 +484,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">26</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -908,7 +493,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
