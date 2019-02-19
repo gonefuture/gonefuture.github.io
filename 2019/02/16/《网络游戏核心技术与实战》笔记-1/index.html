@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="gonefuture">
 <meta property="og:description" content="《网络游戏核心技术与实战》笔记-1网络和游戏编程的技术基础网络分层结构游戏开发的传输层大多使用TCP协议，不需要直接操纵网络层一下的分层。 应用层需要在游戏中予以实现。  高性能，高功能服务器的特性 —- 网络游戏所需具备的要素   小带宽 极高的连接数 低延迟 稳定  套接字TPC通信链路的状态迁移和套接字API  socket() connect() bind() listen() accep">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-02-16T10:29:12.170Z">
+<meta property="og:updated_time" content="2019-02-19T08:20:12.593Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《网络游戏核心技术与实战》笔记-1">
 <meta name="twitter:description" content="《网络游戏核心技术与实战》笔记-1网络和游戏编程的技术基础网络分层结构游戏开发的传输层大多使用TCP协议，不需要直接操纵网络层一下的分层。 应用层需要在游戏中予以实现。  高性能，高功能服务器的特性 —- 网络游戏所需具备的要素   小带宽 极高的连接数 低延迟 稳定  套接字TPC通信链路的状态迁移和套接字API  socket() connect() bind() listen() accep">
@@ -132,6 +132,22 @@
 <li>accept()</li>
 <li>read()/write()</li>
 </ul>
+<h3 id="处理并发连接的方法"><a href="#处理并发连接的方法" class="headerlink" title="处理并发连接的方法"></a>处理并发连接的方法</h3><ul>
+<li>每次连接时启动一个进程</li>
+<li>实行异步的多重输入输出（多重I/O）</li>
+<li><p>使用线程并行进行同步处理</p>
+<p>网络游戏输入输出的特定 —-  单线程、非阻塞、事件驱动</p>
+</li>
+</ul>
+<p>libevent的特点</p>
+<ul>
+<li>使用套接字出与某个自定状态时（可以writ、也可以read、可以accept），调用实现指定的函数。</li>
+<li>libevent库会自动选择各个OS中最高效的方法（比如，在Linux中套接字数量很多时，选择epoll函数等）来轮询当前状态。</li>
+<li>应用程序用事先设置的函数调用（成为回调函数）来获取这一结果，在回调函数中十级执行read,accept等本来应该在等待的函数。</li>
+</ul>
+<h3 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h3><p>自动生成RPC存根代码的RPC工具</p>
+<p>网络游戏和二级制数据交换格式/库</p>
+<p>### </p>
 
       
     </div>
@@ -140,7 +156,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏开发/">游戏开发</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2019/02/16/《网络游戏核心技术与实战》笔记-1/" data-id="cjs7cbdb0001y0kvtyk4c7f7s" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/02/16/《网络游戏核心技术与实战》笔记-1/" data-id="cjsbidyls0021ngvtyndu7sfp" class="article-share-link">Share</a>
         
       </div>
     </footer>
