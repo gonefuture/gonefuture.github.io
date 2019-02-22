@@ -147,7 +147,102 @@
 </ul>
 <h3 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h3><p>自动生成RPC存根代码的RPC工具</p>
 <p>网络游戏和二级制数据交换格式/库</p>
-<p>### </p>
+<h3 id="网络游戏及其基本结构"><a href="#网络游戏及其基本结构" class="headerlink" title="网络游戏及其基本结构"></a>网络游戏及其基本结构</h3><p>游戏的基础 —— 认知、判断、操作的重复</p>
+<p>网络游戏与测试</p>
+<ul>
+<li>封闭测试（CBT）</li>
+<li>公开测试（OBT）</li>
+</ul>
+<p>不断更新 —— 网络游戏的运营和更新</p>
+<ul>
+<li>定期的补丁</li>
+<li>大型补丁（拓展包、追加包）</li>
+<li>紧急维护</li>
+</ul>
+<h3 id="游戏空间划分"><a href="#游戏空间划分" class="headerlink" title="游戏空间划分"></a>游戏空间划分</h3><ul>
+<li>空间分割（地图分隔）</li>
+<li>平行世界（多服务器/区）</li>
+<li>实例化（副本）</li>
+</ul>
+<h3 id="服务器功能性划分"><a href="#服务器功能性划分" class="headerlink" title="服务器功能性划分"></a>服务器功能性划分</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>缩略语</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>客户端</td>
+<td>gmsv</td>
+<td>运行在用户客户端上</td>
+</tr>
+<tr>
+<td>登陆服务器</td>
+<td>loginsv</td>
+<td>用于广利游戏数据的逻辑</td>
+</tr>
+<tr>
+<td>数据库服务器</td>
+<td>loginsv</td>
+<td>登陆，负责服务整体使用情况的管理、解压缩以及解密等处理，减轻游戏服务器的负荷</td>
+</tr>
+<tr>
+<td>反向代理服务器</td>
+<td>proxy</td>
+<td>接受连接，负责进行TCP会话本身的管理、解压缩以及解密等处理，减轻游戏服务器的负荷</td>
+</tr>
+<tr>
+<td>消息服务器</td>
+<td>msgsv</td>
+<td>用于使网上聊天、即时消息、公会等社交活动能够跨越平行世界和空间分割来进行消息交换。</td>
+</tr>
+<tr>
+<td>世界服务器</td>
+<td>worksv</td>
+<td>使用空间分割的情况下，属于该世界的所有gmsv连接至这个服务器进程，负责</td>
+</tr>
+<tr>
+<td></td>
+</tr>
+<tr>
+<td>通用数据库服务器（整体通用的数据库服务器）</td>
+<td>commondbsv</td>
+<td>用于实现所有世界都需要的内存处理，实时统计处理和等级排名等处理</td>
+</tr>
+</tbody>
+</table>
+<h3 id="服务器硬件规格"><a href="#服务器硬件规格" class="headerlink" title="服务器硬件规格"></a>服务器硬件规格</h3><ul>
+<li>以CPU为中心的服务器：CPU较快，内核较多，内存一般，容错性低。一次性的。</li>
+<li>以储存为中心的服务器：CPU一般，内核一般，内存高，储存量大，容错性高。使用期长。</li>
+</ul>
+<h3 id="一般游戏需要持久化的信息"><a href="#一般游戏需要持久化的信息" class="headerlink" title="一般游戏需要持久化的信息"></a>一般游戏需要持久化的信息</h3><ul>
+<li>用户（id、密码、计费方式等）</li>
+<li>角色（体力、经验、金钱、当前位置，名字等）</li>
+<li>技能</li>
+<li>任务日志 （正在进行、已完成）</li>
+<li>拍卖</li>
+<li>好友列表</li>
+<li>邮件</li>
+<li>公会</li>
+<li>日志</li>
+</ul>
+<h3 id="路径搜索和实际的移动处理"><a href="#路径搜索和实际的移动处理" class="headerlink" title="路径搜索和实际的移动处理"></a>路径搜索和实际的移动处理</h3><ul>
+<li><p>阶段1：玩家自己进行移动路径的计算，实际的移动也在客户端进行，服务器无法限制地接受</p>
+</li>
+<li><p>阶段2：与阶段1相同，但是在服务端加入一项限制：限制移动请求的接受频率</p>
+</li>
+<li><p>阶段3：与阶段1相同，但是在服务端加入一项限制：限制移动请求的接受频率</p>
+</li>
+<li><p>阶段3： 与阶段2相同，但是在move函数中加入客户端的发送时间，一起发送给服务器</p>
+</li>
+<li><p>阶段4：服务端进行路径搜索和移动处理</p>
+</li>
+<li><p>阶段5：在客户端中只进行路径搜索中的搜索处理</p>
+</li>
+</ul>
+<p>移动路径的发送方式 —- 优先发送最终结果</p>
 
       
     </div>
@@ -156,7 +251,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏开发/">游戏开发</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2019/02/16/《网络游戏核心技术与实战》笔记-1/" data-id="cjsbidyls0021ngvtyndu7sfp" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/02/16/《网络游戏核心技术与实战》笔记-1/" data-id="cjsfvutfu001urovtro0tgj1b" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -289,7 +384,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2019/01/14/2019-1-14-开发笔记/" data-id="cjsbidyjc0002ngvt6fgxzarl" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/01/14/2019-1-14-开发笔记/" data-id="cjsfvutec0002rovth8ubtb6a" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -353,7 +448,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty/">Netty</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/09/20/Netty消息分发和业务逻辑分离/" data-id="cjsbidyjy0009ngvtwfa3o0eb" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/09/20/Netty消息分发和业务逻辑分离/" data-id="cjsfvutei0006rovtlawbzs86" class="article-share-link">Share</a>
         
       </div>
     </footer>
