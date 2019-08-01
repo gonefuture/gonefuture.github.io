@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="条件系统学习笔记 概况条件系统是为了方便于各个系统进行条件判断的，在条件复杂的情况下很好用。  配置资源 配置文件: resource/ConditionResource.xlsx   领域模型与接口所有具体的条件实现类都实现了ICondition&amp;lt;Obj&amp;gt;接口或者继承了实现了该接口的基类。 条件接口public interface ICondition&amp;lt;Obj&amp;gt; {">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gonefuture">
+<meta property="og:url" content="http://gonefuture.top/2019/08/01/项目笔记/条件系统学习笔记/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="条件系统学习笔记 概况条件系统是为了方便于各个系统进行条件判断的，在条件复杂的情况下很好用。  配置资源 配置文件: resource/ConditionResource.xlsx   领域模型与接口所有具体的条件实现类都实现了ICondition&amp;lt;Obj&amp;gt;接口或者继承了实现了该接口的基类。 条件接口public interface ICondition&amp;lt;Obj&amp;gt; {">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-07-08T13:28:56.679Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gonefuture">
+<meta name="twitter:description" content="条件系统学习笔记 概况条件系统是为了方便于各个系统进行条件判断的，在条件复杂的情况下很好用。  配置资源 配置文件: resource/ConditionResource.xlsx   领域模型与接口所有具体的条件实现类都实现了ICondition&amp;lt;Obj&amp;gt;接口或者继承了实现了该接口的基类。 条件接口public interface ICondition&amp;lt;Obj&amp;gt; {">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-项目笔记/条件系统学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/08/01/项目笔记/条件系统学习笔记/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.275Z" itemprop="datePublished">2019-08-01</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="条件系统学习笔记"><a href="#条件系统学习笔记" class="headerlink" title="条件系统学习笔记"></a>条件系统学习笔记</h1><hr>
+<h2 id="概况"><a href="#概况" class="headerlink" title="概况"></a>概况</h2><p>条件系统是为了方便于各个系统进行条件判断的，在条件复杂的情况下很好用。</p>
+<hr>
+<h2 id="配置资源"><a href="#配置资源" class="headerlink" title="配置资源"></a>配置资源</h2><ol>
+<li>配置文件: resource/ConditionResource.xlsx</li>
+</ol>
+<hr>
+<h2 id="领域模型与接口"><a href="#领域模型与接口" class="headerlink" title="领域模型与接口"></a>领域模型与接口</h2><p>所有具体的条件实现类都实现了<code>ICondition&lt;Obj&gt;</code>接口或者继承了实现了该接口的基类。</p>
+<h3 id="条件接口"><a href="#条件接口" class="headerlink" title="条件接口"></a>条件接口</h3><pre><code class="java">public interface ICondition&lt;Obj&gt; {
+
+    // 获取条件
+    ConditionType getType();
+
+    // 带有resource参数的init方法。方便以后子拓展新的字段
+    void init(ConditionResource resource);
+
+    // 验证条件是否满足
+    Result verify(Obj obj, int amount, Map&lt;object, Object&gt; param)
+
+}
+
+</code></pre>
+<h3 id="玩家条件基类-BasePubCondition"><a href="#玩家条件基类-BasePubCondition" class="headerlink" title="玩家条件基类 BasePubCondition"></a>玩家条件基类 <code>BasePubCondition</code></h3><pre><code class="java">    public abstract class BasePubCondition implements ICondition&lt;Object&gt; {
+        @Verride
+        public final Result verify(Object t, int amount, Map&lt;Object,Objct&gt; param) {
+            return verify(amount, param);
+        }
+    }
+    // 验证条件是否满足
+    public abstract Result verify(int amount, Map&lt;Object, Object&gt;);
+
+</code></pre>
+<h3 id="公共条件组-PubConditions"><a href="#公共条件组-PubConditions" class="headerlink" title="公共条件组 PubConditions"></a>公共条件组 <code>PubConditions</code></h3><ul>
+<li><code>Result verify(int amount,
+Map&lt;Object, Object&gt; param)</code> 验证条件是否满足，所有条件</li>
+<li><code>void verifyOrFailException(int amount, Map&lt;object， Object&gt;) param</code>  验证条件，如果验证失败，则抛出异常</li>
+<li><code>boolean verifyOr(int amount, Map&lt;Object, Object&gt;) param</code> 验证条件是否满足，只要有一个条件满足，就算成功</li>
+</ul>
+<h3 id="条件类型定义-ConditionType"><a href="#条件类型定义-ConditionType" class="headerlink" title="条件类型定义 ConditionType"></a>条件类型定义 <code>ConditionType</code></h3><pre><code class="java">
+public enum ConditionType {
+    // 必然失败条件
+    FAIL(FailCondition.class),
+    //开服天数
+    OPEN_DAY(OpenDayCondition.class),
+    //开关类条件
+    ON_OFF(ONOffCondition.class),
+    //开关类条件
+    ITEM_RANGE(TimeRangeCodition.class),
+    //日期条件
+    DAY_RANGE(DayRangeCondition.class),
+...
+
+    private Class&lt;? extends ICondition&lt;?&gt;&gt; conditionClass;
+    // 构造方法
+    ConditionType(Class&lt;? extends ICondition&lt;?&gt; conditionClass) {
+        this.conditionClass = conditionClass;
+    }
+
+    // 创建一个没有初始化的条件
+    public &lt;T extends ICondition&gt; T create() {
+        try {
+            return (T) conditionClass.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);        }
+    }
+
+    // 根据配置创建条件
+    public &lt;T extends ICondition&gt; T create(ConditionResource resouece) {
+        T condition = create();
+        condition.init(resource);
+        retrun condition;
+    }
+
+}
+
+
+</code></pre>
+<ul>
+<li><code>&lt;T extends ICondition&gt; T created()</code> 创建一个没有初始化的条件</li>
+<li><code>T extends ICondition&gt; T create(ConditionResource resource)</code> 根据配置创建条</li>
+</ul>
+<h3 id="验证结果-Result"><a href="#验证结果-Result" class="headerlink" title="验证结果 Result"></a>验证结果 <code>Result</code></h3><p>每一个<code>result</code>都具有唯一性，不可变性</p>
+<hr>
+<h2 id="条件管理-ConditionManager"><a href="#条件管理-ConditionManager" class="headerlink" title="条件管理 ConditionManager"></a>条件管理 <code>ConditionManager</code></h2><ul>
+<li><code>&lt;Obj&gt; Conditions&lt;Obj&gt; create(ConditionResource resource)</code> 创建单个条件的组，如果传入的条件组为null,返回一个无条件的空</li>
+<li><code>&lt;Obj&gt; Condition&lt;Obj&gt; create(List&lt;ConditionResource&gt; resources, boolean isDefaultSuccess)</code> 创建多个条件的组，如果传入的条件组为null,返回一个无条件的空。</li>
+<li><code>&lt;Obj&gt; ConditionOrAnd</code> createOrAnd(ConditionOrAndResource orAndResource) 创建支持与(&amp;&amp;)或(||)检测的条件组</li>
+</ul>
+<hr>
+<h2 id="条件系统的使用"><a href="#条件系统的使用" class="headerlink" title="条件系统的使用"></a>条件系统的使用</h2><ol>
+<li><p>创建<code>ICondition&lt;Obj&gt;</code>实现类<br> 编写<code>ICondition&lt;Obj&gt;</code>的实现类，重写验证条件的方法。</p>
+<pre><code class="java">     ConditionType getType();
+
+     void init(ConditionResource resource);
+
+     Result verify(Obj objm int amount, Map&lt;Object, Object&gt; param);
+
+</code></pre>
+</li>
+<li><p>编写<code>ConditionType</code>枚举类</p>
+<p> 通过构造参数绑定条件相关的<code>ICondition&lt;Obj&gt;</code>实现类。</p>
+<pre><code class="java"> // 玩家等级条件枚举
+ PLAYER_LEVLE(PlayerLevelCondition.class)
+
+</code></pre>
+</li>
+<li><p>excel配置条件<br> excel配置条件会转化<code>ConditionResource</code>对象。可以在某模块的配置中以json格式的方式配置条件或者在<code>ConditionResource.xlsx</code>中配置。</p>
+<p> json配置格式例子：<code>[{key:1, type:&quot;PLAYER_LEVLE&quot;}]</code></p>
+<p> 在<code>ConditionResource.xlsx</code>配置的条件通过<code>ConditionManager</code>使用(目前还没有提供使用方法)</p>
+<pre><code class="java">     @Static
+     private Storage&lt;String,ConditionResource&gt; conditionResource;
+</code></pre>
+</li>
+<li><p>使用检验</p>
+<pre><code class="java"> // createConditions方法传入的是一个List&lt;ConditionResource&gt;，需要配置在xlxs文件中。根据ConditionType调用create方法创建一个AbstractCondition实现类。
+
+ Conditions conditions  = Conditions.valueOf(channelResource.getSendConditions());
+
+ // 调用conditions的verify方法逐个AbstractCondition实现类的verify
+ Result result = conditions.verify(player,1);
+ if(!result.isSuccess()) {
+     throw ManagedException.valueOf(result.getCode())
+ }
+
+</code></pre>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/条件系统学习笔记/" data-id="cjys176ej004c7ovtb1s5gxh6" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/条件系统学习笔记" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/01/项目笔记/条件选择器学习笔记/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/01/项目笔记/服务开发原则/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/08/01/项目笔记/背包系统学习笔记/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/01/项目笔记/目标系统学习笔记/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/01/项目笔记/玩家实体的抽象/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/01/项目笔记/游戏生物体的抽象/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/01/项目笔记/消耗系统学习笔记/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

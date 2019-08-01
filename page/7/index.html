@@ -83,480 +83,375 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-零碎的知识点-4" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-读书笔记/《Java并发编程实战》-3" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/14/零碎的知识点-4/" class="article-date">
-  <time datetime="2018-08-14T09:27:56.528Z" itemprop="datePublished">2018-08-14</time>
+    <h3 href="/2019/08/01/读书笔记/《Java并发编程实战》-3/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.084Z" itemprop="datePublished">2019-08-01</time>
 </h3>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/零碎的知识点/">零碎的知识点</a>
-  </div>
-
   </div>
   <div class="article-inner">
   <div class="curve-down">
   <div class="fill-content">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/14/零碎的知识点-4/">零碎的知识点-4</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="零碎的知识点-4"><a href="#零碎的知识点-4" class="headerlink" title="零碎的知识点-4"></a>零碎的知识点-4</h1><hr>
-<h2 id="select、poll、epoll之间的区别总结"><a href="#select、poll、epoll之间的区别总结" class="headerlink" title="select、poll、epoll之间的区别总结"></a>select、poll、epoll之间的区别总结</h2><p>select、poll、epoll都是IO多路复用的机制。I/O多路复用就通过一种机制，可以监视多个描述符，一旦某个描述符就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作。但select，poll，epoll本质上都是同步I/O，因为他们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的，而异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间。</p>
-<h3 id="select的几大缺点："><a href="#select的几大缺点：" class="headerlink" title="select的几大缺点："></a>select的几大缺点：</h3><ol>
-<li>每次调用select，都需要把fd集合从用户态拷贝到内核态，这个开销在fd很多时会很大</li>
-<li>同时每次调用select都需要在内核遍历传递进来的所有fd，这个开销在fd很多时也很大</li>
-<li>select支持的文件描述符数量太小了，默认是1024</li>
-</ol>
-<h3 id="poll实现"><a href="#poll实现" class="headerlink" title="poll实现"></a>poll实现</h3><p>poll的实现和select非常相似，只是描述fd集合的方式不同，poll使用pollfd结构而不是select的fd_set结构，相比select模型，poll使用链表保存文件描述符，因此没有了监视文件数量的限制，但其他三个缺点依然存在。</p>
-<h3 id="epoll-事件驱动"><a href="#epoll-事件驱动" class="headerlink" title="epoll (事件驱动)"></a>epoll (事件驱动)</h3><p>epoll既然是对select和poll的改进，就应该能避免上述的三个缺点。那epoll都是怎么解决的呢？在此之前，我们先看一下epoll和select和poll的调用接口上的不同，select和poll都只提供了一个函数——select或者poll函数。而epoll提供了三个函数，epoll_create,epoll_ctl和epoll_wait，epoll_create是创建一个epoll句柄；epoll_ctl是注册要监听的事件类型；epoll_wait则是等待事件的产生。</p>
-<p>总结：</p>
-<ol>
-<li><p>select，poll实现需要自己不断轮询所有fd集合，直到设备就绪，期间可能要睡眠和唤醒多次交替。而epoll其实也需要调用 epoll_wait不断轮询就绪链表，期间也可能多次睡眠和唤醒交替，但是它是设备就绪时，调用回调函数，把就绪fd放入就绪链表中，并唤醒在 epoll_wait中进入睡眠的进程。虽然都要睡眠和交替，但是select和poll在“醒着”的时候要遍历整个fd集合，而epoll在“醒着”的 时候只要判断一下就绪链表是否为空就行了，这节省了大量的CPU时间。这就是回调机制带来的性能提升。</p>
-</li>
-<li><p>select，poll每次调用都要把fd集合从用户态往内核态拷贝一次，并且要把current往设备等待队列中挂一次，而epoll只要 一次拷贝，而且把current往等待队列上挂也只挂一次（在epoll_wait的开始，注意这里的等待队列并不是设备等待队列，只是一个epoll内 部定义的等待队列）。这也能节省不少的开销。</p>
-</li>
-</ol>
-<hr>
-<h2 id="Top-K-问题"><a href="#Top-K-问题" class="headerlink" title="Top K 问题"></a>Top K 问题</h2><h3 id="堆排解法"><a href="#堆排解法" class="headerlink" title="堆排解法"></a>堆排解法</h3><p>堆排序利用的大(小)堆顶所有节点元素都比父节点小(大)的性质来实现的。<br>既然一个大顶堆的顶是最大的元素，那我们要找最小的K个元素，是不是可以先建立一个包含K个元素的堆，然后遍历集合，如果集合的元素比堆顶元素小（说明它目前应该在K个最小之列），那就用该元素来替换堆顶元素，同时维护该堆的性质，那在遍历结束的时候，堆中包含的K个元素是不是就是我们要找的最小的K个元素？</p>
-<h4 id="实现："><a href="#实现：" class="headerlink" title="实现："></a>实现：</h4><p>在堆排的基础上，稍作了修改，buildHeap和heapify函数都是一样的实现。<br>速记口诀：最小的K个用最大堆，最大的K个用最小堆。</p>
-<pre><code class="java">public class TopK {
+        <!DOCTYPE html>
+  <html>
+    <head>
+      <title>《Java并发编程实战》-3</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///C:\Users\gonefuture\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.3.5\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
 
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-        int[] a = { 1, 17, 3, 4, 5, 6, 7, 16, 9, 10, 11, 12, 13, 14, 15, 8 };
-        int[] b = topK(a, 4);
-        for (int i = 0; i &lt; b.length; i++) {
-            System.out.print(b[i] + &quot;, &quot;);
-        }
-    }
+      <style> 
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
 
-    public static void heapify(int[] array, int index, int length) {
-        int left = index * 2 + 1;
-        int right = index * 2 + 2;
-        int largest = index;
-        if (left &lt; length &amp;&amp; array[left] &gt; array[index]) {
-            largest = left;
-        }
-        if (right &lt; length &amp;&amp; array[right] &gt; array[largest]) {
-            largest = right;
-        }
-        if (index != largest) {
-            swap(array, largest, index);
-            heapify(array, largest, length);
-        }
-    }
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
 
-    public static void swap(int[] array, int a, int b) {
-        int temp = array[a];
-        array[a] = array[b];
-        array[b] = temp;
-    }
-
-    public static void buildHeap(int[] array) {
-        int length = array.length;
-        for (int i = length / 2 - 1; i &gt;= 0; i--) {
-            heapify(array, i, length);
-        }
-    }
-
-    public static void setTop(int[] array, int top) {
-        array[0] = top;
-        heapify(array, 0, array.length);
-    }
-
-    public static int[] topK(int[] array, int k) {
-        int[] top = new int[k];
-        for (int i = 0; i &lt; k; i++) {
-            top[i] = array[i];
-        }
-        //先建堆，然后依次比较剩余元素与堆顶元素的大小，比堆顶小的， 说明它应该在堆中出现，则用它来替换掉堆顶元素，然后沉降。
-        buildHeap(top);
-        for (int j = k; j &lt; array.length; j++) {
-            int temp = top[0];
-            if (array[j] &lt; temp) {
-                setTop(top, array[j]);
-            }
-        }
-        return top;
-    }
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
 }
-</code></pre>
-<h3 id="快排解法"><a href="#快排解法" class="headerlink" title="快排解法"></a>快排解法</h3><p>用快排的思想来解Top K问题，必然要运用到”分治”结果的使用上。我们知道，分治函数会返回一个position，在position左边的数都比第position个数小，在position右边的数都比第position大。我们不妨不断调用分治函数，直到它输出的position = K-1，此时position前面的K个数（0到K-1）就是要找的前K个数。</p>
-<h4 id="实现：-1"><a href="#实现：-1" class="headerlink" title="实现："></a>实现：</h4><p>“分治”还是原来的那个分治，关键是getTopK的逻辑</p>
-<pre><code class="java">public class TopK {
 
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-        int[] array = { 9, 3, 1, 10, 5, 7, 6, 2, 8, 0 };
-        getTopK(array, 4);
-        for (int i = 0; i &lt; array.length; i++) {
-            System.out.print(array[i] + &quot;, &quot;);
-        }
-    }
-
-    // 分治
-    public static int partition(int[] array, int low, int high) {
-        if (array != null &amp;&amp; low &lt; high) {
-            int flag = array[low];
-            while (low &lt; high) {
-                while (low &lt; high &amp;&amp; array[high] &gt;= flag) {
-                    high--;
-                }
-                array[low] = array[high];
-                while (low &lt; high &amp;&amp; array[low] &lt;= flag) {
-                    low++;
-                }
-                array[high] = array[low];
-            }
-            array[low] = flag;
-            return low;
-        }
-        return 0;
-    }
-
-    public static void getTopK(int[] array, int k) {
-        if (array != null &amp;&amp; array.length &gt; 0) {
-            int low = 0;
-            int high = array.length - 1;
-            int index = partition(array, low, high);
-            //不断调整分治的位置，直到position = k-1
-            while (index != k - 1) {
-                //大了，往前调整
-                if (index &gt; k - 1) {
-                    high = index - 1;
-                    index = partition(array, low, high);
-                }
-                //小了，往后调整
-                if (index &lt; k - 1) {
-                    low = index + 1;
-                    index = partition(array, low, high);
-                }
-            }
-        }
-    }
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
 }
-</code></pre>
-<h2 id="CAP-理论-、BASE思想-最终一致性和五分钟原则"><a href="#CAP-理论-、BASE思想-最终一致性和五分钟原则" class="headerlink" title="CAP 理论 、BASE思想, 最终一致性和五分钟原则"></a>CAP 理论 、BASE思想, 最终一致性和五分钟原则</h2><h3 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h3><ul>
-<li>C : Consisitency 一致性</li>
-<li>A: Availablity 可用性（指得事快速获取数据）</li>
-<li>P: Tolerance of network Partition 分区容忍性（分布式）</li>
-</ul>
-<p>定理：任何分布式系统只可同时满足二点，没法三者兼顾。三者只能选其二。</p>
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+ 
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview   ">
+      <h1 class="mume-header" id="%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%BB%84%E5%90%88">对象的组合</h1>
+
+<h2 class="mume-header" id="41-%E8%AE%BE%E8%AE%A1%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E7%B1%BB">4.1 设计线程安全的类</h2>
+
+<p>在设计线程安全类的过程中，需要包含一下三个基本要素：</p>
 <ul>
-<li>CA: 传统关系数据库</li>
-<li>AP：key-value 数据库</li>
+<li>找出构成对象状态的所有变量。</li>
+<li>找出约束状态变量的不变性条件。</li>
+<li>建立对象状态的并发访问管理策略。</li>
 </ul>
-<h3 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h3><p>关系数据库的ACID模型拥有 高一致性 + 可用性 很难进行分区：</p>
-<ul>
-<li>Atomicity原子性：一个事务中所有操作都必须全部完成，要么全部不完成。</li>
-<li>Consistency一致性: 在事务开始或结束时，数据库应该在一致状态。</li>
-<li>Isolation隔离层:  事务将假定只有它自己在操作数据库，彼此不知晓。</li>
-<li>Durability:  一旦事务完成，就不能返回。</li>
-</ul>
-<p>跨数据库两段提交事务：2PC (two-phase commit)， 2PC is the anti-scalability pattern (Pat Helland) 是反可伸缩模式的，JavaEE中的JTA事务可以支持2PC。因为2PC是反模式，尽量不要使用2PC，使用BASE来回避。</p>
-<h3 id="BASE思想"><a href="#BASE思想" class="headerlink" title="BASE思想"></a>BASE思想</h3><p>BASE模型反ACID模型，完全不同ACID模型，牺牲高一致性，获得可用性或可靠性：</p>
-<ul>
-<li>Basically Available基本可用。支持分区失败(e.g. sharding碎片划分数据库)</li>
-<li><strong>Soft state</strong>软状态 状态可以有一段时间不同步，异步。</li>
-<li>E</li>
-<li>ventually consistent最终一致，最终数据是一致的就可以了，而不是时时高一致。</li>
-</ul>
-<h3 id="最终一致性"><a href="#最终一致性" class="headerlink" title="最终一致性"></a>最终一致性</h3><blockquote>
-<p>过程松，结果紧，最终结果必须保持一致性 。（DNS系统）</p>
+<h3 class="mume-header" id="411-%E6%94%B6%E9%9B%86%E5%90%8C%E6%AD%A5%E9%9C%80%E6%B1%82">4.1.1 收集同步需求</h3>
+
+<blockquote>
+<p>如果不了解对象的不变性与厚颜条件，那么就不能确保线程安全性。要满足在状态变量的有效值或状态转换上的各种约束条件，就需要结组于原子性和封装性。</p>
 </blockquote>
-<ul>
-<li>强一致性 任何时刻，所有节点中的数据是一样的。用一时间点，你在节点A中获取到key1的值与节点B中获取到key1的值应该都是一样的。</li>
-<li>弱一致性 包含多种不同的实现，目前分布式系统中广泛实现的是最终一致性。（其他还有因果一致性）</li>
-</ul>
-<h3 id="I-O的五分钟法则"><a href="#I-O的五分钟法则" class="headerlink" title="I/O的五分钟法则"></a>I/O的五分钟法则</h3><p>如果一个数据的访问周期在5分钟以内则存放在内存中，否则应该存放在硬盘中。</p>
-<hr>
-<h2 id="Spring-生命周期"><a href="#Spring-生命周期" class="headerlink" title="Spring 生命周期"></a>Spring 生命周期</h2><p>对于普通的Java对象，当new的时候创建对象，当它没有任何引用的时候被垃圾回收机制回收。而由Spring IoC容器托管的对象，它们的生命周期完全由容器控制。Spring中每个Bean的生命周期如下：<br><img src="https://img-blog.csdn.net/20180816100931434?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="Spring生命周期"></p>
-<ol>
-<li>实例化Bean<br>对于BeanFactory容器，当客户向容器请求一个尚未初始化的bean时，或初始化bean的时候需要注入另一个尚未初始化的依赖时，容器就会调用createBean进行实例化。 对于ApplicationContext容器，当容器启动结束后，便实例化所有的bean。 容器通过获取BeanDefinition对象中的信息进行实例化。并且这一步仅仅是简单的实例化，并未进行依赖注入。 实例化对象被包装在BeanWrapper对象中，BeanWrapper提供了设置对象属性的接口，从而避免了使用反射机制设置属性。</li>
-<li>设置对象属性（依赖注入）<br>实例化后的对象被封装在BeanWrapper对象中，并且此时对象仍然是一个原生的状态，并没有进行依赖注入。 紧接着，Spring根据BeanDefinition中的信息进行依赖注入。 并且通过BeanWrapper提供的设置属性的接口完成依赖注入。</li>
-<li>注入Aware接口<br>紧接着，Spring会检测该对象是否实现了xxxAware接口，并将相关的xxxAware实例注入给bean,包括包括了BeanNameAware、BeanFactoryAware，ApplicationContextAware接口。</li>
-<li>BeanPostProcessor<br>当经过上述几个步骤后，bean对象已经被正确构造，但如果你想要对象被使用前再进行一些自定义的处理，就可以通过BeanPostProcessor接口实现。 该接口提供了两个函数：postProcessBeforeInitialzation( Object bean, String beanName ) 当前正在初始化的bean对象会被传递进来，我们就可以对这个bean作任何处理。 这个函数会先于InitialzationBean执行，因此称为前置处理。 所有Aware接口的注入就是在这一步完成的。postProcessAfterInitialzation( Object bean, String beanName ) 当前正在初始化的bean对象会被传递进来，我们就可以对这个bean作任何处理。 这个函数会在InitialzationBean完成后执行，因此称为后置处理。</li>
-<li>InitializingBean与init-method<br>当BeanPostProcessor的前置处理完成后就会进入本阶段。 InitializingBean接口只有一个函数：afterPropertiesSet()这一阶段也可以在bean正式构造完成前增加我们自定义的逻辑，但它与前置处理不同，由于该函数并不会把当前bean对象传进来，因此在这一步没办法处理对象本身，只能增加一些额外的逻辑。 若要使用它，我们需要让bean实现该接口，并把要增加的逻辑写在该函数中。然后Spring会在前置处理完成后检测当前bean是否实现了该接口，并执行afterPropertiesSet函数。当然，Spring为了降低对客户代码的侵入性，给bean的配置提供了init-method属性，该属性指定了在这一阶段需要执行的函数名。Spring便会在初始化阶段执行我们设置的函数。init-method本质上仍然使用了InitializingBean接口。</li>
-<li>DisposableBean<br>和destroy-method和init-method一样，通过给destroy-method指定函数，就可以在bean销毁前执行指定的逻辑。</li>
-</ol>
-<hr>
-<h2 id="Spring容器中Bean的作用域"><a href="#Spring容器中Bean的作用域" class="headerlink" title="Spring容器中Bean的作用域"></a>Spring容器中Bean的作用域</h2><p>当通过Spring容器创建一个Bean实例时，不仅可以完成Bean实例的实例化，还可以为Bean指定特定的作用域。Spring支持如下5种作用域：</p>
-<ul>
-<li><strong>singleton</strong>：单例模式，在整个Spring IoC容器中，使用singleton定义的Bean将只有一个实例</li>
-<li><strong>prototype</strong>：原型模式，每次通过容器的getBean方法获取prototype定义的Bean时，都将产生一个新的Bean实例</li>
-<li><strong>request</strong>：对于每次HTTP请求，使用request定义的Bean都将产生一个新实例，即每次HTTP请求将会产生不同的Bean实例。只有在Web应用中使用Spring时，该作用域才有效</li>
-<li><strong>session</strong>：对于每次HTTP Session，使用session定义的Bean豆浆产生一个新实例。同样只有在Web应用中使用Spring时，该作用域才有效</li>
-<li><strong>globalsession</strong>：每个全局的HTTP Session，使用session定义的Bean都将产生一个新实例。典型情况下，仅在使用portlet context的时候有效。同样只有在Web应用中使用Spring时，该作用域才有效</li>
-</ul>
-<p>其中比较常用的是singleton和prototype两种作用域。<br>对于singleton作用域的Bean，每次请求该Bean都将获得相同的实例。容器负责跟踪Bean实例的状态，负责维护Bean实例的生命周期行为；<br>如果一个Bean被设置成prototype作用域，程序每次请求该id的Bean，Spring都会新建一个Bean实例，然后返回给程序。在这种情况下，Spring容器仅仅使用new 关键字创建Bean实例，一旦创建成功，容器不在跟踪实例，也不会维护Bean实例的状态。</p>
-<p>如果不指定Bean的作用域，Spring默认使用singleton作用域。</p>
-<hr>
-<h2 id="SpringMVC执行流程"><a href="#SpringMVC执行流程" class="headerlink" title="SpringMVC执行流程"></a>SpringMVC执行流程</h2><h3 id="组件介绍："><a href="#组件介绍：" class="headerlink" title="组件介绍："></a>组件介绍：</h3><ul>
-<li>DispatcherServlet<br>前端控制器，作用就是接收请求，响应结果，相当于转发器 </li>
-<li>HandleMapping<br>处理器映射器，作用就是根据请求的URL查找Handler </li>
-<li>HandlerAdapter<br>处理器适配器，作用就是按照特定的规则去执行Handler，也就是开发Handler时需要满足HandlerAdapter的规则，这样HandlerAdapter才能执行Handler。 </li>
-<li>View resolver<br>视图解析器，作用根据逻辑视图解析成真正的视图（view） </li>
-<li>view<br>视图，是一个接口，其实现类能支持不同的view类型，jsp、freemarker、Excel等 </li>
-</ul>
-<p>执行过程文字描述 </p>
-<ol>
-<li><p>用户发起请求到前端控制器<code>DispatcherServlet</code></p>
-</li>
-<li><p><code>DispatcherServlet</code>请求处理器映射器<code>HandlerMapping</code>查找Handler<br>可以是根据xml查找，也可以是根据注解查找 </p>
-</li>
-<li><p><code>HandlerMapping</code>向<code>DispatcherServlet</code>返回一个执行链<code>HandlerExecutionChain</code>，包含<code>HandlerInterception</code>和<strong><code>Handler</code></strong></p>
-</li>
-<li><p><code>HandlerMapping</code>调用处理器适配器<code>HandlerAdapter</code>去执行Handler </p>
-</li>
-<li><p>处理器适配器去执行<code>Handler</code></p>
-</li>
-<li><p>Handler执行完给处理器适配器返回<code>ModelAndView</code><br><code>ModelAndView</code>是SpringMVC框架的一个底层对象，包括Model和View </p>
-</li>
-<li><p>处理器适配器给<code>DispatcherServlet</code>返回<code>ModelAndView</code></p>
-</li>
-<li><p><code>DispatcherServlet</code>请求视图解析器<code>View resolver</code>进行视图解析<br>根据逻辑视图解析成真正的物理视图（jsp等） </p>
-</li>
-<li><p>视图解析器向<code>DispatcherServlet</code>返回view </p>
-</li>
-<li><p><code>DispatcherServlet</code>进行视图渲染 </p>
-</li>
-<li><p><code>DispatcherServlet</code>向用户响应结果</p>
-</li>
-</ol>
-<p><img src="https://img-blog.csdn.net/20180816120507132?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="SpringMVC执行流程"></p>
-<hr>
-<h2 id="Java内存模型与共享变量可见性"><a href="#Java内存模型与共享变量可见性" class="headerlink" title="Java内存模型与共享变量可见性"></a>Java内存模型与共享变量可见性</h2><h3 id="Java内存模型-JMM"><a href="#Java内存模型-JMM" class="headerlink" title="Java内存模型(JMM)"></a>Java内存模型(JMM)</h3><p>Java内存模型的主要目标：定义在虚拟机中将<strong>变量</strong>储存到内存和从内存中取出变量这样的底层细节。<br>注意：上边的变量指的是共享变量(实例字段、静态字段、数组对象元素)，不包括线程私有变量(局部变量、方法参数)，因为私有变量不会存在竞争关系。</p>
-<p><img src="https://img-blog.csdn.net/20180816142838887?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="JMM"></p>
-<p>说明：</p>
-<ul>
-<li>所有共享变量存于主内存</li>
-<li>每一条线程都有自己的工作内存（就是上图所说的本地内存）</li>
-<li>工作内存中保存了被该线程使用到的变量的主内存副本</li>
-</ul>
-<p>注意：</p>
-<ul>
-<li>线程对变量的操作都要在工作内存中进行，不能直接操作主内存</li>
-<li>不同的线程之间无法直接访问对方的工作内存中的变量</li>
-<li>不同线程之间的变量的传递必须通过主内存</li>
-</ul>
-<h3 id="8条内存屏障指令"><a href="#8条内存屏障指令" class="headerlink" title="8条内存屏障指令"></a>8条内存屏障指令</h3><ul>
-<li>lock(锁定): 作用于主内存，把一个变量标识为一条线程独占的状态</li>
-<li>unlock(解锁): 作用于主内存，把一个处于锁定的变量解锁。</li>
-<li>use(使用): 作用于工作内存的变量，把工作内存中一个变量的值传递给执行引擎，每当虚拟机遇到一个需要使用到变量的值的字节码指令时将会执行这个操作。</li>
-<li>assign(赋值): 作用于工作内存的变量，它把一个从执行引擎接收到的值赋给工作内存的变量，每当虚拟机遇到一个变量复制的字节码指令时执行只个操作。</li>
-</ul>
-<p>下表的四条是与volatile实现内存的可见性直接相关的四条(store、write、read、load)</p>
-<ul>
-<li>store: 把工作内存中的变量的值传到主内存变量中。</li>
-<li>write: 把store操作从工作内存中得到的变量放到主内存的变量中</li>
-<li>read: 把一个变量的值从主内存中传输到线程的工作内存</li>
-<li>load: 把read操作从主内存中获取到的变量放到工作内存的变量中去</li>
-</ul>
-<p>注意：</p>
-<ul>
-<li>一个变量在同一时刻只允许一条线程对其进行lock操作</li>
-<li>lock操作会将该变量在所有线程工作内存中的变量副本清空，否则就起不到锁的作用了</li>
-<li>lock操作可被同一条线程多次进行，lock几次，就要unlock几次（可重入锁）</li>
-<li>unlock之前必须先执行store-write</li>
-<li>store-write必须成对出现（工作内存–&gt;主内存）</li>
-<li>read-load必须成对出现（主内存–&gt;工作内存）</li>
-</ul>
-<h3 id="内存访问重排序与Java内存模型"><a href="#内存访问重排序与Java内存模型" class="headerlink" title="内存访问重排序与Java内存模型"></a>内存访问重排序与Java内存模型</h3><p>根据Java内存模型中的规定，可以总结出以下几条happens-before规则。Happens-before的前后两个操作不会被重排序且后者对前者的内存可见。</p>
-<ul>
-<li>程序次序法则：线程中的每个动作A都happens-before于该线程中的每一个动作B，其中，在程序中，所有的动作B都能出现在A之后。</li>
-<li>监视器锁法则：对一个监视器锁的解锁 happens-before于每一个后续对同一监视器锁的加锁。</li>
-<li>volatile变量法则：对volatile域的写入操作happens-before于每一个后续对同一个域的读写操作。</li>
-<li>线程启动法则：在一个线程里，对Thread.start的调用会happens-before于每个启动线程的动作。</li>
-<li>线程终结法则：线程中的任何动作都happens-before于其他线程检测到这个线程已经终结、或者从Thread.join调用中成功返回，或Thread.isAlive返回false。</li>
-<li>中断法则：一个线程调用另一个线程的interrupt happens-before于被中断的线程发现中断。</li>
-<li>终结法则：一个对象的构造函数的结束happens-before于这个对象finalizer的开始。</li>
-<li>传递性：如果A happens-before于B，且B happens-before于C，则A happens-before于C</li>
-</ul>
-<h3 id="实现内存可见性："><a href="#实现内存可见性：" class="headerlink" title="实现内存可见性："></a>实现内存可见性：</h3><p>要实现共享变量的可见性，必须保证两点</p>
-<ul>
-<li>线程修改后的共享变量值能够及时从工作内存中刷新到主内存中</li>
-<li><p>其他线程能够及时把共享变量的最新值从主内存更新到自己的工作内存中<br>*</p>
-<h4 id="synchronized实现可见性"><a href="#synchronized实现可见性" class="headerlink" title="synchronized实现可见性"></a>synchronized实现可见性</h4><p>synchronized能够实现：</p>
-<ul>
-<li>原子性（同步）</li>
-<li>可见性</li>
-</ul>
-</li>
-</ul>
-<p>JMM关于synchronized的两条规定：</p>
-<ul>
-<li>线程解锁前，必须把共享变量的最新值刷新到主内存中</li>
-<li>线程加锁时，将清空工作内存中共享变量的值，从而使用共享变量时需要从主存中重新读取最新的值</li>
-</ul>
-<p>线程解锁前对共享变量的修改在下次加锁时对其他线程可见</p>
-<p>线程执行互斥代码的过程</p>
-<ol>
-<li>获得互斥锁</li>
-<li>清空工作内存</li>
-<li>从主内存拷贝变量的最新副本到工作内存</li>
-<li>执行代码</li>
-<li>将更改后的共享变量的值刷新到主内存中</li>
-<li>释放互斥锁</li>
-</ol>
-<h4 id="volatile实现可见性"><a href="#volatile实现可见性" class="headerlink" title="volatile实现可见性"></a>volatile实现可见性</h4><p>volatile关键字：</p>
-<ul>
-<li>能够保证volatile变量的可见性</li>
-<li>不能保证volatile变量复合操作的原子</li>
-</ul>
-<p>volatile如何实现内存的可见性 ：</p>
-<p>深入来说：通过加入<strong>内存屏障</strong>和<strong>禁止重排序优化</strong>来实现的</p>
-<ul>
-<li>在每个volatile写操作前插入StoreStore屏障，在写操作后插入StoreLoad屏障<ul>
-<li>在每个volatile读操作前插入LoadLoad屏障，在读操作后插入LoadStore屏障</li>
-</ul>
-</li>
-</ul>
-<p>通俗地讲：volatile变量在每次被线程访问时，都强迫从主内存中重读该变量的值，而当该变量发生变化时，又会强迫将最新的值刷新到主内存。这样任何时刻，不同的线程总能看到该变量的最新值。</p>
-<p>线程写volatile变量的过程：</p>
-<ol>
-<li>改变线程工作内存中volatile变量副本的值</li>
-<li>将改变后的副本的值从工作内存刷新到主内存</li>
-</ol>
-<p>线程读volatile变量的过程：</p>
-<ol>
-<li>从主内存中读取volatile变量的最新值到线程的工作内存中</li>
-<li>从工作内存中读取volatile变量的副本</li>
-</ol>
-<p>synchronized vs volatile</p>
-<ul>
-<li>volatile不需要加锁，比synchronized更轻量级，不会阻塞线程</li>
-<li>synchronized既能保证可见性，又能保证原子性，而volatile只能保证可见性，无法保证原子性</li>
-</ul>
-<hr>
-<h2 id="可作为GC-Root的对象"><a href="#可作为GC-Root的对象" class="headerlink" title="可作为GC Root的对象"></a>可作为GC Root的对象</h2><p>在Java虚拟机中判断一个对象是否可以被回收，有一种做法叫<strong>可达性分析</strong>算法，也就是从GC Root到各个对象，如果GC Root到某个对象还有可达的引用链，那么这个对象就还不能被回收，否则就等着被收割吧。</p>
-<p>所谓“GC roots”，或者说tracing GC的“根集合”，就是<strong>一组必须活跃的引用</strong>。<br>例如说，这些引用可能包括：</p>
-<ul>
-<li>所有Java线程当前活跃的栈帧里指向GC堆里的对象的引用；换句话说，当前所有正在被调用的方法的引用类型的<strong>参数</strong>/<strong>局部变量</strong>/<strong>临时值</strong>。</li>
-<li>VM的一些静态数据结构里指向GC堆里的对象的引用，例如说HotSpot VM里的Universe里有很多这样的引用。</li>
-<li>JNI handles，包括global handles和local handles</li>
-<li>（看情况）所有当前被加载的Java类</li>
-<li>（看情况）Java类的引用类型静态变量</li>
-<li>（看情况）Java类的运行时常量池里的引用类型常量（String或Class类型）</li>
-<li>（看情况）String常量池（StringTable）里的引用</li>
-</ul>
-<p>Tracing GC的根本思路就是：给定一个集合的引用作为根出发，通过引用关系遍历对象图，能被遍历到的（可到达的）对象就被判定为存活，其余对象（也就是没有被遍历到的）就自然被判定为死亡。注意再注意：tracing GC的本质是通过找出所有活对象来把其余空间认定为“无用”，而不是找出所有死掉的对象并回收它们占用的空间。</p>
-<hr>
-<h2 id="幂等性"><a href="#幂等性" class="headerlink" title="幂等性"></a>幂等性</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>幂等性原本是数学上的概念，即使公式：<code>f(x)=f(f(x))</code>  能够成立的数学性质。用在编程领域，则意为对同一个系统，使用同样的条件，一次请求和重复的多次请求对系统资源的影响是一致的。</p>
-<h3 id="幂等的常用思路"><a href="#幂等的常用思路" class="headerlink" title="幂等的常用思路"></a>幂等的常用思路</h3><h4 id="1-MVCC："><a href="#1-MVCC：" class="headerlink" title="1. MVCC："></a>1. MVCC：</h4><p>多版本并发控制，乐观锁的一种实现，在数据更新时需要去比较持有数据的版本号，版本号不一致的操作无法成功。例如博客点赞次数自动+1的接口：</p>
-<pre><code class="java">public boolean addCount(Long id, Long version);
-</code></pre>
-<pre><code class="sql">UPDATE blogTable SET count=count+1,version=version+1 WHERE id=321 AND version=123
-</code></pre>
-<p>每一个version只有一次执行成功的机会，一旦失败必须重新获取。</p>
-<h4 id="2-去重表"><a href="#2-去重表" class="headerlink" title="2. 去重表"></a>2. 去重表</h4><p>利用数据库表单的特性来实现幂等，常用的一个思路是在表上构建唯一性索引，保证某一类数据一旦执行完毕，后续同样的请求再也无法成功写入。</p>
-<p>例子还是上述的博客点赞问题，要想防止一个人重复点赞，可以设计一张表，将博客id与用户id绑定建立唯一索引，每当用户点赞时就往表中写入一条数据，这样重复点赞的数据就无法写入。</p>
-<h4 id="3-TOKEN机制："><a href="#3-TOKEN机制：" class="headerlink" title="3. TOKEN机制："></a>3. TOKEN机制：</h4><p>这种机制就比较重要了，适用范围较广，有多种不同的实现方式。其核心思想是为每一次操作生成一个唯一性的凭证，也就是token。<strong>一个token在操作的每一个阶段只有一次执行权</strong>，一旦执行成功则保存执行结果。对重复的请求，返回同一个结果。</p>
-<p>以电商平台为例子，电商平台上的订单id就是最适合的token。当用户下单时，会经历多个环节，比如生成订单，减库存，减优惠券等等。</p>
-<p>每一个环节执行时都先检测一下该订单id是否已经执行过这一步骤，对未执行的请求，执行操作并缓存结果，而对已经执行过的id，则直接返回之前的执行结果，不做任何操作。这样可以在最大程度上避免操作的重复执行问题，缓存起来的执行结果也能用于事务的控制等。</p>
-<hr>
-<h2 id="MySQL锁机制"><a href="#MySQL锁机制" class="headerlink" title="MySQL锁机制"></a>MySQL锁机制</h2><p>MySQL有三种锁的级别：页级、表级、行级。</p>
-<ul>
-<li>MyISAM 表级锁（table-level locking）</li>
-<li>MEMORY 表级锁（table-level locking）</li>
-<li>BDB 页面锁（page-levellocking），但也支持表级锁；</li>
-<li>InnoDB  既支持行级锁（row-level locking），也支持表级锁，但默认情况下是采用行级锁。</li>
-</ul>
-<p>以下讲的都是在innodb引擎的前提下。</p>
-<ol>
-<li>共享锁（Share Locks，即S锁），使用方式select … LOCK IN SHARE MODE<br>SELECT … FOR UPDATE同时只能有一个在语句执行，另一个会阻塞；SELECT … LOCK IN SHARE MODE可以多个同时执行（这也是和for update最大的区别）</li>
-</ol>
-<ol start="2">
-<li>排它锁（Exclusive Locks，即X锁），使用方式：select … FOR UPDATE<br>select … for update锁住的行记录，其它事务不可修改，如果有修改会wait直到锁释放（事务commit）或超时</li>
-</ol>
-<hr>
-<h2 id="MySQL-乐观锁与悲观锁"><a href="#MySQL-乐观锁与悲观锁" class="headerlink" title="MySQL 乐观锁与悲观锁"></a>MySQL 乐观锁与悲观锁</h2><h3 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h3><p>悲观锁（Pessimistic Lock），顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会block直到它拿到锁。</p>
-<h3 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h3><p>乐观锁（Optimistic Lock），顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在提交更新的时候会判断一下在此期间别人有没有去更新这个数据。乐观锁适用于读多写少的应用场景，这样可以提高吞吐量。</p>
-<p>乐观锁：假设不会发生并发冲突，只在提交操作时检查是否违反数据完整性。</p>
-<p>乐观锁一般来说有以下2种方式：</p>
-<ol>
-<li><p>使用数据版本（Version）记录机制实现，这是乐观锁最常用的一种实现方式。何谓数据版本？即为数据增加一个版本标识，一般是通过为数据库表增加一个数字类型的 “version” 字段来实现。当读取数据时，将version字段的值一同读出，数据每更新一次，对此version值加一。当我们提交更新的时候，判断数据库表对应记录的当前版本信息与第一次取出来的version值进行比对，如果数据库表当前版本号与第一次取出来的version值相等，则予以更新，否则认为是过期数据。</p>
-</li>
-<li><p>使用时间戳（timestamp）。乐观锁定的第二种实现方式和第一种差不多，同样是在需要乐观锁控制的table中增加一个字段，名称无所谓，字段类型使用时间戳（timestamp）, 和上面的version类似，也是在更新提交的时候检查当前数据库中数据的时间戳和自己更新前取到的时间戳进行对比，如果一致则OK，否则就是版本冲突。</p>
-</li>
-</ol>
-<h3 id="MySQL隐式和显示锁定"><a href="#MySQL隐式和显示锁定" class="headerlink" title="MySQL隐式和显示锁定"></a>MySQL隐式和显示锁定</h3><p>MySQL InnoDB采用的是两阶段锁定协议（two-phase locking protocol）。在事务执行过程中，随时都可以执行锁定，锁只有在执行 COMMIT或者ROLLBACK的时候才会释放，并且所有的锁是在同一时刻被释放。前面描述的锁定都是隐式锁定，InnoDB会根据事务隔离级别在需要的时候自动加锁。</p>
-<p>另外，InnoDB也支持通过特定的语句进行显示锁定，这些语句不属于SQL规范：</p>
-<ul>
-<li><code>SELECT ... LOCK IN SHARE MODE</code><br>是IS锁(意向共享锁)，即在符合条件的rows上都加了共享锁，这样的话，其他session可以读取这些记录，也可以继续添加IS锁，但是无法修改这些记录直到你这个加锁的session执行完成(否则直接锁等待超时)。 </li>
-<li><code>SELECT ... FOR UPDATE</code><br>是IX锁(意向排它锁),一种<code>行级锁</code>，一旦用户对某个行施加了行级加锁，则该用户可以查询也可以更新被加锁的数据行，其它用户只能查询但不能更新被加锁的数据行。真正对表进行更新时，是以独占方式锁表，一直到提交或复原该事务为止。行锁永远是独占方式锁。</li>
-</ul>
-<p>总结：经过测试， 这两种模式加锁的<strong>表</strong>无数据的情况下，锁不会起作用，必须加锁的表必须有数据。 lock in share mode 也叫<strong>间隙锁</strong>，带where 条件加锁，where字段是整型并且是主键，会变成行锁。</p>
-<h3 id="乐观锁与悲观锁的区别"><a href="#乐观锁与悲观锁的区别" class="headerlink" title="乐观锁与悲观锁的区别"></a>乐观锁与悲观锁的区别</h3><p>乐观锁的思路一般是表中增加版本字段，更新时where语句中增加版本的判断，算是一种CAS（Compare And Swep）操作，商品库存场景中number起到了版本控制（相当于version）的作用（ AND number=#{number}）。</p>
-<p>悲观锁之所以是悲观，在于他认为本次操作会发生并发冲突，所以一开始就对商品加上锁（SELECT … FOR UPDATE），然后就可以安心的做判断和更新，因为这时候不会有别人更新这条商品库存。</p>
-<hr>
-<h2 id="消费者的推拉模式"><a href="#消费者的推拉模式" class="headerlink" title="消费者的推拉模式"></a>消费者的推拉模式</h2><p>消息中间件的主要功能是消息的路由(Routing)和缓存(Buffering)。在AMQP中提供类似功能的两种域模型：Exchange 和 Message queue。</p>
-<p>JMS中定义了两种消息模型：点对点（point to point， queue）和发布/订阅（publish/subscribe，topic）。主要区别就是是否能重复消费。</p>
-<h3 id="点对点：Queue，不可重复消费"><a href="#点对点：Queue，不可重复消费" class="headerlink" title="点对点：Queue，不可重复消费"></a>点对点：Queue，不可重复消费</h3><p>消息生产者生产消息发送到queue中，然后消息消费者从queue中取出并且消费消息。消息被消费以后，queue中<strong>不再有存储</strong>，所以消息消费者不可能消费到已经被消费的消息。<br>Queue支持存在多个消费者，但是对一个消息而言，只会有一个消费者可以消费。<br>注：Kafka不遵守JMS协议，所以Kafka实际应用中，很可能会需要ack(确认)，然后多个消费者能够会同时消费。。需要具体看。</p>
-<h3 id="发布-订阅：Topic，可以重复消费"><a href="#发布-订阅：Topic，可以重复消费" class="headerlink" title="发布/订阅：Topic，可以重复消费"></a>发布/订阅：Topic，可以重复消费</h3><p>消息生产者（发布）将消息发布到topic中，同时有多个消息消费者（订阅）消费该消息。<br>和点对点方式不同，发布到topic的消息会被所有订阅者消费。</p>
-<p>支持订阅组的发布订阅模式：</p>
-<p>发布订阅模式下，当发布者消息量很大时，显然单个订阅者的处理能力是不足的。实际上现实场景中是多个订阅者节点组成一个订阅组负载均衡消费topic消息即分组订阅，这样订阅者很容易实现消费能力线性扩展。</p>
-<h3 id="消费者获取消息：Push和Pull"><a href="#消费者获取消息：Push和Pull" class="headerlink" title="消费者获取消息：Push和Pull"></a>消费者获取消息：Push和Pull</h3><ul>
-<li>Push方式：由消息中间件主动地将消息推送给消费者；</li>
-<li>Pull方式：由消费者主动向消息中间件拉取消息。</li>
-</ul>
-<p>流行模型比较：</p>
-<ul>
-<li>RabbitMQ<br>既支持内存队列也支持持久化队列，消费端为<strong>Push</strong>模型，消费状态和订阅关系由服务端负责维护，消息消费完后立即删除，不保留历史消息。</li>
-<li>Kafka<br>只支持消息持久化，消费端为<strong>Pull</strong>模型，消费状态和订阅关系由客户端端负责维护，消息消费完后不会立即删除，会保留历史消息。</li>
-<li>ActiveMQ<br>一条消息从producer端发出之后，一旦被broker正确保存，那么它将会被consumer消费，然后ACK，broker端才会删除；不过当消息过期或者存储设备溢出时，也会终结它。</li>
-</ul>
-<hr>
-<h2 id="高并发系统的限流，缓存，降级"><a href="#高并发系统的限流，缓存，降级" class="headerlink" title="高并发系统的限流，缓存，降级"></a>高并发系统的限流，缓存，降级</h2><h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p>在大型高并发系统中，如果没有缓存数据库将分分钟被爆，系统也会瞬间瘫痪。使用缓存不单单能够提升系统访问速度、提高并发访问量，也是<strong>保护数据库、保护系统</strong>的有效方式。<br>大型网站一般主要是“读”，缓存的使用很容易被想到。在大型“写”系统中，缓存也常常扮演者非常重要的角色。比如累积一些数据批量写入，内存里面的缓存队列（生产消费），以及HBase写数据的机制等等也都是通过缓存提升系统的吞吐量或者实现系统的保护措施。甚至消息中间件，你也可以认为是一种分布式的数据缓存。</p>
-<h3 id="降级"><a href="#降级" class="headerlink" title="降级"></a>降级</h3><p>服务降级是当服务器压力剧增的情况下，根据当前业务情况及流量对一些服务和页面有策略的降级，以此<strong>释放服务器资源以保证核心任务的正常运行</strong>。降级往往会指定不同的级别，面临不同的异常等级执行不同的处理。根据服务方式：可以拒接服务，可以延迟服务，也有时候可以随机服务。根据服务范围：可以砍掉某个功能，也可以砍掉某些模块。总之服务降级需要根据不同的业务需求采用不同的降级策略。主要的目的就是服务虽然有损但是总比没有好。</p>
-<h3 id="限流"><a href="#限流" class="headerlink" title="限流"></a>限流</h3><p>限流可以认为服务降级的一种，限流就是限制系统的输入和输出流量已达到保护系统的目的。一般来说系统的吞吐量是可以被测算的，为了保证系统的稳定运行，一旦达到的需要限制的阈值，就需要限制流量并采取一些措施以完成限制流量的目的。比如：延迟处理，拒绝处理，或者部分拒绝处理等等。</p>
-<h4 id="限流算法"><a href="#限流算法" class="headerlink" title="限流算法"></a>限流算法</h4><ol>
-<li><p>计数器<br>计数器是最简单粗暴的算法。比如某个服务最多只能每秒钟处理100个请求。我们可以设置一个1秒钟的滑动窗口，窗口中有10个格子，每个格子100毫秒，每100毫秒移动一次，每次移动都需要记录当前服务请求的次数。内存中需要保存10次的次数。可以用数据结构LinkedList来实现。格子每次移动的时候判断一次，当前访问次数和LinkedList中最后一个相差是否超过100，如果超过就需要限流了。</p>
-</li>
-<li><p>漏桶<br>漏桶算法即leaky bucket是一种非常常用的限流算法，可以用来实现流量整形（Traffic Shaping）和流量控制（Traffic Policing）。</p>
-</li>
-</ol>
-<p>漏桶算法的主要概念如下：</p>
-<ol>
-<li>一个固定容量的漏桶，按照常量固定速率流出水滴；</li>
-<li>如果桶是空的，则不需流出水滴；<br>3.可以以任意速率流入水滴到漏桶；</li>
-<li>如果流入水滴超出了桶的容量，则流入的水滴溢出了（被丢弃），而漏桶容量是不变的</li>
-</ol>
-<p>漏桶算法比较好实现，在单机系统中可以使用队列来实现，在分布式环境中消息中间件或者Redis都是可选的方案。</p>
-<ol start="3">
-<li>令牌桶</li>
-</ol>
-<p>令牌桶算法是一个存放固定容量令牌（token）的桶，按照固定速率往桶里添加令牌。令牌桶算法基本可以用下面的几个概念来描述：</p>
-<ol>
-<li>令牌将按照固定的速率被放入令牌桶中。比如每秒放10个。</li>
-<li>桶中最多存放b个令牌，当桶满时，新添加的令牌被丢弃或拒绝。</li>
-<li>当一个n个字节大小的数据包到达，将从桶中删除n个令牌，接着数据包被发送到网络上。</li>
-<li>如果桶中的令牌不足n个，则不会删除令牌，且该数据包将被限流（要么丢弃，要么缓冲区等待）。</li>
-</ol>
-<p>漏桶和令牌桶的比较</p>
-<p>令牌桶可以在运行时控制和调整数据处理的速率，处理某时的突发流量。放令牌的频率增加可以提升整体数据处理的速度，而通过每次获取令牌的个数增加或者放慢令牌的发放速度和降低整体数据处理速度。而漏桶不行，因为它的流出速率是固定的，程序处理速度也是固定的。</p>
-<p>整体而言，令牌桶算法更优，但是实现更为复杂一些。</p>
-<hr>
+<h3 class="mume-header" id="412-%E4%BE%9D%E8%B5%96%E7%8A%B6%E6%80%81%E7%9A%84%E6%93%8D%E4%BD%9C">4.1.2 依赖状态的操作</h3>
 
+<h3 class="mume-header" id="413-%E7%8A%B6%E6%80%81%E7%9A%84%E6%89%80%E6%9C%89%E6%9D%83">4.13 状态的所有权</h3>
+
+<h3 class="mume-header" id="42-%E5%AE%9E%E4%BE%8B%E5%B0%81%E9%97%AD">4.2 实例封闭</h3>
+
+<p>将数据封闭在对象内部，可以将数据的访问限制在对象的方法上，从而更加容易确保在访问数据时总能持有正确的锁。</p>
+<p>封闭机制更加易于构造线程安全的类，因为当封闭类的状态时，在分析类的线程安全性时就无需检查整个程序。</p>
+<h3 class="mume-header" id="421-java%E7%9B%91%E8%A7%86%E5%99%A8%E6%A8%A1%E5%BC%8F">4.2.1 Java监视器模式</h3>
+
+<p>通过一个私有锁来保护状态</p>
+<pre data-role="codeBlock" data-info="java" class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PrivateLock</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> Object myLock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@GuardedBy</span><span class="token punctuation">(</span><span class="token string">"myLock"</span><span class="token punctuation">)</span> Widget widget<span class="token punctuation">;</span>
+
+    <span class="token keyword">void</span> <span class="token function">someMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">synchronized</span><span class="token punctuation">(</span>myLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// 访问或修改Widget的状态</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</pre><h3 class="mume-header" id="422-%E5%AE%9E%E4%BE%8B%E8%BD%A6%E8%BE%86%E8%BF%BD%E8%B8%AA">4.2.2 实例:车辆追踪</h3>
+
+<h2 class="mume-header" id="43-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7%E7%9A%84%E5%A7%94%E6%89%98">4.3 线程安全性的委托</h2>
+
+<h3 class="mume-header" id="431-%E7%A4%BA%E4%BE%8B%E5%9F%BA%E4%BA%8E%E5%A7%94%E6%89%98%E7%9A%84%E8%BD%A6%E8%BE%86%E8%B7%9F%E8%B8%AA%E5%99%A8">4.3.1 示例:基于委托的车辆跟踪器</h3>
+
+<h3 class="mume-header" id="432-%E7%8B%AC%E7%AB%8B%E7%9A%84%E7%8A%B6%E6%80%81%E5%8F%98%E9%87%8F">4.3.2 独立的状态变量</h3>
+
+<h3 class="mume-header" id="433-%E5%BD%93%E5%A7%94%E6%89%98%E5%A4%B1%E6%95%88%E6%97%B6">4.3.3 当委托失效时</h3>
+
+<p>如果一个类时由多个独立且线程安全的状态变量组成，并且在所有的操作中都不包含无效状态转换，那么可以将线程安全性安全性委托给底层的状态变量。</p>
+<p>如果一个状态变量是线程安全的，并且没有任何不变性条件来约束它的值，在变量的操作上也不存在任何不允许的状态转换，那么就可以说安全地发布这个变量。</p>
+<h2 class="mume-header" id="44-%E5%9C%A8%E7%8E%B0%E6%9C%89%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%B1%BB%E4%B8%AD%E6%B7%BB%E5%8A%A0%E5%8A%9F%E8%83%BD">4.4 在现有的线程安全类中添加功能</h2>
+
+<p>扩展Vector并增加一个&quot;若没有则添加&quot;方法</p>
+<pre data-role="codeBlock" data-info="java" class="language-java"><span class="token annotation punctuation">@TheadSafe</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BetterVector</span><span class="token generics function"><span class="token punctuation">&lt;</span>E<span class="token punctuation">></span></span> <span class="token keyword">extends</span> <span class="token class-name">Vector</span><span class="token generics function"><span class="token punctuation">&lt;</span>E<span class="token punctuation">></span></span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">boolean</span> <span class="token function">putIfAbsent</span><span class="token punctuation">(</span>E x<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">boolean</span> absent <span class="token operator">=</span> <span class="token operator">!</span><span class="token function">contains</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>absent<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">add</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> absent<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</pre><p>&quot;扩展&quot;方法比直接将代码添加到类中更加脆弱，因为现在的同步策略实现被分布到多个单独维护的源代码文件中。</p>
+<h3 class="mume-header" id="441-%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%8A%A0%E9%94%81%E6%9C%BA%E5%88%B6">4.4.1 客户端加锁机制</h3>
+
+<p>非现象安全的&quot;若没有则添加&quot;（不要这么做）</p>
+<pre data-role="codeBlock" data-info="java" class="language-java"><span class="token annotation punctuation">@NotThreadSafe</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ListHelper</span><span class="token generics function"><span class="token punctuation">&lt;</span>E<span class="token punctuation">></span></span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> List<span class="token generics function"><span class="token punctuation">&lt;</span>E<span class="token punctuation">></span></span> list <span class="token operator">=</span> Colletions<span class="token punctuation">.</span><span class="token function">synchronizedList</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics function"><span class="token punctuation">&lt;</span>E<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    pblic <span class="token keyword">synchronized</span> <span class="token keyword">boolean</span> <span class="token function">putIfAbsent</span><span class="token punctuation">(</span>E x<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">boolean</span> absent <span class="token operator">=</span> list<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>absent<span class="token punctuation">)</span>
+            list<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> absent<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</pre><p>ListHelper只是带来了同步的假象，尽管所有的链表操作都被声明为synchronized,但是却<strong>使用了不同的锁</strong>。(list本身的锁和ListHelper对象的锁)</p>
+<p>通过客户端加锁来实现“若没有则添加”（线程安全）</p>
+<pre data-role="codeBlock" data-info="java" class="language-java"><span class="token annotation punctuation">@ThreadSafe</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ListHelper</span><span class="token generics function"><span class="token punctuation">&lt;</span>E<span class="token punctuation">></span></span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> List<span class="token generics function"><span class="token punctuation">&lt;</span>E<span class="token punctuation">></span></span> list <span class="token operator">=</span> Colletions<span class="token punctuation">.</span><span class="token function">synchronizedList</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics function"><span class="token punctuation">&lt;</span>E<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    pblic <span class="token keyword">boolean</span> <span class="token function">putIfAbsent</span><span class="token punctuation">(</span>E x<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">synchronized</span><span class="token punctuation">(</span>list<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">boolean</span> absent <span class="token operator">=</span> list<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>absent<span class="token punctuation">)</span>
+            list<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> absent<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</pre><h3 class="mume-header" id="442-%E7%BB%84%E5%90%88">4.4.2 组合</h3>
+
+<p>通过组合实现“若没有则添加”</p>
+<pre data-role="codeBlock" data-info="java" class="language-java"><span class="token annotation punctuation">@ThreadSafe</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ImporvedList</span><span class="token generics function"><span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span> <span class="token keyword">implements</span> <span class="token class-name">List</span><span class="token generics function"><span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> List<span class="token generics function"><span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span> list<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">ImprovedList</span><span class="token punctuation">(</span>List<span class="token generics function"><span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span> list<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">this</span><span class="token punctuation">.</span>list <span class="token operator">=</span> list<span class="token punctuation">;</span><span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">boolean</span> <span class="token function">putIfAbsent</span><span class="token punctuation">(</span>T x<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">boolean</span> contains <span class="token operator">=</span> list<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>contains<span class="token punctuation">)</span>
+            list<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token operator">!</span>contains<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        lsit<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// ... 按照类似的方法委托List的其他方法</span>
+<span class="token punctuation">}</span>
+</pre><p>事实上，我们使用了Java监视器模式来封装现有的List,并且只要在类中拥有指向底层List的<strong>唯一</strong>外部引用，就能确保线程安全性。</p>
+<h2 class="mume-header" id="45-%E5%B0%86%E5%90%8C%E6%AD%A5%E7%AD%96%E7%95%A5%E6%96%87%E6%A1%A3%E5%8C%96">4.5 将同步策略文档化</h2>
+
+<blockquote>
+<p>在文档中说明客户端代码需要了解的线程安全性保证，以及代码人员需要了解的同步策略。</p>
+</blockquote>
+
+      </div>
+      
+      
+    </body>
+    
+    
+    
+    
+    
+    
+    
+  </html>
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/14/零碎的知识点-4/" data-id="cjsfvutgn0037rovt5bid1ivz" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/08/01/读书笔记/《Java并发编程实战》-3/" data-id="cjys176cq00427ovtmayikve9" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -564,7 +459,7 @@
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="零碎的知识点-4" ></div> 
+<div id="SOHUCS" sid="读书笔记/《Java并发编程实战》-3" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -582,242 +477,356 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-零碎的知识点-3" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-读书笔记/《Java并发编程实战》-15" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/14/零碎的知识点-3/" class="article-date">
-  <time datetime="2018-08-14T09:26:06.062Z" itemprop="datePublished">2018-08-14</time>
+    <h3 href="/2019/08/01/读书笔记/《Java并发编程实战》-15/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.072Z" itemprop="datePublished">2019-08-01</time>
 </h3>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/零碎的知识点/">零碎的知识点</a>
-  </div>
-
   </div>
   <div class="article-inner">
   <div class="curve-down">
   <div class="fill-content">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/14/零碎的知识点-3/">零碎的知识点-3</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="零碎的知识点-3"><a href="#零碎的知识点-3" class="headerlink" title="零碎的知识点-3"></a>零碎的知识点-3</h1><hr>
-<h2 id="TCP拥塞控制-慢启动、拥塞避免、快重传、快启动"><a href="#TCP拥塞控制-慢启动、拥塞避免、快重传、快启动" class="headerlink" title="TCP拥塞控制-慢启动、拥塞避免、快重传、快启动"></a>TCP拥塞控制-慢启动、拥塞避免、快重传、快启动</h2><p>一般原理：发生拥塞控制的原因：资源(带宽、交换节点的缓存、处理机)的需求&gt;可用资源。</p>
-<p>作用：拥塞控制就是为了防止过多的数据注入到网络中，这样可以使网络中的路由器或者链路不至于过载。拥塞控制要做的都有一个前提：就是网络能够承受现有的网络负荷。</p>
-<p>对比流量控制：拥塞控制是一个全局的过程，涉及到所有的主机、路由器、以及降低网络相关的所有因素。流量控制往往指点对点通信量的控制。是端对端的问题。</p>
-<p><strong>拥塞窗口</strong>：发送方为一个动态变化的窗口叫做拥塞窗口，拥塞窗口的大小取决于网络的拥塞程度。发送方让自己的发送窗口等于拥塞窗口，但是发送窗口不是一直等于拥塞窗口的，在网络情况好的时候，拥塞窗口不断的增加，发送方的窗口自然也随着增加，但是接受方的接受能力有限，在发送方的窗口达到某个大小时就不在发生变化了。</p>
-<p>发送方如果知道网络拥塞了呢？发送方发送一些报文段时，如果发送方没有在时间间隔内收到接收方的确认报文段，则就可以人为网络出现了拥塞。</p>
-<p><strong>慢启动算法的思路</strong>：主机开发发送数据报时，如果立即将大量的数据注入到网络中，可能会出现网络的拥塞。慢启动算法就是在主机刚开始发送数据报的时候先探测一下网络的状况，如果网络状况良好，发送方每发送一次文段都能正确的接受确认报文段。那么就从小到大的增加拥塞窗口的大小，即增加发送窗口的大小。</p>
-<p><img src="https://img-blog.csdn.net/20180808175025408?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="慢开始和拥塞避免算法的实现举例"></p>
-<p><strong>拥塞避免</strong>：为了防止cwnd增加过快而导致网络拥塞，所以需要设置一个<strong>慢开始门限</strong>ssthresh状态变量（拥塞控制的标识）,它的用法：</p>
-<pre><code>               1. 当cwnd &lt; ssthresh,使用慢启动算法，
+        <!DOCTYPE html>
+  <html>
+    <head>
+      <title>《Java并发编程实战》-15   第16章 Java内存模型</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///C:\Users\gonefuture\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.3.5\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
 
-               2. 当cwnd &gt; ssthresh,使用拥塞控制算法，停用慢启动算法。
+      <style> 
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
 
-               3. 当cwnd = ssthresh，这两个算法都可以。
-</code></pre><p>拥塞避免的思路：是让cwnd缓慢的增加而不是加倍的增长，每经历过一次往返时间就使cwnd增加1，而不是加倍，这样使cwnd缓慢的增长，比慢启动要慢的多。</p>
-<p>无论是慢启动算法还是拥塞避免算法，只要判断网络出现拥塞，就要把慢启动开始门限(ssthresh)设置为设置为发送窗口的一半（&gt;=2），cwnd(拥塞窗口)设置为1，然后在使用慢启动算法，这样做的目的能迅速的减少主机向网络中传输数据，使发生拥塞的路由器能够把队列中堆积的分组处理完毕。拥塞窗口是按照线性的规律增长，比慢启动算法拥塞窗口增长块的多。</p>
-<p><strong>快重传</strong>：快重传算法要求首先接收方收到一个失序的报文段后就立刻发出重复确认，而不要等待自己发送数据时才进行捎带确认。接收方成功的接受了发送方发送来的M1、M2并且分别给发送了ACK，现在接收方没有收到M3，而接收到了M4，显然接收方不能确认M4，因为M4是失序的报文段。如果根据可靠性传输原理接收方什么都不做，但是按照快速重传算法，在收到M4、M5等报文段的时候，不断重复的向发送方发送M2的ACK,如果接收方一连收到三个重复的ACK,那么发送方不必等待重传计时器到期，由于发送方尽早重传未被确认的报文段。</p>
-<p><img src="https://img-blog.csdn.net/20180808175132761?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="快重传示意图"></p>
-<p><strong>快恢复</strong>：</p>
-<ol>
-<li>当发送发连续接收到三个确认时，就执行乘法减小算法，把慢启动开始门限（ssthresh）减半，但是接下来并不执行慢开始算法。</li>
-<li>此时不执行慢启动算法，而是把cwnd设置为ssthresh的一半， 然后执行拥塞避免算法，使拥塞窗口缓慢增大。</li>
-</ol>
-<p><img src="https://img-blog.csdn.net/20180808175548267?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="快恢复"></p>
-<hr>
-<h2 id="TCP报头"><a href="#TCP报头" class="headerlink" title="TCP报头"></a>TCP报头</h2><p>TCP/IP协议栈主要分为四层:应用层、传输层、网络层、数据链路层,每层都有相应的协议，如下图</p>
-<p><img src="https://img-blog.csdn.net/20180809093940441?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP/IP协议体系"></p>
-<p>TCP数据报头格式：<br><img src="https://img-blog.csdn.net/20180809101737547?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP数据报头格式"></p>
-<ul>
-<li>端口号：32位，16位源端口+16位目的端口， 最大端口为65536</li>
-<li>位序号：32位，也称顺序号，简写位SEQ。</li>
-<li><strong>确认序号</strong>：32位，简写为ACK，在握手阶段，确认序号将发送方的序号加1作为回答。</li>
-<li>数据偏移：规定了整个报头的长度。</li>
-<li>6位标志字段：<ul>
-<li>ACK 置1时表示确认号（为合法，为0的时候表示数据段不包含确认信息，确认号被忽略。</li>
-<li>RST 置1时重建连接。如果接收到RST位时候，通常发生了某些错误。</li>
-<li>SYN 置1时用来发起一个连接。</li>
-<li>FIN 置1时表示发端完成发送任务。用来释放连接，表明发送方已经没有数据发送了。</li>
-<li>URG 紧急指针，告诉接收TCP模块紧要指针域指着紧要数据。注：一般不使用。</li>
-<li>PSH 置1时请求的数据段在接收方得到后就可直接送到应用程序，而不必等到缓冲区满时才传送。注：一般不使用。</li>
-</ul>
-</li>
-<li><strong>检验和</strong>：16位，检验和覆盖了整个的TCP报文段： TCP首部和TCP数据。这是一个强制性的字段，一定是由发端计算和存储，并由收端进行验证。</li>
-<li>紧急指针：16位，一般不用。</li>
-<li>可选与变长选项：通常为空，可根据首部长度推算。用于发送方与接收方协商最大报文段长度（MSS，1460是以太网默认的大小），或在高速网络环境下作窗口调节因子时使用。首部字段还定义了一个时间戳选项。</li>
-</ul>
-<hr>
-<h2 id="UDP报头"><a href="#UDP报头" class="headerlink" title="UDP报头"></a>UDP报头</h2><p>UDP协议也是传输层协议，它是无连接，不保证可靠的传输层协议。<br><img src="https://img-blog.csdn.net/20180809100821202?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="UDP报头"></p>
-<ul>
-<li>源端口：16位，源端口是一个大于1023的16位数字，由基于UDP应用程序的用户进程随机选择。</li>
-<li>目的端口：16位，</li>
-<li>数据包长度：16位，指明了包括首部在内的UDP报文段长度。UDP长字段的值是UDP报文头的长度(8字节)与UDP所携带数据长度的总和。</li>
-<li>校验和：16位，是指整个UDP报文头和UDP所带的数据的校验和（也包括伪报文头）。伪报文头不包括在真正的UDP报文头中，但是它可以保证UDP数据被正确的主机收到了。因在校验和中加入了伪头标，故ICMP除能防止单纯数据差错之外，对IP分组也具有保护作用。</li>
-</ul>
-<hr>
-<h2 id="DNS解析过程"><a href="#DNS解析过程" class="headerlink" title="DNS解析过程"></a>DNS解析过程</h2><p>DNS（Domain Name System，域名系统），DNS协议运行在<strong>UDP协议</strong>之上，使用端口号53。</p>
-<p>主机解析域名的顺序</p>
-<ol>
-<li>浏览器缓存：浏览器会按照一定的频率缓存DNS记录。</li>
-<li>操作系统缓存：如果浏览器缓存中找不到需要的DNS记录，那就去操作系统中找（如/etc/hosts文件）。</li>
-<li>路由缓存：路由器也有DNS缓存。</li>
-<li>ISP的DNS服务器：ISP是互联网服务提供商(Internet Service Provider)的简称，ISP有专门的DNS服务器应对DNS查询请求。</li>
-<li>根服务器：ISP的DNS服务器还找不到的话，它就会向根服务器发出请求，进行递归查询（DNS服务器先问根域名服务器.com域名服务器的IP地址，然后再问.com域名服务器，依次类推）。（root -&gt; com -&gt; baidu.com）</li>
-</ol>
-<hr>
-<h2 id="get和post请求的区别"><a href="#get和post请求的区别" class="headerlink" title="get和post请求的区别"></a>get和post请求的区别</h2><p>GET的语义是请求获取指定的资源。GET方法是安全、<strong>幂等</strong>、可缓存的（除非有 Cache-ControlHeader的约束）,GET方法的报文主体没有任何语义。</p>
-<p>POST的语义是根据请求负荷（报文主体）对指定的资源做出处理，具体的处理方式视资源类型而不同。POST不安全，<strong>不幂等</strong>，（大部分实现）不可缓存。</p>
-<ul>
-<li>GET后退按钮/刷新无害，POST数据会被重新提交（浏览器应该告知用户数据会被重新提交）。</li>
-<li>GET书签可收藏，POST为书签不可收藏。</li>
-<li>GET能被缓存，POST不能缓存 。</li>
-<li>GET编码类型application/x-www-form-url，POST编码类型encodedapplication/x-www-form-urlencoded 或 multipart/form-data。为二进制数据使用多重编码。</li>
-<li>GET历史参数保留在浏览器历史中。POST参数不会保存在浏览器历史中。</li>
-<li>GET对数据长度有限制，当发送数据时，GET 方法向 URL 添加数据；URL 的长度是受限制的（URL 的最大长度是 2048 个字符）。POST无限制。</li>
-<li>GET只允许 ASCII 字符。POST没有限制。也允许二进制数据。与 POST 相比，GET 的安全性较差，因为所发送的数据是 URL 的一部分。在发送密码或其他敏感信息时绝不要使用 GET ！</li>
-</ul>
-<hr>
-<h2 id="http和https区别，https在请求时额外的过程，https是如何保证数据安全的"><a href="#http和https区别，https在请求时额外的过程，https是如何保证数据安全的" class="headerlink" title="http和https区别，https在请求时额外的过程，https是如何保证数据安全的"></a>http和https区别，https在请求时额外的过程，https是如何保证数据安全的</h2><p>http是应用层协议，它会将要传输的数据以明文的方式给传输层，这样显然不安全。https则是在应用层与传输层之间又加了一层，该层遵守SSL/TLS协议。</p>
-<p>加密的方式有两种，</p>
-<ul>
-<li>对称加密：对称加密速度快，但是加密和解密的钥匙是相同的。</li>
-<li>非对称加密，算法更加复杂，速度慢，加密和解密钥匙不相同。</li>
-</ul>
-<p>在https中，加密过程大致如下：<br>首先服务器将公钥给浏览器，浏览器拿到公钥之后，生成一个“会话密钥”，这个会话密钥属于对称加密，然后用公钥加密这个“会话密钥”发送给服务器，最后，在数据传输的过程中，就用这个会话密钥来加密数据。打个比方：我有二把钥匙，我把其中一把钥匙放在信封里，然后把信封交给你。但是这个信封只有你能打开。</p>
-<p>上述的过程是在3次握手中完成，采用明文发送，握手完成以后，客户端和服务端就约定好了“会话密钥”，以后的数据传输，就采用这个会话密钥加密。</p>
-<p>在上述的过程中要注意<br>公钥怎么给客户端？<br>如果公钥A在发送给客户端的过程中，被截取，被黑客替换成了公钥B，以后的事情可想而知，你就会用公钥B加密“会话密钥”，然后。。。你的隐私就被窃取喽。对于这个问题，要引入证书和数据签名的概念。</p>
-<hr>
-<h2 id="Java正则表达式"><a href="#Java正则表达式" class="headerlink" title="Java正则表达式"></a>Java正则表达式</h2><p>java.util.regex 包主要包括以下三个类：</p>
-<ul>
-<li><p>Pattern 类：<br>pattern 对象是一个正则表达式的编译表示。Pattern 类没有公共构造方法。要创建一个 Pattern 对象，你必须首先调用其公共静态编译方法，它返回一个 Pattern 对象。该方法接受一个正则表达式作为它的第一个参数。</p>
-</li>
-<li><p>Matcher 类：<br>Matcher 对象是对输入字符串进行解释和匹配操作的引擎。与Pattern 类一样，Matcher 也没有公共构造方法。你需要调用 Pattern 对象的 matcher 方法来获得一个 Matcher 对象。</p>
-</li>
-</ul>
-<p>PatternSyntaxException：<br>PatternSyntaxException 是一个非强制异常类，它表示一个正则表达式模式中的语法错误。</p>
-<h3 id="捕获组"><a href="#捕获组" class="headerlink" title="捕获组"></a>捕获组</h3><p>捕获组是把多个字符当一个单独单元进行处理的方法，它通过对括号内的字符分组来创建。</p>
-<pre><code class="java">      // 按指定模式在字符串查找
-      String line = &quot;This order was placed for QT3000! OK?&quot;;
-      String pattern = &quot;(\\D*)(\\d+)(.*)&quot;;
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
 
-      // 创建 Pattern 对象
-      Pattern r = Pattern.compile(pattern);
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
 
-      // 现在创建 matcher 对象
-      Matcher m = r.matcher(line);
-      if (m.find( )) {
-         System.out.println(&quot;Found value: &quot; + m.group(0) );
-         System.out.println(&quot;Found value: &quot; + m.group(1) );
-         System.out.println(&quot;Found value: &quot; + m.group(2) );
-         System.out.println(&quot;Found value: &quot; + m.group(3) ); 
-      } else {
-         System.out.println(&quot;NO MATCH&quot;);
-      }
-</code></pre>
-<p><strong>切记，要先调用find( )方法才能调用group()方法</strong></p>
-<hr>
-<h2 id="初步理解AQS"><a href="#初步理解AQS" class="headerlink" title="初步理解AQS"></a>初步理解AQS</h2><p>AQS全称AbstractQueuedSynchronizer，它是concurrent包中最重要的基础设施类之一，负责作为模板类向业务层提供对临界区的管理。AQS定义了一套多线程访问共享资源的同步器框架，许多同步类实现都依赖于它，如常用的ReentrantLock/Semaphore/CountDownLatch/FutureTask。</p>
-<p>它维护了一个volatile int state（代表共享资源）和一个FIFO线程等待队列（多线程争用资源被阻塞时会进入此队列）。这里volatile是核心关键词，具体volatile的语义，</p>
-<p>AQS定义两种资源共享方式：Exclusive（独占，只有一个线程能执行，如ReentrantLock）和Share（共享，多个线程可同时执行，如Semaphore/CountDownLatch）。</p>
-<p>以ReentrantLock为例，state初始化为0，表示未锁定状态。A线程lock()时，会调用tryAcquire()独占该锁并将state+1。此后，其他线程再tryAcquire()时就会失败，直到A线程unlock()到state=0（即释放锁）为止，其它线程才有机会获取该锁。当然，释放锁之前，A线程自己是可以重复获取此锁的（state会累加），这就是可重入的概念。但要注意，获取多少次就要释放多么次，这样才能保证state是能回到零态的。</p>
-<p>再以CountDownLatch以例，任务分为N个子线程去执行，state也初始化为N（注意N要与线程个数一致）。这N个子线程是并行执行的，每个子线程执行完后countDown()一次，state会CAS减1。等到所有子线程都执行完后(即state=0)，会unpark()主调用线程，然后主调用线程就会从await()函数返回，继续后余动作。</p>
-<p>一般来说，自定义同步器要么是独占方法，要么是共享方式，他们也只需实现tryAcquire-tryRelease、tryAcquireShared-tryReleaseShared中的一种即可。但AQS也支持自定义同步器同时实现独占和共享两种方式，如ReentrantReadWriteLock。</p>
-<table>
-<thead>
-<tr>
-<th>类名</th>
-<th>互斥锁</th>
-<th>资源</th>
-<th>如何访问</th>
-<th>备注</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mutex</td>
-<td>互斥锁</td>
-<td>1</td>
-<td>仅排他</td>
-<td>出现在AQS类的注释中</td>
-</tr>
-<tr>
-<td>Semaphore</td>
-<td>信号量</td>
-<td>可指定（构造参数permits）</td>
-<td>仅共享</td>
-</tr>
-<tr>
-<td>ReentrantReadWriteLock</td>
-<td>读写（可重入）锁</td>
-<td>无上限（实际为16位unsigned short）</td>
-<td>读写共享访问，写锁排他访问</td>
-<td>可重入</td>
-</tr>
-</tbody>
-</table>
-<h3 id="复用AQS"><a href="#复用AQS" class="headerlink" title="复用AQS"></a>复用AQS</h3><p>Step1/3. 定义state。<br>state是一个int，它没有具体语义，但作为AQS的核心成员变量，可根据业务类的需要赋予state具体的语义。</p>
-<p>| 方法 | 简介 |<br>| getState() | 读状态 | setState (int newState) | 写状态 |<br>| compareAndSetState (int expect, int update) | CAS写状态 |</p>
-<p>Step2/3. 新建内部类Sync，继承自AQS并按需实现钩子方法</p>
-<table>
-<thead>
-<tr>
-<th>钩子方法</th>
-<th>简介</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>tryAcquire (int arg)</td>
-<td>排他获取(资源数)</td>
-</tr>
-<tr>
-<td>tryRelease(int arg)</td>
-<td>排他释放(资源数)</td>
-</tr>
-<tr>
-<td>tryAcquireShared(int arg)</td>
-<td>共享获取(资源数)</td>
-</tr>
-<tr>
-<td>tryReleaseShared(int arg)</td>
-<td>共享释放(资源数)</td>
-</tr>
-<tr>
-<td>isHeldExclusively()</td>
-<td>是否排他状态</td>
-</tr>
-</tbody>
-</table>
-<p>Step3/3. 业务类把业务方法的实现委托给Sync。Sync可以直接使用继承自AQS的模板方法。</p>
-<h3 id="AQS内部细节"><a href="#AQS内部细节" class="headerlink" title="AQS内部细节"></a>AQS内部细节</h3><h4 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h4><p>AQS实现了一个FIFO队列，用于管理等候在临界区外的线程。队列的每个节点保留了线程信息，因此线程可以安然休眠，待临界区的资源可用时再次唤醒。注意，队列的存在并不保证公平，因为AQS并不确保被唤醒的队首线程能进入临界区，唤醒过程中可能会被其它尚未入队的竞争线程抢占先机。</p>
-<h4 id="线程控制"><a href="#线程控制" class="headerlink" title="线程控制"></a>线程控制</h4><p>线程的休眠和唤醒是通过<strong>LockSupport.park()</strong>和<strong>LockSupport.unpark()</strong>实现的。LockSupport是整个concurrent包最底层的API之一。在AQS的注释中写到，如果你对其排队机制不满，可以重新定义队列的数据结构并通过LockSupport调度。</p>
-<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><p>数据结构：双向链表构成的FIFO队列（链表是其物理结构，队列是其逻辑用途。注释中称其为CLH Lock队列的变种，而CLH Lock常用于实现自旋锁，其确保无饥饿性和公平性）</p>
-<p><img src="https://img-blog.csdn.net/20180814120858456?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="CLH Lock 队列"></p>
-<hr>
-<h2 id="LockSupport的park和unpark的基本使用-以及对线程中断的响应性"><a href="#LockSupport的park和unpark的基本使用-以及对线程中断的响应性" class="headerlink" title="LockSupport的park和unpark的基本使用,以及对线程中断的响应性"></a>LockSupport的park和unpark的基本使用,以及对线程中断的响应性</h2><p>  LockSupport是JDK中比较底层的类，用来创建锁和其他同步工具类的基本线程阻塞原语。java锁和同步器框架的核心AQS:AbstractQueuedSynchronizer，就是通过调用LockSupport.park()和LockSupport.unpark()实现线程的阻塞和唤醒的。LockSupport很类似于二元信号量(只有1个许可证可供使用)，如果这个许可还没有被占用，当前线程获取许可并继续执行；如果许可已经被占用，当前线程阻塞，等待获取许可。</p>
-<p>许可默认是被占用的。</p>
-<p>LockSupport是不可重入。</p>
-<p>线程如果因为调用park而阻塞的话，能够响应中断请求(中断状态被设置成true)，但是不会抛出InterruptedException。</p>
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
 
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+ 
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview   ">
+      <h1 class="mume-header" id="%E7%AC%AC16%E7%AB%A0-java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B">第16章 Java内存模型</h1>
+
+<hr>
+<h2 class="mume-header" id="161-%E4%BB%80%E4%B9%88%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%AE%83">16.1 什么内存模型，为什么需要它</h2>
+
+<p>JMM规定了JVM必须遵循一组最小保证，这组保证规定了对变量的写入操作在何时将对于其他线程可见。</p>
+<h2 class="mume-header" id="1611-%E5%B9%B3%E5%8F%B0%E7%9A%84%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B">16.1.1 平台的内存模型</h2>
+
+<p>在共享内存的多处理器体系架构中，每个处理器都拥有自己的缓存，并且定期地与主内存进行协调。</p>
+<p>Java程序不需要指定内存栅栏的位置，而只需通过正确地使用同步来找出何时访问共享状态。</p>
+<h2 class="mume-header" id="1612-%E9%87%8D%E6%8E%92%E5%BA%8F">16.1.2 重排序</h2>
+
+<p>各种使操作延迟或者看似乱序执行的不同原因，都可以归为重排序。</p>
+<h2 class="mume-header" id="java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B">Java内存模型简介</h2>
+
+<p>Java内存模型是通过各种操作来定义的，包括对变量的读/写操作，监视器的加锁和释放操作，以及线程的启动和合并操作。JMM为程序中所有操作定义了一个偏序关系，称之为Happens-Before关系，那么JVM可以对它们任意地重排序。如果两个操作之间缺乏Happens-Before关系，那么JVM可以对它们任意地重排序。</p>
+<p>Happens-Before的规则包括：</p>
+<ul>
+<li><strong>程序顺序规则</strong>。 如果程序中操作A在操作B之前，那么在线程中A操作将在B操作之前执行。</li>
+<li><strong>监视器锁定规则</strong>。 在监视器锁上的解锁操作必须在同一个监视器锁上的加锁操作之前执行。</li>
+<li><strong>volatile变量规则</strong>。 对volatile变量的写入操作必须在对该变量的读操作之前执行。</li>
+<li><strong>线程启动规则</strong>。 子线程上对Thread.Start的调用必须在该线程中执行任何操作之前执行。</li>
+<li><strong>线程结束规则</strong>。 线程中的任何操作都必须在其他线程测到该线程已经结束之前执行，或者从Thread.join中成功返回，或者在调用Thread.isAlive时返回false。</li>
+<li><strong>中断规则</strong>。 当一个线程在另一个线程上调用interrupt时，必须在被中断线程检测到interrup调用之前执行（通过抛出InterruptedException，或者调用isInterrupted和interrupted）。</li>
+<li><strong>终结器规则</strong>。 对象的构造函数必须在启动该对象的终结器之前执行完成。</li>
+<li><strong>传递性</strong> 如果操作A在操作B之前执行，并且操作B在操作C之前执行，那么操作A必须在操作C之前执行。</li>
+</ul>
+<h2 class="mume-header" id="1614-%E5%80%9F%E5%8A%A9%E5%90%8C%E6%AD%A5">16.1.4 借助同步</h2>
+
+<p>由于Happens-Before，因此有时候可以“借助(Piggyback)”现有同步机制的可见性属性。这需要将Happens-Before的程序顺序规则与其他某个顺序规则（通常是监视器锁规则或者volatile变量规则）结合起来，从而对某个未被锁保护的变量的访问操作进行排序。</p>
+<p>在类库中提供的其他Happens-Before排序包括：</p>
+<ul>
+<li>将一个元素放入一个线程安全容器的操作将在另一个线程从该容器中获得这个元素的操作之前执行。</li>
+<li>在CountDownLatch上的倒数操作将在线程从闭锁的await方法中返回之前执行。</li>
+<li>释放Semaphore许可的操作将在从该Semaphore上获得一个许可之前执行。</li>
+<li>Future表示的任务的所有操作将在从Future.get中返回之前执行。</li>
+<li>向Executor提交一个Runnable或Callable的操作将在任务开始之前执行。</li>
+<li>一个线程到达CyclicBarrier或Exchanger的操作将在其他到达该栅栏或交换点的线程被释放之前执行。如果CyclicBarrier使用一个栅栏操作，那么到达栅栏的操作将在栅栏操作之前执行，而栅栏操作又会在线程从栅栏中释放之前执行。</li>
+</ul>
+<h2 class="mume-header" id="162-%E5%8F%91%E5%B8%83">16.2 发布</h2>
+
+<h3 class="mume-header" id="1621-%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84%E5%8F%91%E5%B8%83">16.2.1 不安全的发布</h3>
+
+<blockquote>
+<p>除了不可变对象以外，使用被另一个线程初始化的对象通常都是被安全的，除非对象的发布操作是在使用该对象的线程开始使用之前执行。</p>
+</blockquote>
+<h3 class="mume-header" id="1622-%E5%AE%89%E5%85%A8%E7%9A%84%E5%8F%91%E5%B8%83">16.2.2 安全的发布</h3>
+
+<p>事实上，Happens-Before比安全发布提供了提供了更加可见性与顺序保证。</p>
+<h3 class="mume-header" id="1623-%E5%AE%89%E5%85%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A8%A1%E5%BC%8F">16.2.3 安全初始化模式</h3>
+
+<p>程序安全的延迟初始化</p>
+<pre data-role="codeBlock" data-info="java" class="language-java"><span class="token annotation punctuation">@ThreadSafe</span>
+<span class="token keyword">public</span> calss SafeLazyInitialization <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> Resource resource<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">static</span> Resource <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>resource <span class="token operator">==</span> null <span class="token punctuation">)</span>
+            resource <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Resource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> resource<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</pre><p>由于JVM将在初始化期间获得一个锁，并且每个线程都至少获取一次这个锁已确保这个类已经加载，因此在静态初始化期间，内存写入操作将自动对所有线程可见。</p>
+<pre data-role="codeBlock" data-info="java" class="language-java"><span class="token annotation punctuation">@ThreadSafe</span>
+<span class="token keyword">public</span> calss ResourceFactory <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> Resource <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Resource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> Resource getResource<span class="token punctuation">{</span>
+        <span class="token keyword">return</span> ResourceHolder<span class="token punctuation">.</span>resource<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</pre><h3 class="mume-header" id="1624-%E5%8F%8C%E9%87%8D%E6%A3%80%E6%9F%A5%E5%8A%A0%E9%94%81">16.2.4 双重检查加锁</h3>
+
+<p>DDL（双重检查加锁）已经被广泛地废弃了。</p>
+<h2 class="mume-header" id="163-%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7">16.3 初始化过程中的安全性</h2>
+
+<blockquote>
+<p>初始化安全性将确保，对于被正确构造的对象，所有线程都能看到由构造函数为对象给各个final域设置的正确性，而不管采用何种方式来发布对象。而且，对于可以通过被正确构造对象中某个final域到达的任意变量（例如某个final数组中的元素，或者由一个final域引用的HashMap的内容）将同样对于其他线程是可见的。</p>
+</blockquote>
+<pre data-role="codeBlock" data-info="java" class="language-java"><span class="token annotation punctuation">@ThreadSafe</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SafeStates</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> Map<span class="token generics function"><span class="token punctuation">&lt;</span>String<span class="token punctuation">,</span> String<span class="token punctuation">></span></span> states<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">SafeStates</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        states <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics function"><span class="token punctuation">&lt;</span>String<span class="token punctuation">,</span> String<span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        states<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"a"</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        states<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"b"</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span>
+        states<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"c"</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> String <span class="token function">getAbbreviation</span><span class="token punctuation">(</span>String s<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> states<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</pre><blockquote>
+<p>初始化安全性只能保证通过final域可达的值从构造过程完成时开始的可见性。对于通过非final域可达的值，或者在构成过程完成后可能改变的值，必须采用同步来确保可见性。</p>
+</blockquote>
+<h2 class="mume-header" id="%E5%B0%8F%E7%BB%93">小结</h2>
+
+<p>Java内存模型说明了某个线程的内存操作在哪些情况下对于其他线程是可见的。其中包括确保这些操作是按照一种Happens-Before的偏序关系进行排序，而这种关系是基于内存操作和同步操作级别来定义的。</p>
+
+      </div>
+      
+      
+    </body>
+    
+    
+    
+    
+    
+    
+    
+  </html>
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/14/零碎的知识点-3/" data-id="cjsfvutgp003arovt9i8p63z1" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/08/01/读书笔记/《Java并发编程实战》-15/" data-id="cjys176dg004a7ovt3apasyuy" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -825,7 +834,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="零碎的知识点-3" ></div> 
+<div id="SOHUCS" sid="读书笔记/《Java并发编程实战》-15" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -843,66 +852,324 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-5" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-读书笔记/《Java并发编程实战》-14" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/13/《Java并发编程实战》-5/" class="article-date">
-  <time datetime="2018-08-13T07:32:02.057Z" itemprop="datePublished">2018-08-13</time>
+    <h3 href="/2019/08/01/读书笔记/《Java并发编程实战》-14/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.058Z" itemprop="datePublished">2019-08-01</time>
 </h3>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
   </div>
   <div class="article-inner">
   <div class="curve-down">
   <div class="fill-content">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/13/《Java并发编程实战》-5/">《Java并发编程实战》-5</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="《Java并发编程实战》-5"><a href="#《Java并发编程实战》-5" class="headerlink" title="《Java并发编程实战》-5"></a>《Java并发编程实战》-5</h1><hr>
-<h3 id="6-1-1-串行地执行renwu"><a href="#6-1-1-串行地执行renwu" class="headerlink" title="6.1.1 串行地执行renwu"></a>6.1.1 串行地执行renwu</h3><h3 id="6-1-2-显式地为任务创建线程"><a href="#6-1-2-显式地为任务创建线程" class="headerlink" title="6.1.2 显式地为任务创建线程"></a>6.1.2 显式地为任务创建线程</h3><h3 id="6-1-3-无限制创建线程的不足"><a href="#6-1-3-无限制创建线程的不足" class="headerlink" title="6.1.3 无限制创建线程的不足"></a>6.1.3 无限制创建线程的不足</h3><ul>
-<li>线程生命周期的开销非常高。</li>
-<li>资源消耗。</li>
-<li>稳定性。</li>
-</ul>
-<h2 id="6-2-Executir框架"><a href="#6-2-Executir框架" class="headerlink" title="6.2 Executir框架"></a>6.2 Executir框架</h2><h3 id="6-2-1-示例：基于Executor的Web服务器"><a href="#6-2-1-示例：基于Executor的Web服务器" class="headerlink" title="6.2.1 示例：基于Executor的Web服务器"></a>6.2.1 示例：基于Executor的Web服务器</h3><h3 id="6-2-2-执行策略"><a href="#6-2-2-执行策略" class="headerlink" title="6.2.2 执行策略"></a>6.2.2 执行策略</h3><blockquote>
-<p>每当看到<code>new Thread(runnable).start()</code>时，并且你希望获得一种更灵活的执行策略时，请考虑使用Excecutor来代替Thread。</p>
-</blockquote>
-<h3 id="6-2-3-线程池"><a href="#6-2-3-线程池" class="headerlink" title="6.2.3 线程池"></a>6.2.3 线程池</h3><ul>
-<li><strong>newFixedThreadPool</strong> 创建一个固定长度的线程池，每当提交一个任务时就创建一个线程，直到达到线程池的最大数量，这时线程池的规模将不再变化（如果某个线程由于发生了未预期的Exception而结束，那么线程池会补充一个新的线程）。</li>
-<li><strong>newCachedTheadPool</strong> 创建一个可缓存的线程池，如果线程池的当前规模超过了处理需求时，那么将回收空闲的线程，而当需求增加时，则可以添加新的线程，线程的规模不存在任何限制。</li>
-<li><strong>newSingleThread</strong> 一个单线程的Executor,它创建单个工作者线程来执行任务，如果这个线程异常结束，会创建另一个线程来代替。newSingleThreadExecutir能确保依照任务在队列中的顺序来串行执行（例如FIFO、LIFO、优先级）。</li>
-<li><strong>newScheduleThreadPool</strong> 创建一个固定长度的线程池，而且以延迟或定时的方式执行任务，类是于Timer。</li>
-</ul>
-<h3 id="6-2-4-Executor的生命周期"><a href="#6-2-4-Executor的生命周期" class="headerlink" title="6.2.4 Executor的生命周期"></a>6.2.4 Executor的生命周期</h3><ul>
-<li>运行</li>
-<li>关闭</li>
-<li>已终止</li>
-</ul>
-<h3 id="6-2-5-延迟任务与周期任务"><a href="#6-2-5-延迟任务与周期任务" class="headerlink" title="6.2.5 延迟任务与周期任务"></a>6.2.5 延迟任务与周期任务</h3><h2 id="6-3-找出可利用的并行性"><a href="#6-3-找出可利用的并行性" class="headerlink" title="6.3 找出可利用的并行性"></a>6.3 找出可利用的并行性</h2><h3 id="6-3-1-示例：串行的页面渲染器"><a href="#6-3-1-示例：串行的页面渲染器" class="headerlink" title="6.3.1 示例：串行的页面渲染器"></a>6.3.1 示例：串行的页面渲染器</h3><h3 id="6-3-2-携带结果的任务Callable与Future"><a href="#6-3-2-携带结果的任务Callable与Future" class="headerlink" title="6.3.2 携带结果的任务Callable与Future"></a>6.3.2 携带结果的任务Callable与Future</h3><h3 id="6-3-3-实例：使用Future实现页面渲染器"><a href="#6-3-3-实例：使用Future实现页面渲染器" class="headerlink" title="6.3.3 实例：使用Future实现页面渲染器"></a>6.3.3 实例：使用Future实现页面渲染器</h3><h3 id="6-3-4-在异构任务并行化中存在的局限"><a href="#6-3-4-在异构任务并行化中存在的局限" class="headerlink" title="6.3.4 在异构任务并行化中存在的局限"></a>6.3.4 在异构任务并行化中存在的局限</h3><h3 id="6-3-5-CompletionService-Executor与BlockingQueue"><a href="#6-3-5-CompletionService-Executor与BlockingQueue" class="headerlink" title="6.3.5 CompletionService:Executor与BlockingQueue"></a>6.3.5 CompletionService:Executor与BlockingQueue</h3><p>CompletionService将Execute和BlockingQueue的功能融合在一起。ExecutorCompletionService实现了CompletionSeervice,并将计算部分委托给一个Executor。</p>
-<h3 id="6-3-6-实例：使用CompletionService实现页面渲染器"><a href="#6-3-6-实例：使用CompletionService实现页面渲染器" class="headerlink" title="6.3.6 实例：使用CompletionService实现页面渲染器"></a>6.3.6 实例：使用CompletionService实现页面渲染器</h3><h3 id="6-3-7-为任务设置时限"><a href="#6-3-7-为任务设置时限" class="headerlink" title="6.3.7 为任务设置时限"></a>6.3.7 为任务设置时限</h3><h3 id="6-3-8-示例：旅行预订门户网站"><a href="#6-3-8-示例：旅行预订门户网站" class="headerlink" title="6.3.8 示例：旅行预订门户网站"></a>6.3.8 示例：旅行预订门户网站</h3><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>Executor框架将任务提交与执行策略解耦开来，同时还支持多种不同类型的执行策略。<br>要想将应用程序分解为不同的任务时获得最大的好处，必须定义清晰的任务边界。</p>
+        <!DOCTYPE html>
+  <html>
+    <head>
+      <title>《Java并发编程实战》-14   第14章 构建自定义的同步工具</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///C:\Users\gonefuture\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.3.5\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
 
+      <style> 
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+ 
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview   ">
+      <h1 class="mume-header" id="%E7%AC%AC15%E7%AB%A0-%E5%8E%9F%E5%AD%90%E5%8F%98%E9%87%8F%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6">第15章 原子变量与非阻塞同步机制</h1>
+
+<hr>
+<h2 class="mume-header" id="151-%E9%94%81%E5%BE%97%E5%8A%A3%E5%8A%BF">15.1 锁得劣势</h2>
+
+<p>如果在基于锁的类中包含有细粒度的操作（例如同步容器类，在其他大多数方法中只包含了少量操作），那么当在锁上存在着激烈的竞争时，调度开销与工作开销的比值会非常高。</p>
+<p>与锁相比，volatile变量是一种更轻量级的同步机制，因为在使用这些变量时不会发生上下文切换或线程调度等操作。</p>
+<p>锁定还存在其他以下缺点。当一个线程正在等待锁时，它不能做任何其他事情。</p>
+<h2 class="mume-header" id="152-%E7%A1%AC%E4%BB%B6%E5%AF%B9%E5%B9%B6%E5%8F%91%E7%9A%84%E6%94%AF%E6%8C%81">15.2 硬件对并发的支持</h2>
+
+<p>现在几乎所有的现代处理器中都包含了某种形式的原子读-改-写指令，例如比较并交换(Compare-and-Swap)或者关联加载/条件储存(Load-Linked/Store-Conditional)。操作系统和JVM使用这些指令来实现锁和并发的数据结构。</p>
+<h3 class="mume-header" id="1521-%E6%AF%94%E8%BE%83%E5%B9%B6%E4%BA%A4%E6%8D%A2">15.2.1 比较并交换</h3>
+
+<p>CAS是一项乐观的技术，它希望能成功地执行更新操作，并且如果有另一个线程在最近一次检测后更新了该值，那么CAS能检测到这个错误。</p>
+<p>当多个线程尝试使用CAS同时更新一个变量时，只有其中一个线程能更新变量的值，而其他线程都将失败。然而，失败的线程并不会被挂起(这与获取锁的情况不同：当获取锁失败时，线程将被挂起来)，而是被告知在这次竞争中失败。</p>
+<p>CAS的典型使用模式是：首先从V中读取值A，并根据A计算新值B，然后再通过CAS以原子方式将V中的值由A变成B（只要在这期间没有任何其他线程将V的值修改为其他值）。</p>
+<h3 class="mume-header" id="1522-%E9%9D%9E%E9%98%BB%E5%A1%9E%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8">15.2.2 非阻塞的计算器</h3>
+
+<p>一个很管用的经验法则是 ：在大多数处理器上，在无竞争的锁获取和释放的“快速代码路径”上的开销，大约是CAS开销的两倍。</p>
+<h3 class="mume-header" id="1523-jvm%E5%AF%B9cas%E7%9A%84%E6%94%AF%E6%8C%81">15.2.3 JVM对CAS的支持</h3>
+
+<p>在原子变量类（例如<code>java.util.cocurrent.atomic中的AtomicXxx</code>）中使用了底层的JVM支持为数字类型和引用类型提供一种高效的CAS操作，而在<code>java.util.concurrent</code>中大多数类在实现时则直接或间接地使用了这些原子变量类。</p>
+<h2 class="mume-header" id="153-%E5%8E%9F%E5%AD%90%E5%8F%98%E9%87%8F%E7%B1%BB">15.3 原子变量类</h2>
+
+<p>原子变量比锁的粒度更细，量级更轻，并且对于多处理器系统上实现高性能的并发代码来说时非常关键的。</p>
+<p>java中共有12个原子变量类，可分为4组：</p>
+<ul>
+<li>标量类(Scalar)<br>
+AtomicInteger、 AtomicLOng、 AtomicBoolean以及AtomicReference。这些类都支持CAS,但是它们不宜用作基于散列的容器中的键值。</li>
+<li>更新器类</li>
+<li>数组类<br>
+原子数组类（只支持Integer、Long和Reference版本）中的元素可以实现原子更新。</li>
+<li>复合变量。</li>
+</ul>
+<h3 class="mume-header" id="153-1-%E5%8E%9F%E5%AD%90%E5%8F%98%E9%87%8F%E6%98%AF%E4%B8%80%E7%A7%8D%E6%9B%B4%E5%A5%BD%E7%9A%84volatile">15.3。1 原子变量是一种&quot;更好的volatile&quot;</h3>
+
+<p>原子变量相比<code>volatile</code>修饰的变量更有原子安全性。</p>
+<h3 class="mume-header" id="%E6%80%A7%E8%83%BD%E6%AF%94%E8%BE%83%E9%94%81%E4%B8%8E%E5%8E%9F%E5%AD%90%E5%8F%98%E9%87%8F">性能比较：锁与原子变量</h3>
+
+<p>在中低难度的竞争下，原子变量能提供更高的可伸缩性，而在高清度的竞争下，锁能够更有效地避免竞争。</p>
+<h3 class="mume-header" id="1541-%E9%9D%9E%E9%98%BB%E5%A1%9E%E7%9A%84%E6%A0%88">15.4.1 非阻塞的栈</h3>
+
+<p>栈是通过compareAndSet来修改的，因此将采用原子操作来更新top的引用，或者在发现存在其他线程干扰的情况下，修改操作将失败。</p>
+<h3 class="mume-header" id="1542-%E9%9D%9E%E9%98%BB%E5%A1%9E%E7%9A%84%E9%93%BE%E8%A1%A8">15.4.2 非阻塞的链表</h3>
+
+<h3 class="mume-header" id="1542-%E5%8E%9F%E5%AD%90%E7%9A%84%E5%9F%9F%E6%9B%B4%E6%96%B0%E5%99%A8">15.4.2 原子的域更新器</h3>
+
+<p>原子的域更新类表示现有volatile域的一种基于反射的“视图”，从而能够在已有的volatile域上使用CAS。在更新器类中没有构造函数，要创建一个更新器对象，可以调用newUpdater工厂方法，并制定类和域的名字。</p>
+<p>在ConcurrentLinkedQueue中使用原子的域更新器</p>
+<pre data-role="codeBlock" data-info="java" class="language-java"><span class="token keyword">private</span> <span class="token keyword">class</span> <span class="token class-name">Node</span><span class="token generics function"><span class="token punctuation">&lt;</span>E<span class="token punctuation">></span></span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> E item<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">volatile</span> Node<span class="token generics function"><span class="token punctuation">&lt;</span>E<span class="token punctuation">></span></span> next<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token function">Node</span><span class="token punctuation">(</span>E item<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>item <span class="token operator">=</span> item<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> AtomicReferencePieldUpdater<span class="token generics function"><span class="token punctuation">&lt;</span>Node<span class="token punctuation">,</span> Node<span class="token punctuation">></span></span> nextUpdater
+    <span class="token operator">=</span> <span class="token function">AtomicReferenceFiledUpdater</span><span class="token punctuation">(</span>Node<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> Node<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token string">"next"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</pre><p>几乎在所有情况下，普通原子变量的性能都很不错，只有在很少的情况下才需要使用原子的域更新器.（如果在执行原子更新的同时还需要维持现有类的串行化形式，那么原子的域更新器将非常有用。）</p>
+<h3 class="mume-header" id="1544-aba%E9%97%AE%E9%A2%98">15.4.4 ABA问题</h3>
+
+<p>ABA问题是一种异常现象：如果在算法中的接地点可以被循环使用，那么在使用“比较并交换”指令时就可能出现这种问题（主要在没有垃圾回收机制的环境中）。</p>
+<p>AtomicStampedReference（以及AtomicMarkableReference）支持在两个变量上执行原子的条件更新。</p>
+<p>AtomicStampedReference将更新一个“对象-引用”二元组，通过在引用上加上“版本号”，从而避免ABA问题。<br>
+类似地，AtomicMarkableReference将更新一个“对象引用-布尔值”二元组，在某些算法中将通过这种二元组使节点保存在链表中同时又将其标记为“已删除的节点”。</p>
+<h2 class="mume-header" id="%E5%B0%8F%E7%BB%93">小结</h2>
+
+<p>非阻塞算法通过底层的并发原语（例如比较并交换而不是锁）来维持线程的安全性。这些底层的原语通过原子变量类向外公开，这些类也用做一种“更好的volatile变量”，从而为整数和对象引用提供原子的更新操作。</p>
+
+      </div>
+      
+      
+    </body>
+    
+    
+    
+    
+    
+    
+    
+  </html>
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/13/《Java并发编程实战》-5/" data-id="cjsfvutfw001xrovtvinucmxw" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/08/01/读书笔记/《Java并发编程实战》-14/" data-id="cjys176cn00417ovtrahanjx2" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -910,7 +1177,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-5" ></div> 
+<div id="SOHUCS" sid="读书笔记/《Java并发编程实战》-14" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -930,7 +1197,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -944,23 +1211,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2019/02/16/《网络游戏核心技术与实战》笔记-1/">《网络游戏核心技术与实战》笔记-1</a>
+            <a href="/2019/08/01/项目笔记/背包系统学习笔记/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2019/01/14/2019-1-14-开发笔记/">2019-1-14-开发笔记 Executors.newSingleThreadScheduledExecutor</a>
+            <a href="/2019/08/01/项目笔记/目标系统学习笔记/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2018/09/20/Netty消息分发和业务逻辑分离/">Netty消息分发和业务逻辑分离</a>
+            <a href="/2019/08/01/项目笔记/玩家实体的抽象/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2018/09/19/Netty, SpringBoot, MyBatis搭建游戏服务器 - 1/">Netty, SpringBoot, MyBatis搭建游戏服务器 - 1</a>
+            <a href="/2019/08/01/项目笔记/游戏生物体的抽象/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2018/09/12/《Netty实战》-第五章-ByteBuf/">《Netty实战》-第五章-ByteBuf</a>
+            <a href="/2019/08/01/项目笔记/消耗系统学习笔记/">(no title)</a>
           </li>
         
       </ul>
@@ -981,7 +1248,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

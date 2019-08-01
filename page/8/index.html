@@ -83,221 +83,328 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-《Java并发编程实战》-4" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-读书笔记/《Java并发编程实战》-13" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/10/《Java并发编程实战》-4/" class="article-date">
-  <time datetime="2018-08-10T02:23:59.768Z" itemprop="datePublished">2018-08-10</time>
+    <h3 href="/2019/08/01/读书笔记/《Java并发编程实战》-13/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.039Z" itemprop="datePublished">2019-08-01</time>
 </h3>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
   </div>
   <div class="article-inner">
   <div class="curve-down">
   <div class="fill-content">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/10/《Java并发编程实战》-4/">《Java并发编程实战》-4</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="《Java并发编程实战》-4"><a href="#《Java并发编程实战》-4" class="headerlink" title="《Java并发编程实战》-4"></a>《Java并发编程实战》-4</h1><h2 id="5-1-同步容器类"><a href="#5-1-同步容器类" class="headerlink" title="5.1 同步容器类"></a>5.1 同步容器类</h2><p>Collections.synchronizedXxx等工厂方法创建的同步实现线程安全的方式是：将它们的状态封装起来，并对每个公有方法都进行同步，使得每次只有一个线程能访问容器的状态。</p>
-<h3 id="5-5-1-同步容器的问题"><a href="#5-5-1-同步容器的问题" class="headerlink" title="5.5.1 同步容器的问题"></a>5.5.1 同步容器的问题</h3><p>在使用客户端加锁的Vector上的复合操作</p>
-<pre><code class="java">public static Object getList(Vector list) {
-    synchronized (list) {
-        int lastIndex = list.size() - 1;
-        return list.get(lastIndex);
-    }
+        <!DOCTYPE html>
+  <html>
+    <head>
+      <title>《Java并发编程实战》-14   第14章 构建自定义的同步工具</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///C:\Users\gonefuture\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.3.5\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+      <style> 
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
 }
 
-public static void deleteLast(Vector list) {
-    synchronized (this) {
-        int lastIndex = list.size() - 1;
-        list.remove(lastIndex);
-    }
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
 }
-</code></pre>
-<h3 id="5-1-2-迭代器与ConcurrentModificationException"><a href="#5-1-2-迭代器与ConcurrentModificationException" class="headerlink" title="5.1.2 迭代器与ConcurrentModificationException"></a>5.1.2 迭代器与ConcurrentModificationException</h3><p>当容器类发现容器在迭代过程中被修改时，就会抛出一个”ConcurrentModificationException<br>“，这就是“快速失败”。</p>
-<h3 id="5-1-3-隐藏迭代器"><a href="#5-1-3-隐藏迭代器" class="headerlink" title="5.1.3 隐藏迭代器"></a>5.1.3 隐藏迭代器</h3><p>正如封装对象的状态有助于维持不变性条件，封装对象的同步机制同样有助确保实施同步策略。</p>
-<h2 id="5-2-并发容器"><a href="#5-2-并发容器" class="headerlink" title="5.2 并发容器"></a>5.2 并发容器</h2><p>通过并发容器来代替同步容器，可以极大地提高伸缩性并降低风险。</p>
-<table>
-<thead>
-<tr>
-<th>并发容器</th>
-<th>同步容器</th>
-<th>普通容器</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>BlockingQueue</td>
-<td>ConcurrentLinkedQueue</td>
-<td>PriorityQueue</td>
-<td></td>
-</tr>
-<tr>
-<td>ConcurrentHashMap, SkipListMap</td>
-<td>hashtable,  Collections.synchroniedList(TreeSet set)</td>
-<td>hashmap,SortedMap, SortedSet</td>
-<td></td>
-</tr>
-<tr>
-<td>CopyOnWriteArrayList</td>
-<td>Vector, Collections.synchroniedList(List list)</td>
-<td>ArrayList, LinkedList</td>
-<td></td>
-</tr>
-<tr>
-<td>CopyOnWriteArraySet, ConcurrentSkipListListSet</td>
-<td>Collections.synchroniedSet(Set set)</td>
-<td>LinkedHashSet, HashSet, TreeSet</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h3 id="5-2-1-ConcurrentHashMap"><a href="#5-2-1-ConcurrentHashMap" class="headerlink" title="5.2.1 ConcurrentHashMap"></a>5.2.1 ConcurrentHashMap</h3><p>ConcurrentHashMap使用更细粒度的加锁机制—<strong>分段锁</strong>来实现更大程度的共享。</p>
-<p>ConcurrentHashMap具有<strong>弱一致性</strong>(Weakly Consistent)，而非”及时失败”。</p>
-<p>只有当应用程序需要加锁Map以进行独占访问时，才应该放弃使用ConcurrentHashMap。</p>
-<h3 id="5-2-2-额外的原子Map操作"><a href="#5-2-2-额外的原子Map操作" class="headerlink" title="5.2.2 额外的原子Map操作"></a>5.2.2 额外的原子Map操作</h3><pre><code class="java">public interface ConcurrentMap&lt;K,V&gt; extends Map&lt;K,V&gt; {
-    // 仅当K没有相应的映射值时才插入
-    V putIfAbsent(K key, V value);
 
-    // 仅当K被映射到oldValue时才替换为newValue
-    boolean remove(K key, V value);
-
-    // 仅当K被映射到oldValue时才替换为newValue
-    boolean replace(K key, V oldValue, V newValue);
-
-    // 仅当K被映射到某个值时才替换为newValue
-    boolean replace(K key, V newValue);
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
 }
-</code></pre>
-<h3 id="5-2-3-CopyOnWriteArrayList"><a href="#5-2-3-CopyOnWriteArrayList" class="headerlink" title="5.2.3 CopyOnWriteArrayList"></a>5.2.3 CopyOnWriteArrayList</h3><p>CopyOnWriteArrayLsit用于替代同步List，某些情况下它提供了更好的并发行性能，并且在迭代期间不需要对容器进行加锁或复制（类似地，CopyOnWriteArraySet的作用是替代同步Set）。</p>
-<p>每当修改容器时都会复制底层数组，这需要一定的开销。</p>
-<p>仅当迭代操作远远多于修改操作时，才应该使用”写入时负责”容器。</p>
-<h2 id="5-3-阻塞队列和生产者-消费者模式"><a href="#5-3-阻塞队列和生产者-消费者模式" class="headerlink" title="5.3 阻塞队列和生产者-消费者模式"></a>5.3 阻塞队列和生产者-消费者模式</h2><p>在构建高可靠的应用程序时，有界队列是一种强大的资源管理工具:它们能抑制并防止产生过多的工作项，使应用程序在负荷过载的情况下变得更加健壮。</p>
-<p>BlockingQueue的方法:</p>
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+ 
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview   ">
+      <h1 class="mume-header" id="%E7%AC%AC14%E7%AB%A0-%E6%9E%84%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%90%8C%E6%AD%A5%E5%B7%A5%E5%85%B7">第14章 构建自定义的同步工具</h1>
+
+<hr>
+<h2 class="mume-header" id="141-%E7%8A%B6%E6%80%81%E4%BE%9D%E8%B5%96%E6%80%A7%E7%9A%84%E7%AE%A1%E7%90%86">14.1 状态依赖性的管理</h2>
+
+<p>依赖状态的操作可以一直阻塞直到可以继续执行，这比使它们先失败再实现起来要更为方便且更不容易出错。内置的条件队列可以使线程一直阻塞，直到对象进入某个进程可以继续执行的状态，并且当被阻塞的线程可以执行时再唤醒它们。</p>
+<h3 class="mume-header" id="1411-%E5%AE%9E%E4%BE%8B%E5%B0%86%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6%E7%9A%84%E5%A4%B1%E8%B4%A5%E4%BC%A0%E9%80%92%E7%BB%99%E8%B0%83%E7%94%A8%E8%80%85">14.1.1 实例：将前提条件的失败传递给调用者</h3>
+
+<h3 class="mume-header" id="1412-%E5%AE%9E%E5%88%97%E9%80%9A%E8%BF%87%E8%BD%AE%E8%AF%A2%E4%B8%8E%E4%BC%91%E7%9C%A0%E6%9D%A5%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E9%98%BB%E5%A1%9E">14.1.2 实列：通过轮询与休眠来实现简单的阻塞</h3>
+
+<h3 class="mume-header" id="1413-%E6%9D%A1%E4%BB%B6%E9%98%9F%E5%88%97">14.1.3 条件队列</h3>
+
+<p>条件队列使得一组线程(称之为****等待线程集合**)能够通过某种方式来等待特定得条件变成真。</p>
+<p>正如每个Java对象对可以作为一个锁，每个对象同样可以作为一个条件队列，并且Object中的wait、notify和notifyAll方法就构成了内部条件队列的API。对象的内置锁与其内部条件队列是互相关联的。</p>
+<p>Object.wait会自动释放锁，并请求操作系统挂起当前线程，从而使其他线程能够获得这个锁并修改对象的状态。</p>
+<h2 class="mume-header" id="142-%E4%BD%BF%E7%94%A8%E6%9D%A1%E4%BB%B6%E9%98%9F%E5%88%97">14.2 使用条件队列</h2>
+
+<h3 class="mume-header" id="1421-%E6%9D%A1%E4%BB%B6%E8%B0%93%E8%AF%8D">14.2.1 条件谓词</h3>
+
+<blockquote>
+<p>将与条件队列相关联的条件谓词以及在这些谓词上等待的操作都写入文档。</p>
+</blockquote>
+<p>每一次wait调用都会隐式地与特定的条件谓词关联起来。当调用某个特定条件谓词的wait时，调用者必须已经持有与条件队列相关的锁，并且这个锁必须保护着构成条件谓词的状态变量。</p>
+<h3 class="mume-header" id="1422-%E8%BF%87%E6%97%A9%E5%94%A4%E9%86%92">14.2.2 过早唤醒</h3>
+
+<p>当使用条件等待时(例如Object.wait或Condition.await)</p>
 <ul>
-<li>put 如果队列满则阻塞</li>
-<li>take 如果队列为空则阻塞</li>
-<li>offer 如果队列满则返回一个失败状态，一般是false</li>
-<li>poll 如果队列空则返回一个表示空的数据,一般是null</li>
+<li>通常都有一个条件谓词--包括一些对象状态的测试，线程在执行前必须首先通过这些测试。</li>
+<li>在调用wait之前测试条件谓词，并且从wait中返回时再次进行测试。</li>
+<li>在一个循环中调用wait</li>
+<li>确保使用与条件队列相关的锁来保护构成条件谓词的各个状态变量。</li>
+<li>当调用wait,notify或notifyAll等方法时，一定要持有与条件队列相关的锁。</li>
+<li>在检查条件谓语之后以及开始执行相应的操作之前，不要释放锁。</li>
 </ul>
-<p>BlockingQueue的多种实现:</p>
+<h3 class="mume-header" id="1424-%E9%80%9A%E7%9F%A5">14.2.4 通知</h3>
+
+<blockquote>
+<p>每当在等待一个条件时，一定要确保在条件谓词变为真时通过某种方式发出通知。</p>
+</blockquote>
+<p>只有同时满足以下两个条件时，才能用单一的notify而不是notifyAll:</p>
 <ul>
-<li><strong>LinkedBlockingQueue</strong> 基于链表，FIFO</li>
-<li><strong>ArrayBlockingQueue</strong> 基于数组, FIFO</li>
-<li><strong>PriorityBlockingQueue</strong> 按优先级排序的队列</li>
-<li><strong>SynchronousQueue</strong> 它不会为队列中元素维护储存空间，它维护一组线程，这些线程在等待着吧元素加入或者移出队列。</li>
+<li><strong>所有等待线程的类型都相同</strong>。 只有一个条件谓语与条件队列相关，并且每个线程在从wait返回后将执行相同的操作。</li>
+<li><strong>单进单出</strong>。 在条件变量上的每次通知，最多只能唤醒一个线程来执行。</li>
 </ul>
-<h3 id="5-3-1-示例-桌面搜索"><a href="#5-3-1-示例-桌面搜索" class="headerlink" title="5.3.1 示例:桌面搜索"></a>5.3.1 示例:桌面搜索</h3><h3 id="5-3-2-串行线程封闭"><a href="#5-3-2-串行线程封闭" class="headerlink" title="5.3.2 串行线程封闭"></a>5.3.2 串行线程封闭</h3><p>对象池利用了串行线程封闭，将一个对象“借给”一个请求线程。</p>
-<p>还可以通过ConcurrentMap的原子方法remove或者AtomicReference的原子方法compareAndSet来转笔可变对象的所有的所有权（但必须确保只有一个线程能接受被转移的对象）。</p>
-<h3 id="双端队列与工作密取"><a href="#双端队列与工作密取" class="headerlink" title="双端队列与工作密取"></a>双端队列与工作密取</h3><p>Deque是一个双端队列，实现了在队头和队尾的高效插入和移除。具体实现包括ArrayList和LinkedBlockingDeque。</p>
-<p>双端队列适用于工作密取模式。</p>
-<h2 id="5-4-阻塞方法与中断方法"><a href="#5-4-阻塞方法与中断方法" class="headerlink" title="5.4 阻塞方法与中断方法"></a>5.4 阻塞方法与中断方法</h2><ul>
-<li>传递</li>
-<li>恢复中断</li>
-</ul>
-<pre><code class="java">public class TackRunnable implements Runnable {
-    try {
-            processTack(queue.take());
-        } catch (InterruptedException e) {
-            // 恢复被中断的状态
-            Thread.currentThread().interrupt();
-        }
-}
+<h3 class="mume-header" id="1425-%E7%A4%BA%E4%BE%8B%E9%98%80%E9%97%A8%E7%B1%BB">14.2.5 示例：阀门类</h3>
 
-</code></pre>
-<h2 id="5-5-同步工具类"><a href="#5-5-同步工具类" class="headerlink" title="5.5 同步工具类"></a>5.5 同步工具类</h2><h3 id="5-5-1-闭锁"><a href="#5-5-1-闭锁" class="headerlink" title="5.5.1 闭锁"></a>5.5.1 闭锁</h3><p>CoutDwonLatch，倒计时门闩,又名闭锁、倒计时计数器，是一种同步工具类，可以延迟线程大的进度直到其到达终止状态。</p>
-<p>闭锁可以用来确保某些活动直到其他活动都完成后才能继续执行。</p>
-<ul>
-<li>确保某个计算在其需要得所有资源都被初始化之后才继续执行。二元闭锁（包括两个状态）可以用来表示“资源R已经被初始化”，而所有需要R的操作都必须现在这个闭锁上等待。</li>
-<li>确保某个服务在其依赖的所有其他服务都已经启动之后才启动。每个服务都有一个相关的二元闭锁。当启动服务S时，将首先在S依赖的其他服务的闭锁上等待，在所有依赖的服务启动后会释放锁S，这样其他依赖S的服务才能继续执行。</li>
-<li>等待直到某个操作的所有参与者（例如，在多个玩家游戏中的所有玩家）都就绪再继续执行。这种情况中，当所有玩家都准备就绪时，闭锁将到达结束状态。</li>
-</ul>
-<h3 id="5-5-2-FutureTask"><a href="#5-5-2-FutureTask" class="headerlink" title="5.5.2 FutureTask"></a>5.5.2 FutureTask</h3><p>FutureTask表示的计算是通过Callable来实现的，相当于一种可生成结果的Runnable，并且可以处于一下三种状态：</p>
-<ul>
-<li>等待运行(Wating to run)</li>
-<li>正在运行(Running)</li>
-<li>运行完成(Completed)</li>
-</ul>
-<h3 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h3><p>计数信号量用来控制同时访问某个某个特殊资源的操作数量，或者同时执行某个指定操作的数量。计算信号量还可以用来实现某种资源池，或者对容器施加边界。</p>
-<h3 id="5-5-4-栅栏"><a href="#5-5-4-栅栏" class="headerlink" title="5.5.4 栅栏"></a>5.5.4 栅栏</h3><p>栅栏类似于闭锁，他能阻塞一组线程直到某个事件发生。栅栏与闭锁的关键区别在于，所有线程必须同时到达栅栏位置，才能继续执行。闭锁用于等待事件，而栅栏用于等待其他线程线程。</p>
-<p>CyclicBarrier可以使一定数量的参与反复地在栅栏位置汇集，他在并行迭代算法中非常有用：这种算法通常将一个问题拆分成一系列相互独立的子问题。</p>
-<p>另一种形式的栅栏使Exchange，他是一种两方栅栏，各方在栅栏位置上交换数据。当两分法执行不对称的操作时，Exchanger会非常有用，例如当一个线程向缓冲区写入数据，而另一个线程从缓冲区读取数据。</p>
-<h2 id="5-6-构建高效且可伸缩的结果缓存"><a href="#5-6-构建高效且可伸缩的结果缓存" class="headerlink" title="5.6 构建高效且可伸缩的结果缓存"></a>5.6 构建高效且可伸缩的结果缓存</h2><p>使用ConcurrentHashMap和FutureTask来构架缓存</p>
-<pre><code class="java">
-public interface Computable&lt;A, V&gt; {
-    V compute(A arg) throws InterruptedExcetion;
-}
+<h3 class="mume-header" id="1426-%E5%AD%90%E7%B1%BB%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7%E9%97%AE%E9%A2%98">14.2.6 子类的安全性问题</h3>
 
-public class Menoizer&lt;A, V&gt; implements Computable&lt;A, V&gt; {
-    private final ConcurrentMap&lt;A, Future&lt;V&gt;&gt; cache = new ConcurrentHashMap&lt;&gt;();
-    private final Computable&lt;A, V&gt; c;
+<h3 class="mume-header" id="%E5%B0%81%E8%A3%85%E6%9D%A1%E4%BB%B6%E9%98%9F%E5%88%97">封装条件队列</h3>
 
-    public Menoizer(Computable&lt;A, V&gt; c) { this.c = c; }
-    while (true) {
-        Future&lt;V&gt; f = cache.get(arg);
-        if (f == null) {
-            Callable&lt;V&gt; eval = new Callable&lt;V&gt;() {
-                public V call() throws InterruptedException {
-                    return c.compute(args);
-                }
-            };
-            FutureTask&lt;V&gt; ft = new FutureTask&lt;V&gt;(eval);
-            // 复合操作（“若没有则添加”）
-            f = cache.putIfAbsent(arg, ft);
-            if(f == null) {
-                f = ft;
-                ft.run();
-            }
-        }
-        try{
-            // 若正在计算，则阻塞等待结果
-            return f.get();
-        } catch (CancellationException e) {
-            // 出现异常则去除缓存，防止缓存污染
-            cache.renove(arg,f);
-        } catch (ExecutionException e) {
-            throw launderThrowable(w.getCause())
-        }
-    }
-}
+<h3 class="mume-header" id="1428-%E5%85%A5%E5%8F%A3%E5%8D%8F%E8%AE%AE%E4%B8%8E%E5%87%BA%E5%8F%A3%E5%8D%8F%E8%AE%AE">14.2.8 入口协议与出口协议</h3>
 
-</code></pre>
-<h2 id="第一部分小结"><a href="#第一部分小结" class="headerlink" title="第一部分小结"></a>第一部分小结</h2><ul>
-<li>可变状态是至关重要的。<br>  所有的并发问题都可以归结为如何协调对并发状态的访问，可变状态越少，就越容易确保线程安全。</li>
-<li>尽量将域声明为final类型，除非需要它们是可变的。</li>
-<li>不可变对象一定是线程安全的。<br>  不可变对象能极大地降低并发编程的复杂性。它们更为简单而且安全，可以任意共享而无须使用加锁或保护性复制等机制。</li>
-<li>封装有助于管理复杂性<br>  在编写线程安全的程序时，虽然可以将所有数据都保存在全局变量中，但为什么要这么做？将数据封装在对象中，更易于维持不变性条件：将同步机制封装在对象中，更易于遵循同步策略。</li>
-<li>用锁来保护每个可变变量。</li>
-<li>当保护同一个不变性条件中的所有变量时，要使用用一个锁。</li>
-<li>在执行复合操作期间，要持有锁。</li>
-<li>如果从多个线程中访问同一个可变变量没有同步机制，那么程序会出现问题。</li>
-<li>不要故作聪明地推断出不需要使用同步。</li>
-<li>在设计过程中考虑线程安全，或者在文档中明确地指出它不是线程安全的。</li>
-<li>将同步策略文档化。</li>
-</ul>
+<h2 class="mume-header" id="143-%E6%98%BE%E5%BC%8F%E7%9A%84condition%E5%AF%B9%E8%B1%A1">14.3 显式的Condition对象</h2>
 
+<p>特别注意：在Condition对象中，与wait、notify和notifyAll方法对应的分别时await、signal和aignalAll。但是，Condition对Object进行了扩展，因而它也包含wait和notify方法，一定要确保使用正确的版本--await和signal。</p>
+<h2 class="mume-header" id="144-synchronizer%E5%89%96%E6%9E%90">14.4 Synchronizer剖析</h2>
+
+<h2 class="mume-header" id="145-abstractqueuedsynchronizer">14.5 AbstractQueuedSynchronizer</h2>
+
+<h2 class="mume-header" id="146-javautilconcurrent%E5%90%8C%E6%AD%A5%E5%99%A8%E7%B1%BB%E4%B8%AD%E7%9A%84aqs">14.6 java.util.concurrent同步器类中的AQS</h2>
+
+<h3 class="mume-header" id="1461-reentrantlock">14.6.1 ReentrantLock</h3>
+
+<h3 class="mume-header" id="1462-semaphore%E4%B8%8Ecountdownlatch">14.6.2 Semaphore与CountDownLatch</h3>
+
+<h3 class="mume-header" id="1463-futuretask">14.6.3 FutureTask</h3>
+
+<h3 class="mume-header" id="1464-reentrantreadwritelock">14.6.4 ReentrantReadWriteLock</h3>
+
+<h2 class="mume-header" id="%E6%80%BB%E7%BB%93">总结：</h2>
+
+<p>要实现一个依赖状态的类 ---- 如果没有满足依赖状态的前提，那么这个类的方法必须阻塞，那么最好的方式是基于现有的库类来构建，例如Semaphore.BlockingQueue或CountDownLatch。然而，有时候现有的库类不能提供足够的功能，在这种情况下，可以使用内置的条件队列、显示的Condition对象或者AbstractQueueSynchronizer来构建自己的同步器。</p>
+
+      </div>
+      
+      
+    </body>
+    
+    
+    
+    
+    
+    
+    
+  </html>
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/10/《Java并发编程实战》-4/" data-id="cjsfvutfo001lrovt5owri9rp" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/08/01/读书笔记/《Java并发编程实战》-13/" data-id="cjys176cj00407ovteey86iu4" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -305,7 +412,7 @@ public class Menoizer&lt;A, V&gt; implements Computable&lt;A, V&gt; {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-4" ></div> 
+<div id="SOHUCS" sid="读书笔记/《Java并发编程实战》-13" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -323,136 +430,314 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-3" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-读书笔记/《Java并发编程实战》-12" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/08/《Java并发编程实战》-3/" class="article-date">
-  <time datetime="2018-08-08T10:26:41.448Z" itemprop="datePublished">2018-08-08</time>
+    <h3 href="/2019/08/01/读书笔记/《Java并发编程实战》-12/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.027Z" itemprop="datePublished">2019-08-01</time>
 </h3>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
   </div>
   <div class="article-inner">
   <div class="curve-down">
   <div class="fill-content">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/08/《Java并发编程实战》-3/">《Java并发编程实战》-3</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="对象的组合"><a href="#对象的组合" class="headerlink" title="对象的组合"></a>对象的组合</h1><h2 id="4-1-设计线程安全的类"><a href="#4-1-设计线程安全的类" class="headerlink" title="4.1 设计线程安全的类"></a>4.1 设计线程安全的类</h2><p>在设计线程安全类的过程中，需要包含一下三个基本要素：</p>
+        <!DOCTYPE html>
+  <html>
+    <head>
+      <title>《Java并发编程实战》-12   第13章 显式锁</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///C:\Users\gonefuture\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.3.5\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+      <style> 
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+ 
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview   ">
+      <h1 class="mume-header" id="%E7%AC%AC13%E7%AB%A0-%E6%98%BE%E5%BC%8F%E9%94%81">第13章 显式锁</h1>
+
+<h2 class="mume-header" id="131-lock-%E4%B8%8E-reentrantlock">13.1 Lock 与 ReentrantLock</h2>
+
+<p>使用ReentrantLock来保护对象状态</p>
+<pre data-role="codeBlock" data-info="java" class="language-java">Lock lock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReentrantLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+lcok<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">try</span><span class="token punctuation">{</span>
+    <span class="token comment">// 更新对象状态</span>
+    <span class="token comment">// 捕捉异常，并在必要时恢复不变性条件</span>
+<span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+    lock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</pre><h2 class="mume-header" id="1311-%E8%BD%AE%E8%AF%A2%E9%94%81%E4%B8%8E%E5%AE%9A%E6%97%B6%E9%94%81">13.1.1 轮询锁与定时锁</h2>
+
+<pre data-role="codeBlock" data-info="java" class="language-java">
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>lock<span class="token punctuation">.</span><span class="token function">tryLock</span><span class="token punctuation">(</span>nanosToLock<span class="token punctuation">,</span> NANOSECONDS<span class="token punctuation">)</span><span class="token punctuation">)</span> 
+    <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+<span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">sendOnShareLine</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span>
+<span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+    lock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</pre><h3 class="mume-header" id="1312-%E5%8F%AF%E4%B8%AD%E6%96%AD%E7%9A%84%E9%94%81%E8%8E%B7%E5%8F%96%E6%93%8D%E4%BD%9C">13.1.2 可中断的锁获取操作</h3>
+
+<p>正如定时的锁获取操作能在带有事件限制的操作中使用独占锁，可中断的锁获取操作同样能在可取消的操作中使用加锁。</p>
+<h3 class="mume-header" id="1313-%E9%9D%9E%E5%9D%97%E7%BB%93%E6%9E%84%E7%9A%84%E5%8A%A0%E9%94%81">13.1.3 非块结构的加锁</h3>
+
+<p>锁分段技术在基于散列的容器中实现了不同的散列链，以便使用不同的锁。</p>
+<h2 class="mume-header" id="132-%E6%80%A7%E8%83%BD%E8%80%83%E8%99%91%E5%9B%A0%E7%B4%A0">13.2 性能考虑因素</h2>
+
+<blockquote>
+<p>性能时一个不断变化的指标，内置锁和ReentrantLock在各个JDK版本都不一样。</p>
+</blockquote>
+<h2 class="mume-header" id="133-%E5%85%AC%E5%B9%B3%E9%94%81">13.3 公平锁</h2>
+
+<p>在公平锁上，线程将按照它们发出请求的顺序来获得锁，但在非公平锁上，则允许“插队”:当一个线程请求非公平锁的时，如果在发出请求的同时该锁的状态变为可用，那么这个线程将跳过队列中所有的等待线程并获得这个锁。(在Semaphore中同样可以选择采用公平或非公平的获取顺序。)</p>
+<p>在大多数情况下，非公平锁的性能要高于公平锁的性能。</p>
+<h2 class="mume-header" id="134-%E5%9C%A8synchronied%E5%92%8Creentrantlock%E4%B9%8B%E9%97%B4%E8%BF%9B%E8%A1%8C%E9%80%89%E6%8B%A9">13.4 在synchronied和ReentrantLock之间进行选择</h2>
+
+<blockquote>
+<p>在一些内置锁无法满足需求的情况下，<code>ReentrantLock</code>可以作为一种高级工具。当需要一些高级功能时才应该使用<code>ReentrantLock</code>，这些功能包括：可定时的、可轮询的与可中断的锁获取操作，公平队列，以及非块结构的锁。否则，还是应该优先使用<code>synchronized</code>。</p>
+</blockquote>
+<h2 class="mume-header" id="%E8%AF%BB-%E5%86%99%E9%94%81">读-写锁</h2>
+
+<p>ReadWriteLock中的一些可选实现包括：</p>
 <ul>
-<li>找出构成对象状态的所有变量。</li>
-<li>找出约束状态变量的不变性条件。</li>
-<li>建立对象状态的并发访问管理策略。</li>
+<li><strong>释放优先</strong>。当一个写入操作释放写入锁时，并且队伍中同时存在读线程和写线程，那么应该优先选择读线程，写线程，还是最先发出请求的线程？</li>
+<li><strong>读线程插队</strong>。如果锁是由读线程持有，但有写线程正在等待，那么新到达的读线程能否立即获得访问权，还是应该在写线程后面等待？如果允许线程插队到写线程之前，那么将提高并发性，但却可能造成写线程饥饿问题。</li>
+<li><strong>重入性</strong>。读取锁和写入锁是否是可重入的。</li>
+<li><strong>降级</strong>。如果一个线程持有写入锁，那么它能否在不释放该锁的情况下获得读取锁？这可能会使得写入锁被“降级”为读取锁，同时不允许其他写线程修改被保护的资源。</li>
+<li><strong>升级</strong>。读取锁能否优于其他正在等待的读线程和写线程而升级为一个写入锁？在大多数的读-写锁实现中并不支持升级，因为如果没有显式的升级操作，那么很容易造成死锁。（如果两个读线程试图同时升级为写入锁，那么二者都不会释放读取锁。）</li>
 </ul>
-<h3 id="4-1-1-收集同步需求"><a href="#4-1-1-收集同步需求" class="headerlink" title="4.1.1 收集同步需求"></a>4.1.1 收集同步需求</h3><blockquote>
-<p>如果不了解对象的不变性与厚颜条件，那么就不能确保线程安全性。要满足在状态变量的有效值或状态转换上的各种约束条件，就需要结组于原子性和封装性。</p>
-</blockquote>
-<h3 id="4-1-2-依赖状态的操作"><a href="#4-1-2-依赖状态的操作" class="headerlink" title="4.1.2 依赖状态的操作"></a>4.1.2 依赖状态的操作</h3><h3 id="4-13-状态的所有权"><a href="#4-13-状态的所有权" class="headerlink" title="4.13 状态的所有权"></a>4.13 状态的所有权</h3><h3 id="4-2-实例封闭"><a href="#4-2-实例封闭" class="headerlink" title="4.2 实例封闭"></a>4.2 实例封闭</h3><p>将数据封闭在对象内部，可以将数据的访问限制在对象的方法上，从而更加容易确保在访问数据时总能持有正确的锁。</p>
-<p>封闭机制更加易于构造线程安全的类，因为当封闭类的状态时，在分析类的线程安全性时就无需检查整个程序。</p>
-<h3 id="4-2-1-Java监视器模式"><a href="#4-2-1-Java监视器模式" class="headerlink" title="4.2.1 Java监视器模式"></a>4.2.1 Java监视器模式</h3><p>通过一个私有锁来保护状态</p>
-<pre><code class="java">public class PrivateLock {
-    private final Object myLock = new Object();
-    @GuardedBy(&quot;myLock&quot;) Widget widget;
+<h2 class="mume-header" id="%E6%80%BB%E7%BB%93">总结</h2>
 
-    void someMethod() {
-        synchronized(myLock) {
-            // 访问或修改Widget的状态
-        }
-    }
-}
-</code></pre>
-<h3 id="4-2-2-实例-车辆追踪"><a href="#4-2-2-实例-车辆追踪" class="headerlink" title="4.2.2 实例:车辆追踪"></a>4.2.2 实例:车辆追踪</h3><h2 id="4-3-线程安全性的委托"><a href="#4-3-线程安全性的委托" class="headerlink" title="4.3 线程安全性的委托"></a>4.3 线程安全性的委托</h2><h3 id="4-3-1-示例-基于委托的车辆跟踪器"><a href="#4-3-1-示例-基于委托的车辆跟踪器" class="headerlink" title="4.3.1 示例:基于委托的车辆跟踪器"></a>4.3.1 示例:基于委托的车辆跟踪器</h3><h3 id="4-3-2-独立的状态变量"><a href="#4-3-2-独立的状态变量" class="headerlink" title="4.3.2 独立的状态变量"></a>4.3.2 独立的状态变量</h3><h3 id="4-3-3-当委托失效时"><a href="#4-3-3-当委托失效时" class="headerlink" title="4.3.3 当委托失效时"></a>4.3.3 当委托失效时</h3><p>如果一个类时由多个独立且线程安全的状态变量组成，并且在所有的操作中都不包含无效状态转换，那么可以将线程安全性安全性委托给底层的状态变量。</p>
-<p>如果一个状态变量是线程安全的，并且没有任何不变性条件来约束它的值，在变量的操作上也不存在任何不允许的状态转换，那么就可以说安全地发布这个变量。</p>
-<h2 id="4-4-在现有的线程安全类中添加功能"><a href="#4-4-在现有的线程安全类中添加功能" class="headerlink" title="4.4 在现有的线程安全类中添加功能"></a>4.4 在现有的线程安全类中添加功能</h2><p>扩展Vector并增加一个”若没有则添加”方法</p>
-<pre><code class="java">@TheadSafe
-public class BetterVector&lt;E&gt; extends Vector&lt;E&gt; {
-    public synchronized boolean putIfAbsent(E x) {
-        boolean absent = !contains(x);
-        if(absent) {
-            add(x)
-        }
-        return absent;
-    }
-}
-</code></pre>
-<p>“扩展”方法比直接将代码添加到类中更加脆弱，因为现在的同步策略实现被分布到多个单独维护的源代码文件中。</p>
-<h3 id="4-4-1-客户端加锁机制"><a href="#4-4-1-客户端加锁机制" class="headerlink" title="4.4.1 客户端加锁机制"></a>4.4.1 客户端加锁机制</h3><p>非现象安全的”若没有则添加”（不要这么做）</p>
-<pre><code class="java">@NotThreadSafe
-public class ListHelper&lt;E&gt; {
-    public List&lt;E&gt; list = Colletions.synchronizedList(new ArrayList&lt;E&gt;());
+<p>与内置锁相比，显式的Lock提供了一些宽展功能，在处理锁的不可用性方面有着更高的灵活性，并且对队列行有着更好的控制。但ReentrantLock不能完全替代<code>synchronized</code>，只有在<code>synchronized</code>无法满足需求时，才应该使用它。<br>
+读-写允许多个读线程并发地访问被保护的对象，当访问以读取操作为主的数据结构时，他能提高程序的可伸缩性。</p>
 
-    pblic synchronized boolean putIfAbsent(E x) {
-        boolean absent = list.contains(x);
-        if(absent)
-            list.add(x);
-        return absent;
-    }
-}
-</code></pre>
-<p>ListHelper只是带来了同步的假象，尽管所有的链表操作都被声明为synchronized,但是却<strong>使用了不同的锁</strong>。(list本身的锁和ListHelper对象的锁)</p>
-<p>通过客户端加锁来实现“若没有则添加”（线程安全）</p>
-<pre><code class="java">@ThreadSafe
-public class ListHelper&lt;E&gt; {
-    public List&lt;E&gt; list = Colletions.synchronizedList(new ArrayList&lt;E&gt;());
-
-    pblic boolean putIfAbsent(E x) {
-        synchronized(list) {
-        boolean absent = list.contains(x);
-        if(absent)
-            list.add(x);
-        return absent;
-        }
-    }
-}
-</code></pre>
-<h3 id="4-4-2-组合"><a href="#4-4-2-组合" class="headerlink" title="4.4.2 组合"></a>4.4.2 组合</h3><p>通过组合实现“若没有则添加”</p>
-<pre><code class="java">@ThreadSafe
-public class ImporvedList&lt;T&gt; implements List&lt;T&gt; {
-    private final List&lt;T&gt; list;
-
-    public ImprovedList(List&lt;T&gt; list) { this.list = list;}
-
-    public synchronized boolean putIfAbsent(T x) {
-        boolean contains = list.contains(x);
-        if (contains)
-            list.add(x);
-        return !contains;
-    }
-
-    public synchronized void clear() {
-        lsit.clear();
-    }
-
-    // ... 按照类似的方法委托List的其他方法
-}
-</code></pre>
-<p>事实上，我们使用了Java监视器模式来封装现有的List,并且只要在类中拥有指向底层List的<strong>唯一</strong>外部引用，就能确保线程安全性。</p>
-<h2 id="4-5-将同步策略文档化"><a href="#4-5-将同步策略文档化" class="headerlink" title="4.5 将同步策略文档化"></a>4.5 将同步策略文档化</h2><blockquote>
-<p>在文档中说明客户端代码需要了解的线程安全性保证，以及代码人员需要了解的同步策略。</p>
-</blockquote>
-
+      </div>
+      
+      
+    </body>
+    
+    
+    
+    
+    
+    
+    
+  </html>
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/08/《Java并发编程实战》-3/" data-id="cjsfvutfr001orovtbg8hh80m" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/08/01/读书笔记/《Java并发编程实战》-12/" data-id="cjys176b9003z7ovt8xeolxxm" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -460,7 +745,7 @@ public class ImporvedList&lt;T&gt; implements List&lt;T&gt; {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-3" ></div> 
+<div id="SOHUCS" sid="读书笔记/《Java并发编程实战》-12" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -478,345 +763,350 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-Java常用的排序算法" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-读书笔记/《Java并发编程实战》-11" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/07/Java常用的排序算法/" class="article-date">
-  <time datetime="2018-08-07T12:53:11.484Z" itemprop="datePublished">2018-08-07</time>
+    <h3 href="/2019/08/01/读书笔记/《Java并发编程实战》-11/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.011Z" itemprop="datePublished">2019-08-01</time>
 </h3>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/算法/">算法</a>
-  </div>
-
   </div>
   <div class="article-inner">
   <div class="curve-down">
   <div class="fill-content">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/07/Java常用的排序算法/">Java常用的排序算法</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="Java常用的排序算法"><a href="#Java常用的排序算法" class="headerlink" title="Java常用的排序算法"></a>Java常用的排序算法</h1><hr>
-<h2 id="1-直接插入排序"><a href="#1-直接插入排序" class="headerlink" title="1. 直接插入排序"></a>1. 直接插入排序</h2><p>直接插入排序（Straight Insertion Sorting）的基本思想：在要排序的一组数中，假设前面(n-1) [n&gt;=2] 个数已经是排好顺序的，现在要把第n个数插到前面的有序数中，使得这n个数也是排好顺序的。如此反复循环，直到全部排好顺序。</p>
-<p>代码实现：</p>
-<ol>
-<li>首先设定插入次数，即循环次数，<code>for(int i=1;i&lt;length;i++)</code>，1个数的那次不用插入。 </li>
-<li>设定插入数和得到已经排好序列的最后一个数的位数。insertNum和j=i-1。</li>
-<li>从最后一个数开始向前循环，如果插入数小于当前数，就将当前数向后移动一位。</li>
-</ol>
-<p>代码如下：</p>
-<pre><code class="java">public void insertSort(int [] a){
-        int len=a.length;//单独把数组长度拿出来，提高效率
-        int insertNum;//要插入的数
-        for(int i=1;i&lt;len;i++){//因为第一次不用，所以从1开始
-            insertNum=a[i];
-            int j=i-1;//序列元素个数
-            while(j&gt;=0 &amp;&amp; a[j]&gt;insertNum){//从后往前循环，将大于insertNum的数向后移动
-                a[j+1]=a[j];//元素向后移动
-                j--;
-            }
-            a[j+1]=insertNum;//找到位置，插入当前元素
-        }
-    }
-</code></pre>
-<h2 id="2-希尔排序"><a href="#2-希尔排序" class="headerlink" title="2. 希尔排序"></a>2. 希尔排序</h2><p> 针对直接插入排序的下效率问题，有人对此进行了改进与升级，这就是现在的希尔排序。希尔排序，也称递减增量排序算法，是插入排序的一种更高效的改进版本。希尔排序是非稳定排序算法。</p>
-<p>希尔排序是基于插入排序的以下两点性质而提出改进方法的：</p>
+        <!DOCTYPE html>
+  <html>
+    <head>
+      <title>《Java并发编程实战》-11 第12章 并发程序的测试</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///C:\Users\gonefuture\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.3.5\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+      <style> 
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+ 
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview   ">
+      <h1 class="mume-header" id="%E7%AC%AC12%E7%AB%A0-%E5%B9%B6%E5%8F%91%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%B5%8B%E8%AF%95">第12章 并发程序的测试</h1>
+
+<hr>
+<p>吞吐量:指一组并发任务中已完成任务所栈的比例。<br>
+响应性：指请求从发出到完成之间的时间（也成为延迟）。</p>
+<h2 class="mume-header" id="121-%E6%AD%A3%E7%A1%AE%E6%80%A7%E6%B5%8B%E8%AF%95">12.1 正确性测试</h2>
+
+<p>在为某个并发类设计单元测试时，首先需要执行与测试串行类时相同的分析---找出需要检查的不变性条件和后验条件。</p>
+<h3 class="mume-header" id="1211-%E5%9F%BA%E6%9C%AC%E7%9A%84%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">12.1.1 基本的单元测试</h3>
+
+<p>在测试集中包含一组串行测试通常是有帮助的，因为它们有助于在开始分析数据竞争之前找出与并发无关性的问题。</p>
+<h3 class="mume-header" id="1212-%E5%AF%B9%E9%98%BB%E5%A1%9E%E6%93%8D%E4%BD%9C%E7%9A%84%E6%B5%8B%E8%AF%95">12.1.2 对阻塞操作的测试</h3>
+
+<p>在测试并发的基本属性时，需要引入多个线程。</p>
+<p>Thread.getState的返回结果不能用于并发控制，它能限制测试的有效性---其主要作用还是作为调试信息的来源。</p>
+<h3 class="mume-header" id="1213-%E5%AE%89%E5%85%A8%E6%80%A7%E6%B5%8B%E8%AF%95">12.1.3 安全性测试</h3>
+
+<blockquote>
+<p>在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情况是，在测试属性中不需要任何同步机制。</p>
+</blockquote>
+<h3 class="mume-header" id="1214-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E7%9A%84%E6%B5%8B%E8%AF%95">12.1.4 资源管理的测试</h3>
+
+<h3 class="mume-header" id="1215-%E4%BD%BF%E7%94%A8%E5%9B%9E%E8%B0%83">12.1.5 使用回调</h3>
+
+<p>回调函数的执行通常是在对象生命周期的一些已知位置上，并且在这些位置上非常适合判断不变性是否被破坏。</p>
+<h3 class="mume-header" id="1216-%E4%BA%A7%E7%94%9F%E8%B7%9F%E5%A4%9A%E7%9A%84%E4%BA%A4%E6%9B%BF%E6%93%8D%E4%BD%9C">12.1.6 产生跟多的交替操作</h3>
+
+<p>在访问共享状态的操作中，使用Thread.yield将产生更多的上下文切换（这项技术是平台相关的）。</p>
+<h2 class="mume-header" id="122-%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95">12.2 性能测试</h2>
+
+<h3 class="mume-header" id="1221-%E5%9C%A8puttaketest%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%AE%A1%E6%97%B6%E5%8A%9F%E8%83%BD">12.2.1 在PutTakeTest中增加计时功能</h3>
+
+<h3 class="mume-header" id="1222-%E5%A4%9A%E7%A7%8D%E7%AE%97%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83">12.2.2 多种算法的比较</h3>
+
+<h3 class="mume-header" id="%E5%93%8D%E5%BA%94%E6%80%A7%E8%A1%A1%E9%87%8F">响应性衡量</h3>
+
+<p>如果能获取更小的服务时间变动性，那么更长的平均时间是有意义的，“可预测需性”同样是一个非常有价值的性能特征。<br>
+除非线程由于密集的同步需求而被持续地阻塞，否则非公平的信号量通常能实现更好的吞吐量。</p>
+<h2 class="mume-header" id="123-%E9%81%BF%E5%85%8D%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E7%9A%84%E9%99%B7%E9%98%B1">12.3 避免性能测试的陷阱</h2>
+
+<h3 class="mume-header" id="1231-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6">12.3.1 垃圾回收</h3>
+
+<p>垃圾回收的执行时序是无法预测的，因此在执行测试时，垃圾回收器可能在任何时刻运行。</p>
+<h3 class="mume-header" id="1232-%E5%8A%A8%E6%80%81%E7%BC%96%E8%AF%91">12.3.2 动态编译</h3>
+
+<p>当某个类第一次被加载时，JVM会通过解释字节码的方式执行它。在某个时刻，如果一个方法运行的次数足够多，那么动态编译器会将它编译为机器代码，当编译完成后，代码的执行方式将从解释执行变成直接执行。</p>
+<h3 class="mume-header" id="1233-%E5%AF%B9%E4%BB%A3%E7%A0%81%E8%B7%AF%E5%BE%84%E7%9A%84%E4%B8%8D%E7%9C%9F%E5%AE%9E%E9%87%87%E9%9B%86">12.3.3 对代码路径的不真实采集</h3>
+
+<p>运行时编译器根据收集到的信息对已编译的代码进行优化。JVM可以与执行过程特定的信息来生成更优的代码，这个意味着在编译某个程序的方法M时生成的代码，将可能与编译另一个不同程序中的方法M时生成的代码不同。</p>
+<h3 class="mume-header" id="1234-%E4%B8%8D%E7%9C%9F%E5%AE%9E%E7%9A%84%E7%AB%9E%E4%BA%89%E7%A8%8B%E5%BA%A6">12.3.4 不真实的竞争程度</h3>
+
+<p>并发的应用程序可以交替执行两种不同的类型的工作：访问共享数据（例如从共享工作队列中取出下一个任务）以及执行线程本地的计算（例如，执行任务，并假设任务本身不会访问共享数据）。</p>
+<h3 class="mume-header" id="1235-%E6%97%A0%E7%94%A8%E4%BB%A3%E7%A0%81%E7%9A%84%E6%B6%88%E9%99%A4">12.3.5 无用代码的消除</h3>
+
+<blockquote>
+<p>要编写有效的性能测试程序，那就需要告诉优化器不要将基准测试当作无用代码而优化掉。这就要求在程序中对每个计算结果都要通过某种方式来使用，这种方式不需要同步或者大量的计算。</p>
+</blockquote>
+<h2 class="mume-header" id="124-%E5%85%B6%E4%BB%96%E7%9A%84%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95">12.4 其他的测试方法</h2>
+
+<p>测试的目标不是更多地发现错误，而是提高代码按照预期方式工作的可信度。</p>
+<h3 class="mume-header" id="1241-%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5">12.4.1 代码审查</h3>
+
+<p>多人参与的代码审查通常是不可替代的（另一方面，代码审查也不能取代测试）。</p>
+<h3 class="mume-header" id="1242-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7">12.4.2 静态分析工具</h3>
+
+<p>静态分析工具能生成一个警告列表，其中包含的警告信息必须通过手工方式进行检查，从而确定这些警告是否表示真正的错误。</p>
+<p>FindBUgs包含的检测器：</p>
 <ul>
-<li>插入排序在对<strong>几乎已经排好序</strong>的数据操作时， 效率高， 即可以达到线性排序的效率</li>
-<li>但插入排序一般来说是低效的， 因为插入排序每次只能将数据移动一位</li>
+<li>调用Thread.run()</li>
+<li>未被释放的锁<br>
+标准的做法是在一个人finally块中释放显式锁，否则，当发生Exception事件时，锁仍然处于未被释放的状态。</li>
+<li>空的同步块</li>
+<li>双重检查加锁<br>
+双重检查加锁时一种错误的习惯用法，其初衷是为了降低延迟初始化过程中的同步开销，该用法在读取一个共享的可变域时缺少正确的同步。</li>
+<li>在构造函数中启动一个线程。<br>
+如果在构造函数中启动一个线程，那么将可能带来子类化问题，同时还会导致this引用从构造函数中逸出。</li>
+<li>通知错误<br>
+如果一个同步块中调用了notify或notifyAll，但没有修改任何状态，那么就可能出错。</li>
+<li>条件等待中的错误<br>
+如果在调用Object.wait和Condition.await方法时没有持有锁，或者不在某个循环中，或者没有检查某些状态谓词，那么通常是一个错误。</li>
+<li>对Lock和Condition的误用</li>
+<li>在休眠或者等待的同时持有一个锁。</li>
+<li>自旋循环。<br>
+当等待某个状态转换发生时，闭锁或条件等待通常比在代码中自旋是一种更好的技术。</li>
 </ul>
-<p>代码实现：</p>
-<ol>
-<li>首先确定分的组数。2</li>
-<li>. 然后对组中元素进行插入排序。</li>
-<li>然后将length/2，重复1,2步，直到length=0为止。</li>
-</ol>
-<pre><code class="java">   public void shellSort(int [] a){
-        int len=a.length;//单独把数组长度拿出来，提高效率
-        while(len!=0){
-            len=len/2;
-            for(int i=0;i&lt;len;i++){//分组
-                for(int j=i+len;j&lt;a.length;j+=len){//元素从第二个开始
-                    int k=j-len;//k为有序序列最后一位的位数
-                    int temp=a[j];//要插入的元素
-                    /*for(;k&gt;=0&amp;&amp;temp&lt;a[k];k-=len){
-                        a[k+len]=a[k];
-                    }*/
-                    while(k&gt;=0&amp;&amp;temp&lt;a[k]){//从后往前遍历
-                        a[k+len]=a[k];
-                        k-=len;//向后移动len位
-                    }
-                    a[k+len]=temp;
-                }
-            }
-        }
-    }
-</code></pre>
-<h2 id="3-简单选择排序"><a href="#3-简单选择排序" class="headerlink" title="3. 简单选择排序"></a>3. 简单选择排序</h2><p>常用于取序列中最大最小的几个数时。</p>
-<p>(如果每次比较都交换，那么就是交换排序；如果每次比较完一个循环再交换，就是简单选择排序。)遍历整个序列，将最小的数放在最前面。遍历剩下的序列，将最小的数放在最前面。重复第二步，直到只剩下一个数。</p>
-<p>代码实现：</p>
-<ol>
-<li>首先确定循环次数，并且记住当前数字和当前位置。</li>
-<li>将当前位置后面所有的数与当前数字进行对比，小数赋值给key，并记住小数的位置。</li>
-<li>比对完成后，将最小的值与第一个数的值交换。</li>
-<li>重复2、3步。</li>
-</ol>
-<pre><code class="java">    public void selectSort(int[]a){
-        int len = a.length;
-        for(int i=0;i&lt;len;i++){ //循环次数
-            int value=a[i];
-            int position = i;   // 当前位置
-            for(int j=i+1;j&lt;len;j++){   //找到最小的值和位置
-                if(a[j] &lt; value){
-                    value=a[j];
-                    position=j;
-                }
-            }
-            a[position]=a[i];   //进行交换
-            a[i]=value;
-        }
-    }
-</code></pre>
-<h2 id="4-堆排序"><a href="#4-堆排序" class="headerlink" title="4. 堆排序"></a>4. 堆排序</h2><p> 对简单选择排序的优化。</p>
-<ol>
-<li>将序列构建成大堆顶。</li>
-<li>将根节点与最后一个节点交换，然后断开最后一个节点。</li>
-<li>重复第一、二步，直到所有节点断开。</li>
-</ol>
-<p><img src="https://img-blog.csdn.net/20180808152113503?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="堆排序"></p>
-<pre><code class="java"> public  void heapSort(int[] a){
-        int len = a.length;
-        //循环建堆
-        for(int i=0;i&lt;len-1;i++){
-            // 建堆
-            buildMaxHeap(a,len-1-i);
-            // 交换堆顶和最后一个元素
-            swap(a,0,len-1-i);
-        }
-    }
-    // 交换方法
-    private  void swap(int[] data, int i, int j) {
-        int tmp = data[i];
-        data[i] = data[j];
-        data[j] = tmp;
-    }
-    // 对data数组从0到lastIndex建大顶堆
-    private void buildMaxHeap(int[] data, int lastIndex) {
-        // 从lastIndex处节点（最后一个节点）的父节点开始
-        for(int i=(lastIndex-1)/2;i&gt;=0;i--){
-            //k保存正在判断的节点
-            int k=i;
-            //如果当前k节点的子节点存在
-            while(k*2+1&lt;=lastIndex){
-                //k节点的左子节点的索引
-                int biggerIndex=2*k+1;
-                //如果biggerIndex小于lastIndex，即biggerIndex+1代表的k节点的右子节点存在
-                if(biggerIndex&lt;lastIndex){
-                    //若果右子节点的值较大
-                    if(data[biggerIndex]&lt;data[biggerIndex+1]){
-                        //biggerIndex总是记录较大子节点的索引
-                        biggerIndex++;
-                    }
-                }
-                //如果k节点的值小于其较大的子节点的值
-                if(data[k]&lt;data[biggerIndex]){
-                    //交换他们
-                    swap(data,k,biggerIndex);
-                    //将biggerIndex赋予k，开始while循环的下一次循环，重新保证k节点的值大于其左右子节点的值
-                    k=biggerIndex;
-                }else{
-                    break;
-                }
-            }
-        }
-    }
-</code></pre>
-<h2 id="5-冒泡排序"><a href="#5-冒泡排序" class="headerlink" title="5. 冒泡排序"></a>5. 冒泡排序</h2><p>序列中所有元素两两比较，将最大的放在最后面。将剩余序列中所有元素两两比较，将最大的放在最后面。重复第二步，直到只剩下一个数。</p>
-<p>代码实现：</p>
-<ol>
-<li>设置循环次数。</li>
-<li>设置开始比较的位数，和结束的位数。</li>
-<li>两两比较，将最小的放到前面去。</li>
-<li>重复2、3步，直到循环次数完毕。</li>
-</ol>
-<pre><code class="java">public void bubbleSort(int []a){
-           int len=a.length;
-           for(int i=0;i&lt;len;i++){
-               for(int j=0;j&lt;len-i-1;j++){//注意第二重循环的条件
-                   if(a[j]&gt;a[j+1]){
-                       int temp=a[j];
-                       a[j]=a[j+1];
-                       a[j+1]=temp;
-                   }
-               }
-           }
-       }
-</code></pre>
-<h2 id="6-快速排序"><a href="#6-快速排序" class="headerlink" title="6. 快速排序"></a>6. 快速排序</h2><p>选择第一个数为p，小于p的数放在左边，大于p的数放在右边。递归的将p左边和右边的数都按照第一步进行，直到不能递归。</p>
-<pre><code class="java">public void quickSort(int[]a,int start,int end){
-           if(start&lt;end){
-               int baseNum=a[start];//选基准值
-               int midNum;//记录中间值
-               int i=start;
-               int j=end;
-               do{
-                   while((a[i]&lt;baseNum)&amp;&amp;i&lt;end){
-                       i++;
-                   }
-                   while((a[j]&gt;baseNum)&amp;&amp;j&gt;start){
-                       j--;
-                   }
-                   if(i&lt;=j){
-                       midNum=a[i];
-                       a[i]=a[j];
-                       a[j]=midNum;
-                       i++;
-                       j--;
-                   }
-               }while(i&lt;=j);
-                if(start&lt;j){
-                    quickSort(a,start,j);
-                }       
-                if(end&gt;i){
-                    quickSort(a,i,end);
-                }
-           }
-       }
-</code></pre>
-<h2 id="7-归并排序"><a href="#7-归并排序" class="headerlink" title="7. 归并排序"></a>7. 归并排序</h2><p>速度仅此于快速排序，内存少的时候使用，可以进行并行计算的时候使用。</p>
-<ol>
-<li>选择相邻两个数组成一个有序序列。</li>
-<li>选择相邻的两个有序序列组成一个有序序列。</li>
-<li>重复第二步，知道全部组成一个有序序列。</li>
-</ol>
-<pre><code class="java">public  void mergeSort(int[] a, int left, int right) {  
-           int t = 1;// 每组元素个数  
-           int size = right - left + 1;  
-           while (t &lt; size) {  
-               int s = t;// 本次循环每组元素个数  
-               t = 2 * s;  
-               int i = left;  
-               while (i + (t - 1) &lt; size) {  
-                   merge(a, i, i + (s - 1), i + (t - 1));  
-                   i += t;  
-               }  
-               if (i + (s - 1) &lt; right)  
-                   merge(a, i, i + (s - 1), right);  
-           }  
-        }  
+<h3 class="mume-header" id="1243-%E9%9D%A2%E5%90%91%E6%96%B9%E9%9D%A2%E7%9A%84%E6%B5%8B%E8%AF%95%E6%8A%80%E6%9C%AF">12.4.3 面向方面的测试技术</h3>
 
-        private static void merge(int[] data, int p, int q, int r) {  
-           int[] B = new int[data.length];  
-           int s = p;  
-           int t = q + 1;  
-           int k = p;  
-           while (s &lt;= q &amp;&amp; t &lt;= r) {  
-               if (data[s] &lt;= data[t]) {  
-                   B[k] = data[s];  
-                   s++;  
-               } else {  
-                   B[k] = data[t];  
-                   t++;  
-               }  
-               k++;  
-           }  
-           if (s == q + 1)  
-               B[k++] = data[t++];  
-           else  
-               B[k++] = data[s++];  
-           for (int i = p; i &lt;= r; i++)  
-               data[i] = B[i];  
-        }
-</code></pre>
-<h2 id="8-基数排序"><a href="#8-基数排序" class="headerlink" title="8. 基数排序"></a>8. 基数排序</h2><p>用于大量数，很长的数进行排序时。<br>将所有的数的个位数取出，按照个位数进行排序，构成一个序列。<br>代码实现：</p>
-<pre><code class="java">public void baseSort(int[] a) {
-               //首先确定排序的趟数;    
-               int max = a[0];
-               for (int i = 1; i &lt; a.length; i++) {
-                   if (a[i] &gt; max) {
-                       max = a[i];
-                   }
-               }
-               int time = 0;
-               //判断位数;    
-               while (max &gt; 0) {
-                   max /= 10;
-                   time++;
-               }
-               //建立10个队列;    
-               List&lt;ArrayList&lt;Integer&gt;&gt; queue = new ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();
-               for (int i = 0; i &lt; 10; i++) {
-                   ArrayList&lt;Integer&gt; queue1 = new ArrayList&lt;Integer&gt;();
-                   queue.add(queue1);
-               }
-               //进行time次分配和收集;    
-               for (int i = 0; i &lt; time; i++) {
-                   //分配数组元素;    
-                   for (int j = 0; j &lt; a.length; j++) {
-                       //得到数字的第time+1位数;  
-                       int x = a[j] % (int) Math.pow(10, i + 1) / (int) Math.pow(10, i);
-                       ArrayList&lt;Integer&gt; queue2 = queue.get(x);
-                       queue2.add(a[j]);
-                       queue.set(x, queue2);
-                   }
-                   int count = 0;//元素计数器;    
-                   //收集队列元素;    
-                   for (int k = 0; k &lt; 10; k++) {
-                       while (queue.get(k).size() &gt; 0) {
-                           ArrayList&lt;Integer&gt; queue3 = queue.get(k);
-                           a[count] = queue3.get(0);
-                           queue3.remove(0);
-                           count++;
-                       }
-                   }
-               }
-        }
-</code></pre>
-<h2 id="9-总结"><a href="#9-总结" class="headerlink" title="9. 总结"></a>9. 总结</h2><h3 id="一、稳定性"><a href="#一、稳定性" class="headerlink" title="一、稳定性"></a>一、稳定性</h3><p>稳定：冒泡排序，插入排序、规避排序和基数排序<br>不稳定：选择排序、快速排序、希尔排序、堆排序</p>
-<h3 id="二、平均时间复杂度"><a href="#二、平均时间复杂度" class="headerlink" title="二、平均时间复杂度"></a>二、平均时间复杂度</h3><p>O(n^2):直接插入排序，简单选择排序，冒泡排序。</p>
-<p>在数据规模较小时（9W内），直接插入排序，简单选择排序差不多。当数据较大时，冒泡排序算法的时间代价最高。性能为O(n^2)的算法基本上是相邻元素进行比较，基本上都是稳定的。</p>
-<p>O(nlogn):快速排序，归并排序，希尔排序，堆排序。</p>
-<p>其中，快排是最好的， 其次是归并和希尔，堆排序在数据量很大时效果明显。</p>
-<h3 id="三、排序算法的选择"><a href="#三、排序算法的选择" class="headerlink" title="三、排序算法的选择"></a>三、排序算法的选择</h3><ol>
-<li><p>数据规模较小</p>
-<p>　　（1）待排序列基本序的情况下，可以选择直接插入排序；</p>
-<p>　　（2）对稳定性不作要求宜用简单选择排序，对稳定性有要求宜用插入或冒泡</p>
-</li>
-<li><p>数据规模不是很大</p>
-</li>
-</ol>
-<p>　　（1）完全可以用内存空间，序列杂乱无序，对稳定性没有要求，快速排序，此时要付出log（N）的额外空间。</p>
-<p>　　（2）序列本身可能有序，对稳定性有要求，空间允许下，宜用归并排序</p>
-<ol start="3">
-<li><p>数据规模很大</p>
-<p>　　（1）对稳定性有求，则可考虑归并排序。</p>
-<p> 　　（2）对稳定性没要求，宜用堆排序</p>
-</li>
-<li><p>序列初始基本有序（正序），宜用直接插入，冒泡</p>
-<p>各算法复杂度如下：</p>
-</li>
-</ol>
-<p><img src="https://img-blog.csdn.net/20180808160549920?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="各算法复杂度"></p>
+<p>AOP可以用来确保不变性条件不被破坏，或者与同步策略的某些方面保持一直。</p>
+<h3 class="mume-header" id="1244-%E5%88%86%E6%9E%90%E4%B8%8E%E7%9B%91%E6%B5%8B%E5%B7%A5%E5%85%B7">12.4.4 分析与监测工具</h3>
 
+<p>分析工具通常为能给出程序内部的详细信息，为每个线程提供一个事件线显示，并且用颜色区分不同的线程状态（可运行，由于等待某个锁为阻塞，由于等待I/O操作而阻塞等等）。</p>
+<h2 class="mume-header" id="%E5%B0%8F%E7%BB%93">小结</h2>
+
+<p>要测试并发程序的正确性可能非常困难，因为并发程序的许多故障模式哦都是一些低概率事件，它们对于执行时序、负载情况以及其他难以出现的条件都非常敏感。</p>
+
+      </div>
+      
+      
+    </body>
+    
+    
+    
+    
+    
+    
+    
+  </html>
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/07/Java常用的排序算法/" data-id="cjsfvute40000rovtnkd7igxs" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/08/01/读书笔记/《Java并发编程实战》-11/" data-id="cjys176ct00437ovta4lfkt9a" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -824,7 +1114,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="Java常用的排序算法" ></div> 
+<div id="SOHUCS" sid="读书笔记/《Java并发编程实战》-11" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -844,7 +1134,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/7/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/9/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/7/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/9/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -858,23 +1148,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2019/02/16/《网络游戏核心技术与实战》笔记-1/">《网络游戏核心技术与实战》笔记-1</a>
+            <a href="/2019/08/01/项目笔记/背包系统学习笔记/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2019/01/14/2019-1-14-开发笔记/">2019-1-14-开发笔记 Executors.newSingleThreadScheduledExecutor</a>
+            <a href="/2019/08/01/项目笔记/目标系统学习笔记/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2018/09/20/Netty消息分发和业务逻辑分离/">Netty消息分发和业务逻辑分离</a>
+            <a href="/2019/08/01/项目笔记/玩家实体的抽象/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2018/09/19/Netty, SpringBoot, MyBatis搭建游戏服务器 - 1/">Netty, SpringBoot, MyBatis搭建游戏服务器 - 1</a>
+            <a href="/2019/08/01/项目笔记/游戏生物体的抽象/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2018/09/12/《Netty实战》-第五章-ByteBuf/">《Netty实战》-第五章-ByteBuf</a>
+            <a href="/2019/08/01/项目笔记/消耗系统学习笔记/">(no title)</a>
           </li>
         
       </ul>
@@ -895,7 +1185,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

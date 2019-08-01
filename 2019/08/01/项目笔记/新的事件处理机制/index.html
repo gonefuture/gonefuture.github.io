@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="新的事件处理机制功能监视生物的行为状态（例如：生物开始移动(onCreatureStartMove),生物死亡(ICreatureDead)，在不同的状态下产生相应的事件并通知感兴趣的对象做出相应的处理。 使用1. 在/object/observer下定义事件接口（如果没有合适的事件）public interface ICreatureXxx {     // 这个事件机制基于apache.com">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gonefuture">
+<meta property="og:url" content="http://gonefuture.top/2019/08/01/项目笔记/新的事件处理机制/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="新的事件处理机制功能监视生物的行为状态（例如：生物开始移动(onCreatureStartMove),生物死亡(ICreatureDead)，在不同的状态下产生相应的事件并通知感兴趣的对象做出相应的处理。 使用1. 在/object/observer下定义事件接口（如果没有合适的事件）public interface ICreatureXxx {     // 这个事件机制基于apache.com">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-06-20T13:30:09.975Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gonefuture">
+<meta name="twitter:description" content="新的事件处理机制功能监视生物的行为状态（例如：生物开始移动(onCreatureStartMove),生物死亡(ICreatureDead)，在不同的状态下产生相应的事件并通知感兴趣的对象做出相应的处理。 使用1. 在/object/observer下定义事件接口（如果没有合适的事件）public interface ICreatureXxx {     // 这个事件机制基于apache.com">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-项目笔记/新的事件处理机制" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/08/01/项目笔记/新的事件处理机制/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.253Z" itemprop="datePublished">2019-08-01</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="新的事件处理机制"><a href="#新的事件处理机制" class="headerlink" title="新的事件处理机制"></a>新的事件处理机制</h1><h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>监视生物的行为状态（例如：生物开始移动(<code>onCreatureStartMove</code>),生物死亡(ICreatureDead)，在不同的状态下产生相应的事件并通知感兴趣的对象做出相应的处理。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="1-在-object-observer下定义事件接口（如果没有合适的事件）"><a href="#1-在-object-observer下定义事件接口（如果没有合适的事件）" class="headerlink" title="1. 在/object/observer下定义事件接口（如果没有合适的事件）"></a>1. 在/object/observer下定义事件接口（如果没有合适的事件）</h3><pre><code class="java">public interface ICreatureXxx {
+    // 这个事件机制基于apache.commons.lang3.evnet.EventListenerSupport,EventListenerSupport基于接口的动态代理实现，因此一个接口可以有多个方法
+    void onCreatureXxx(...);
+}
+</code></pre>
+<h3 id="2-事件触发"><a href="#2-事件触发" class="headerlink" title="2. 事件触发"></a>2. 事件触发</h3><pre><code class="java">abstractCreature.getObserveController().fire(ICreatureUseXxx.class).onCreatureXxx(...);
+</code></pre>
+<h3 id="3-在对事件感兴趣的类上实现相应的接口"><a href="#3-在对事件感兴趣的类上实现相应的接口" class="headerlink" title="3. 在对事件感兴趣的类上实现相应的接口"></a>3. 在对事件感兴趣的类上实现相应的接口</h3><pre><code class="java">public class Xxx implements ICreatureXxx {
+    @Override
+    void onCreatureXxx(...) {
+
+    }
+}
+
+</code></pre>
+<h3 id="4-把观察者添加到对应abstractCreature上"><a href="#4-把观察者添加到对应abstractCreature上" class="headerlink" title="4.把观察者添加到对应abstractCreature上"></a>4.把观察者添加到对应abstractCreature上</h3><pre><code class="java">// xxx：观察者对象
+absrtactCreature.getObserveController().attach(ICreatureXxx,xxx)
+
+</code></pre>
+<p>##不使用EventBus事件系统的原因</p>
+<ol>
+<li>EventBus是全局性质的事件机制，这里的事件机制是全生物状态的观察监听机制，也就是说，如果使用EventBus应当用submit（或者同步的synSubmit）发布事件时，所有的@ReceiverAnno注解的方法都会被触发，但是这里的事件机制只有attach到对应相应生物上的接口实现类的方法被触发。</li>
+<li>EventBus不具备移除观测者的功能。这里可以使用<code>abstractCreature.getObserveController().removeObserver(ICreatureXxx,Xxx)</code>移除迷人<code>abstractCreature</code>身上的特定观察者。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/新的事件处理机制/" data-id="cjys176fx004g7ovtqqjz5y6c" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/新的事件处理机制" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/01/项目笔记/服务开发原则/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/01/项目笔记/定时任务系统学习笔记/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/08/01/项目笔记/背包系统学习笔记/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/01/项目笔记/目标系统学习笔记/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/01/项目笔记/玩家实体的抽象/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/01/项目笔记/游戏生物体的抽象/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/01/项目笔记/消耗系统学习笔记/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>
