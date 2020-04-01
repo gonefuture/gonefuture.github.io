@@ -83,6 +83,272 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-零碎的知识点-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/02/零碎的知识点-1/" class="article-date">
+  <time datetime="2018-08-02T03:10:17.050Z" itemprop="datePublished">2018-08-02</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/零碎的知识点/">零碎的知识点</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/02/零碎的知识点-1/">零碎的知识点-1</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="零碎的知识点-1"><a href="#零碎的知识点-1" class="headerlink" title="零碎的知识点-1"></a>零碎的知识点-1</h1><hr>
+<h2 id="二叉排序树"><a href="#二叉排序树" class="headerlink" title="二叉排序树"></a>二叉排序树</h2><p>二叉排序树或者是一棵空树，或者是具有下列性质的二叉树：<br>（1）若左子树不空，则左子树上所有结点的值均小于 它的根结点的值；<br>（2）若右子树不空，则右子树上所有结点的值均大于或等于 它的根结点的值；<br>（3）左、右子树也分别为二叉排序树；<br>（4）没有键值相等的节点。</p>
+<blockquote>
+<p>中序遍历可以得到二叉排序树的有序序列</p>
+</blockquote>
+<pre><code class="html">    40
+    / \
+   30 50
+</code></pre>
+<h2 id="视图与基本表的对比"><a href="#视图与基本表的对比" class="headerlink" title="视图与基本表的对比"></a>视图与基本表的对比</h2><p>视图可以定义在多张表上，因此定义功能比表强。<br>视图中数据更新受到诸多限制，例如不能有聚集函数，不能是定义在多张表上等，因此操作功能弱于表。<br>视图的数据控制功能和表的数据控制功能相当，都有GRANT、REVOKE。</p>
+<p>视图和表的区别和联系：</p>
+<ul>
+<li>区别：</li>
+</ul>
+<ol>
+<li>视图是已经编译好的sql语句。而表不是  </li>
+<li>视图没有实际的物理记录。而表有。</li>
+<li>表是内容，视图是窗口</li>
+<li>表只用物理空间而视图不占用物理空间，视图只是逻辑概念的存在，表可以及时对它进行修改，但视图只能有创建的语句来修改</li>
+<li>表是内模式，视图是外模式</li>
+<li>视图是查看数据表的一种方法，可以查询数据表中某些字段构成的数据，只是一些SQL语句的集合。从安全的角度说，视图可以不给用户接触数据表，从而不知道表结构。</li>
+<li>表属于全局模式中的表，是实表；视图属于局部模式的表，是虚表。</li>
+<li>视图的建立和删除只影响视图本身，不影响对应的基本表。</li>
+</ol>
+<ul>
+<li>联系：</li>
+</ul>
+<p>视图（view）是在基本表之上建立的表，它的结构（即所定义的列）和内容（即所有数据行）都来自基本表，它依据基本表存在而存在。一个视图可以对应一个基本表，也可以对应多个基本表。视图是基本表的抽象和在逻辑意义上建立的新关系。</p>
+<h2 id="Linux-bash-特殊变量："><a href="#Linux-bash-特殊变量：" class="headerlink" title="Linux bash 特殊变量："></a>Linux bash 特殊变量：</h2><p>特殊变量列表<br>| 变量 | 含义 |<br>| – | – |<br>| $0 | 当前脚本的文件名 |<br>| $n | 传递给脚本或函数的参数。n 是一个数字，表示第几个参数。例如，第一个参数是<code>$1</code>，第二个参数是<code>$2</code>。|<br>| $# | 传递给脚本或函数的参数个数。|<br>| $<em> | 传递给脚本或函数的所有参数。|<br>| $@ | 传递给脚本或函数的所有参数。被双引号(“ “)包含时，与 $</em> 稍有不同，下面将会讲到。|<br>| $? | 上个命令的退出状态，或函数的返回值。|<br>| $$ | 当前Shell进程ID。对于 Shell 脚本，就是这些脚本所在的进程ID。|</p>
+<h2 id="bash中变量的定义和赋值"><a href="#bash中变量的定义和赋值" class="headerlink" title="bash中变量的定义和赋值"></a>bash中变量的定义和赋值</h2><p>bash中有两个内置的命令declare 和 typeset 可用于创建变量。除了使用内置命令来创建和设置变量外，还可以直接赋值，格式为：变量名=变量值<br>注意：变量名前面不应加美元“$”符号。（和PHP不同）</p>
+<pre><code>     等号“=”前后不可以有空格。
+
+     Shell中不需要显式的语法来声明变量。
+
+     变量名不可以直接和其他字符相连，如果想相连，必须用括号：    echo “this is $(he)llo!”
+</code></pre><h2 id="umask命令"><a href="#umask命令" class="headerlink" title="umask命令"></a>umask命令</h2><p>umask<br>功能说明：指定在建立文件时预设的权限掩码。<br>语　　法：umask [-S][权限掩码]<br>补充说明：umask可用来设定[权限掩码]。[权限掩码]是由3个八进制的数字所组成，将现有的存取权限减掉权限掩码后，即可产生建立文件时预设的权限。</p>
+<p>在Linux中 umask:目前用户在新建文件或者目录时候的默认权限值<br>在Linux中r，w，x的值分别是 ： 4 2 1</p>
+<h2 id="链接分硬链接和符号链接。"><a href="#链接分硬链接和符号链接。" class="headerlink" title="链接分硬链接和符号链接。"></a>链接分硬链接和符号链接。</h2><p>符号链接可以建立对于文件和目录的链接。符号链接可以跨文件系统，即可以跨磁盘分区。符号链接的文件类型位是l，链接文件具有新的i节点。</p>
+<p>硬链接不可以跨文件系统。它只能建立对文件的链接，硬链接的文件类型位是－，且硬链接文件的i节点同被链接文件的i节点相同。</p>
+<p>软链接产生的是一个新的文件(类似快捷方式)，但这个文件的作用就是专门指向某个文件的，删了这个软连接文件，那就等于不需要这个连接，和原来的存在的实体原文件没有任何关系，但删除原来的文件，则相应的软连接不可用（cat那个软链接文件，则提示“没有该文件或目录“）。</p>
+<p>硬链接实际上是为文件建一个<strong>别名</strong>，链接文件和原文件实际上是同一个文件。可以通过ls -i来查看一下，这两个文件的inode号是同一个，说明它们是同一个文件。</p>
+<h2 id="聚集索引"><a href="#聚集索引" class="headerlink" title="聚集索引"></a>聚集索引</h2><p>聚集索引是一种索引，该索引中键值的逻辑顺序决定了表中相应行的<strong>物理顺序</strong>。</p>
+<p>聚集索引确定表中数据的物理顺序。聚集索引类似于电话簿，按姓氏排列数据。由于聚集索引规定数据在表中的物理存储顺序，因此一个表只能包含一个聚集索引。但该索引可以包含多个列（组合索引），就像电话簿按姓氏和名字进行组织一样。</p>
+<p>聚集索引对于那些经常要搜索范围值的列特别有效。使用聚集索引找到包含第一个值的行后，便可以确保包含后续索引值的行在物理相邻。例如，如果应用程序执行的一个查询经常检索某一日期范围内的记录，则使用聚集索引可以迅速找到包含开始日期的行，然后检索表中所有相邻的行，直到到达结束日期。这样有助于提高此类查询的性能。同样，如果对从表中检索的数据进行排序时经常要用到某一列，则可以将该表在该列上聚集（物理排序），避免每次查询该列时都进行排序，从而节省成本。<br>当索引值唯一时，使用聚集索引查找特定的行也很有效率。例如，使用唯一雇员 ID 列 emp_id 查找特定雇员的最快速的方法，是在 emp_id 列上创建聚集索引或 PRIMARY KEY 约束。</p>
+<h2 id="块级元素与行内元素的区别"><a href="#块级元素与行内元素的区别" class="headerlink" title="块级元素与行内元素的区别"></a>块级元素与行内元素的区别</h2><ol>
+<li>块级元素会独占一行，其宽度自动填满其父元素宽度。行内元素不会独占一行，相邻的行内元素会排列在<strong>同一行</strong>，直至一行排不下才会换行，其宽度随元素的内容而变化。</li>
+<li>块级元素可以包含行内元素和块级元素；行内元素不能包含块级元素。</li>
+<li>行内元素设置width、height、margin-top、margin-bottom、padding-top、padding-bottom无效。</li>
+</ol>
+<p>块级元素与行内元素的转换:</p>
+<p>display:inline-block;<br>display:inline;<br>display:block;</p>
+<h2 id="Cookie-Session机制"><a href="#Cookie-Session机制" class="headerlink" title="Cookie/Session机制"></a>Cookie/Session机制</h2><p>会话（Session）跟踪是Web程序中常用的技术，用来跟踪用户的整个会话。常用的会话跟踪技术是Cookie与Session。Cookie通过在客户端记录信息确定用户身份，Session通过在服务器端记录信息确定用户身份。</p>
+<p>###Cookie<br>Cookie实际上是一小段的文本信息。客户端请求服务器，如果服务器需要记录该用户状态，就使用response向客户端浏览器颁发一个Cookie。客户端浏览器会把Cookie保存起来。当浏览器再请求该网站时，浏览器把请求的网址<strong>连同该Cookie一同提交</strong>给服务器。服务器检查该Cookie，以此来辨认用户状态。服务器还可以根据需要修改Cookie的内容。</p>
+<p>Cookie的原理<br><img src="http://hi.csdn.net/attachment/201111/9/0_13208318702UfF.gif" alt="Cookie的原理"></p>
+<p>子域名可以访问根域名的cookie，反之则不可以。cookie，对于不同的浏览器有不同的大小限制。</p>
+<h3 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h3><p>Session是另一种记录客户状态的机制，不同的是Cookie保存在客户端浏览器中，而Session保存在服务器上。客户端浏览器访问服务器的时候，服务器把客户端信息以某种形式记录在服务器上。这就是Session。</p>
+<p>Session对象是在客户端第一次请求服务器的时候创建的。Session也是一种key-value的属性对，通过getAttribute(Stringkey)和setAttribute(String key，Objectvalue)方法读写客户状态信息。</p>
+<p>Session保存在服务器端。为了获得更高的存取速度，服务器一般把Session放在内存里。每个用户都会有一个独立的Session。如果Session内容过于复杂，当大量客户访问服务器时可能会导致内存溢出。因此，Session里的信息应该尽量精简。</p>
+<p>Session生成后，只要用户继续访问，服务器就会更新Session的最后访问时间，并维护该Session。用户每访问服务器一次，无论是否读写Session，服务器都认为该用户的Session“活跃（active）”了一次。</p>
+<h2 id="CPU调度算法"><a href="#CPU调度算法" class="headerlink" title="CPU调度算法"></a>CPU调度算法</h2><h3 id="FCFS-先到先服务"><a href="#FCFS-先到先服务" class="headerlink" title="FCFS 先到先服务"></a>FCFS 先到先服务</h3><p>一旦选定进程，那么在结束之前就不能再切换到另一个进程。</p>
+<h3 id="SJF-最短优先-精确的讲是最短下一个CPU区间的算法-（可能导致饥饿）"><a href="#SJF-最短优先-精确的讲是最短下一个CPU区间的算法-（可能导致饥饿）" class="headerlink" title="SJF 最短优先  精确的讲是最短下一个CPU区间的算法 （可能导致饥饿）"></a>SJF 最短优先  精确的讲是最短下一个CPU区间的算法 （可能导致饥饿）</h3><p>前面提到，一个进程是由CPU区间和I/O区间交替组成的。而SJF是看哪个进程的CPU区间最短。</p>
+<ul>
+<li>SRTF抢占式：又称最短剩余优先，当新进来的进程的CPU区间比当前执行的进程所剩的CPU区间短，则抢占。</li>
+<li>非抢占：称为下一个最短优先，因为在就绪队列中选择最短CPU区间的进程放在队头。</li>
+</ul>
+<h3 id="优先级调度算法-pintos的优先级是0-63-0为最低优先级，63为最高优先级"><a href="#优先级调度算法-pintos的优先级是0-63-0为最低优先级，63为最高优先级" class="headerlink" title="优先级调度算法  pintos的优先级是0-63  0为最低优先级，63为最高优先级"></a>优先级调度算法  pintos的优先级是0-63  0为最低优先级，63为最高优先级</h3><p>SJF是特殊的优先级调度算法，以CPU区间长度的倒数为优先级。</p>
+<ul>
+<li>内部优先级：通过内部数据比如内存要求等。</li>
+<li>外部优先级：用户自己设定。set_priority</li>
+</ul>
+<p>分为抢占式和非抢占式，前者为如果进来的进程优先级高于运行的进程，则替换；后者只是在就绪队列中按优先级排队。</p>
+<p>缺点：无线阻塞或饥饿。前者为一个优先级高且运行时间长的进程一直阻塞，后者为优先级低的进程永远都得不到执行。</p>
+<p>解决饥饿的方法是老化。通过每个时间间隔后将等待的进程优先级降低。</p>
+<h3 id="转轮法-RR算法-抢占式"><a href="#转轮法-RR算法-抢占式" class="headerlink" title="转轮法 RR算法 抢占式"></a>转轮法 RR算法 抢占式</h3><p>用于分时系统。每个进程都占用一个时间片的时间。就绪队列为FIFO循环队列。如果一个进程的CPU区间长度小于时间片，则继续下面的进程；如果大于时间片，则中断切换到下一个进程执行。通常时间片长度为10ms-100ms，由此需要确定时间片大小使得上下文切换次数适当少。</p>
+<h3 id="多级队列调度"><a href="#多级队列调度" class="headerlink" title="多级队列调度"></a>多级队列调度</h3><p>根据某种性质将一个就绪队列分成不同的独立队列，如系统进程，交互进程（前台进程），交互编辑进程，批处理进程，学生进程。</p>
+<p>每个队列都有不同的调度算法。</p>
+<p>每个队列都有优先级，比如前台队列就比后台队列要有绝对的优先级，因此队列间的分配方法：</p>
+<p>（1）只有优先级高的队列为空，才能执行低优先级队列。</p>
+<p>（2）为队列分配不同权重的CPU时间，优先级高的分配时间多。</p>
+<h3 id="多级反馈队列-抢占式"><a href="#多级反馈队列-抢占式" class="headerlink" title="多级反馈队列   抢占式"></a>多级反馈队列   抢占式</h3><p>&emsp;&emsp;动态调整进程，进程在不同队列之间移动，虽然在队列间移动需要耗费资源，但是更合理。按照CPU区间的大小分队列。进程之间的划分是按照所花CPU时间划分，比如队列0是就绪队列，且规定一个时间上界，如果一个进程没能规定时间完成，则被放入队列1中。CPU区间越大的进程就被放入低优先中。每个进程一开始都进入就绪队列。</p>
+<p><img src="https://img-blog.csdn.net/20180802180851937?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="CPU调度算法"></p>
+<h2 id="页替换算法与缺页率"><a href="#页替换算法与缺页率" class="headerlink" title="页替换算法与缺页率"></a>页替换算法与缺页率</h2><h3 id="缺页中断"><a href="#缺页中断" class="headerlink" title="缺页中断"></a>缺页中断</h3><p>&emsp;&emsp;在请求分页系统中，可以通过查询页表中的状态位来确定所要访问的页面是否存在于内存中。每当所要访问的页面不在内存时，会产生一次缺页中断，此时操作系统会根据页表中的外存地址在外存中找到所缺的一页，将其调入内存。 </p>
+<p>缺页本身是一种中断，与一般的中断一样，需要经过4个处理步骤：<br>　　1. 保护CPU现场<br>　　2. 分析中断原因<br>　　3. 转入缺页中断处理程序进行处理<br>　　4. 恢复CPU现场，继续执行<br>　　但是缺页中断时由于所要访问的页面不存在于内存时，有硬件所产生的一种特殊的中断，因此，与一般的中断存区别：<br>　　 1. 在指令执行期间产生和处理缺页中断信号<br>　　 2. 一条指令在执行期间，可能产生多次缺页中断<br>　　 3. 缺页中断返回时，执行产生中断的那一条指令，而一般的中断返回时，执行下一条指令</p>
+<h3 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h3><p>&emsp;&emsp;进程运行过程中，如果发生缺页中断，而此时内存中有没有空闲的物理块是，为了能够把所缺的页面装入内存，系统必须从内存中选择一页调出到磁盘的对换区。但此时应该把那个页面换出，则需要根据一定的页面置换算法（Page Replacement Algorithm)来确定。</p>
+<h4 id="最佳置换（Optimal，-OPT"><a href="#最佳置换（Optimal，-OPT" class="headerlink" title="最佳置换（Optimal， OPT)"></a>最佳置换（Optimal， OPT)</h4><p>&emsp;&emsp;置换以后不再被访问，或者在将来最迟才回被访问的页面，缺页中断率最低。但是该算法需要依据以后各业的使用情况，而当一个进程还未运行完成时，很难估计哪一个页面是以后不再使用或在最长时间以后才会用到的页面。所以该算法是不能实现的。但该算法仍然有意义，作为衡量其他算法优劣的一个标准。</p>
+<h4 id="先进先出置换算法（First-In-First-Out-FIFO"><a href="#先进先出置换算法（First-In-First-Out-FIFO" class="headerlink" title="先进先出置换算法（First In First Out, FIFO)"></a>先进先出置换算法（First In First Out, FIFO)</h4><p>　置换最先调入内存的页面，即置换在内存中驻留时间最久的页面。按照进入内存的先后次序排列成队列，从队尾进入，从队首删除。但是该算法会淘汰经常访问的页面，不适应进程实际运行的规律，目前已经<strong>很少使用</strong>。</p>
+<h4 id="最近最久未使用置换算法（Least-Recently-Used，-LRU）"><a href="#最近最久未使用置换算法（Least-Recently-Used，-LRU）" class="headerlink" title="最近最久未使用置换算法（Least Recently Used， LRU）"></a>最近最久未使用置换算法（Least Recently Used， LRU）</h4><p>　　置换最近一段时间以来最长时间未访问过的页面。根据程序局部性原理，刚被访问的页面，可能马上又要被访问；而较长时间内没有被访问的页面，可能最近不会被访问。<br>　　LRU算法普偏地适用于各种类型的程序，但是系统要时时刻刻对各页的访问历史情况加以记录和更新，开销太大，因此LRU算法必须要有硬件的支持。</p>
+<h4 id="缺页率"><a href="#缺页率" class="headerlink" title="缺页率"></a>缺页率</h4><p>缺页中断率： FIFO &gt; LRU &gt; OPT<br> &emsp;&emsp;所以OPT的算法效果最好，然后时LRU，最后是FIFO</p>
+<h2 id="Linux-设备与驱动"><a href="#Linux-设备与驱动" class="headerlink" title="Linux 设备与驱动"></a>Linux 设备与驱动</h2><ol>
+<li>独享设备：在一个用户作业未完成或退出之前，此设备不能分配给其他作业用。所有字符设备都是独享设备。如输入机、磁带机、打印机等。——很明显：需要装驱动。</li>
+<li>共享设备：多个用户作业或多个进程可以“同时”从这些设备上存取信息。软硬盘、光盘等块设备都是共享设备。——无需驱动。</li>
+<li>虚拟设备：通过软件技术将独享设备改造成共享设备。例如：通过SPOOLing技术将一台打印机虚拟成多台打印机。——实质还是独享设备，需要驱动。</li>
+<li>系统设备，需要驱动。</li>
+</ol>
+<h2 id="linux定时任务cron"><a href="#linux定时任务cron" class="headerlink" title="linux定时任务cron"></a>linux定时任务cron</h2><p><img src="https://img-blog.csdn.net/20180802201420822?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>　　<em>   </em>　 <em>　 </em>　 <em>　　command<br>　　分钟(0-59)　小时(0-23)　日期(1-31)　月份(1-12)　星期(0-6,0代表星期天)　 命令<br>　　<br>　　第1列表示分钟1～59 每分钟用</em>或者 */1表示<br>　　第2列表示小时1～23（0表示0点）<br>　　第3列表示日期1～31<br>　　第4列表示月份1～12<br>　　第5列标识号星期0～6（0表示星期天）</p>
+<p>在以上任何值中，星号（<em>）可以用来代表所有有效的值。譬如，月份值中的星号意味着在满足其它制约条件后每月都执行该命令。<br>　　整数间的短线（-）指定一个整数范围。譬如，1-4 意味着整数 1、2、3、4。<br>　　用逗号（,）隔开的一系列值指定一个列表。譬如，3, 4, 6, 8 标明这四个指定的整数。<br>　　正斜线（/）可以用来指定间隔频率。在范围后加上 /<integer> 意味着在范围内可以跳过 integer。譬如，0-59/2 可以用来在分钟字段定义每两分钟。间隔频率值还可以和星号一起使用。例如，</integer></em>/3 的值可以用在月份字段中表示每三个月运行一次任务。<br>　　开头为井号（#）的行是注释，不会被处理</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/02/零碎的知识点-1/" data-id="ck8gr4zgy002z1ovtyxoyj5o2" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="零碎的知识点-1" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-《Thinking in Java 》读书笔记-17" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/01/《Thinking in Java 》读书笔记-17/" class="article-date">
+  <time datetime="2018-08-01T13:06:05.058Z" itemprop="datePublished">2018-08-01</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/01/《Thinking in Java 》读书笔记-17/">《Thinking in Java 》读书笔记-17</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="《Thinking-in-Java-》读书笔记-17"><a href="#《Thinking-in-Java-》读书笔记-17" class="headerlink" title="《Thinking in Java 》读书笔记-17"></a>《Thinking in Java 》读书笔记-17</h1><h2 id="17-1-完整的容器分类法"><a href="#17-1-完整的容器分类法" class="headerlink" title="17.1 完整的容器分类法"></a>17.1 完整的容器分类法</h2><p><img src="https://img-blog.csdn.net/20180801173227921?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h2 id="17-2-填充容器"><a href="#17-2-填充容器" class="headerlink" title="17.2 填充容器"></a>17.2 填充容器</h2><p>Collections.nCopies()和Collection.fill()都可以用单个对象的引用来填充Collection，并且所有引用都被设置为指向相同的的对象。<br>fill()方法的用处更为有限，它只能替换已经在List中存在的元素，而不能添加新的元素。</p>
+<h3 id="17-2-1-一种Generator解决方案"><a href="#17-2-1-一种Generator解决方案" class="headerlink" title="17.2.1 一种Generator解决方案"></a>17.2.1 一种Generator解决方案</h3><p>所有的Collection子类型都有一个接受另一个Collection对象的构造器。</p>
+<h3 id="17-2-2-Map生成器"><a href="#17-2-2-Map生成器" class="headerlink" title="17.2.2 Map生成器"></a>17.2.2 Map生成器</h3><h3 id="未获支持的操作"><a href="#未获支持的操作" class="headerlink" title="未获支持的操作"></a>未获支持的操作</h3><h3 id="17-2-3-使用Abstract类"><a href="#17-2-3-使用Abstract类" class="headerlink" title="17.2.3 使用Abstract类"></a>17.2.3 使用Abstract类</h3><h2 id="17-3-Collection的功能方法"><a href="#17-3-Collection的功能方法" class="headerlink" title="17.3 Collection的功能方法"></a>17.3 Collection的功能方法</h2><h2 id="17-4-可选操作"><a href="#17-4-可选操作" class="headerlink" title="17.4 可选操作"></a>17.4 可选操作</h2><p>执行各种不同的添加和移除的方法在Collection接口中都是可选操作。<br>使用Arrays.asList()生成的List,基于一个固定大小的数组，仅支持那些不会改变数组大小的操作。</p>
+<h2 id="17-5-List的功能方法"><a href="#17-5-List的功能方法" class="headerlink" title="17.5 List的功能方法"></a>17.5 List的功能方法</h2><h2 id="17-6-Set和存储顺序"><a href="#17-6-Set和存储顺序" class="headerlink" title="17.6 Set和存储顺序"></a>17.6 Set和存储顺序</h2><table>
+<thead>
+<tr>
+<th>接口</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Set</td>
+<td>存入Set的每一个元素都必须是唯一的，因为Set不保存重复元素．加入Set的元素必须定义equals()方法以确保对象的唯一性. Set和Collection有完全一样的接口.Set接口不保证维护元素的次序.</td>
+</tr>
+<tr>
+<td>HashSet *</td>
+<td>为快速查找而设计的Set.存入HashSet的元素必须定义HashCode()方法.</td>
+</tr>
+<tr>
+<td>TreeSet</td>
+<td>保持次序的Set,底层为树结构.使用它可以从Set中提取有序的序列.元素必须实现Comparable接口</td>
+</tr>
+<tr>
+<td>LinkedHashSet</td>
+<td>具有HashSet的查询速度,且内部使用链表维护元素的顺序.于是在使用迭代器遍历Set时,结果会按元素插入的次序显示.元素也必须定义hashCode()方法.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="17-7-队列"><a href="#17-7-队列" class="headerlink" title="17.7 队列"></a>17.7 队列</h2><h3 id="17-7-1-优先级队列"><a href="#17-7-1-优先级队列" class="headerlink" title="17.7.1 优先级队列"></a>17.7.1 优先级队列</h3><h2 id="17-8-理解Map"><a href="#17-8-理解Map" class="headerlink" title="17.8 理解Map"></a>17.8 理解Map</h2><h2 id="17-9-散列与散列码"><a href="#17-9-散列与散列码" class="headerlink" title="17.9 散列与散列码"></a>17.9 散列与散列码</h2><p>散列的价值在于速度。我们使用数组来保存键的信息，这个信息并不是键本身，而是通过键对象生成一个数字(散列码)，作为数组下标。由于数组的容量是固定的，而散列容器的大小是可变的，所以不同的键可以产生相同的数组下标(散列码)。也就是说，可能会有冲突(当然也有特例，比如EnumMap和EnumSet)。所以，数组的值存放着一个保存所有相同散列码的值的list(引用)。然后对list中的值使用equals进行线性查询。如果散列函数设计的比较好的话，数组的每个位置只有较少的值，并且浪费空间也小。于是，查询过程就是首先计算键的散列码得到数组下标，然后内存寻址(时间复杂度为O(1)，赋值)找到数组的值，再遍历list(时间复杂度为O(n)，线性查询)即可。即hashCode和equals共同确定了对象的唯一性。</p>
+<p>所有类都继承于Object。Object的hashCode方法生成的散列码，实际上是默认使用对象的地址计算散列码；而Object的equals方法实际上就是地址比较(==)。显然，当我们在使用散列容器(如HashMap的Key，HashSet等)时，我们自定义的类中还继承Object的hashCode和equals是不行的。必须重写hashCode和equals方法。好的hashCode()应该产生分布均匀的散列码。</p>
+<h2 id="17-10-选择接口的不同实现"><a href="#17-10-选择接口的不同实现" class="headerlink" title="17.10 选择接口的不同实现"></a>17.10 选择接口的不同实现</h2><h2 id="17-11-实用方法"><a href="#17-11-实用方法" class="headerlink" title="17.11 实用方法"></a>17.11 实用方法</h2><h2 id="17-12-持有引用"><a href="#17-12-持有引用" class="headerlink" title="17.12 持有引用"></a>17.12 持有引用</h2><ul>
+<li>SoftRefernce </li>
+<li>WeakRefernce </li>
+<li>PhantomRefernce </li>
+</ul>
+<h2 id="17-13-Java-1-0-1-1的容器"><a href="#17-13-Java-1-0-1-1的容器" class="headerlink" title="17.13 Java 1.0/1.1的容器"></a>17.13 Java 1.0/1.1的容器</h2><ol>
+<li>不要在新代码里使用Vector、Enumeration。</li>
+<li>用LinkedLsit或基于LinlkedList的子类代替旧版的Stack。</li>
+<li>如果拥有一个可以命名的固定的标志集合，那么EnumSet与BitSet相比是更好的选择。</li>
+<li>只有在运行时才知道需要多少个标志，对标志命名不合理，需要BitSet中的某种特性操作。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/01/《Thinking in Java 》读书笔记-17/" data-id="ck8gr4zet00291ovtitmgdz9a" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-17" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
     <article id="post-《Thinking in Java 》读书笔记-11" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/07/30/《Thinking in Java 》读书笔记-11/" class="article-date">
@@ -183,7 +449,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/07/30/《Thinking in Java 》读书笔记-11/" data-id="ck84a9qgs0027sovt2vucy58p" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/07/30/《Thinking in Java 》读书笔记-11/" data-id="ck8gr4zga002r1ovt49gljr3f" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -209,262 +475,9 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Thinking in Java 》读书笔记-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/30/《Thinking in Java 》读书笔记-1/" class="article-date">
-  <time datetime="2018-07-30T07:03:58.070Z" itemprop="datePublished">2018-07-30</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/30/《Thinking in Java 》读书笔记-1/">《Thinking in Java 》读书笔记-1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="第一章-对象导论"><a href="#第一章-对象导论" class="headerlink" title="第一章 对象导论"></a>第一章 对象导论</h1><h2 id="1-1-抽象过程"><a href="#1-1-抽象过程" class="headerlink" title="1.1 抽象过程"></a>1.1 抽象过程</h2><ul>
-<li>万物皆对象。</li>
-<li>程序是对象的集合，它们通过发送消息来告知彼此索要做的。</li>
-<li>每个对象都有自己的由其他对象所构成的储存。</li>
-<li>每个对象都拥有其类型。</li>
-<li>某个特定类型的所有对象都可以接受同样的消息。</li>
-</ul>
-<h2 id="1-2-每个对象都要有一个接口"><a href="#1-2-每个对象都要有一个接口" class="headerlink" title="1.2 每个对象都要有一个接口"></a>1.2 每个对象都要有一个接口</h2><h2 id="1-3-每个对象都提供服务"><a href="#1-3-每个对象都提供服务" class="headerlink" title="1.3 每个对象都提供服务"></a>1.3 每个对象都提供服务</h2><h2 id="1-4-被隐藏的具体实现"><a href="#1-4-被隐藏的具体实现" class="headerlink" title="1.4 被隐藏的具体实现"></a>1.4 被隐藏的具体实现</h2><h2 id="1-5-复用具体实现"><a href="#1-5-复用具体实现" class="headerlink" title="1.5 复用具体实现"></a>1.5 复用具体实现</h2><h2 id="1-6-继承"><a href="#1-6-继承" class="headerlink" title="1.6 继承"></a>1.6 继承</h2><h3 id="1-6-1-“is-a”和”like-a”"><a href="#1-6-1-“is-a”和”like-a”" class="headerlink" title="1.6.1 “is-a”和”like-a”"></a>1.6.1 “is-a”和”like-a”</h3><h2 id="1-7-伴随多态的可互换对象"><a href="#1-7-伴随多态的可互换对象" class="headerlink" title="1.7 伴随多态的可互换对象"></a>1.7 伴随多态的可互换对象</h2><h2 id="1-8-单根继承结构"><a href="#1-8-单根继承结构" class="headerlink" title="1.8 单根继承结构"></a>1.8 单根继承结构</h2><h2 id="1-9-容器"><a href="#1-9-容器" class="headerlink" title="1.9 容器"></a>1.9 容器</h2><h2 id="1-10-对象的创建和生命期"><a href="#1-10-对象的创建和生命期" class="headerlink" title="1.10 对象的创建和生命期"></a>1.10 对象的创建和生命期</h2><h2 id="1-11-异常处理：处理错误"><a href="#1-11-异常处理：处理错误" class="headerlink" title="1.11 异常处理：处理错误"></a>1.11 异常处理：处理错误</h2><h2 id="1-12-并发编程"><a href="#1-12-并发编程" class="headerlink" title="1.12 并发编程"></a>1.12 并发编程</h2><h2 id="1-13-Java与Internet"><a href="#1-13-Java与Internet" class="headerlink" title="1.13 Java与Internet"></a>1.13 Java与Internet</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>过程式编程：<br>  &emsp;数据定义和函数调用</li>
-<li>面向对象编程：<br>  &emsp;用来表示问题空间概念的对象（而不是有关计算机表示方式的相关内容），以及发送给这些对象的用来表示在此空间内的行为的消息。</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/07/30/《Thinking in Java 》读书笔记-1/" data-id="ck84a9qgu002bsovtz0utjmen" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-1" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-springboot-summary" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/07/26/springboot-summary/" class="article-date">
-  <time datetime="2018-07-26T02:28:13.276Z" itemprop="datePublished">2018-07-26</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/springboot-summary/">springboot （转载自zooooooooy）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h3 id="springMVC"><a href="#springMVC" class="headerlink" title="springMVC"></a>springMVC</h3><p>springboot提供了开箱即用的web mvc，项目中用到的是gradle，只需要引用两个包就可以了</p>
-<pre><code>compile(&#39;org.springframework.boot:spring-boot-starter&#39;)
-compile(&#39;org.springframework.boot:spring-boot-starter-web&#39;)
-</code></pre><p>并不需要做什么其他配置，就可以启动web项目，编写restful接口。还是有一些需要个性化定制的功能需要我们手动去配置。有一些并不是springboot独有，配置的时候都是采用代码代替xml的方式。问题记录如下：</p>
-<ul>
-<li><p>Json序列化，<br>springmvc都是需要配置的，之前都是通过xml来配置。在springboot里面需要自定义MessageConverter。注册bean的方式加载到spring消息转换器里面，默认是放置到转换器队列的最前面优先解析。<br>springmvc默认的json解析器是Jackson,我这边算是先继承MappingJackson2HttpMessageConverter，修改覆盖初始方法来定制化项目需要的json格式化规则。</p>
-<pre><code>public class JsonMessageConverter extends MappingJackson2HttpMessageConverter {
-
-       @Override
-       protected void init(ObjectMapper objectMapper) {
-           objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-           objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-           objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
-           objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-           objectMapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
-           objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
-
-           objectMapper.setDateFormat(new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;));
-
-           super.init(objectMapper);
-       }
-   }
-
-</code></pre><p>后面需要将这个注册到spring bean管理里面。在configuration类里面注册</p>
-<pre><code>@Bean
-public HttpMessageConverters customConverters() {
-   return new HttpMessageConverters(new JsonMessageConverter());
-}
-
-</code></pre></li>
-<li><p>UTF8编码<br>同样是在configuration类里面注册，其实configuration就相当于spring的一个xml文件，每个方法相当于定义的一个bean，方法之间是可以互相依赖的。spring已经考虑到这点，不用担心依赖的时候破坏单例的特性。</p>
-<pre><code>@Bean
-public CharacterEncodingFilter encodingFilter() {
-
-   CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
-   encodingFilter.setEncoding(&quot;UTF-8&quot;);
-   encodingFilter.setForceEncoding(true);
-   return encodingFilter;
-}
-
-</code></pre></li>
-<li><p>拦截器<br>用到拦截器的时候，需要继承WebMvcConfigurerAdapter，通过适配器的模式，覆盖相应的方法。当然同时这个类需要标注为configuration类。</p>
-<p>| 方法 |<br>|——–|<br>|configurePathMatch|<br>|configureContentNegotiation|<br>|configureAsyncSupport|<br>|configureDefaultServletHandling|<br>|addFormatters|<br>|addInterceptors|<br>|addResourceHandlers|<br>|addCorsMappings|<br>|addViewControllers|<br>|configureViewResolvers|<br>|addArgumentResolvers|<br>|addReturnValueHandlers|<br>|configureMessageConverters|<br>|extendMessageConverters|<br>|configureHandlerExceptionResolvers|<br>|extendHandlerExceptionResolvers|<br>|getValidator|<br>|getMessageCodesResolver|<br>拦截器添加选择覆盖addInterceptors</p>
-<pre><code>@Override
-public void addInterceptors(InterceptorRegistry registry) {
-   registry.addInterceptor(new MappedInterceptor(new String[]{&quot;/**&quot;}, new String[]{&quot;&quot;},
-           new MvcInterceptor()));
-}
-</code></pre><p>MvcInterceptor是自定义的拦截器，如果需要用到url拦截的功能，需要使用spring带的MappedInterceptor定义拦截的url和排除的url<br>项目中还用到了addArgumentResolvers，addReturnValueHandlers就不一一列举了。</p>
-</li>
-</ul>
-<h3 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h3><ul>
-<li><p>属性文件<br>使用@PropertySources({@PropertySource(value = “classpath:setting.properties”)})来引入，不过这个不是springboot里面的东西。</p>
-</li>
-<li><p>项目分布</p>
-<ul>
-<li>css,js前端等用到的组件都分布在public下面或者static下面<br>需要渲染的模板定义在templates里面，安利一下我正在使用的模板<a href="http://www.mitchellbosecke.com/pebble/documentation/guide/basic-usage" target="_blank" rel="noopener">pebble</a></li>
-<li>数据库使用的是mybatis，sql还是写在xml里面在，始终觉得在代码里面写sql比较别扭。</li>
-<li><p>打包工具使用的是gradle，第一次接触，感觉还是不错，在编译速度上超过了maven。</p>
-<pre><code>compile(&#39;org.springframework.boot:spring-boot-starter&#39;)
-compile(&#39;org.springframework.boot:spring-boot-starter-log4j2&#39;)
-compile(&#39;org.springframework.boot:spring-boot-starter-web&#39;) {
-  //exclude group:&#39;org.springframework.boot&#39;,module:&quot;spring-boot-starter-tomcat&quot;
-}
-compile(&#39;org.springframework.boot:spring-boot-devtools&#39;)
-compile(&#39;org.springframework.boot:spring-boot-starter-test&#39;)
-compile(&#39;org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.0&#39;)
-
-compile(&#39;mysql:mysql-connector-java:6.0.5&#39;)
-compile(&#39;com.zaxxer:HikariCP:2.6.1&#39;)
-
-compile(&#39;org.projectlombok:lombok:1.16.16&#39;)
-
-//token
-compile(&quot;io.jsonwebtoken:jjwt:0.7.0&quot;)
-
-//bean copy
-compile(&#39;commons-beanutils:commons-beanutils:1.9.3&#39;)
-
-//apache commons lang3
-compile(&#39;org.apache.commons:commons-lang3:3.6&#39;)
-
-compile(&#39;javax.validation:validation-api:2.0.0.CR2&#39;)
-
-testCompile(&#39;junit:junit:4.12&#39;)
-
-</code></pre><p>项目中用到的jar包如上，springboot的版本号定义在buildscript里面在。使用的是1.5.2</p>
-</li>
-</ul>
-</li>
-<li><p>项目发布<br>项目还是采用外置的tomcat发布，需要在启动类Application继承SpringBootServletInitializer，覆盖</p>
-<pre><code>@Override
-protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-   return builder.sources(Application.class);
-}
-
-</code></pre><p>发布的脚本上gradle clean build -x test</p>
-</li>
-<li>profile配置<br>使用了gradle，在dev环境和prod环境的配置上，相对来说是没有maven好使的，<br>需要启动的时候在环境变量里面配置-Dspring.profiles.active=dev<br>其他的跟平常的spring开发还都是保持一致的。随着后续功能的开发慢慢会涉及到更多springboot的功能，个人感觉在开发效率上还是提升了不少。</li>
-</ul>
-<hr>
-<p>后续研究了下gradle的分环境打包方式，参数网上的例子，操作步骤如下</p>
-<ul>
-<li>添加配置文件config.groovy<br>environments {<br>   dev {<br>   }<br>   prod {<br>   }<br>}<br>在dev和prod写不同环境下的变量值，按照groovy的方式</li>
-<li>在build.gradle获取打包时指定的环境参数<pre><code>ext {
-   profile = System.properties[&#39;spring.profiles.active&#39;]
-}
-</code></pre></li>
-<li><p>读取config.groovy对应环境的的变量值</p>
-<pre><code>def loadGroovyConfig(){
-   def configFile = file(&#39;config.groovy&#39;)
-   new ConfigSlurper(profile).parse(configFile.toURL()).toProperties()
-}
-
-processResources {
-   from(sourceSets.main.resources.srcDirs) {
-       filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: loadGroovyConfig())
-   }
-}
-</code></pre></li>
-<li>变量覆盖如图<br><img src="/images/TIM截图20180605114425.png" alt="log4j2"><br>后续打包还是按照正常的方式，指定-Dspring.profiles.active=dev或者prod就可以</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2018/07/26/springboot-summary/" data-id="ck84a9qff000tsovttzmxloh0" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="springboot-summary" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/27/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="page-number current">28</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/29/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/27/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="page-number current">28</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/29/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -478,6 +491,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2020/03/25/游戏框架笔记/技能系统设计/">技能系统设计</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/24/游戏框架笔记/跨服系统设计/">跨服系统的设计</a>
+          </li>
+        
+          <li>
             <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
           </li>
         
@@ -489,14 +510,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
           </li>
         
-          <li>
-            <a href="/2019/10/31/项目笔记/通讯组件学习/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2019/10/17/项目笔记/线上经典bug汇总/">(no title)</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -506,7 +519,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -515,7 +528,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

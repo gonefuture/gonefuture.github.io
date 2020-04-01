@@ -83,6 +83,175 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-项目笔记/消耗系统学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/08/01/项目笔记/消耗系统学习笔记/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.299Z" itemprop="datePublished">2019-08-01</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="消耗系统学习笔记"><a href="#消耗系统学习笔记" class="headerlink" title="消耗系统学习笔记"></a>消耗系统学习笔记</h1><hr>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><ol>
+<li>配置文件: resource/ConsumeResource.xlsx</li>
+<li>配置实体类 <code>ConsumeResource</code><ul>
+<li>配置主键 <code>key</code></li>
+<li>配置类型 <code>ConsumeType type</code></li>
+<li>分级参数，从0开始 <code>step</code></li>
+<li>分级类型，根据玩家可获取当前分级 <code>StepType stepType</code></li>
+<li>根据唯一id消耗（用于道具） <code>long objId</code></li>
+<li>背包列表类型列表 <code>List&lt;PackType&gt; packTyps</code></li>
+<li>消耗id <code>String code</code></li>
+<li>消耗值 <code>long value</code></li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="领域模型"><a href="#领域模型" class="headerlink" title="领域模型"></a>领域模型</h2><h3 id="消费对象-AbstractConsume-lt-Obj-gt"><a href="#消费对象-AbstractConsume-lt-Obj-gt" class="headerlink" title="消费对象 AbstractConsume&lt;Obj&gt;"></a>消费对象 <code>AbstractConsume&lt;Obj&gt;</code></h3><ul>
+<li><code>Result verify(Obj obj, long multiple)</code> 校验资源是否足够</li>
+<li><code>abstract void consume(Obj obj,ModuleInfo mouduleInfo, long multiple)</code> 消耗资源</li>
+<li><code>abstract ConsumeType getType()</code> 获取消费类型</li>
+<li><code>final AbstractConsume&lt;Obj&gt; merge(AbstractConsume&lt;Obj&gt; consume)</code> 合并</li>
+</ul>
+<p>消耗对象会继承该类并<code>getType()</code>和<code>consume(...)</code>方法。</p>
+<h3 id="消耗消息封装-消耗组-Consumes-lt-Obj-gt"><a href="#消耗消息封装-消耗组-Consumes-lt-Obj-gt" class="headerlink" title="消耗消息封装  消耗组 Consumes&lt;Obj&gt;"></a>消耗消息封装  消耗组 <code>Consumes&lt;Obj&gt;</code></h3><ul>
+<li><code>verity(Obj obj, int int account)</code> 检测消耗条件是否满足</li>
+<li><code>void act(Obj obj, ModuleInfo moduleInfo, int amount)</code> 消耗</li>
+<li><code>void actOrFailException(Obj obj, ModuleInfo moduleInfo, int amount)</code> 检测消耗条件并执行消耗</li>
+</ul>
+<h3 id="分级消耗-StepConsumes-lt-Obj-gt"><a href="#分级消耗-StepConsumes-lt-Obj-gt" class="headerlink" title="分级消耗 StepConsumes&lt;Obj&gt;"></a>分级消耗 <code>StepConsumes&lt;Obj&gt;</code></h3><p>采用TreeMap的结构储存,key为下限，value为消耗组</p>
+<ul>
+<li><code>addConsume(int step, Consume&lt;Obj&gt; consumes)</code> 添加分级消耗</li>
+<li><code>Consumes&lt;Obj&gt; getConsumes</code> 获取该级的消耗，使用</li>
+</ul>
+<h3 id="消耗类型-ConsumeType"><a href="#消耗类型-ConsumeType" class="headerlink" title="消耗类型 ConsumeType"></a>消耗类型 ConsumeType</h3><ul>
+<li><code>HP</code> 耗血</li>
+<li><code>MP</code> 耗蓝</li>
+<li><code>ITEM</code> 消耗物品</li>
+<li><code>CURRENCY</code> 消耗货币</li>
+<li><code>EFFECT</code> 消耗一个被动效果</li>
+<li><code>ENERGY_EXP</code> 消耗内功经验</li>
+<li><code>GANG_FUNDS</code> 消耗公会资金</li>
+<li><code>GOD_MIGHT</code> 神威值</li>
+<li><code>TREASURE_SCORE</code> 探宝积分</li>
+<li><code>JING_JIE_SCORE</code> 消耗境界点</li>
+<li><code>STOVE_SCORE</code> 消耗公会积分</li>
+<li><code>GANG_CONTRIBUTIONS</code> 消耗公会贡献</li>
+<li><code>TRANSFER_ITEM</code> 消耗跨服物品</li>
+</ul>
+<p>类型枚举<code>ConsumeType</code>拥有抽象方法<code>abstract &lt;T extends AbstractConsume&gt; create(ConsumeResource resource)</code></p>
+<h2 id="消费管理器-ConsumeManager"><a href="#消费管理器-ConsumeManager" class="headerlink" title="消费管理器 ConsumeManager"></a>消费管理器 <code>ConsumeManager</code></h2><ul>
+<li><code>Consumes getResource(ConsumeKey key)</code> 获取配置表的消耗</li>
+<li><code>&lt;Obj&gt; Consumes&lt;Obj&gt; createConsumes(List&lt;ConsumeResource&gt; resources)</code> 创建消耗组</li>
+<li><code>&lt;Obj&gt; StepConsumes&lt;Obj&gt; createStepConsumes(List&lt;ConsumeResource&gt; resource)</code> 创建分级消耗，需要保证<code>ConsumeResource#step</code>不冲突</li>
+</ul>
+<hr>
+<h2 id="如何使用消耗"><a href="#如何使用消耗" class="headerlink" title="如何使用消耗"></a>如何使用消耗</h2><ol>
+<li>如何要玩法需要的消耗是新的，要在<code>ConsumeType</code>内定义消耗类型并重写<code>create(...)</code>方法</li>
+<li>获取消耗的配置对象</li>
+<li>通过配置对象创建消耗消息组</li>
+<li>检测消耗组条件是否满足</li>
+<li>执行消耗</li>
+</ol>
+<pre><code class="java">    XxxResource&gt; XxxResource = XxxManager.getXxxResource();
+
+    Consume&lt;Player&gt; consumes = XxxResource.getConsumes();
+
+    Result result = consumes.verify(player,1);
+    if(!result.isSuccess()) {
+        throw ManagedException.valueOf(result.getCode())
+    }
+
+    consumes.actOrFailException(palyer,ModuleInfo.valueOf(ModuleType.Xxx,SubModuleType.Xxxx),1)
+
+</code></pre>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/消耗系统学习笔记/" data-id="ck8gr4zs4005e1ovtejngfu0m" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/消耗系统学习笔记" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-项目笔记/条件选择器学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/08/01/项目笔记/条件选择器学习笔记/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.283Z" itemprop="datePublished">2019-08-01</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="条件选择器学习笔记"><a href="#条件选择器学习笔记" class="headerlink" title="条件选择器学习笔记"></a>条件选择器学习笔记</h1><p><code>chooser</code>作为条件选择器。可以抽象出一些统一的</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/条件选择器学习笔记/" data-id="ck8gr4zsz005n1ovtfrhxl83s" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/条件选择器学习笔记" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
     <article id="post-项目笔记/条件系统学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2019/08/01/项目笔记/条件系统学习笔记/" class="article-date">
@@ -235,7 +404,7 @@ public enum ConditionType {
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/条件系统学习笔记/" data-id="ck84a9qm50058sovtjdi86xff" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/条件系统学习笔记/" data-id="ck8gr4zry005c1ovt5rvoemvg" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -261,163 +430,9 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-项目笔记/服务开发原则" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2019/08/01/项目笔记/服务开发原则/" class="article-date">
-  <time datetime="2019-08-01T01:54:07.264Z" itemprop="datePublished">2019-08-01</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="服务开发原则"><a href="#服务开发原则" class="headerlink" title="服务开发原则"></a>服务开发原则</h1><ol>
-<li>通信<code>pack</code>、<code>event</code>事件、<code>corn</code>定时任务必须在facade层作为开始。</li>
-<li><code>service</code>层不允许作为被其他模块调用。只能被自己模块的facade调用。<code>manager</code>层允许其他业务模块调用。如果涉及到多线程<code>manager</code>自己考虑自身的线程安全。</li>
-<li>可以把用用的（其他模块也会用到的，确定只有自己会用到的条件没必要做抽象了，避免代码不直观）条件设计成<code>condition</code>。根据策划接收程度考虑用json配置或者<code>conditionResource</code>配置</li>
-<li>跨模块资源消耗、策划需要统一配置的资源必须抽象出<code>Consumes</code>去消耗。</li>
-<li>跨模块资源发放、策划需要统一配置的资源发送不允许直接修改领域对象。必须走<code>reward</code>方便管理和记录日志。</li>
-<li><code>chooser</code>作为条件选择器。可以抽象出一些统一的筛选规则。比如条件筛选、概率筛选。</li>
-<li>不允许在代码中拼接文本内容。</li>
-<li>玩家自身的任务采用的是玩家的<code>account</code>的<code>hashcode</code>来作为任务分发。公共模块例如交易、公会等业务需要模块自身维护加锁。使用到锁的模块必须与项目主程沟通协商。`AtomicXX.compareAndSet()解决不了代码块的问题，如果觉得可以用和主程讨论以后再决定。</li>
-<li>实践证明，程序参与配置表配置然后策划改修数值比直接掉给策划一张空表开发效率会高很多。</li>
-<li>每一张Resource配置表。必须要包含一个sheet配置说明，并且不断维护更新。这个说明的起草通常由服务端开发人员发起。然后各方维护。</li>
-<li>配置表映射的Resource类中为了防止配置表对象被无意中修改。应当不包含<code>set*</code>方法。</li>
-<li>每一模块，开发完成后以后，必须用findbugs和阿里编程规范插件扫面。高级别的错误必须修正。</li>
-<li>设计一个活动系统的时候。无论策划文档是否有明确指出，都应该将是否热更新考虑进去。</li>
-<li>项目中不允许出现<code>System.out.println()</code>,统一使用<code>SystemOut.println()</code>代替。</li>
-<li>服务端开发应视为客户端已经被破解。所以设计到安全和收益相关的逻辑，必须做好严格的验证。不得依赖客户端的消息。</li>
-<li>所有开发中的常量都必须使用配置的方式实现，不允许将常量定义在代码中，可以配置在ConfigValue.xml中。</li>
-<li>所有代码中需要被处理的错误，都应该用<code>Logger.error</code>记录下来，及时查看error日志并解决。</li>
-<li><p>代码中的<code>return</code>,仔细思考为什么需要中断业务，不应该什么都不做直接return。<br>协议处理时需要<code>return</code>的地方，应该选择以下三种方式<br>a 客户端没法预判断，需要服务器来判断的，提示对应错误信息</p>
-<pre><code>`throw ManagedException.valueOf(result.getCode())`
-</code></pre><p>b 客户端可以预检验的情况下发过来的 没有被检测的请求 统一返回请求非法就行</p>
-<pre><code>`throw ManagedException.valueOf(MessageCode.ERROR_MSG)`
-</code></pre><p>c 其他不属于上面，只能直接return的，用Logger.error记录日志</p>
-</li>
-<li><p>必须安装提交日志的插件，提交日志需要遵循规定的格式，插件中的类型、标题、说明为必填项</p>
-</li>
-<li>提交代码时必须勾选以下选项</li>
-</ol>
-<ul>
-<li>Alibaba Code idelines</li>
-<li>Reformat code</li>
-<li>Optimize import</li>
-<li>Perform code annlysis</li>
-<li>Check TODO</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/服务开发原则/" data-id="ck84a9qm30056sovtkze3r7j1" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/服务开发原则" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-项目笔记/新的事件处理机制" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2019/08/01/项目笔记/新的事件处理机制/" class="article-date">
-  <time datetime="2019-08-01T01:54:07.253Z" itemprop="datePublished">2019-08-01</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="新的事件处理机制"><a href="#新的事件处理机制" class="headerlink" title="新的事件处理机制"></a>新的事件处理机制</h1><h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>监视生物的行为状态（例如：生物开始移动(<code>onCreatureStartMove</code>),生物死亡(ICreatureDead)，在不同的状态下产生相应的事件并通知感兴趣的对象做出相应的处理。</p>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="1-在-object-observer下定义事件接口（如果没有合适的事件）"><a href="#1-在-object-observer下定义事件接口（如果没有合适的事件）" class="headerlink" title="1. 在/object/observer下定义事件接口（如果没有合适的事件）"></a>1. 在/object/observer下定义事件接口（如果没有合适的事件）</h3><pre><code class="java">public interface ICreatureXxx {
-    // 这个事件机制基于apache.commons.lang3.evnet.EventListenerSupport,EventListenerSupport基于接口的动态代理实现，因此一个接口可以有多个方法
-    void onCreatureXxx(...);
-}
-</code></pre>
-<h3 id="2-事件触发"><a href="#2-事件触发" class="headerlink" title="2. 事件触发"></a>2. 事件触发</h3><pre><code class="java">abstractCreature.getObserveController().fire(ICreatureUseXxx.class).onCreatureXxx(...);
-</code></pre>
-<h3 id="3-在对事件感兴趣的类上实现相应的接口"><a href="#3-在对事件感兴趣的类上实现相应的接口" class="headerlink" title="3. 在对事件感兴趣的类上实现相应的接口"></a>3. 在对事件感兴趣的类上实现相应的接口</h3><pre><code class="java">public class Xxx implements ICreatureXxx {
-    @Override
-    void onCreatureXxx(...) {
-
-    }
-}
-
-</code></pre>
-<h3 id="4-把观察者添加到对应abstractCreature上"><a href="#4-把观察者添加到对应abstractCreature上" class="headerlink" title="4.把观察者添加到对应abstractCreature上"></a>4.把观察者添加到对应abstractCreature上</h3><pre><code class="java">// xxx：观察者对象
-absrtactCreature.getObserveController().attach(ICreatureXxx,xxx)
-
-</code></pre>
-<p>##不使用EventBus事件系统的原因</p>
-<ol>
-<li>EventBus是全局性质的事件机制，这里的事件机制是全生物状态的观察监听机制，也就是说，如果使用EventBus应当用submit（或者同步的synSubmit）发布事件时，所有的@ReceiverAnno注解的方法都会被触发，但是这里的事件机制只有attach到对应相应生物上的接口实现类的方法被触发。</li>
-<li>EventBus不具备移除观测者的功能。这里可以使用<code>abstractCreature.getObserveController().removeObserver(ICreatureXxx,Xxx)</code>移除迷人<code>abstractCreature</code>身上的特定观察者。</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/新的事件处理机制/" data-id="ck84a9qly0053sovtah8ruc3b" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/新的事件处理机制" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -431,6 +446,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2020/03/25/游戏框架笔记/技能系统设计/">技能系统设计</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/24/游戏框架笔记/跨服系统设计/">跨服系统的设计</a>
+          </li>
+        
+          <li>
             <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
           </li>
         
@@ -442,14 +465,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
           </li>
         
-          <li>
-            <a href="/2019/10/31/项目笔记/通讯组件学习/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2019/10/17/项目笔记/线上经典bug汇总/">(no title)</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -459,7 +474,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -468,7 +483,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

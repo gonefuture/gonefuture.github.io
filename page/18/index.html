@@ -83,6 +83,137 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-学习笔记/Spring源码组件学习-BeanDefinition" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/08/01/学习笔记/Spring源码组件学习-BeanDefinition/" class="article-date">
+  <time datetime="2019-08-01T01:54:06.749Z" itemprop="datePublished">2019-08-01</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="Spring源码组件学习-BeanDefinition"><a href="#Spring源码组件学习-BeanDefinition" class="headerlink" title="Spring源码组件学习-BeanDefinition"></a>Spring源码组件学习-BeanDefinition</h1><h2 id="BeanDefinition"><a href="#BeanDefinition" class="headerlink" title="BeanDefinition"></a>BeanDefinition</h2><h3 id="BeanDefinition的作用"><a href="#BeanDefinition的作用" class="headerlink" title="BeanDefinition的作用"></a><code>BeanDefinition</code>的作用</h3><p>bean的定义、包装是java bean的基础，在Spring中，<code>BeanDefinition</code>就是Bean的定义。<br>一个<code>BeanDefinition</code>描述了一个bean的实例，包括属性值、构造方法参数值和继承自它的类的更多信息。<code>BeanDefinition</code>仅仅是一个最简单的接口，主要功能是允许<code>BeanFactoryPostProcessor</code>例如<code>PropertyPlaceHolderConfigure</code>能够检索并修改属性值和别的bean的元数据。</p>
+<p>一个<code>BeanDefinition</code>里拥有类名、scope、属性、构造函数参数列表、依赖的bean、是否是单例类、是否是懒加载等，其实就是将Bean的定义信息储存到这个<code>BeanDefiniton</code>相应中的属性中，后面对Bean的操作就直接对<code>BeanDefinition</code>进行，例如拿到这个<code>BeanDefinition</code>后，可以根据里面的类名、构造函数、构造函数参数、使用反射进行对象创建。</p>
+<h3 id="BeanDefinition的继承关系"><a href="#BeanDefinition的继承关系" class="headerlink" title="BeanDefinition的继承关系"></a><code>BeanDefinition</code>的继承关系</h3><p>父接口：<br><code>AttributeAccessor</code>, <code>BeanMetadataElement</code><br>子接口：<br><code>AnnotatedBeanDefinition</code><br>子类:<br><code>AbstractBeanDefinition</code>, <code>AnnotatedGenericBeanDefinition</code>, <code>ChildBeanDefinition</code>, <code>GenericBeanDefinition</code>, <code>RootBeanDefinition</code>, <code>ScannedGenericBeanDefinition</code></p>
+<p>其中，<code>AttaibuteAccessor</code>接口定义了最基本的对任意对象的元数据的修改或者获取，主要方法有：</p>
+<pre><code class="java">String[] attributeName();
+Object getAttribute(String name)
+boolean hasAttribute(String name)
+Object removeAttribute(String name)
+void setAttribute(String name, Object value)
+</code></pre>
+<p><code>BeanMetadataElement</code>接口提供了一个getResource()方法，用来传输一个可配置的源对象。</p>
+<h3 id="BeanDefinition的抽象类AbstractBeanDefinition"><a href="#BeanDefinition的抽象类AbstractBeanDefinition" class="headerlink" title="BeanDefinition的抽象类AbstractBeanDefinition"></a><code>BeanDefinition</code>的抽象类<code>AbstractBeanDefinition</code></h3><pre><code class="java">public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccessor implements BeanDefinition, Cloneable {
+
+}
+</code></pre>
+<h3 id="RootBeanDefinition"><a href="#RootBeanDefinition" class="headerlink" title="RootBeanDefinition"></a><code>RootBeanDefinition</code></h3><p>一个<code>RootBeanDefinition</code>定义表明它是一个可合并的bean definiton:即在Spring beanFactory运行期间，可以返回一个特定的bean。<code>RootBeanDefinition</code>可以作为一个重要的通用的bean definition视图。</p>
+<p>## </p>
+<h2 id="BeanDefinitionProProcessor"><a href="#BeanDefinitionProProcessor" class="headerlink" title="BeanDefinitionProProcessor"></a>BeanDefinitionProProcessor</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/08/01/学习笔记/Spring源码组件学习-BeanDefinition/" data-id="ck8gr4zog004c1ovtil73v99n" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="学习笔记/Spring源码组件学习-BeanDefinition" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-学习笔记/Dubbo在跨服中的应用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/08/01/学习笔记/Dubbo在跨服中的应用/" class="article-date">
+  <time datetime="2019-08-01T01:54:06.736Z" itemprop="datePublished">2019-08-01</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="Dubbo在跨服中的使用"><a href="#Dubbo在跨服中的使用" class="headerlink" title="Dubbo在跨服中的使用"></a>Dubbo在跨服中的使用</h1><h2 id="为什么进行拆分"><a href="#为什么进行拆分" class="headerlink" title="为什么进行拆分"></a>为什么进行拆分</h2><ol>
+<li>系统体量</li>
+<li>维护代价</li>
+<li>开发效率</li>
+<li>单机性能瓶颈</li>
+<li>系统容错性</li>
+</ol>
+<h2 id="rpc框架"><a href="#rpc框架" class="headerlink" title="rpc框架"></a>rpc框架</h2><h2 id="拆分带来的问题"><a href="#拆分带来的问题" class="headerlink" title="拆分带来的问题"></a>拆分带来的问题</h2><ol>
+<li>复杂度的上升</li>
+</ol>
+<h2 id="注册中心Zookeeoper"><a href="#注册中心Zookeeoper" class="headerlink" title="注册中心Zookeeoper"></a>注册中心Zookeeoper</h2><ol>
+<li>服务的注册与发现</li>
+<li>动态配置的</li>
+</ol>
+<h2 id="duboo工作原理"><a href="#duboo工作原理" class="headerlink" title="duboo工作原理"></a>duboo工作原理</h2><ol>
+<li>Directory</li>
+<li>Router</li>
+<li>Cluster</li>
+<li>LoadBalance</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/08/01/学习笔记/Dubbo在跨服中的应用/" data-id="ck8gr4zni00441ovtovkk6bj6" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="学习笔记/Dubbo在跨服中的应用" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
     <article id="post-《网络游戏核心技术与实战》笔记-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2019/02/16/《网络游戏核心技术与实战》笔记-1/" class="article-date">
@@ -251,7 +382,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏开发/">游戏开发</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2019/02/16/《网络游戏核心技术与实战》笔记-1/" data-id="ck84a9qgv002esovt8pfizvrn" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/02/16/《网络游戏核心技术与实战》笔记-1/" data-id="ck8gr4zgg002t1ovttj7grs0l" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -277,206 +408,9 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-2019-1-14-开发笔记" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2019/01/14/2019-1-14-开发笔记/" class="article-date">
-  <time datetime="2019-01-14T07:47:42.122Z" itemprop="datePublished">2019-01-14</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/开发笔记/">开发笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/14/2019-1-14-开发笔记/">2019-1-14-开发笔记 Executors.newSingleThreadScheduledExecutor</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="Executors-newSingleThreadScheduledExecutor异常后执行停止，不显示任何报错信息"><a href="#Executors-newSingleThreadScheduledExecutor异常后执行停止，不显示任何报错信息" class="headerlink" title="Executors.newSingleThreadScheduledExecutor异常后执行停止，不显示任何报错信息"></a>Executors.newSingleThreadScheduledExecutor异常后执行停止，不显示任何报错信息</h1><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>使用newSingleThreadScheduledExecutor作为场景执行器执行任务时，发现客户端没有返回数据，后端日志也没有显示任何异常。</p>
-<p>于是，在调用的方法每个阶段打印前调用打log，发现方法执行到一个阶段就停止打印了。</p>
-<p>拍卖行竞拍的代码，执行时log只打印 1.</p>
-<pre><code class="java">    /**
-     *  竞拍物品
-     * @param player 玩家
-     * @param auctionItem  拍卖品
-     * @param price 出价
-     */
-    private void bidAuctionItem(Player player, AuctionItem auctionItem, int price) {
-        log.debug(&quot;1&quot;);
-        Integer auctionMoney = auctionItem.getBiddersMap().get(player.getId());
-        log.debug(&quot;2&quot;);
-        if (Objects.isNull(auctionMoney)) {
-            //  第一次竞拍
-            auctionItem.addBidder(player,price);
-            player.moneyChange(price);
-        } else {
-            auctionItem.addBidder(player,price);
-            // 减去继续竞的差价
-            player.moneyChange(-(price-auctionItem.getAuctionPrice()));
-        }
-        log.debug(&quot;3&quot;);
-        notificationManager.notifyPlayer(player,MessageFormat.format(&quot;叫价功成。当前拍卖品价格是{0}&quot;,
-                auctionItem.getAuctionPrice()));
-        log.debug(&quot;4&quot;);
-    }
-</code></pre>
-<p>执行这个方法的线程是一个场景执行器，</p>
-<pre><code class="java">
-    private static ThreadFactory sceneThreadFactory = new ThreadFactoryBuilder()
-            .setNameFormat(&quot;scene-loop-%d&quot;).build();
-    /** 通过一个场景一个线程处理器的方法保证每个场景的指令循序 */
-    ExecutorService singleThreadSchedule = Executors.newSingleThreadScheduledExecutor(sceneThreadFactory);
-
-</code></pre>
-<p>场景执行器开始执行任务的代码。</p>
-<pre><code class="java">    // 玩家在场景内则用场景的执行器执行
-    Optional.ofNullable(player).map(Player::getCurrentScene).ifPresent(
-        scene -&gt; scene.getSingleThreadSchedule().execute(
-                () -&gt; controller.handle(ctx,msg))
-    );
-
-</code></pre>
-<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>在网上查询后发现，在JDK的源码，在源码的Java doc中的发现了如下一句话：</p>
-<blockquote>
-<p>If any execution of the task encounters an exception, subsequent executions are suppressed.Otherwise, the task will only terminate via cancellation or termination of the executor.</p>
-</blockquote>
-<p>也就是说：</p>
-<blockquote>
-<p>如果定时任务执行过程中遇到发生异常，则后面的任务将不再执行。</p>
-</blockquote>
-<p>而且，异常也不会被捕获并打印信息。</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>我的解决方式是直接在执行任务时使用try/catch。</p>
-<pre><code class="java">    // 玩家在场景内则用场景的执行器执行
-    Optional.ofNullable(player).map(Player::getCurrentScene).ifPresent(
-        scene -&gt; scene.getSingleThreadSchedule().execute(
-                () -&gt; {
-                    log.debug(&quot;{}  {} 的 {} 在执行命令 {}&quot;,scene.getSingleThreadSchedule(),
-                            scene.getName(),player.getName(),new String(msg.getContent()));
-                    try {
-                        controller.handle(ctx,msg);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-        })
-    );
-</code></pre>
-<p>报错信息终于显示出来了。</p>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>这个问题折腾了我好久，方法执行到一半不执行我就猜测是出现了异常，但是异常没有被捕获。这件事教训我以后使用ExecutorService的实现类都要注意异常处理。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2019/01/14/2019-1-14-开发笔记/" data-id="ck84a9qed0000sovt5mksiwal" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="2019-1-14-开发笔记" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-Netty消息分发和业务逻辑分离" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/09/20/Netty消息分发和业务逻辑分离/" class="article-date">
-  <time datetime="2018-09-20T10:27:36.909Z" itemprop="datePublished">2018-09-20</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/游戏开发/">游戏开发</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/20/Netty消息分发和业务逻辑分离/">Netty消息分发和业务逻辑分离</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="Netty消息分发和业务逻辑分离"><a href="#Netty消息分发和业务逻辑分离" class="headerlink" title="Netty消息分发和业务逻辑分离"></a>Netty消息分发和业务逻辑分离</h1><hr>
-<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty/">Netty</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/09/20/Netty消息分发和业务逻辑分离/" data-id="ck84a9qer0007sovt00pjrazl" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="Netty消息分发和业务逻辑分离" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/19/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/19/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -490,6 +424,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2020/03/25/游戏框架笔记/技能系统设计/">技能系统设计</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/24/游戏框架笔记/跨服系统设计/">跨服系统的设计</a>
+          </li>
+        
+          <li>
             <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
           </li>
         
@@ -501,14 +443,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
           </li>
         
-          <li>
-            <a href="/2019/10/31/项目笔记/通讯组件学习/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2019/10/17/项目笔记/线上经典bug汇总/">(no title)</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -518,7 +452,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -527,7 +461,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 

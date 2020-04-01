@@ -83,6 +83,525 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-《Java并发编程实战》-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/08/《Java并发编程实战》-3/" class="article-date">
+  <time datetime="2018-08-08T10:26:41.448Z" itemprop="datePublished">2018-08-08</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/08/《Java并发编程实战》-3/">《Java并发编程实战》-3</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="对象的组合"><a href="#对象的组合" class="headerlink" title="对象的组合"></a>对象的组合</h1><h2 id="4-1-设计线程安全的类"><a href="#4-1-设计线程安全的类" class="headerlink" title="4.1 设计线程安全的类"></a>4.1 设计线程安全的类</h2><p>在设计线程安全类的过程中，需要包含一下三个基本要素：</p>
+<ul>
+<li>找出构成对象状态的所有变量。</li>
+<li>找出约束状态变量的不变性条件。</li>
+<li>建立对象状态的并发访问管理策略。</li>
+</ul>
+<h3 id="4-1-1-收集同步需求"><a href="#4-1-1-收集同步需求" class="headerlink" title="4.1.1 收集同步需求"></a>4.1.1 收集同步需求</h3><blockquote>
+<p>如果不了解对象的不变性与厚颜条件，那么就不能确保线程安全性。要满足在状态变量的有效值或状态转换上的各种约束条件，就需要结组于原子性和封装性。</p>
+</blockquote>
+<h3 id="4-1-2-依赖状态的操作"><a href="#4-1-2-依赖状态的操作" class="headerlink" title="4.1.2 依赖状态的操作"></a>4.1.2 依赖状态的操作</h3><h3 id="4-13-状态的所有权"><a href="#4-13-状态的所有权" class="headerlink" title="4.13 状态的所有权"></a>4.13 状态的所有权</h3><h3 id="4-2-实例封闭"><a href="#4-2-实例封闭" class="headerlink" title="4.2 实例封闭"></a>4.2 实例封闭</h3><p>将数据封闭在对象内部，可以将数据的访问限制在对象的方法上，从而更加容易确保在访问数据时总能持有正确的锁。</p>
+<p>封闭机制更加易于构造线程安全的类，因为当封闭类的状态时，在分析类的线程安全性时就无需检查整个程序。</p>
+<h3 id="4-2-1-Java监视器模式"><a href="#4-2-1-Java监视器模式" class="headerlink" title="4.2.1 Java监视器模式"></a>4.2.1 Java监视器模式</h3><p>通过一个私有锁来保护状态</p>
+<pre><code class="java">public class PrivateLock {
+    private final Object myLock = new Object();
+    @GuardedBy(&quot;myLock&quot;) Widget widget;
+
+    void someMethod() {
+        synchronized(myLock) {
+            // 访问或修改Widget的状态
+        }
+    }
+}
+</code></pre>
+<h3 id="4-2-2-实例-车辆追踪"><a href="#4-2-2-实例-车辆追踪" class="headerlink" title="4.2.2 实例:车辆追踪"></a>4.2.2 实例:车辆追踪</h3><h2 id="4-3-线程安全性的委托"><a href="#4-3-线程安全性的委托" class="headerlink" title="4.3 线程安全性的委托"></a>4.3 线程安全性的委托</h2><h3 id="4-3-1-示例-基于委托的车辆跟踪器"><a href="#4-3-1-示例-基于委托的车辆跟踪器" class="headerlink" title="4.3.1 示例:基于委托的车辆跟踪器"></a>4.3.1 示例:基于委托的车辆跟踪器</h3><h3 id="4-3-2-独立的状态变量"><a href="#4-3-2-独立的状态变量" class="headerlink" title="4.3.2 独立的状态变量"></a>4.3.2 独立的状态变量</h3><h3 id="4-3-3-当委托失效时"><a href="#4-3-3-当委托失效时" class="headerlink" title="4.3.3 当委托失效时"></a>4.3.3 当委托失效时</h3><p>如果一个类时由多个独立且线程安全的状态变量组成，并且在所有的操作中都不包含无效状态转换，那么可以将线程安全性安全性委托给底层的状态变量。</p>
+<p>如果一个状态变量是线程安全的，并且没有任何不变性条件来约束它的值，在变量的操作上也不存在任何不允许的状态转换，那么就可以说安全地发布这个变量。</p>
+<h2 id="4-4-在现有的线程安全类中添加功能"><a href="#4-4-在现有的线程安全类中添加功能" class="headerlink" title="4.4 在现有的线程安全类中添加功能"></a>4.4 在现有的线程安全类中添加功能</h2><p>扩展Vector并增加一个”若没有则添加”方法</p>
+<pre><code class="java">@TheadSafe
+public class BetterVector&lt;E&gt; extends Vector&lt;E&gt; {
+    public synchronized boolean putIfAbsent(E x) {
+        boolean absent = !contains(x);
+        if(absent) {
+            add(x)
+        }
+        return absent;
+    }
+}
+</code></pre>
+<p>“扩展”方法比直接将代码添加到类中更加脆弱，因为现在的同步策略实现被分布到多个单独维护的源代码文件中。</p>
+<h3 id="4-4-1-客户端加锁机制"><a href="#4-4-1-客户端加锁机制" class="headerlink" title="4.4.1 客户端加锁机制"></a>4.4.1 客户端加锁机制</h3><p>非现象安全的”若没有则添加”（不要这么做）</p>
+<pre><code class="java">@NotThreadSafe
+public class ListHelper&lt;E&gt; {
+    public List&lt;E&gt; list = Colletions.synchronizedList(new ArrayList&lt;E&gt;());
+
+    pblic synchronized boolean putIfAbsent(E x) {
+        boolean absent = list.contains(x);
+        if(absent)
+            list.add(x);
+        return absent;
+    }
+}
+</code></pre>
+<p>ListHelper只是带来了同步的假象，尽管所有的链表操作都被声明为synchronized,但是却<strong>使用了不同的锁</strong>。(list本身的锁和ListHelper对象的锁)</p>
+<p>通过客户端加锁来实现“若没有则添加”（线程安全）</p>
+<pre><code class="java">@ThreadSafe
+public class ListHelper&lt;E&gt; {
+    public List&lt;E&gt; list = Colletions.synchronizedList(new ArrayList&lt;E&gt;());
+
+    pblic boolean putIfAbsent(E x) {
+        synchronized(list) {
+        boolean absent = list.contains(x);
+        if(absent)
+            list.add(x);
+        return absent;
+        }
+    }
+}
+</code></pre>
+<h3 id="4-4-2-组合"><a href="#4-4-2-组合" class="headerlink" title="4.4.2 组合"></a>4.4.2 组合</h3><p>通过组合实现“若没有则添加”</p>
+<pre><code class="java">@ThreadSafe
+public class ImporvedList&lt;T&gt; implements List&lt;T&gt; {
+    private final List&lt;T&gt; list;
+
+    public ImprovedList(List&lt;T&gt; list) { this.list = list;}
+
+    public synchronized boolean putIfAbsent(T x) {
+        boolean contains = list.contains(x);
+        if (contains)
+            list.add(x);
+        return !contains;
+    }
+
+    public synchronized void clear() {
+        lsit.clear();
+    }
+
+    // ... 按照类似的方法委托List的其他方法
+}
+</code></pre>
+<p>事实上，我们使用了Java监视器模式来封装现有的List,并且只要在类中拥有指向底层List的<strong>唯一</strong>外部引用，就能确保线程安全性。</p>
+<h2 id="4-5-将同步策略文档化"><a href="#4-5-将同步策略文档化" class="headerlink" title="4.5 将同步策略文档化"></a>4.5 将同步策略文档化</h2><blockquote>
+<p>在文档中说明客户端代码需要了解的线程安全性保证，以及代码人员需要了解的同步策略。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/08/《Java并发编程实战》-3/" data-id="ck8gr4zd5001e1ovt360k3frj" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-3" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-Java常用的排序算法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2018/08/07/Java常用的排序算法/" class="article-date">
+  <time datetime="2018-08-07T12:53:11.484Z" itemprop="datePublished">2018-08-07</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/算法/">算法</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/07/Java常用的排序算法/">Java常用的排序算法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="Java常用的排序算法"><a href="#Java常用的排序算法" class="headerlink" title="Java常用的排序算法"></a>Java常用的排序算法</h1><hr>
+<h2 id="1-直接插入排序"><a href="#1-直接插入排序" class="headerlink" title="1. 直接插入排序"></a>1. 直接插入排序</h2><p>直接插入排序（Straight Insertion Sorting）的基本思想：在要排序的一组数中，假设前面(n-1) [n&gt;=2] 个数已经是排好顺序的，现在要把第n个数插到前面的有序数中，使得这n个数也是排好顺序的。如此反复循环，直到全部排好顺序。</p>
+<p>代码实现：</p>
+<ol>
+<li>首先设定插入次数，即循环次数，<code>for(int i=1;i&lt;length;i++)</code>，1个数的那次不用插入。 </li>
+<li>设定插入数和得到已经排好序列的最后一个数的位数。insertNum和j=i-1。</li>
+<li>从最后一个数开始向前循环，如果插入数小于当前数，就将当前数向后移动一位。</li>
+</ol>
+<p>代码如下：</p>
+<pre><code class="java">public void insertSort(int [] a){
+        int len=a.length;//单独把数组长度拿出来，提高效率
+        int insertNum;//要插入的数
+        for(int i=1;i&lt;len;i++){//因为第一次不用，所以从1开始
+            insertNum=a[i];
+            int j=i-1;//序列元素个数
+            while(j&gt;=0 &amp;&amp; a[j]&gt;insertNum){//从后往前循环，将大于insertNum的数向后移动
+                a[j+1]=a[j];//元素向后移动
+                j--;
+            }
+            a[j+1]=insertNum;//找到位置，插入当前元素
+        }
+    }
+</code></pre>
+<h2 id="2-希尔排序"><a href="#2-希尔排序" class="headerlink" title="2. 希尔排序"></a>2. 希尔排序</h2><p> 针对直接插入排序的下效率问题，有人对此进行了改进与升级，这就是现在的希尔排序。希尔排序，也称递减增量排序算法，是插入排序的一种更高效的改进版本。希尔排序是非稳定排序算法。</p>
+<p>希尔排序是基于插入排序的以下两点性质而提出改进方法的：</p>
+<ul>
+<li>插入排序在对<strong>几乎已经排好序</strong>的数据操作时， 效率高， 即可以达到线性排序的效率</li>
+<li>但插入排序一般来说是低效的， 因为插入排序每次只能将数据移动一位</li>
+</ul>
+<p>代码实现：</p>
+<ol>
+<li>首先确定分的组数。2</li>
+<li>. 然后对组中元素进行插入排序。</li>
+<li>然后将length/2，重复1,2步，直到length=0为止。</li>
+</ol>
+<pre><code class="java">   public void shellSort(int [] a){
+        int len=a.length;//单独把数组长度拿出来，提高效率
+        while(len!=0){
+            len=len/2;
+            for(int i=0;i&lt;len;i++){//分组
+                for(int j=i+len;j&lt;a.length;j+=len){//元素从第二个开始
+                    int k=j-len;//k为有序序列最后一位的位数
+                    int temp=a[j];//要插入的元素
+                    /*for(;k&gt;=0&amp;&amp;temp&lt;a[k];k-=len){
+                        a[k+len]=a[k];
+                    }*/
+                    while(k&gt;=0&amp;&amp;temp&lt;a[k]){//从后往前遍历
+                        a[k+len]=a[k];
+                        k-=len;//向后移动len位
+                    }
+                    a[k+len]=temp;
+                }
+            }
+        }
+    }
+</code></pre>
+<h2 id="3-简单选择排序"><a href="#3-简单选择排序" class="headerlink" title="3. 简单选择排序"></a>3. 简单选择排序</h2><p>常用于取序列中最大最小的几个数时。</p>
+<p>(如果每次比较都交换，那么就是交换排序；如果每次比较完一个循环再交换，就是简单选择排序。)遍历整个序列，将最小的数放在最前面。遍历剩下的序列，将最小的数放在最前面。重复第二步，直到只剩下一个数。</p>
+<p>代码实现：</p>
+<ol>
+<li>首先确定循环次数，并且记住当前数字和当前位置。</li>
+<li>将当前位置后面所有的数与当前数字进行对比，小数赋值给key，并记住小数的位置。</li>
+<li>比对完成后，将最小的值与第一个数的值交换。</li>
+<li>重复2、3步。</li>
+</ol>
+<pre><code class="java">    public void selectSort(int[]a){
+        int len = a.length;
+        for(int i=0;i&lt;len;i++){ //循环次数
+            int value=a[i];
+            int position = i;   // 当前位置
+            for(int j=i+1;j&lt;len;j++){   //找到最小的值和位置
+                if(a[j] &lt; value){
+                    value=a[j];
+                    position=j;
+                }
+            }
+            a[position]=a[i];   //进行交换
+            a[i]=value;
+        }
+    }
+</code></pre>
+<h2 id="4-堆排序"><a href="#4-堆排序" class="headerlink" title="4. 堆排序"></a>4. 堆排序</h2><p> 对简单选择排序的优化。</p>
+<ol>
+<li>将序列构建成大堆顶。</li>
+<li>将根节点与最后一个节点交换，然后断开最后一个节点。</li>
+<li>重复第一、二步，直到所有节点断开。</li>
+</ol>
+<p><img src="https://img-blog.csdn.net/20180808152113503?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="堆排序"></p>
+<pre><code class="java"> public  void heapSort(int[] a){
+        int len = a.length;
+        //循环建堆
+        for(int i=0;i&lt;len-1;i++){
+            // 建堆
+            buildMaxHeap(a,len-1-i);
+            // 交换堆顶和最后一个元素
+            swap(a,0,len-1-i);
+        }
+    }
+    // 交换方法
+    private  void swap(int[] data, int i, int j) {
+        int tmp = data[i];
+        data[i] = data[j];
+        data[j] = tmp;
+    }
+    // 对data数组从0到lastIndex建大顶堆
+    private void buildMaxHeap(int[] data, int lastIndex) {
+        // 从lastIndex处节点（最后一个节点）的父节点开始
+        for(int i=(lastIndex-1)/2;i&gt;=0;i--){
+            //k保存正在判断的节点
+            int k=i;
+            //如果当前k节点的子节点存在
+            while(k*2+1&lt;=lastIndex){
+                //k节点的左子节点的索引
+                int biggerIndex=2*k+1;
+                //如果biggerIndex小于lastIndex，即biggerIndex+1代表的k节点的右子节点存在
+                if(biggerIndex&lt;lastIndex){
+                    //若果右子节点的值较大
+                    if(data[biggerIndex]&lt;data[biggerIndex+1]){
+                        //biggerIndex总是记录较大子节点的索引
+                        biggerIndex++;
+                    }
+                }
+                //如果k节点的值小于其较大的子节点的值
+                if(data[k]&lt;data[biggerIndex]){
+                    //交换他们
+                    swap(data,k,biggerIndex);
+                    //将biggerIndex赋予k，开始while循环的下一次循环，重新保证k节点的值大于其左右子节点的值
+                    k=biggerIndex;
+                }else{
+                    break;
+                }
+            }
+        }
+    }
+</code></pre>
+<h2 id="5-冒泡排序"><a href="#5-冒泡排序" class="headerlink" title="5. 冒泡排序"></a>5. 冒泡排序</h2><p>序列中所有元素两两比较，将最大的放在最后面。将剩余序列中所有元素两两比较，将最大的放在最后面。重复第二步，直到只剩下一个数。</p>
+<p>代码实现：</p>
+<ol>
+<li>设置循环次数。</li>
+<li>设置开始比较的位数，和结束的位数。</li>
+<li>两两比较，将最小的放到前面去。</li>
+<li>重复2、3步，直到循环次数完毕。</li>
+</ol>
+<pre><code class="java">public void bubbleSort(int []a){
+           int len=a.length;
+           for(int i=0;i&lt;len;i++){
+               for(int j=0;j&lt;len-i-1;j++){//注意第二重循环的条件
+                   if(a[j]&gt;a[j+1]){
+                       int temp=a[j];
+                       a[j]=a[j+1];
+                       a[j+1]=temp;
+                   }
+               }
+           }
+       }
+</code></pre>
+<h2 id="6-快速排序"><a href="#6-快速排序" class="headerlink" title="6. 快速排序"></a>6. 快速排序</h2><p>选择第一个数为p，小于p的数放在左边，大于p的数放在右边。递归的将p左边和右边的数都按照第一步进行，直到不能递归。</p>
+<pre><code class="java">public void quickSort(int[]a,int start,int end){
+           if(start&lt;end){
+               int baseNum=a[start];//选基准值
+               int midNum;//记录中间值
+               int i=start;
+               int j=end;
+               do{
+                   while((a[i]&lt;baseNum)&amp;&amp;i&lt;end){
+                       i++;
+                   }
+                   while((a[j]&gt;baseNum)&amp;&amp;j&gt;start){
+                       j--;
+                   }
+                   if(i&lt;=j){
+                       midNum=a[i];
+                       a[i]=a[j];
+                       a[j]=midNum;
+                       i++;
+                       j--;
+                   }
+               }while(i&lt;=j);
+                if(start&lt;j){
+                    quickSort(a,start,j);
+                }       
+                if(end&gt;i){
+                    quickSort(a,i,end);
+                }
+           }
+       }
+</code></pre>
+<h2 id="7-归并排序"><a href="#7-归并排序" class="headerlink" title="7. 归并排序"></a>7. 归并排序</h2><p>速度仅此于快速排序，内存少的时候使用，可以进行并行计算的时候使用。</p>
+<ol>
+<li>选择相邻两个数组成一个有序序列。</li>
+<li>选择相邻的两个有序序列组成一个有序序列。</li>
+<li>重复第二步，知道全部组成一个有序序列。</li>
+</ol>
+<pre><code class="java">public  void mergeSort(int[] a, int left, int right) {  
+           int t = 1;// 每组元素个数  
+           int size = right - left + 1;  
+           while (t &lt; size) {  
+               int s = t;// 本次循环每组元素个数  
+               t = 2 * s;  
+               int i = left;  
+               while (i + (t - 1) &lt; size) {  
+                   merge(a, i, i + (s - 1), i + (t - 1));  
+                   i += t;  
+               }  
+               if (i + (s - 1) &lt; right)  
+                   merge(a, i, i + (s - 1), right);  
+           }  
+        }  
+
+        private static void merge(int[] data, int p, int q, int r) {  
+           int[] B = new int[data.length];  
+           int s = p;  
+           int t = q + 1;  
+           int k = p;  
+           while (s &lt;= q &amp;&amp; t &lt;= r) {  
+               if (data[s] &lt;= data[t]) {  
+                   B[k] = data[s];  
+                   s++;  
+               } else {  
+                   B[k] = data[t];  
+                   t++;  
+               }  
+               k++;  
+           }  
+           if (s == q + 1)  
+               B[k++] = data[t++];  
+           else  
+               B[k++] = data[s++];  
+           for (int i = p; i &lt;= r; i++)  
+               data[i] = B[i];  
+        }
+</code></pre>
+<h2 id="8-基数排序"><a href="#8-基数排序" class="headerlink" title="8. 基数排序"></a>8. 基数排序</h2><p>用于大量数，很长的数进行排序时。<br>将所有的数的个位数取出，按照个位数进行排序，构成一个序列。<br>代码实现：</p>
+<pre><code class="java">public void baseSort(int[] a) {
+               //首先确定排序的趟数;    
+               int max = a[0];
+               for (int i = 1; i &lt; a.length; i++) {
+                   if (a[i] &gt; max) {
+                       max = a[i];
+                   }
+               }
+               int time = 0;
+               //判断位数;    
+               while (max &gt; 0) {
+                   max /= 10;
+                   time++;
+               }
+               //建立10个队列;    
+               List&lt;ArrayList&lt;Integer&gt;&gt; queue = new ArrayList&lt;ArrayList&lt;Integer&gt;&gt;();
+               for (int i = 0; i &lt; 10; i++) {
+                   ArrayList&lt;Integer&gt; queue1 = new ArrayList&lt;Integer&gt;();
+                   queue.add(queue1);
+               }
+               //进行time次分配和收集;    
+               for (int i = 0; i &lt; time; i++) {
+                   //分配数组元素;    
+                   for (int j = 0; j &lt; a.length; j++) {
+                       //得到数字的第time+1位数;  
+                       int x = a[j] % (int) Math.pow(10, i + 1) / (int) Math.pow(10, i);
+                       ArrayList&lt;Integer&gt; queue2 = queue.get(x);
+                       queue2.add(a[j]);
+                       queue.set(x, queue2);
+                   }
+                   int count = 0;//元素计数器;    
+                   //收集队列元素;    
+                   for (int k = 0; k &lt; 10; k++) {
+                       while (queue.get(k).size() &gt; 0) {
+                           ArrayList&lt;Integer&gt; queue3 = queue.get(k);
+                           a[count] = queue3.get(0);
+                           queue3.remove(0);
+                           count++;
+                       }
+                   }
+               }
+        }
+</code></pre>
+<h2 id="9-总结"><a href="#9-总结" class="headerlink" title="9. 总结"></a>9. 总结</h2><h3 id="一、稳定性"><a href="#一、稳定性" class="headerlink" title="一、稳定性"></a>一、稳定性</h3><p>稳定：冒泡排序，插入排序、规避排序和基数排序<br>不稳定：选择排序、快速排序、希尔排序、堆排序</p>
+<h3 id="二、平均时间复杂度"><a href="#二、平均时间复杂度" class="headerlink" title="二、平均时间复杂度"></a>二、平均时间复杂度</h3><p>O(n^2):直接插入排序，简单选择排序，冒泡排序。</p>
+<p>在数据规模较小时（9W内），直接插入排序，简单选择排序差不多。当数据较大时，冒泡排序算法的时间代价最高。性能为O(n^2)的算法基本上是相邻元素进行比较，基本上都是稳定的。</p>
+<p>O(nlogn):快速排序，归并排序，希尔排序，堆排序。</p>
+<p>其中，快排是最好的， 其次是归并和希尔，堆排序在数据量很大时效果明显。</p>
+<h3 id="三、排序算法的选择"><a href="#三、排序算法的选择" class="headerlink" title="三、排序算法的选择"></a>三、排序算法的选择</h3><ol>
+<li><p>数据规模较小</p>
+<p>　　（1）待排序列基本序的情况下，可以选择直接插入排序；</p>
+<p>　　（2）对稳定性不作要求宜用简单选择排序，对稳定性有要求宜用插入或冒泡</p>
+</li>
+<li><p>数据规模不是很大</p>
+</li>
+</ol>
+<p>　　（1）完全可以用内存空间，序列杂乱无序，对稳定性没有要求，快速排序，此时要付出log（N）的额外空间。</p>
+<p>　　（2）序列本身可能有序，对稳定性有要求，空间允许下，宜用归并排序</p>
+<ol start="3">
+<li><p>数据规模很大</p>
+<p>　　（1）对稳定性有求，则可考虑归并排序。</p>
+<p> 　　（2）对稳定性没要求，宜用堆排序</p>
+</li>
+<li><p>序列初始基本有序（正序），宜用直接插入，冒泡</p>
+<p>各算法复杂度如下：</p>
+</li>
+</ol>
+<p><img src="https://img-blog.csdn.net/20180808160549920?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="各算法复杂度"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2018/08/07/Java常用的排序算法/" data-id="ck8gr4zae00061ovtepqrk5ly" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="Java常用的排序算法" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
     <article id="post-《Java并发编程实战》-2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2018/08/07/《Java并发编程实战》-2/" class="article-date">
@@ -197,7 +716,7 @@ public static Connection getConnection() {
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/07/《Java并发编程实战》-2/" data-id="ck84a9qg9001gsovtslxxe0s8" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2018/08/07/《Java并发编程实战》-2/" data-id="ck8gr4zdk001k1ovtvoimhplg" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -223,413 +742,9 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/06/《Java并发编程实战》-1/" class="article-date">
-  <time datetime="2018-08-06T08:59:00.930Z" itemprop="datePublished">2018-08-06</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/06/《Java并发编程实战》-1/">《Java并发编程实战》-1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="第2章-线程安全性"><a href="#第2章-线程安全性" class="headerlink" title="第2章 线程安全性"></a>第2章 线程安全性</h1><h2 id="2-1-什么是线程安全性"><a href="#2-1-什么是线程安全性" class="headerlink" title="2.1 什么是线程安全性"></a>2.1 什么是线程安全性</h2><blockquote>
-<p>当多个线程访问某个类时，不管运行时环境采用何种调度方式或者这些线程架构如何交替执行，并且在主调用代码中不需要任何额外的同步或协同，这个类都表示出正确的行为，那么就称这个类是线程安全。</p>
-</blockquote>
-<blockquote>
-<p>在线程安全类中封装了必要的同步机制，因此客户端无需进一步采用同步措施。</p>
-</blockquote>
-<blockquote>
-<p>无状态对象一定是线程安全的。</p>
-</blockquote>
-<h2 id="2-2-原子性"><a href="#2-2-原子性" class="headerlink" title="2.2 原子性"></a>2.2 原子性</h2><h3 id="2-2-1-竞态条件"><a href="#2-2-1-竞态条件" class="headerlink" title="2.2.1 竞态条件"></a>2.2.1 竞态条件</h3><h3 id="2-2-2-延迟初始化中的竞态条件"><a href="#2-2-2-延迟初始化中的竞态条件" class="headerlink" title="2.2.2 延迟初始化中的竞态条件"></a>2.2.2 延迟初始化中的竞态条件</h3><p>延迟初始化中的竞态条件（不要这样做）</p>
-<pre><code class="java">@NotThreadSafe
-public class LazyInitRace {
-    private ExpensiveObject instance = null;
-    public ExpensiveObject getInstance() {
-    if( instance == null)
-        instance = new ExpensiveObject();
-    return instance;
-}
-</code></pre>
-<h3 id="2-2-3-复合操作"><a href="#2-2-3-复合操作" class="headerlink" title="2.2.3 复合操作"></a>2.2.3 复合操作</h3><blockquote>
-<p>假定有两个操作A和B，如果从执行A的线程来看，当另一个线程执行B时，要么将B全部执行完，要么完成不执行B，那么A和B对彼此来说时原子的。原子操作是指，对于访问同一个状态的所有操作(包括该操作本身)来说，这个操作是一个以原子方式执行的操作。</p>
-</blockquote>
-<blockquote>
-<p>在实际情况中，应尽可能使用现有的线程安全对象（例如AcomicLong）来管理类的状态。与非线程安全的对象相比，判断线程安全对象的可能状态及其状态转换情况要更为容易，从而也更容易维护和验证线程安全性。</p>
-</blockquote>
-<h2 id="2-3-加锁机制"><a href="#2-3-加锁机制" class="headerlink" title="2.3 加锁机制"></a>2.3 加锁机制</h2><blockquote>
-<p>要保持状态的一致性，就需要在单个原子操作中更新所有相关的状态变量。</p>
-</blockquote>
-<h3 id="2-3-1-内置锁"><a href="#2-3-1-内置锁" class="headerlink" title="2.3.1 内置锁"></a>2.3.1 内置锁</h3><h3 id="2-3-2-重入"><a href="#2-3-2-重入" class="headerlink" title="2.3.2 重入"></a>2.3.2 重入</h3><h2 id="2-4-用锁来保护状态"><a href="#2-4-用锁来保护状态" class="headerlink" title="2.4 用锁来保护状态"></a>2.4 用锁来保护状态</h2><h3 id="对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。"><a href="#对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。" class="headerlink" title="对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。"></a>对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。</h3><h3 id="每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。"><a href="#每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。" class="headerlink" title="每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。"></a>每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。</h3><h3 id="对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。"><a href="#对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。" class="headerlink" title="对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。"></a>对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。</h3><pre><code class="java"> if (!vector.contains(element) )
-     vector.add(element)
-</code></pre>
-<blockquote>
-<p>即使Vector时同步的，因为上米娜的复合操作不是原子的，所以上面的代码也是非线程安全的。</p>
-</blockquote>
-<h2 id="2-5-活跃性与性能"><a href="#2-5-活跃性与性能" class="headerlink" title="2.5 活跃性与性能"></a>2.5 活跃性与性能</h2><blockquote>
-<p>通常，在简单性与性能之间存在着互相约制因素。当实现某个同步策略时，一定不要盲目地为了性能而牺牲简单性（这可能破坏安全性）。</p>
-</blockquote>
-<blockquote>
-<p>当执行时间较长的计算或者可能无法完成的操作时(例如，网络I/O或控制台I/O)，一定不要持有锁。</p>
-</blockquote>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/06/《Java并发编程实战》-1/" data-id="ck84a9qfj000wsovtcsvtewws" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-1" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-零碎的知识点-2" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2018/08/03/零碎的知识点-2/" class="article-date">
-  <time datetime="2018-08-03T03:06:13.995Z" itemprop="datePublished">2018-08-03</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/零碎的知识点/">零碎的知识点</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/03/零碎的知识点-2/">零碎的知识点-2</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="零碎的知识点-2"><a href="#零碎的知识点-2" class="headerlink" title="零碎的知识点-2"></a>零碎的知识点-2</h1><h2 id="死锁及其解决方案（避免、预防、检测）"><a href="#死锁及其解决方案（避免、预防、检测）" class="headerlink" title="死锁及其解决方案（避免、预防、检测）"></a>死锁及其解决方案（避免、预防、检测）</h2><h3 id="死锁产生的原因"><a href="#死锁产生的原因" class="headerlink" title="死锁产生的原因"></a>死锁产生的原因</h3><p>因竞争资源发生死锁 现象：系统中供多个进程共享的资源的数目不足以满足全部进程的需要时，就会引起对诸资源的竞争而发生死锁现象。</p>
-<h3 id="死锁的四个必要条件："><a href="#死锁的四个必要条件：" class="headerlink" title="死锁的四个必要条件："></a>死锁的四个必要条件：</h3><ul>
-<li><p><strong>互斥条件</strong>：进程对所分配到的资源不允许其他进程进行访问，若其他进程访问该资源，只能等待，直至占有该资源的进程使用完成后释放该资源</p>
-</li>
-<li><p><strong>请求和保持条件</strong>：进程获得一定的资源之后，又对其他资源发出请求，但是该资源可能被其他进程占有，此事请求阻塞，但又对自己获得的资源保持不放</p>
-</li>
-<li><p><strong>不可剥夺条件</strong>：是指进程已获得的资源，在未完成使用之前，不可被剥夺，只能在使用完后自己释放</p>
-</li>
-<li><p><strong>环路等待条件</strong>：是指进程发生死锁后，必然存在一个进程–资源之间的环形链</p>
-</li>
-</ul>
-<h3 id="处理死锁的基本方法"><a href="#处理死锁的基本方法" class="headerlink" title="处理死锁的基本方法"></a>处理死锁的基本方法</h3><h4 id="预防死锁（破坏四个必要条件）"><a href="#预防死锁（破坏四个必要条件）" class="headerlink" title="预防死锁（破坏四个必要条件）"></a>预防死锁（破坏四个必要条件）</h4><ul>
-<li><strong>资源一次性分配</strong>：（破坏请求和保持条件）</li>
-<li><p><strong>可剥夺资源</strong>：即当某进程新的资源未满足时，释放已占有的资源（破坏不可剥夺条件）</p>
-</li>
-<li><p><strong>资源有序分配法</strong>：系统给每类资源赋予一个编号，每一个进程按编号递增的顺序请求资源，释放则相反（破坏环路等待条件）</p>
-</li>
-</ul>
-<h3 id="避免死锁-银行家算法"><a href="#避免死锁-银行家算法" class="headerlink" title="避免死锁(银行家算法)"></a><strong>避免</strong>死锁(银行家算法)</h3><p>上面的预防算法会严重地损害系统性能。而避免死锁算法是让系统在进行资源分配之前预先计算资源分配的安全性。</p>
-<h3 id="检测死锁"><a href="#检测死锁" class="headerlink" title="检测死锁"></a>检测死锁</h3><p>首先为每个进程和每个资源指定一个唯一的号码；</p>
-<p>然后建立资源分配表和进程等待表。</p>
-<h3 id="解除死锁"><a href="#解除死锁" class="headerlink" title="解除死锁"></a>解除死锁</h3><p>当发现有进程死锁后，便应立即把它从死锁状态中解脱出来，常采用的方法有：</p>
-<h4 id="剥夺资源"><a href="#剥夺资源" class="headerlink" title="剥夺资源"></a>剥夺资源</h4><p>从其它进程剥夺足够数量的资源给死锁进程，以解除死锁状态；</p>
-<h4 id="撤消进程"><a href="#撤消进程" class="headerlink" title="撤消进程"></a>撤消进程</h4><p>可以直接撤消死锁进程或撤消代价最小的进程，直至有足够的资源可用，死锁状态.消除为止；所谓代价是指优先级、运行代价、进程的重要性和价值等。</p>
-<h2 id="Linux-命令-amp-和-amp-amp-的区别"><a href="#Linux-命令-amp-和-amp-amp-的区别" class="headerlink" title="Linux 命令&amp;和&amp;&amp;的区别"></a>Linux 命令&amp;和&amp;&amp;的区别</h2><p>在Linux控制台命令的执行过程中，</p>
-<h3 id="amp-表示该命令后台执行。"><a href="#amp-表示该命令后台执行。" class="headerlink" title="&amp;表示该命令后台执行。"></a>&amp;表示该命令后台执行。</h3><p>例如执行：ping 192.168.1.*  &amp;</p>
-<p>表示后台不停的执行ping命令，即便你强制中断掉该线程，它仍然会不停的输出结果。除非你将该线程kill掉。</p>
-<h3 id="amp-amp-表示并行执行前后命令。"><a href="#amp-amp-表示并行执行前后命令。" class="headerlink" title="&amp;&amp;表示并行执行前后命令。"></a>&amp;&amp;表示并行执行前后命令。</h3><h2 id="Linux—shell中-、-、-与-的区别"><a href="#Linux—shell中-、-、-与-的区别" class="headerlink" title="Linux—shell中$(( ))、$( )、$与${ }的区别"></a>Linux—shell中<code>$</code>(( ))、<code>$</code>( )、<code>$</code>与<code>$</code>{ }的区别</h2><p>在bash中，<code>$</code>( )与<code></code>（反引号）都是用来作命令替换的。<br>命令替换与变量替换差不多，都是用来重组命令行的，先完成引号里的命令行，然后将其结果替换出来，再重组成新的命令行。</p>
-<h2 id="redis的持久化方式RDB和AOF的区别"><a href="#redis的持久化方式RDB和AOF的区别" class="headerlink" title="redis的持久化方式RDB和AOF的区别"></a>redis的持久化方式RDB和AOF的区别</h2><p>redis提供两种方式进行持久化，一种是RDB持久化（原理是将Reids在内存中的数据库记录定时dump到磁盘上的RDB持久化），另外一种是AOF持久化（原理是将Reids的操作日志以追加的方式写入文件）。</p>
-<p>二者却别：</p>
-<ul>
-<li><p>RDB持久化是指在指定的时间间隔内将内存中的数据集快照写入磁盘，实际操作过程是fork一个子进程，先将数据集写入临时文件，写入成功后，再替换之前的文件，用二进制压缩存储。</p>
-</li>
-<li><p>AOF持久化以日志的形式记录服务器所处理的每一个写、删除操作，查询操作不会记录，以文本的方式记录，可以打开文件看到详细的操作记录。</p>
-</li>
-</ul>
-<h2 id="MYSQL-innodb中MVCC的一些理解"><a href="#MYSQL-innodb中MVCC的一些理解" class="headerlink" title="MYSQL innodb中MVCC的一些理解"></a>MYSQL innodb中MVCC的一些理解</h2><h3 id="MVCC简介"><a href="#MVCC简介" class="headerlink" title="MVCC简介"></a>MVCC简介</h3><p>MVCC (Multiversion Concurrency Control)，即多版本并发控制技术,它使得大部分支持行锁的事务引擎，不再单纯的使用行锁来进行数据库的并发控制，取而代之的是把数据库的行锁与行的多个版本结合起来，只需要很小的开销,就可以实现非锁定读，从而大大提高数据库系统的并发性能</p>
-<ul>
-<li><p><strong>读锁</strong>：也叫共享锁、S锁，若事务T对数据对象A加上S锁，则事务T可以读A但不能修改A，其他事务只能再对A加S锁，而不能加X锁，直到T释放A上的S 锁。这保证了其他事务可以读A，但在T释放A上的S锁之前不能对A做任何修改。</p>
-</li>
-<li><p><strong>写锁</strong>：又称排他锁、X锁。若事务T对数据对象A加上X锁，事务T可以读A也可以修改A，其他事务不能再对A加任何锁，直到T释放A上的锁。这保证了其他事务在T释放A上的锁之前不能再读取和修改A。</p>
-</li>
-<li><p><strong>表锁</strong>：操作对象是数据表。Mysql大多数锁策略都支持(常见mysql innodb)，是系统开销最低但并发性最低的一个锁策略。事务t对整个表加读锁，则其他事务可读不可写，若加写锁，则其他事务增删改都不行。</p>
-</li>
-<li><p><strong>行级锁</strong>：操作对象是数据表中的一行。是MVCC技术用的比较多的，但在MYISAM用不了，行级锁用mysql的储存引擎实现而不是mysql服务器。但行级锁对系统开销较大，处理高并发较好。</p>
-</li>
-</ul>
-<p>MVCC有下面几个特点：</p>
-<ul>
-<li>每行数据都存在一个版本，每次数据更新时都更新该版本</li>
-<li>修改时Copy出当前版本随意修改，各个事务之间无干扰</li>
-<li>保存时比较版本号，如果成功（commit），则覆盖原记录；失败则放弃copy（rollback）</li>
-</ul>
-<blockquote>
-<p>一句话讲，MVCC就是用 同一份数据临时保留多版本的方式 的方式，实现并发控制。</p>
-</blockquote>
-<h2 id="TCP三次握手和四次挥手"><a href="#TCP三次握手和四次挥手" class="headerlink" title="TCP三次握手和四次挥手"></a>TCP三次握手和四次挥手</h2><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p>第一次握手：建立连接时，客户端发送syn包（syn=j）到服务器，并进入SYN_SENT状态，等待服务器确认；SYN：同步序列编号（Synchronize Sequence Numbers）。</p>
-<p>第二次握手：服务器收到syn包，必须确认客户的SYN（ack=j+1），同时自己也发送一个SYN包（syn=k），即SYN+ACK包，此时服务器进入SYN_RECV状态；</p>
-<p>第三次握手：客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ack=k+1），此包发送完毕，客户端和服务器进入ESTABLISHED（TCP连接成功）状态，完成三次握手。</p>
-<p>完成三次握手，客户端与服务器开始传送数据，在上述过程中，还有一些重要的概念：</p>
-<p>未连接队列</p>
-<p>在三次握手协议中，服务器维护一个未连接队列，该队列为每个客户端的SYN包（syn=j）开设一个条目，该条目表明服务器已收到SYN包，并向客户发出确认，正在等待客户的确认包。这些条目所标识的连接在服务器处于SYN_RECV状态，当服务器收到客户的确认包时，删除该条目，服务器进入ESTABLISHED状态。</p>
-<p><img src="https://img-blog.csdn.net/20180803161201776?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP握手"></p>
-<h3 id="TCP挥手"><a href="#TCP挥手" class="headerlink" title="TCP挥手"></a>TCP挥手</h3><p><img src="https://img-blog.csdn.net/20180803161352694?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP挥手"></p>
-<p>为什么TCP协议终止链接要四次？</p>
-<ol>
-<li>当主机A确认发送完数据且知道B已经接受完了，想要关闭发送数据口（当然确认信号还是可以发），就会发FIN给主机B。</li>
-<li>主机B收到A发送的FIN，表示收到了，就会发送ACK回复。</li>
-<li>但这是B可能还在发送数据，没有想要关闭数据口的意思，所以FIN与ACK不是同时发送的，而是等到B数据发送完了，才会发送FIN给主机A。</li>
-<li>A收到B发来的FIN，知道B的数据也发送完了，回复ACK， A等待2MSL以后，没有收到B传来的任何消息，知道B已经收到自己的ACK了，A就关闭链接，B也关闭链接了。</li>
-</ol>
-<p>TCP挥手时，为什么等待2MSL，从TIME_WAIT到CLOSE？</p>
-<p> 在Client发送出最后的ACK回复，但该ACK可能丢失。Server如果没有收到ACK，将不断重复发送FIN片段。所以Client不能立即关闭，它必须确认Server接收到了该ACK。Client会在发送出ACK之后进入到TIME_WAIT状态。Client会设置一个计时器，等待2MSL的时间。如果在该时间内再次收到FIN，那么Client会重发ACK并再次等待2MSL。所谓的2MSL是两倍的MSL(Maximum Segment Lifetime)。MSL指一个片段在网络中最大的存活时间，2MSL就是一个发送和一个回复所需的最大时间。如果直到2MSL，Client都没有再次收到FIN，那么Client推断ACK已经被成功接收，则结束TCP连接。</p>
-<h2 id="C语言文件读写"><a href="#C语言文件读写" class="headerlink" title="C语言文件读写"></a>C语言文件读写</h2><p><img src="https://img-blog.csdn.net/20180803173523226?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="C语言文件读写"></p>
-<h2 id="Redis分布式锁"><a href="#Redis分布式锁" class="headerlink" title="Redis分布式锁"></a>Redis分布式锁</h2><h3 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h3><p>首先，为了确保分布式锁可用，我们至少要确保锁的实现同时满足以下四个条件：</p>
-<ul>
-<li><strong>互斥性</strong> 在任意时刻，只有一个客户端能持有锁。</li>
-<li><strong>不会发生死锁</strong> 即使有一个客户端在持有锁的期间崩溃而没有主动解锁，也能保证后续其他客户端能加锁。</li>
-<li><strong>具有容错性</strong> 只要大部分的Redis节点正常运行，客户端就可以加锁和解锁。</li>
-<li><strong>解铃还须系铃人</strong> 加锁和解锁必须是同一个客户端，客户端自己不能把别人加的锁给解了。</li>
-</ul>
-<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><h4 id="加锁代码"><a href="#加锁代码" class="headerlink" title="加锁代码"></a>加锁代码</h4><pre><code class="java">public class RedisTool {
-
-    private static final String LOCK_SUCCESS = &quot;OK&quot;;
-    private static final String SET_IF_NOT_EXIST = &quot;NX&quot;;
-    private static final String SET_WITH_EXPIRE_TIME = &quot;PX&quot;;
-
-    /**
-     * 尝试获取分布式锁
-     * @param jedis Redis客户端
-     * @param lockKey 锁
-     * @param requestId 请求标识
-     * @param expireTime 超期时间
-     * @return 是否获取成功
-     */
-    public static boolean tryGetDistributedLock(Jedis jedis, String lockKey, String requestId, int expireTime) {
-
-        String result = jedis.set(lockKey, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);
-
-        if (LOCK_SUCCESS.equals(result)) {
-            return true;
-        }
-        return false;
-
-    }
-
-}
-
-</code></pre>
-<h4 id="解锁代码"><a href="#解锁代码" class="headerlink" title="解锁代码"></a>解锁代码</h4><p>···java<br>public class RedisTool {</p>
-<pre><code>private static final Long RELEASE_SUCCESS = 1L;
-
-/**
- * 释放分布式锁
- * @param jedis Redis客户端
- * @param lockKey 锁
- * @param requestId 请求标识
- * @return 是否释放成功
- */
-public static boolean releaseDistributedLock(Jedis jedis, String lockKey, String requestId) {
-
-    String script = &quot;if redis.call(&#39;get&#39;, KEYS[1]) == ARGV[1] then return redis.call(&#39;del&#39;, KEYS[1]) else return 0 end&quot;;
-    Object result = jedis.eval(script, Collections.singletonList(lockKey), Collections.singletonList(requestId));
-
-    if (RELEASE_SUCCESS.equals(result)) {
-        return true;
-    }
-    return false;
-
-}
-</code></pre><p>}<br><code>`</code></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>先拿setnx来争抢锁，抢到之后，再用expire给锁加一个过期时间防止锁忘记了释放。</p>
-<p>如果在setnx之后执行expire之前进程意外crash或者要重启维护了，那会怎么样？</p>
-<p>set指令有非常复杂的参数，这个应该是可以同时把setnx和expire合成一条指令来用的。</p>
-<h2 id="Java类加载机制"><a href="#Java类加载机制" class="headerlink" title="Java类加载机制"></a>Java类加载机制</h2><h3 id="双亲委派加载机制"><a href="#双亲委派加载机制" class="headerlink" title="双亲委派加载机制"></a>双亲委派加载机制</h3><blockquote>
-<p>双亲委派模型的工作流程是：如果一个类加载器收到了类加载的请求，它首先不会自己去尝试加载这个类，而是把请求委托给父加载器去完成，依次向上，因此，所有的类加载请求最终都应该被传递到顶层的启动类加载器中，只有当父加载器在它的搜索范围中没有找到所需的类时，即无法完成该加载，子加载器才会尝试自己去加载该类。</p>
-</blockquote>
-<ol>
-<li>遇见一个类需要加载的类，它会优先让父加载器去加载。层层传递。</li>
-<li>每个类加载器都有自己的加载区域，它也只能在自己的加载区域里面寻找。</li>
-<li>自定义类加载器也必须实现这样一个双亲委派模型。</li>
-<li>双亲委派机制是隔离的关键， 如String.class： <ol>
-<li>一个JVM里面只能有一个String.class。</li>
-<li>用户没法自定义个String.class出来。</li>
-<li>每个Classloader都有自己的加载区域，需要注意部分配置文件的存放地点。</li>
-</ol>
-</li>
-</ol>
-<h3 id="类加载的隔离机制"><a href="#类加载的隔离机制" class="headerlink" title="类加载的隔离机制"></a>类加载的隔离机制</h3><p>类加载的隔离机制<br>通过不同的 完整类名 和 classloader， 可以区分两个类。好处为内存隔离(最常见的就是静态变量)。</p>
-<ul>
-<li>类名不一致一定不是同一个类</li>
-<li>类名一致类加载器不一致也不是同一个类(eaquels false)</li>
-<li>类名一致类加载器一致但是类加载器实例不一致也不是同一个类。</li>
-</ul>
-<blockquote>
-<p>Tomcat提供了一个Child优先的类加载机制：首先由子类去加载， 加载不到再由父类加载。就很好的规避了Tomcat lib里面的包与webapps中用户的包互相冲突。WEB-INF/lib 目录下的类的加载优先级是优于Tomcat lib的。（配置文件在server.xml里面的<loader delegate="false"> default false）上。</loader></p>
-</blockquote>
-<p>针对Tomcat， 做一个加载路径的介绍：</p>
-<ul>
-<li>Tomcat起始于catalina.sh里面的命令 <code>java org.apache.catalina.startup.Bootstrap start</code></li>
-<li>因为显式的指定了java命令，因此 <ul>
-<li>BootstrapClassLoader负责加载<code>${JAVA_HOME}/jre/lib</code>部分jar包</li>
-<li>ExtClassLoader加载<code>${JAVA_HOME}/jre/lib/ext</code>下面的jar包</li>
-<li>AppClassLoader加载<code>bootstrap.jar</code>和<code>tomcat-juli.jar</code>（只显示的指定了这两个jar包）</li>
-<li>之后Tomcat通过初始化了三个URLClassLoader, 并指定加载路径 （见<code>catalina.properties#common.loader</code>配置）</li>
-<li>除了common外， server和shardLoader的加载路径一般都没有显示的指定， 因此这三个Loader实际上都是URLClassLoader。</li>
-<li>同时，它顺便指定了当前线程的contextClassLoader。</li>
-<li>Tomcat对于WEB应用的启动都是依赖于web.xml的， 里面配置的Filter、Listener、Servlet根据Tomcat的定义都是由WebappClassLoaderBase来加载的。</li>
-<li>毕竟<code>Filter</code>、<code>Listener</code>、<code>Servlet</code>等入口都是被WebappClassLoaderBase加载的，而一般开发者不会主动指定ClassLoader。那么除非指定了ClassLoader，所有的webapp都是它加载的（刚好它的加载空间包含了这些类）</li>
-<li>在需要Spring的时候已经由App自身加载得到， 就不会再去寻找Tomcat lib里面的Spring。</li>
-<li>自此，Tomcat的类加载区分完毕。 通过 “子优先” 这个机制，可以保证多个 Tomcat App 之间做到良好的隔离。</li>
-</ul>
-</li>
-</ul>
-<h3 id="类加载的顺序"><a href="#类加载的顺序" class="headerlink" title="类加载的顺序"></a>类加载的顺序</h3><p>当需要用一个类的时候， 必须先加载它。</p>
-<ol>
-<li>装载：查找和导入Class文件；</li>
-<li>链接：把类的二进制数据合并到JRE中； </li>
-<li>校验：检查载入Class文件数据的正确性；</li>
-<li>准备：给类的静态变量分配存储空间；</li>
-<li>解析：将符号引用转成直接引用；</li>
-<li>初始化：对类的静态变量，静态代码块执行初始化操作</li>
-</ol>
-<h3 id="类加载的触发点"><a href="#类加载的触发点" class="headerlink" title="类加载的触发点"></a>类加载的触发点</h3><ul>
-<li>遇到new、getstatic、putstatic或invokestatic这4条字节码指令时，如果类没有进行过初始化，则需要先触发其初始化。生成这4条指令的最常见的Java代码场景是：使用new关键字实例化对象的时候，读取或设置一个类的静态字段（被final修饰、已在编译期把结果放入常量池的静态字段除外）的时候，以及调用一个类的静态方法的时候。<ul>
-<li>使用java.lang.reflect包的方法对类进行反射调用的时候，如果类没有进行过初始化，则需要先触发其初始化。</li>
-<li>当初始化一个类的时候，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化。</li>
-</ul>
-</li>
-</ul>
-<h2 id="类的实例化"><a href="#类的实例化" class="headerlink" title="类的实例化"></a>类的实例化</h2><p>类只有在加载进入JVM之后才能被使用， 但是一般情况下还需要把类做实例化操作后来用。 一般区分为显式的实例化和隐式的示例化。</p>
-<p>类的实例化的目的是为了得到一个类的对象。</p>
-<ul>
-<li>new 方法为隐式的实例化。方便可用性高。</li>
-<li>newInstance()为显式的实例化。必须要一个无参构造器。</li>
-<li>两种实例化方式都需要ClassLoader的参与。显式的实例化往往指定，隐式的实例化则默认是调用的这个类的类加载器。</li>
-<li>实例化的目的都是为了得到类的对象。而类在实例化之前已经初始化完毕。</li>
-<li>实例化的时候会为域变量赋值，并执行代码块的方法。</li>
-</ul>
-<p>为什么静态元素和静态代码块在一个虚拟机里面只会执行一次 ？</p>
-<ol>
-<li>默认习惯都是不会指定ClassLoader的，所属类也就只有一次初始化过程。 </li>
-<li>赋值静态域，或者执行静态代码块，是在类加载的流程中执行的。而这样的操作只会有一次。 </li>
-<li>赋值域，或者执行代码块，是在类实例化的流程中执行的，这样的操作根据程序需求可能有多次。</li>
-</ol>
-<h2 id="JVM的符号引用和直接引用"><a href="#JVM的符号引用和直接引用" class="headerlink" title="JVM的符号引用和直接引用"></a>JVM的符号引用和直接引用</h2><blockquote>
-<p>在JVM中类加载过程中，在解析阶段，Java虚拟机会把类的二级制数据中的符号引用替换为直接引用。</p>
-</blockquote>
-<ol>
-<li><p>符号引用（Symbolic References）：　符号引用以一组符号来描述所引用的目标，符号可以是任何形式的字面量，只要使用时能够无歧义的定位到目标即可。Java中，一个java类将会编译成一个class文件。在编译时，java类并不知道所引用的类的实际地址，因此只能使用符号引用来代替。</p>
-</li>
-<li><p>直接引用：<br>直接引用可以是<br>（1）直接指向目标的指针（比如，指向“类型”【Class对象】、类变量、类方法的直接引用可能是指向方法区的指针）<br>（2）相对偏移量（比如，指向实例变量、实例方法的直接引用都是偏移量）<br>（3）一个能间接定位到目标的句柄</p>
-</li>
-</ol>
-<p>直接引用是和虚拟机的布局相关的，同一个符号引用在不同的虚拟机实例上翻译出来的直接引用一般不会相同。如果有了直接引用，那引用的目标必定已经被加载入内存中了。</p>
-<h2 id="MySQL主从复制、半同步复制和主主复制概述"><a href="#MySQL主从复制、半同步复制和主主复制概述" class="headerlink" title="MySQL主从复制、半同步复制和主主复制概述"></a>MySQL主从复制、半同步复制和主主复制概述</h2><p>MySQL数据库支持同步复制、单向、异步复制，在复制的过程中一个服务器充当主服务，而一个或多个服务器充当从服务器。主服务器将更新写入二进制日志文件，并维护文件的一个索引以跟踪日志循环。这些日志可以记录发送到从服务器的更新。当一个从服务器连接主服务器时，它通知主服务器从服务器在日志中读取的最后一次成功更新的位置。从服务器接收从那时起发生的任何更新，然后封锁并等待主服务器通知新的更新。</p>
-<h3 id="主从复制的原理："><a href="#主从复制的原理：" class="headerlink" title="主从复制的原理："></a>主从复制的原理：</h3><ol>
-<li>数据库有个bin-log二进制文件，记录了所有sql语句。</li>
-<li>我们的目标就是把主数据库的bin-log文件的sql语句复制过来。</li>
-<li>让其在从数据的relay-log重做日志文件中再执行一次这些sql语句即可。</li>
-<li>下面的主从配置就是围绕这个原理配置</li>
-</ol>
-<p><img src="http://images2017.cnblogs.com/blog/1228077/201712/1228077-20171222172525053-1730746112.png" alt="主从复制"></p>
-<p><img src="http://images2017.cnblogs.com/blog/1228077/201712/1228077-20171222172533787-134255588.png" alt="原理"></p>
-<ol start="5">
-<li><p>具体需要三个线程来操作：</p>
-<ol>
-<li><p>binlog输出线程:每当有从库连接到主库的时候，主库都会创建一个线程然后发送binlog内容到从库。</p>
-<p>在从库里，当复制开始的时候，从库就会创建两个线程进行处理：</p>
-</li>
-<li><p>从库I/O线程:当START SLAVE语句在从库开始执行之后，从库创建一个I/O线程，该线程连接到主库并请求主库发送binlog里面的更新记录到从库上。从库I/O线程读取主库的binlog输出线程发送的更新并拷贝这些更新到本地文件，其中包括relay log文件。</p>
-</li>
-<li><p>从库的SQL线程:从库创建一个SQL线程，这个线程读取从库I/O线程写到relay log的更新事件并执行。</p>
-</li>
-</ol>
-</li>
-</ol>
-<p>可以知道，对于每一个主从复制的连接，都有三个线程。拥有多个从库的主库为每一个连接到主库的从库创建一个binlog输出线程，每一个从库都有它自己的I/O线程和SQL线程。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/08/03/零碎的知识点-2/" data-id="ck84a9qh7002wsovt0vo7vo0q" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="零碎的知识点-2" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/25/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="page-number current">26</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/27/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/25/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="page-number current">26</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/27/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -643,6 +758,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
+            <a href="/2020/03/25/游戏框架笔记/技能系统设计/">技能系统设计</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/24/游戏框架笔记/跨服系统设计/">跨服系统的设计</a>
+          </li>
+        
+          <li>
             <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
           </li>
         
@@ -654,14 +777,6 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
             <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
           </li>
         
-          <li>
-            <a href="/2019/10/31/项目笔记/通讯组件学习/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2019/10/17/项目笔记/线上经典bug汇总/">(no title)</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -671,7 +786,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -680,7 +795,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
