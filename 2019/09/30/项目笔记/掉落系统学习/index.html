@@ -1,0 +1,744 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="掉落系统学习概况掉落系统是RPG类游戏的重要组成部分，直接影响玩家的核心游戏体验。掉落配置表繁多，配置参数复杂。如果策划配错数值，服务端必须对整个系统极为了解才能快速找到出错的地方。 配置掉落系统拥有基础的五张表，这五张表之间层层相关，一步步决定了最终掉落的物品。 掉落表关系图： ObjectResource: 怪物表dropResourceIds字段配置下面的掉落ID,同一个怪可以有多种掉落方式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gonefuture">
+<meta property="og:url" content="http://gonefuture.top/2019/09/30/项目笔记/掉落系统学习/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="掉落系统学习概况掉落系统是RPG类游戏的重要组成部分，直接影响玩家的核心游戏体验。掉落配置表繁多，配置参数复杂。如果策划配错数值，服务端必须对整个系统极为了解才能快速找到出错的地方。 配置掉落系统拥有基础的五张表，这五张表之间层层相关，一步步决定了最终掉落的物品。 掉落表关系图： ObjectResource: 怪物表dropResourceIds字段配置下面的掉落ID,同一个怪可以有多种掉落方式">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-12-02T02:09:31.259Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gonefuture">
+<meta name="twitter:description" content="掉落系统学习概况掉落系统是RPG类游戏的重要组成部分，直接影响玩家的核心游戏体验。掉落配置表繁多，配置参数复杂。如果策划配错数值，服务端必须对整个系统极为了解才能快速找到出错的地方。 配置掉落系统拥有基础的五张表，这五张表之间层层相关，一步步决定了最终掉落的物品。 掉落表关系图： ObjectResource: 怪物表dropResourceIds字段配置下面的掉落ID,同一个怪可以有多种掉落方式">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-项目笔记/掉落系统学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/09/30/项目笔记/掉落系统学习/" class="article-date">
+  <time datetime="2019-09-30T09:35:41.659Z" itemprop="datePublished">2019-09-30</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="掉落系统学习"><a href="#掉落系统学习" class="headerlink" title="掉落系统学习"></a>掉落系统学习</h1><h2 id="概况"><a href="#概况" class="headerlink" title="概况"></a>概况</h2><p>掉落系统是RPG类游戏的重要组成部分，直接影响玩家的核心游戏体验。掉落配置表繁多，配置参数复杂。如果策划配错数值，服务端必须对整个系统极为了解才能快速找到出错的地方。</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>掉落系统拥有基础的五张表，这五张表之间层层相关，一步步决定了最终掉落的物品。</p>
+<p>掉落表关系图：</p>
+<p>ObjectResource: 怪物表dropResourceIds字段配置下面的掉落ID,同一个怪可以有多种掉落方式</p>
+<p>DropResource: <code>gropIds</code>索引到 DropItemGroupResource的Id，确定</p>
+<p>DropGropResource: <code>itemGroupId</code>索引到DropItemGroupResource的Id，确定掉落的掉落组</p>
+<p>DropItemGroupResource: <code>dropItemId</code>索引到DropItemResource的id,确定掉落里面有哪些掉落项 PS:这张表不是配物品ID!是下面表的ID！！！！</p>
+<p>DropItemResource: <code>code</code>索引到物品ID，确定掉落项的各种属性</p>
+<p>当需要给一个怪物配置掉落时，我们需要在怪物<code>ObjectResource</code>的dropResourceIds添加一个掉落id,然后在<code>DropResource</code>决定掉落策略（掉地上或者飞包）、掉落触发条件、掉落归属策略、玩家和怪物的掉落条件，之后在<code>DropGropResource</code>决定掉落次数限制、掉落随机范围、随机方式（是否放回）、各个掉落物组的权重，之后在<code>DropItemGroupResource</code>填写各掉落物的权重，最后在<code>DropItemResourc</code>配置掉落物的物品id、数量、类型、是否绑定、是否专用、记录描述等。</p>
+<p>对象表 -&gt; 掉落方式表 -&gt; 掉落组表 -&gt; 掉落物组表 -&gt; 掉落物表</p>
+<p>额外的相关联表:</p>
+<p>DropGroupLimitResource: 掉落限制表，可以配置个人每人每次限制、全服每日次数限制、个人永久次数限制</p>
+<h2 id="掉落的业务方法"><a href="#掉落的业务方法" class="headerlink" title="掉落的业务方法"></a>掉落的业务方法</h2><p>掉落逻辑处理</p>
+<pre><code class="java">@Component
+public class DropService {
+
+    // 幸运大爆
+    public boolean luckyValueDrop(Player player, int bossId, int x, int y) {
+        // ...
+    }
+
+    // 幸运大爆是否触发
+    public boolean isLuckyDropHit(Player player, PlayerDropEntity playerDropEntity, int bossId) {
+        // ...
+    }
+
+    // 计算出超级幸运大爆物品奖励
+    private Reward getSuperLuckDropReward(Player player) {
+        // ...
+    }
+
+    // 创建掉落物的配置信息
+    public void createDropToGroundItems(Player player, PlayerKillBossDropEvent envet) {
+        // ...
+    }
+
+    // 战斗服游戏服统一执行飞包掉落物的逻辑
+    public void dropToBag(Player player, PlayerDropToBagEvent event) {
+        List&lt;DropItemResource&gt; result = calcuteDropItems(player, event.getBossDropInfo(), event.getDropId());
+        if(result == null || result.isEmpty()) {
+            return;
+        }
+        DropStrategy.dropToBag(event.getBossDropInfo(), player, result);
+    }
+
+
+
+    // 根据掉落ID计算出掉落物的逻辑
+    private List&lt;DropItemResource&gt; calcutrDropItems(Player player, BossDropInfo bossDropInfo, int dropId) {
+        DropResource dropResource = DropManager.getInstance().getDropResource(dropId);
+        MapResource mapResource = MapManger.self().getMapResource(bossDropInfo.getMapId());
+        Map&lt;Object, Object&gt; params = null;
+        if(mapResource.isTransferMap()) {
+            // 如果是跨服地图，则对去开服天数取战区平均天数
+            params = new HashMap&lt;&gt;();
+            params.put(&quot;openDay&quot;, CenterManager.self().getServerGroupOpenDay());
+        }
+        // 检验玩家是否符合掉落条件（DropResource中配置的playerConditionsDefs和开服天数）
+        Result result = dropResource.getPlayerConditions().verify(player, 1, params);
+        if(result.isFali()) {
+            return null;
+        }
+        // 判断是否触发击杀幸运次数掉落
+        boolean isPlayerLuckyHit = dropResource.isPlayerLuckyNumHit(player);
+        if(!isPlayerLuckyHit) {
+            return null;
+        }
+        boolean isServerLuckyHit = dropResource.isServeLuckyNumHit();
+        if(!isServerLuckyHit) {
+            return null;
+        }
+        return DropStrategy.getDropItemAndAddRecord(player, dropResource.getGrouoIds(), params, bossDropInfo);
+    }
+
+
+
+}
+
+</code></pre>
+<p>掉落归属策略</p>
+<pre><code class="java">
+public enum DropBelongStrategy {
+
+    // 无归属
+    EVERYONE(true),
+    // 击杀者归属
+    KILLER(false) {
+        @Override
+        public BelongContext createContext(Npc death, AbstractCreature killer) {
+            FightPlayer fightPlayer = killer.getPlayerMasterOrNull();
+            if(fightPlayer == null) {
+                return BelongContext.valueOf(DropBelongStrategy.EVERYONE);
+            }  
+            BelongContext belongContext = BelongContext.valueOf(this);
+            belongContext.setKillerId(fightPlayer.getObjectId());
+            belongContext.setDropBelongStrategy(this);
+            return belongContext;
+        }
+
+        @Override
+        public IBelongStrategy getBelongStrategy(BelongContext belongContext) {
+            // 若击杀者不是玩家或者玩家的召唤物，则默认所有人拾取
+            return new KillerBelongStrategy(belongContext.getKillerId());
+        }
+
+        @Override
+        public List&lt;FightPlayer&gt; getBelongFightPlayers(Npc death, AbstractCreature killer) {
+            ArrayList&lt;FightPlayer&gt; players = new ArrayList&lt;&gt;(1);
+            if(killer != null) {
+                AbstractCreature master  = killer.getMasterOrSelf();
+                if(master.isPlayer()) {
+                    players.add((FightPlayer) master);
+                }
+            }
+            return players;
+        }
+    }
+
+    // 仇恨最高者归属
+    HATRED(true) {
+        @Override
+        public BelongContext createContext(Npc death,AbstractCreature killer) {
+            AbstractCreature abstractCreature = death.getAggroBelong();
+            FightPlayer fightPlayer = abstractCreature.getPlayerMasterOrNull();
+            if(fightPlayer == null) {
+                return BelongContext.valueOf(DropBelongStrategy.EVERYONE);
+            }
+            BelongContext belongContext = BelongContext.valueOf(this);
+            belongContext.setBelongId(death.getAggroBelong.getOjectId());
+            return belongContext;
+        }
+        @Override
+        public IBelongStrategy(BelongContext belongContext) {
+            return new AggroBelongStrategy(belongContext.getBelongId());
+        }
+        @Override
+        public List&lt;FightPlayer&gt; getBelongFightPlayers(Npc death, AbstractCreature killer){
+            AbstractCreature aggroBeong = death.getAggroBelong();
+            ArrayList&lt;FightPlayer&gt; players = new ArrayList&lt;&gt;(1);
+            if(aggroBelong != null) {
+                FightPlayer master = aggroBelong.getPlayerMasterOrNull();
+                if(master != null) {
+                    players.add(master);
+                }
+                return palyers;
+            }
+        }
+    }
+
+    // 击杀者公会归属
+    KILLER_GUILD(false),
+
+    // 仇恨最高者归者公会归属
+     HATRED_GUILD(true) {
+
+     }
+
+     // 击杀者队伍归属
+     KILLER_TEAM(ture) {
+
+     }
+
+     // 仇恨最高者公会归属，且需工会玩家在仇恨列表
+     HATRED_GUILD_IN_AGGER(ture) {
+
+     }
+
+     // 是否属于玩家
+     private boolean isToBelongPlayer;
+
+     DropBelongStrategy(boolean isToBelongPlayer) {
+         this.isToBelongPlayer = isToBelongPlayer;
+     }
+
+    // 返回掉落拾取策略
+    public IBelongStrategy getBelongStrategy() {
+        retuen new EveryoneBelongStatergy();
+    }
+
+    // 返回掉落归属玩家Id
+    public List&lt;FightPlayer&gt; getBelongFightPlayers(Npc death, AbstractCreautre killer) {
+        return new ArrayList&lt;FightPlayer&gt;;
+    }
+
+    // 创建掉落内容
+    public BelongContext createContext() {
+        return BrlongContext.valueOf(DropBelongStrategy.EVERYONE);
+    }
+
+    public boolean isToBelongPlayer() {
+        return isTobelongPlayer;
+    }
+}
+</code></pre>
+<p>掉落策略</p>
+<pre><code class="java">
+public enum DropStrategy {
+
+    // 掉落到地上
+    DropToGroupStrategy {
+
+        @Override
+        public void doDrop(Npc death, AbstractCreature killer, DropRsource dropResource) {
+            // 确定归属策略影响到的主体，用于决定向谁抛事件
+            FightPlayer fightPlayer = null;
+            if(dropRsource.getBelongStrategy().isToBelongPlayer()) {
+                AbstractCreature aggroBelong = death.getAggroBelong();
+                if(aggroBelong == null) {
+                    return null;
+                }
+                fightPlayer = aggroBelong.getPlayerMasterOrNull();
+            } else {
+                fightPlayer = killer.getPlayerMasterOrNull();
+            }
+            if(fightPlayer == null) {
+                return;
+            }
+            // 向掉落主体抛掉落事件，掉落主体接受事件之后，进行各种玩家掉落条件以及掉落次数的验证
+            fightPlayer.getPlayerBridge().submitEvent(
+                PlayerKillBossDropEvent.valueOf(dropResource.getId(), dropResource.getBelongStrategy().createContext(death,killer),
+                BossDropInfo.valueOf(death));
+            );
+        }
+    },
+
+    // 掉落到玩家背包
+    DropToPlayerBagStrategy {
+        @Override
+        public void doDrop(Npc death, AbstractCreature killer, DropRsource dropResource) {
+            // 确定归属策略
+            List&lt;FightPlayer&gt; players = dropResource.getBelongFightPlayers(death,killer);
+            for(FightPlayer player : players) {
+                player.getPlayerBridge().submitEvent(PlayerDropToBagEvent.valueOf(dropResource.getId(), BossDropInfo.valueOf(death)));
+            }
+        }
+    }
+
+    // ================掉落到仓库，等可后续加类型==============
+
+
+
+    public void doDrop(Npc death, AbstractCreature killer, DropResource dropResource) {
+        // ...
+    }
+
+    // 根据掉落组随机出掉落物信息，根据掉落信息可以转化成掉落到地上的对象，或者掉落到背包的物品
+    public static List&lt;DropItemResource&gt; rollGoods(Player player, List&lt;Integer&gt; groupIds) {
+        return rollGoods(player, groupIds, null);
+    }
+
+    // 随机出掉落物
+    public static List&lt;DropItemResource&gt; rollGoods(Player player, List&lt;Integer&gt; groupIds, Map&lt;Object, Object    &gt;) { 
+        List&lt;DropItemResource&gt; result = new ArrayList&lt;&gt;();
+        for(Integer groupId : groupIds) {
+            // 获取掉落组配置
+            DropGroupResource groupResource = DropManager.getInstance().getDropGroupResource(groupId);
+            if(groupResource == null) {
+                // 配了不存在的掉落组说明随机不到东西
+                if(!groupResource.checkLimit(player)) {
+                    continue;
+                }
+                CHooser chooser = groupResource.getChooser(plyaer,params);
+                List&lt;ChooserItem&gt; itemGroups = ChooserManager.getInstance().chooser(chooser);
+                if(itemGroups.isEmpty()) {
+                    continue;
+                }
+                itemGroups.forEach(itemGroup -&gt; {
+                    int itemGroupId = Integer.valueOf(itemGroup.getResult());
+                    if(itemGroupId != 0) {
+                        // 获取掉落物组配置
+                        DropItemGroupResource itemGroupResource = DropManager.getInstance().getDropItemGroupResource(itemGroupId);
+                        ChooserItem dropItem = ChooaweManager.getInstance().chooseOne(itemGroupResource.getChooser());
+                        if(dropItem != null) {
+                            int dropItemId = Integer.valueOf(dropItem.getResult());
+                            if(dropItemId &gt; 0) {
+                                result.add(DropManager.getInstance().getDropItemResource(dropItemId));
+                            }
+                        }
+                    }
+                });
+
+            }
+        }
+        return result;
+    }
+
+    // 将物品掉落到地图上
+    public static dropToGround0(Grid grid, int dropItemId, IBelongStrategy, WorldMapInstance mapInstance) {
+        if(dropItemId == 0) {
+            return;
+        }
+        Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
+        args.put(&quot;x&quot;,grid.getX());
+        args.put(&quot;y&quot;, grid.getY());
+        args.put(&quot;dropItemId&quot;, dropItemId);
+        args.put(&quot;belongStrategy&quot;, belongStrategy;
+        args.put(&quot;strartClearTask&quot;, true);
+        DropObject dropObject = (DropObject) DropObjectCreator.getCreator(ObjectType.DROPOBJECT).create(null, null, mapInstance,args);
+        World.getInstance().spawn(dropObject);
+    }
+
+    // 掉落到地方的方法
+    public static void dropToGround(int centerX, int centerY, List&lt;DropItemResource&gt; dropItemResources,
+    IBelongStrategy belongStrategy, WorldMapInstance mapInstance) {
+        // ...
+    }
+
+    // 掉落到背包
+    public static List&lt;DropItemReosource&gt; dropToBag(BossDropInfo bossDropInfo, Player player, List&lt;DropItemResource&gt; rsult) {
+        // ...
+    }
+
+    //  生成掉落记录
+    public static BossDropRecord createDropRecord(int mapId, int objectId, long mapInstanceId, String name, int dropItemId) {
+        // ...
+    }
+
+    // 获取掉落物
+    public static List&lt;DropItemResource&gt; getDropItemAndAddRecord(Player player, List&lt;Integer&gt; groupIds, ) {
+        List&lt;DropItemResource&gt; result = new ArrayList&lt;&gt;();
+        if(groupIds.isEmpty()) {
+            return result;
+        }
+        List&lt;DropItemResource&gt; rollGoods = rolGoods(player, groupIds,params);
+        // 检测广播
+        broadcastDropItems(plyaer, rollGoods,bossDropInfo);\
+        // 检测掉落记录
+        checkDropRecord(player, rollGoods, bossDropInfo);
+        return rollGoods;
+    }
+
+    // 检测珍惜掉落广播
+    public static void broadcastItems(Player player, List&lt;DropItemReosurce&gt; rollGoods, BossDropINfo bossDropInfo) {
+
+    }
+
+    // 检测掉落到背包的嗲罗记录是否需要广播到其他游戏服
+    // 掉落到背包是在游戏服进行掉落，获取groupIndex的方式是在游戏服的门票信息里面去获取
+    public static void checkDropRecord(Player palyer, List&lt;DropItemReosurce&gt; rollGoods, BossDropINfo bossDropInfo) {
+        // ...
+    }
+
+}
+</code></pre>
+<h2 id="门面类和掉落的触发"><a href="#门面类和掉落的触发" class="headerlink" title="门面类和掉落的触发"></a>门面类和掉落的触发</h2><p>掉落外观类</p>
+<pre><code class="java">@Component
+@SocketClass
+public class DropFacade {
+
+    // ...
+
+    @ReceiverAnno
+    public void onKillBoss(KillBossEvent event) {
+        onKillBoss(event.getPlayer(), event.getMapId(), event.getBossId(), event.getX(), event.getY());
+    }
+
+    private void onKillBoss(Player player, int mapId, int bossId, int x, int y) {
+        // Vip大爆
+        MapResource mapRsource = MapManager.self().getMapResourceStorage().get(mapId, true);
+        if(mapResource.getType() == MapType.FIELD || mapResource.getType() == MapType.TRANSFER_FIELD) {
+            dropService.vipDrop(player, bossId);
+        }
+        // 幸运大爆
+        if(ModuleOpenManger.getInstance().isOpen(player, ModuleOpenType.LUCKY_DROP)) {
+            dropService.luckyValueDrop(player, bossId, x, y);
+        }
+    }
+
+
+    // 游戏服，玩家接受掉落事件，进行玩家条件检测以及次数判断
+    @ReceiverAnno
+    public void onPlayerKillBossDrop(PlayerKillBossDropEvent event) {
+        dropSerive.createDropToGroundItems(event.getPlayer(), event);
+    }
+
+    // 游戏服，处理掉落物到场景事件
+    @ReceiverAnno
+    public void onDropToGround(DropToGroundEvent event) {
+        dropService.doDropToGround(event.getPlayer().getFightPlayer(), event.getDropItemIds(),
+        event.getBelongContext(), event.getBossDropInfo());
+    }
+
+    // 战斗服，处理掉落物掉到场景事件
+    @ReceiverAnno
+    public void onTransferDropToGround(onTransferDropToGroundEvent event) {
+        dropService.doDropToGround(event.getPlayer().getFightPlayer(), event.getDropItemIds(),
+        event.getBelongContext(), event.getBossDropInfo());
+    }
+
+    // 战斗服，统一处理飞背包掉落物事件
+    @ReceiverAnno
+    public void onDropToBag(PlayerDropToBagEvent event) {
+        dropService.dropToBa(event.getPlayer(), event);
+    }
+
+}
+</code></pre>
+<h2 id="掉落数据的持久化"><a href="#掉落数据的持久化" class="headerlink" title="掉落数据的持久化"></a>掉落数据的持久化</h2><p>玩家掉落数据</p>
+<pre><code class="java">@Entity
+@Cached
+public class PlayerDropEntity extends AbstractEntity&lt;Long&gt; {
+
+    @Id
+    private long playerId;
+
+    // ======= 击杀怪物记录 ========
+    @Lob
+    private String dailyKillMonsterTimesStr;
+    // 与dropId关联的怪物的击杀次数&lt;dropId, times&gt;
+    private transinet ConcurrentHashMap&lt;Integer, Integer&gt; dailyKillMonsterTimes;
+
+    @Lob
+    private String dailyKillMonsterLuckyNumStr;
+    // 当日击杀幸运数&lt;掉落ID, 幸运击杀数组&gt;
+    private transient ConcurrentHashMap&lt;Integer, List&lt;Integer&gt;&gt; dailyKillMonsterLuckyNums;
+
+    // ========= 掉落组掉落记录 ==========
+
+    // 当日掉落物品组次数 &lt;dropGroupId, times&gt;,key为DropGroupLimit的id
+    @Lob
+    private String dailyDropGroupTimesStr;
+    private transient ConcurrentHashMap&lt;Integer, Integer&gt; dailyDropGroupTimes;
+
+    // 永久掉落物品次数 &lt;dropGroupId, times&gt;,key为DropGroupLimit的id
+    @Lob
+    private String dropGroupTimesStr;
+    private transient ConcurrentHashMap&lt;Integer, Integer&gt; dropGroupTimes;
+
+    // ======== 幸运值相关 ============
+
+    // 当前幸运值
+    private int luckyValue;
+    // 今日回收装备数量
+    private transient Map&lt;Intger, Integer&gt; dailyRecycleEquipNum;
+    @Lob
+    private String dailyRecycleEquipNumData;
+    // 今日幸运大爆奖励记录
+    private transient List&lt;LuckyDropRecord&gt; luckyDropRecords;
+    @Lob
+    private String luckyDropRecordsData;
+    // 今日获得幸运值
+    private int dailyAddLuckyValue;
+    // 历史获得幸运值
+    private int totalAddLuckyValue;
+    // 今日幸运大爆次数
+    private int dailyLuckDropTimes;
+    // 历史幸运大爆次数
+    private int totalLuckyDropTimes;
+
+    private transient Map&lt;Integer, QuestLuckyDropData&gt; questLuckyDropDataMap;
+    @Lob
+    private String questLuckyDropDataStr;
+
+    // 每日生成的超级幸运掉落次数列表
+    private transient List&lt;Integer&gt; dailySuperLuckyDropValueList;
+    @Lob
+    private String dailySuperLuckyDropValueDataStr;
+
+    private transient Map&lt;ObjectSubType, BossLuckyTimeData&gt; bossLuckyTimesMap;
+    @Lob
+    private String bossLuckyTimesData;
+
+    // 各种处理属性的方法 。。。
+
+
+}
+
+</code></pre>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/09/30/项目笔记/掉落系统学习/" data-id="ck84a9qm00054sovtm47cypuh" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/掉落系统学习" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/10/10/项目笔记/游戏跨服开发笔记/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/09/30/项目笔记/热更系统学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/10/31/项目笔记/通讯组件学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/10/17/项目笔记/线上经典bug汇总/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

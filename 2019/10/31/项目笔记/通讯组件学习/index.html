@@ -1,0 +1,1288 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="通讯组件学习网络连接是游戏服务器的基础中的基础。此游戏服务器使用Jprotobuf事先编译好protobuf文件。通过注解标志各种协议包，接受客户端发送的协议时，自动将其转化为Wsesion对象,玩家角色登陆后再进一步转化为Player对象。 用于标记的枚举模块声明 @Target(ElementTpye.TYPE) @Retention(RetentionPolicy.RUNTIME) @Doc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gonefuture">
+<meta property="og:url" content="http://gonefuture.top/2019/10/31/项目笔记/通讯组件学习/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="通讯组件学习网络连接是游戏服务器的基础中的基础。此游戏服务器使用Jprotobuf事先编译好protobuf文件。通过注解标志各种协议包，接受客户端发送的协议时，自动将其转化为Wsesion对象,玩家角色登陆后再进一步转化为Player对象。 用于标记的枚举模块声明 @Target(ElementTpye.TYPE) @Retention(RetentionPolicy.RUNTIME) @Doc">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-12-26T10:31:14.351Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gonefuture">
+<meta name="twitter:description" content="通讯组件学习网络连接是游戏服务器的基础中的基础。此游戏服务器使用Jprotobuf事先编译好protobuf文件。通过注解标志各种协议包，接受客户端发送的协议时，自动将其转化为Wsesion对象,玩家角色登陆后再进一步转化为Player对象。 用于标记的枚举模块声明 @Target(ElementTpye.TYPE) @Retention(RetentionPolicy.RUNTIME) @Doc">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-项目笔记/通讯组件学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/10/31/项目笔记/通讯组件学习/" class="article-date">
+  <time datetime="2019-10-31T08:05:32.225Z" itemprop="datePublished">2019-10-31</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="通讯组件学习"><a href="#通讯组件学习" class="headerlink" title="通讯组件学习"></a>通讯组件学习</h1><p>网络连接是游戏服务器的基础中的基础。此游戏服务器使用<code>Jprotobuf</code>事先编译好protobuf文件。通过注解标志各种协议包，接受客户端发送的协议时，自动将其转化为<code>Wsesion</code>对象,玩家角色登陆后再进一步转化为<code>Player</code>对象。</p>
+<h2 id="用于标记的枚举"><a href="#用于标记的枚举" class="headerlink" title="用于标记的枚举"></a>用于标记的枚举</h2><p>模块声明</p>
+<pre><code class="java">@Target(ElementTpye.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface SocketClass {
+
+}
+</code></pre>
+<p>模块声明</p>
+<pre><code class="java">@Target(ElementTpye.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface SocketMethod {
+    // 自定义协议号，用于事件体系
+    int coustomPacketId() default 0;
+
+}
+</code></pre>
+<p>通讯包声明</p>
+<pre><code class="java">@Target(ElementTpye.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Lazy
+public @interface SocketMethod {
+    // 协议号
+    int packetId();
+}
+</code></pre>
+<h2 id="Socket服务器"><a href="#Socket服务器" class="headerlink" title="Socket服务器"></a>Socket服务器</h2><p>Socket服务器<code>Wserver</code>在启动时加载注解标记的通讯包，</p>
+<pre><code class="java">@Component
+public class Wserver implements ApplicationContextAware {
+    private static final Logger logger = LoggerFactory.getLogger(Wserver.class);
+
+    @Autowired
+    private CustomHandlerManager customHandlerManager;
+    @Autowired
+    private SessionHandler sessionHandler;
+    @Autowired
+    private FlowFirewall flowFirewall;
+    @Autowired
+    private IpFirewall ipFirewall;
+    @Autowired
+    private SocketPacketHandler socketPacketHandler;
+
+    // 自定义的连接日志处理接口
+    public static LoggingHandler logginHandler;
+
+    private int[] ports;
+    private ApplicationCintext applicationContex;
+    private int maxlength;
+
+    // 开启
+    public void open() {
+        ipFirewal.open();
+    }
+
+    // 网络端口是否打开
+    public boolean ioOpen() {
+        return ipFirewall.isOpened();
+    }
+
+    // 关闭
+    public void block() {
+        ipFirewall.block();
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException{
+        this.applicationContext = applicationContext;
+    }
+
+    // 加载配置
+    public void loadProperties(Resource rsource) {
+        Properties prop = new Properties();
+        prop.load(resource.getInputStream());
+        this.prots = ConfigUtils.getPorts(prop, ServerConfigConstant.SERVER_PORT);
+
+        String maxLengthProp = prop.getProperty(ServerConfigConstant.PACKET_MAXLEGHTH);
+        if(maxLengthProp == null) {
+            // 默认1m
+            maxLength = 1024*1024;
+        } else  {
+            maxLength = INteger.valueOf(mxaLengthProp) * 1024;
+        }
+    }
+
+    public void bind() throws InterruptedException, IOException{
+        bind(new DummyFirewallManger());
+    }
+
+    // 绑定端口
+    public void bind(FirewallManager firewallManger) thrwos InterruptedException, IOException{
+        socketPacketHandler.setFirewallManager(firewallManager);
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        ServerBootstrap serverBootstrap = new ServerBootstrap();
+        if(loggingHandler != null) {
+            serverBootstrap.handler(loggingHandler);
+        }
+        serverBootstrap.group(bossGrop, workerGroup)
+            .channel(NioSreverSocketchannel.class)
+            .option(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
+            .option(ChannelOption.SO_BACKLOG,1024)
+            .childOption(ChannelOption.TCP_NODELAY, true).
+            .childOption(ChannelOption.TCP_NODELAY)
+            .childOption(ChannelOption.SO_RCVBUF,1024*32)
+            .childOption(ChannelOption.SO_SNDBUF,1024*32)
+            .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK,new WriteBufferWaterMark(0,128*1024))
+            .childHandler(nwe ChannelInitializer&lt;SocketChannel&gt; -&gt; {
+                @Override
+                public void initChannel(SocketChannel sc) {
+                    ChannelPipeline pipeline = sc.pipeline();
+                    pipeline.addLast(&quot;encoder&quot;, new WpacketEncoder());
+                    pipeline.addLast(&quot;ipFirewall&quot;, ipFirewall);
+                    pipeline.addLast(&quot;flowFirewal&quot;, flowFirewall);
+                    pipeline.addLast(&quot;decoder&quot;, new WpacketDecoder(maxLength)).
+                    pipeline.addLast(&quot;session&quot;, sessionHandler);
+                    pipeline.addLast(&quot;socketPackHandler&quot;,new SocketChooserHandler());
+                    for (ChannelHandlerAdapeter cha : customHandlerManager.getHandlers()) {
+                        sc.pipeline().addLast(cha);
+                    }
+                }
+            }) ;
+        for(int port : ports) {
+            ChannelFuture cf = serverBootstrap.bind(port);
+            if (StringUitls.isNotEmpty(host)) {
+                cf = serverBootstrap.bind(host, port);
+            } else {
+                cf = serverBootStrap.bind(port);
+            }
+            cf.sync();
+            channelFutures.add(cf);
+        }
+    }
+
+    class SocketChoserHandler extends ByteToMessageDecoder {
+        private final int CHECK_LEN = 5;
+        private final String WSOCKET_PREFIX = &quot;GET&quot;;
+
+        @Override
+        protected void decode(ChannelHandlerContex ctx, ByteBuf in, List&lt;Object&gt; out) throws Ecception{
+            String protocol = getProtocol(in);
+            if(protocol == null) {
+                return;
+            }
+            ChannelPipeline pipeline = ctx.pipeline();
+            if(protocol.startWith(WSOCKET_PREFIX)) {
+                addWebSocketHandler(pipeline);
+            } else {
+                addSocketHandler(pipeline);
+            }
+            pipeline.remove(SocketChooserHandler.class);
+
+            WpacketDecoder wpacketDecoder = new WpacketDecoder(maxLength);
+            pipeline.addLast(&quot;decoder&quot;, wpacketDecoder);
+            ctx.channel().attr(WpacketDecoder.DECODER).set(wpacketDecoder);
+            pipeline.addLast(&quot;socketPacketHandler&quot;, socketPacketHandler);
+            for(ChanelHandlerAdpater cha : customHandlerManager.getHandlers()) {
+                pipeline.addLast(cha);
+            }
+        }
+    }
+    private List&lt;ChannelFuture&gt; channelFutures = new ArrayList&lt;&gt;();
+
+    private EventLoopGroup bossGroup;
+
+    private EventLoopGroup workerGroup;
+
+    public void shutdownGracefully() {
+        try {
+            for(ChannelFuture cf : channelFutures) {
+                if(cf.channel() != null) {
+                    try {
+
+                    } catch(Exception w) {
+                        logger.error(&quot;通讯server channel 关闭异常&quot;,e);
+                    }
+                }
+            }
+        } finally {
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
+    }
+
+    // get/set.....
+
+}
+
+</code></pre>
+<p>用户自定义handler管理器</p>
+<pre><code class="java">@Component
+
+public final class CustomHandlerManager {
+    private List&lt;ChannelHandlerAdapter&gt; handlers = new ArrayList&lt;&gt;();
+
+    @PostConstruct
+    public void init() {
+        doInit();
+    }
+
+    private void doInit() {
+        // TODO
+    }
+
+    public List&lt;ChannelHanderAdapter&gt; getHandeers() {
+        return handlers;
+    }
+
+    public void setHandlers(ChannelHandlerAdapter handlers) {
+        this.handlers = handlers;
+    }
+}
+
+</code></pre>
+<h2 id="分发器"><a href="#分发器" class="headerlink" title="分发器"></a>分发器</h2><p>消息处理器handler</p>
+<pre><code class="java">@Sharable
+@Component
+public class SocketPacketHandler extends ChannelInboundHandlerAdpter implements ApplicationContextAware,
+    ApplicationContextAware  {
+    private static final boolean OPEN_PROTOBUF_COMPILE = Boolean.valueOf(System.getProperty(&quot;openProtobufComplile&quot;, &quot;false&quot;));
+
+    /**
+    *   类class与packetId的快速映射
+    */
+    private Map&lt;Class&lt;?&gt;, Integer&gt; calssToPacketId = new ConcurrentHashMap&lt;&gt;();
+
+    /**
+    *   packetId与类class的快速映射
+    */
+
+    private Map&lt;Integer, Codec&gt; paccketIdToCodec = new ConcurrentHashMap&lt;&gt;();
+
+    private Set&lt;Integer&gt; runInNIOThreadPacketIds = new HashSet&lt;&gt;();
+
+    @Autowired
+    private SessionManager sessionManager;
+
+    @Autowierd
+    private IEventBusManager  eventManager;
+
+    private FirewallManager firewallManager;
+    private ExceptionHandler exceptionHandler;
+    private IPacketStatistics packetStatistics;
+
+    public static SocketPacketHandler getInstance() {
+        return self;
+    }
+    private static SocketPacketHandler self;
+
+    @PostConstruct
+    private void init() {
+        SocketPacketHandler.self = this;
+        if(OPEN_PROTOBUF_COMPILE) {
+            System.err.println(&quot;open protobuf dynamic complie!&quot;);
+        } else {
+            ProtobufProxy.closeCompile();
+            System.err.println(&quot;close protobuf dynamic complie!&quot;);
+        }
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        String[] classNames = applicationContext.getBeanNamesForAnnotation(SocketPacket.class);
+        for(String className : classNames) {
+            Class&lt;?&gt; packetClass = applicationContex.getType(className);
+            SocketPacket socketPacket = packetClass.getAnnotion(SocketPacket.class);
+            if(packetIdToCodec.containkey(socketPacket.packetId())) {
+                throw new RuntimeException(String.format(&quot;socketPacket.packetId() [%s] 重复使用！&quot;, socketPacket.packetId()));
+            }
+            Codec codec = ProtobufProxy.create(packetClass);
+            packetIdToCodec.put(socketPacket.packetId(), codec);
+            classToPacketId.put(packetClass, socketPacket.packetId());
+            packetIdToClass.put(socketPacket.packetId(), packetClass);
+        }
+        stopWatch.stop();
+        loogger.debug(&quot;load protoProxy {} use time {}s&quot;, classNames.length, TimeUnit.MILLSECONDS.toSeconds(stopWatch.getTime()));
+        // 默认协议拦截器
+        if(packetInterceptor == null) {
+            packetIneterceptor = new IPacketInterceptor() {
+                @Override
+                public boolean isRealPacketMethod() {
+                    return true;
+                }
+                @Override
+                public boolran intercept(Wsession wsession, WrequestPacket packet) {
+                    return false;
+                }
+                @Override
+                public boolean intercept(Wsession wsession, WresponsePacket packet) {
+                    return false;
+                }
+            };
+        } else {
+            packetInterceptor.afterInit(this);
+        }
+    }
+
+
+    @Override
+    public Object postProcessAfterInirialization() throws BeansException{
+        Class&lt;?&gt; clazz = bean.getClass();
+        if(clazz.isAnnotationPersent(SocektClass.class)) {
+            for(Method method : clazz.getMethods()) {
+                 SocektMethod methodAnnotation = method.getAnnotation(SocketMethod.class);
+                 if(methodAnnotion == null) {
+                     continue;
+                 }
+                 // 参数和返回值验证
+                 Class&lt;?&gt;[] clzs = method.getParameterTypes();
+                 if(clas.length != 2) {
+                     throw new IllegalArgumentException(bean.getClass().getName() + 
+                     &quot;.&quot;  +method.getName() + &quot;只能拥有两个参数&quot;);
+                 }
+                 // 接收参数验证
+                 Calss&lt;?&gt; packetClass = method.getPatameterTypes()[1];
+                 int packetId = methodAnnotation.consutomPacketId();
+                 if(pcaketId == 0) {
+                    SocketPacket socketPacekt = packetCalss.getAnnotation(SocketPacket.class);
+                    if(socketPacket == null) {
+                        // 该对象没有class注册
+                        throw new IllegalArgumentException(String.format(&quot;class[%s] 没有包含SocketPacket注解！&quot;, packetClass));
+                    }
+                    packetId = socketPacket.packetId();
+                 }
+                 if(!&quot;void&quot;.equals(method.getReturnType().getName())) {
+                     if(method.getReturnType().getAnnotation(SocketPacket.class) == null) {
+                        throw new IllegalArgumentException(
+                            bean.getClass().getName() + &quot;.&quot;+method.getName() + &quot;返回值必须包含SocketPacket注解&quot;
+                        );
+                     }
+                 }
+                 if(packetInterceptor != null &amp;&amp; !packetInterceptor.isRacketMethod(packetId, method)) {
+                     // 检测是否需要注册该协议处理方法
+                     continue;
+                 }
+                 // 是否有其他执行对象已经注册了此消息
+                 SocektHandkerDefinition shd = handlerDefinitions.get(packetId);
+                 if(shd != null) {
+                     throw new IllegalArgumentException(String.format(&quot;class[%s]和class[%s]重复使用，一个packetId只能用在一个方法上！&quot;， shd.getBean().getClass, packetClass, packetId));
+                 }
+                 boolean runInNioThread = method.getAnnotation(IRunInNioThread.class) != null;
+                 handlerDefinitions.put(packetId, SocketHandlerDefinition.valueOf(bean, method, runInNioThread));
+            }
+           return bean;
+        }
+    }
+
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String name) throws BeansException{
+        return bean;
+    }
+
+        public interface ExceptionHandler {
+        // 协议处理异常处理
+        void handlerPacketException(Wsession session, Throwable e);
+
+        // 连接异常处理
+        void handlerConException(ChannelHandlerContext ctx, Throwable cause);
+    }
+
+    private ExceptionHandler exceptionHandler;
+
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Obejct msg) throws Exception {
+        // 将包转化为 WrequestPacket 类型 , 编码器已经编码好了
+        final WrequestPacket packet = (WrequestPacket) msg;
+        // 根据channel获得一个session
+        final Wsession session = sessionManager.getSession(ctx.channel().id());
+
+        if(firewallManager != null &amp;&amp; !firewallManger.packerFilter(session, packet)) {
+            logger.error(String.format(&quot;session[%s] packetId[%s]发送非法的信息，可能客户端没有登陆就放在发送信息!&quot;));
+            return;
+        }
+        if(packetInterceptor.intercept(session, packet)) {
+            return;
+        }
+        if(packetStatistics != null) {
+            packetStatistics.receive(packet);
+        }
+        final Object message;
+        try {
+            message = packetInterceptor.customDecodePacket(packet.getPacketId(), packet.getData());
+        } catch(IOException e) {
+            logger.error(&quot;decode error&quot;, e);
+            return;
+        }
+        excMaessage(session, packet.getPacketId(), message);
+    }
+
+    /**
+    *   解析消息包
+    */
+    public Object decodePacket(int packetId, byte[] data) {
+        Code codec = SocketPacketHanndler.getInstance().getCodec(packetId);
+        if(codec == null) {
+            logger.error(&quot;not found codec with packetId {}&quot;, packetId);
+            return null;
+        }
+        try {
+
+        } catch(IOException e) {
+            throw new RuntimeException(String.format(&quot;decode packet[%d] error&quot;, packetId), e);
+        }
+    }
+
+
+    // 执行协议
+    public void excMessage(Wsession session, int packetId, Obejct message) {
+        if(message == null) {
+            return;
+        }
+        final SocketHandlerDefinition shd = handlerDefinitions.get(packetId);
+        if(shd == null) {
+            logger.error(String.format(&quot;没有找到处理[%s]的SocketHandlerDefinition&quot;, packetId));
+        }
+        session.onReceivePacket(message);
+        if(shd.isRunInNioThread()) {
+            // 特殊业务，在NIO线程执行
+            excMessage(session, shd, message);
+            return;
+        }
+        IdentityEventExcutorGrop.addTask(new AbstractDispatcherCodeRUnnable() {
+            @Override
+            public void doRun() {
+                excMessage(session, shd, message);
+            }
+
+            @Override
+            public long timeoutNanoTime() {
+                // 3毫秒
+                return 3 * 1000 * 1000;
+            }
+
+            @Override
+            public String name() {
+                return &quot;wSocket_&quot; + packetId;
+            }
+            @Override
+            public int gerDispatcherHashCode() {
+                return session.selectDispatcherHashCode();
+            }
+        });
+    }
+
+    public vooid excMessage(Wession session, SocketHandlerDefinition shd, Object message) {
+        try {
+            Object returnMessage = shd.invoke(session, message);
+            if(returnMessage == null) {
+                return;
+            }
+            session.sendPacket(returnMessage);
+        } catch(Exception e) {
+            if(exceptionHandler != null) {
+                exceptionHandler.handlerPacketException(sessoin, e);
+            } else {
+                logger.error(&quot;SocketHandlerDefinition任务执行失败&quot;, e);
+            }
+        }
+    }
+
+    private IEventCallback buildEnvetCallback(Wession session) {
+        return new IEventCallback() {
+            @Override
+            public void callback(Object returnMsg) {
+                if(returnMsg == null) {
+                    return;
+                }
+                session.sendPacket(returnMsg);
+            }
+
+            @Override
+            public void exception(Throwable throwable) {
+                if(exceptionHandelr != null) {
+                    exceptionHandler.handlePacketException(session, throwable);
+                } else {
+                    logger.error(&quot;SocketHandlerDefinition任务执行失败！&quot;,throwable);
+                }
+            }
+        };
+    }
+
+    // 所有的业务消息必须走这里过去
+    public ChannelFuture sendPacket(Wsession session, Channel channel, Object message, boolean flush) {
+        try {
+            WresponsePacket wp = encodePacket(message);
+            if(packetStatistics != null) {
+                packetStatistcs.send(wp);
+            }
+            if(flush) {
+                return channel.writeAndFlush(wp);
+            }
+            ChannelFuture future = channel.write(wp);
+            if(session.getFlushTimer().compareAndSet(false, true)) {
+                delayFlushTimer.newTimeout(timeout -&gt; {
+                    session.getFlushTimer().compareAndSet(true, false);
+                    channel.flush();
+                    }, 100, TimeUnit.MILLISECONDS);
+            }
+            return future;
+        } catch(Throwable e) {
+            String errorMessage = (message == null ? &quot;&quot; ： message.getClass().getName()) + &quot; encode编码失败！&quot;;
+            logger.error(errorMessage, e);
+        }
+        return null;
+    }
+
+    private HashedWheelTimer deleyFlushTimer = new HashedWheelTimeer(100, TimeUnit.MILLISECONDS);
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if(exceptionHandler == null) {
+            cause.printStackTrace();
+            logger.error(&quot;通讯包异常!&quot;, cause);
+        } else {
+            exceptionHandler.handleConException(xtx, cause);
+        }
+        ctx.close();
+    }
+
+    // get/set
+
+
+    public WresponsePacket encodePacket(Object message) {
+        if(message instanceof WresponsePacket) {
+            return (WreponsePacket) message;
+        }
+        WresponsePacket wresponsePacket =  WresponsePacket.valueOf();
+        fillPacket(wresponsePacket, message);
+        return wresponsePacket;
+    }
+
+    // 创建一个网络协议包
+    public void fillPacket(WresponsePacket wresponsePacket, Object message) {
+        Class&lt;?&gt; messageClass = message.getClass();
+        Integer packetId = classToToPacketId.get(messageClass);
+        if(packetId == null) {
+            throw new NullPointerException(&quot;nor found packetId with&quot; + messageClass);
+        }
+        byte[]  retureMessageBytes = new byte[0];
+        try {
+            wresponsePacket.setPacketId(packetId);
+            returnMessageBytes = getCodec(packetId).encode(message);
+            wresponsePacket.setData(returnMessageBytes);
+            if(logger.isDebugEnabled()) {
+                wresponsePacket.setDebugPacket(message);
+            }
+        } catch (IOExcetion e) {
+            throw new RuntimeException(String.format(&quot;encode packet [%d] error&quot;, wresponsePacket.getPacketId()), e);
+        }
+    }
+
+
+}
+
+</code></pre>
+<p>消息处理器描述</p>
+<pre><code class="java">public class SocketHandlerDefinition {
+    private static final Obeject NOT_EXC = new Object();
+
+    private Obeject bean;
+    private Map&lt;Class, Method&gt; methodMap;
+    private boolean runInNioThread;
+
+    public static SocketHandlerDefition valueOf(Object bean, Method method, boolean runInNioThread) {
+        SocketHandlerDefition shd = new SocketHandlerDefinition();
+        shd.bean = bean;
+        shd.method =  method;
+        shd.sessionPatameter = Wsession.class.isAssignableFrom(method.getParameterTypes()[0]);
+        shd.runInNioThread = runInNioThread;
+        return shd;
+    }
+
+    // 调用方法
+    public Object invoke(Wsession session, Obejct packet) {
+        if(sessionParameter) {
+            return ReflectionUtils.invokeMethod(method, bean, session, packet);
+        } else {
+            Object player = session.getPlayer();
+            if(palayer == null) {
+                LOGGER.warn(&quot;{} player not login, cannot exc socekt packet {}&quot;, session, packet);
+                return null;
+            } else {
+                return ReflectionUtils.invokeMethod(method, bean, player, packet);
+            }
+        }
+    }
+
+
+    // get/set
+}
+
+</code></pre>
+<h2 id="编码器"><a href="#编码器" class="headerlink" title="编码器"></a>编码器</h2><p>解码器</p>
+<pre><code class="java"> /**
+ *  |size-int-4|packetId-short-2|data|
+ */
+ public class WpacketDecoder extends ByteToMessageDecoder {
+
+     public static final AttaributeKey&lt;WpacketDecoder&gt; DECODER = AttributeKey.valueOf(&quot;WpacketDecode&quot;);
+
+    /**
+    *   1m
+    */
+    private static int MAX_SIZE = 1*1024*1024;
+    private static int MIN_SIZE = 2;
+
+    /**
+    *   length+packetId+6
+    */
+    private static final int NO_AUTH_MIN_READABLE = 4 + 2;
+    /*
+    *  length+packetId = 10
+    */
+    private static final int AUTH_MIN_READABLE = 4 + 2 + 4;
+    /**
+    *   是否有设置加密解锁
+    */ 
+    private boolean auth;
+    /**
+    *   是否开启解密
+    */
+    private boolean openAuth;
+    /**
+    *  消息加密索引
+    */
+    private int index;
+
+    private int staerIndex;
+
+    public WpacketDecoder(int maxLength) {
+        if(maxLength &lt;=  MIN_SZIE) {
+            logger.error(&quot;maxLength error ! length[%s] MIN_SIZE[%s]&quot;, maxLength, MIN_SIZE);
+        }
+        MAX_SIZE = maxLength;
+    }
+
+    @Override
+    public void channelRegistered() throws Exception{
+        super.chanelRegistered(ctx);
+        ctx.channel().attr(DECODER).set(this);
+    }
+
+    @Ovreride
+    protected void decode(ChannelHandkerContext ctx, ByteBuf in, List&lt;Object&gt; out) throws Exception {
+        if(in.refCnt() == 0 ) {
+            // 协议已被提前释放
+            return;
+        }
+        int size =  in.markReaderIndex();
+        if(readableBytes &lt; (auth ? AUTH_MIN_READABLE : NO_AUTH_MIN_READABLE)) {
+            return;
+        }
+        in.markReaderIndex();
+        int size = in.readInt();
+        if(sise &gt;= MAX_SIZE) {
+            in.clrear();
+            ctx.close();
+            NetIpCollectUtls.incErrorPacket(ctx);
+            logger.warn(&quot;{} error size {}&quot;, ctx, size);
+            retrun;
+        }
+        if(in.readableBytes() &lt; size) {
+            in.resetReaderIndex();
+            return;
+        }
+        short packetId = in.readShort();
+        byte[] data;
+        if(auth) {
+            int reckey = in.readInt();
+            data = new byte[size -6];
+            in.readytes(data);
+            if(openAuth) {
+                int token = claDataToken(data);
+                int selfKey = (size ^ packetId ^ index) + token;
+                if(recKey != selfKey) {
+                    in.clear();
+                    ctx.close();
+                    logger.warn(&quot;{} auth key error! packetId[{}], self[{}], rec[{}], index[{}]&quot;,
+                    xtx, packetId, selfKey, recKey, index);
+                    return;
+                }
+            }
+            index += packetId;
+            if(index &gt; INDEX_MAX) {
+                this.index = startIndex;
+            }
+        } else {
+                data = new byte[size -2];
+                in.readBytes(data);
+        }
+        WrequestPacket wp = WrequestPacket.valueOf(packetId, data);
+        out.add(wp);
+    }
+
+    // 开启验证
+    public void setAuth(int startIndex, boolean open) {
+        this.auth = true;
+        this.openAuth = open;
+        this.index = startIndex;
+        this.startIndex = startIndex;
+    }
+
+    // 计算数据验证值
+    private int calDataToken(byte[] data) {
+        int count = 0;
+        for(int i=0; i&lt; data.length; i++) {
+            count += data[i] &amp; 0xFF;
+        }
+        return count;
+    }
+
+ }
+
+</code></pre>
+<p>编码器</p>
+<pre><code class="java">public class WpacketEncoder extends MeessageToByteEncoder&lt;WresponsePacket&gt; {
+    @Override
+    protected void encode(ChannelHandlerCoentext ctx, WresponsePacket msg, ByteBuf out) throws Exception {
+        msg.write(out);
+    }
+}
+
+</code></pre>
+<h2 id="核心"><a href="#核心" class="headerlink" title="核心"></a>核心</h2><p>会话管理</p>
+<pre><code class="java">@Componet
+public class SessionManager {
+    private static SessionManager instance;
+
+    public SessionManager() {
+        instance = this;
+    }
+
+    public static SessionManager self() {
+        return instance;
+    }
+
+    // 所有会话
+    private ConcurrentHashMap&lt;ChannelId, Wsession&gt; allSessions = new ConcurrrntHashMap&lt;&gt;();
+
+    public void add(Wession session) {
+        if(!allSessions.containKey(session.getChannel().id())) {
+            addSession.put(session.getChannel().id(), session));
+        } else {
+            // 不应该进入到这里
+            logger.error(String.format(&quot;channelId[%s], ip[%s]重复注册 sessionManager&quot;, session.getChannel().id().asShortText(), session.getChannel().remoteAddress()));
+        }
+    }
+
+    public int ipSessionCount(String ip) {
+        int count = 0;
+        for(Wession session : allSessions.values()) {
+            if(session.getChannel().remoteAddress().toString().contains(ip)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public Wsession getSession(ChannelId channelId) {
+        return allSesions.get(channelId);
+    }
+
+    public Wession remove(ChannelId channelId) {
+        return allSessions.get(channeId);
+    }
+
+    public Wsession remove(ChannelId id) {
+        Wsession sesion = allSessions.remove(id);
+        if (session != null) {
+            session.notifyClose();
+        }
+        return session;
+    }
+
+    public ConcurrentHashMap&lt;ChannelId, Wession&gt; getAllSessions() {
+        return allSessions;
+    }
+
+}
+
+</code></pre>
+<p>基础包</p>
+<pre><code class="java">public class WrequestPacket {
+
+    private int packetId;
+    private byte[] data;
+
+    public static WrequestPacket valueOf(short packetId, byte[] data) {
+        WrequestPacket wp = new WrequestPacket();
+        wp.setPacketId(packetId);
+        wp.data =  data;
+        return wp;
+    }
+
+    // get/set
+}
+
+</code></pre>
+<pre><code class="java">@ProtobufClass
+public class WresponsePacket {
+    @Protobuf(description = &quot;协议&quot;)
+    private int packetId;
+    @Protobuf(description = &quot;数据&quot;)
+
+    private Object debugPacket;
+
+    public static WresponsePacket valueOf(int packetID, byte[] data) {
+        WresponawPacket wp = new WresponsePacket();
+        wp.setPacketId(packetId);
+        wp.data = data;
+        return wp;
+    }
+
+    public static WresponePacket valueOf(inr packetId, bytep[] data) {
+        WresponsePacket wp = new WresponsePacket();
+        wp.setPacketId(packetId);
+        wp.data = data;
+        return wp;
+    }
+
+    // 写入协议内容
+    public void wirte(ByteBuf out) {
+         // length
+         out.writeInt(data.length + 2);
+         out.wiriteShort(packetId);
+         out.writeBytes(data);
+    }
+
+    // get/set
+}
+
+</code></pre>
+<p>会话</p>
+<pre><code class="java">public class Wsession {
+    private static final AttributeKey&lt;Object&gt; MAIN_ENTITY = AttributeKey.valueOf(&quot;MAIN_ENTITY&quot;);
+    private static final AtomicInteger SEQ = new AtomicInteger(1);
+
+    private int id;
+
+    private Channel channel;
+
+    private String ip;
+
+    private int dispatcherHashCOde;
+
+    // 流量记录
+    private FirewallRecord firewallRecord = new FirewallRecord();
+
+    private List&lt;CloseListener&gt; closeListeners = new CopyOnWriteArrayList&lt;&gt;();
+
+    private List&lt;SendPacketListener&gt; sendPacketListeners = new ArrayList&lt;&gt;(1);
+
+    private List&lt;ReceivePacketListener&gt; receivePacketListeners = new ArrayList&lt;&gt;(1);
+
+    // 连接时间
+    private long connectTime;
+
+    @FunctionalInterface
+    public interface CloseListener {
+        void run();
+    }
+
+    @FunctionalInterface
+    public interface SendPacketListener {
+        void run(Object packet);
+    }
+
+    public static Wession valueOf() {
+        Wsession session = new Wsession();
+        session.channel = channel;
+        session.id = SEQ.incrementAndGet();
+        session.dispatcherHashCode = channel.hashCode();
+        String ip = channel.removeAddress().toString();
+        session.ip = ip.substring(1, ip.indexOd(&quot;:&quot;));
+        session.connectTime = System.currentTimeMillis();
+
+        if(LOGGER.isDebugEnabled()) {
+            session.getSendPacketListeners().add(packet -&gt; {
+                Object realPacket = packet;
+                if(realPacket instanceof WresponsePacket) {
+                    realPacket = ((Wrespon) realPacket).getDebugPacket();
+                }
+                if(realPacket instanceof ISipDebugOut &amp;&amp; ((ISkipDebugOut realPacket).skip()) {
+                    return;
+                }
+                Object target = session.getMainEntity();
+                LOGGER.debug(String.fotmat(&quot;----&gt;&gt;&gt;%s [%s]%S&quot;，
+                target == null ? channel : target,
+                realPacket.getClass().getSimpleName(),
+                JsonUtils.object2String(realPacket)));
+            });
+            session.getReceivePacketListrners().add(packet -&gt; {
+                if(packet instanceof ISkillDebugOut &amp;&amp; ((ISkipDebugOut) packet).skip()) {
+                    return;
+                }
+                if(packet.getClass().isAnnotationPresent(SkipDebugOut.class)) {
+                    return;
+                }
+                Object target = session.getMainEntity();
+                LOGGER.debug(String.format(&quot;&lt;&lt;&lt;--%s [%s]%s&quot;,
+                target == null ? channel : target,
+                packet.getClass().getSumpleName(),
+                JsonUtils.object2String( packet)));
+            });
+        }
+        return session;
+    }
+
+    private Wsession() {
+
+    }
+
+    public &lt;T&gt; getAttr(AttributeKey&lt;T&gt; key) {
+        Attribute&lt;T&gt; attr = channel.attr(key);
+        return attr == null ? null : attr.get();
+    }
+
+    public &lt;T&gt; void setAttr(AttributeKey&lt;T&gt; key, T t) {
+        channel.attr(key).set(t);
+    }
+
+    // 绑定玩家
+    public void bindPlayer(Object player) {
+        setAttr(PLAYER, null);
+    }
+    // 清除玩家绑定
+    public void unBindPlayer() {
+        setAttr(PLAYER, null);
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;Player&gt; Player getPlayer() {
+        return (Player) getAttr(Player);
+    }
+
+    // set/get
+
+    // 当dispatcherHashCode没有初始化时选择channel的hashcode作为分发code
+
+    // 业务消息推送
+    public ChannelFuture sendPacket(Object packet) {
+        ChannelFuture future = SocketPacketHandler.getIsntance().sendPacket(this, channel, packet, flusNow);
+        for (SendPacketListener listener : sendPacketListeners) {
+            listener.run(packet);
+        }
+        return future;
+    }
+
+    // 接收到协议触发
+    public void onReceivePacket(Object pacekt) {        
+        if(receivePacketListeners.isEmpty()) {
+            return;
+        }
+        try {
+            receivePacketListeners.forEach(receivePacketListener -&gt; receivePacketListener.run(packet));
+        } catch(Exception e) {
+            LOGGER.error(&quot;receivePacketListener error!&quot;, e);
+        }
+    }   
+
+    private AtomicBoolean flushTimer = new AtomicBoolean(false);
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = prime * result + id;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(obj == null) {
+            return false;
+        }
+        if(getClass() != obj.getClass()) {
+            return false;
+        }
+        Wsession other = (Wsession) obj;
+        if(id != other.id) {
+            return false;
+        }
+        return true;
+    }
+
+    // toString()
+
+
+    // 通知
+
+    public void notiftClose() {
+        for(CloseListenr listener : closeListeners) {
+            try {
+                listener.run();
+            } catch(Exception e) {
+                LOGGER.error(&quot;session CloseListener异常&quot;, e);
+            }
+        }
+    }
+
+
+}
+</code></pre>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li><p><code>SocketPacket</code>注释标识的类会被认为是协议类，在<code>SocketPacketHander</code>的初始化时会根据协议类编译对应的生成JProtobuf协议类<code>Codec</code>，并将<code>packetId</code>,<code>packetClass</code>,<code>Codec</code>的关系储存在起来。</p>
+</li>
+<li><p><code>SocketMethod</code>是接受请求的声明，在Spring bean 加载启动中</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/10/31/项目笔记/通讯组件学习/" data-id="ck84a9qmh005jsovth7mnj3kc" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/通讯组件学习" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/13/项目笔记/缓存持久化系统学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/10/17/项目笔记/线上经典bug汇总/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/10/31/项目笔记/通讯组件学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/10/17/项目笔记/线上经典bug汇总/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

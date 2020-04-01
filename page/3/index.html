@@ -83,10 +83,10 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-项目笔记/条件系统学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-项目笔记/商店系统学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/08/01/项目笔记/条件系统学习笔记/" class="article-date">
-  <time datetime="2019-08-01T01:54:07.275Z" itemprop="datePublished">2019-08-01</time>
+    <h3 href="/2019/10/17/项目笔记/商店系统学习/" class="article-date">
+  <time datetime="2019-10-17T08:18:26.604Z" itemprop="datePublished">2019-10-17</time>
 </h3>
     
   </div>
@@ -98,140 +98,209 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="条件系统学习笔记"><a href="#条件系统学习笔记" class="headerlink" title="条件系统学习笔记"></a>条件系统学习笔记</h1><hr>
-<h2 id="概况"><a href="#概况" class="headerlink" title="概况"></a>概况</h2><p>条件系统是为了方便于各个系统进行条件判断的，在条件复杂的情况下很好用。</p>
-<hr>
-<h2 id="配置资源"><a href="#配置资源" class="headerlink" title="配置资源"></a>配置资源</h2><ol>
-<li>配置文件: resource/ConditionResource.xlsx</li>
-</ol>
-<hr>
-<h2 id="领域模型与接口"><a href="#领域模型与接口" class="headerlink" title="领域模型与接口"></a>领域模型与接口</h2><p>所有具体的条件实现类都实现了<code>ICondition&lt;Obj&gt;</code>接口或者继承了实现了该接口的基类。</p>
-<h3 id="条件接口"><a href="#条件接口" class="headerlink" title="条件接口"></a>条件接口</h3><pre><code class="java">public interface ICondition&lt;Obj&gt; {
+        <h1 id="商店系统学习"><a href="#商店系统学习" class="headerlink" title="商店系统学习"></a>商店系统学习</h1><p>商店系统几乎是RPG游戏里的标配，玩家可以通过NPC、游戏界面用各种代币购买各种物品。商店有各种各样的表现形式，可以是指定某个NPC，也可以游戏界面直达。一个通用的商店可以减少大量的重复代码。</p>
+<h2 id="业务抽象"><a href="#业务抽象" class="headerlink" title="业务抽象"></a>业务抽象</h2><p>商城分类</p>
+<pre><code class="java">public enum ShopType {
 
-    // 获取条件
-    ConditionType getType();
-
-    // 带有resource参数的init方法。方便以后子拓展新的字段
-    void init(ConditionResource resource);
-
-    // 验证条件是否满足
-    Result verify(Obj obj, int amount, Map&lt;object, Object&gt; param)
-
-}
-
-</code></pre>
-<h3 id="玩家条件基类-BasePubCondition"><a href="#玩家条件基类-BasePubCondition" class="headerlink" title="玩家条件基类 BasePubCondition"></a>玩家条件基类 <code>BasePubCondition</code></h3><pre><code class="java">    public abstract class BasePubCondition implements ICondition&lt;Object&gt; {
-        @Verride
-        public final Result verify(Object t, int amount, Map&lt;Object,Objct&gt; param) {
-            return verify(amount, param);
+    // 普通商城
+    COMMONSHOP {
+        @Override
+        public boolean canBuy(Player player) {
+            return true;
         }
     }
-    // 验证条件是否满足
-    public abstract Result verify(int amount, Map&lt;Object, Object&gt;);
+    // 公会商店
+    GANGSHOP {
+        @Override
+        public boolean canBuy(Player player) {
+            return player.hasGang();
+        }
+    }
+
+    public abstract boolean canBuy(Player player);
+}
 
 </code></pre>
-<h3 id="公共条件组-PubConditions"><a href="#公共条件组-PubConditions" class="headerlink" title="公共条件组 PubConditions"></a>公共条件组 <code>PubConditions</code></h3><ul>
-<li><code>Result verify(int amount,
-Map&lt;Object, Object&gt; param)</code> 验证条件是否满足，所有条件</li>
-<li><code>void verifyOrFailException(int amount, Map&lt;object， Object&gt;) param</code>  验证条件，如果验证失败，则抛出异常</li>
-<li><code>boolean verifyOr(int amount, Map&lt;Object, Object&gt;) param</code> 验证条件是否满足，只要有一个条件满足，就算成功</li>
-</ul>
-<h3 id="条件类型定义-ConditionType"><a href="#条件类型定义-ConditionType" class="headerlink" title="条件类型定义 ConditionType"></a>条件类型定义 <code>ConditionType</code></h3><pre><code class="java">
-public enum ConditionType {
-    // 必然失败条件
-    FAIL(FailCondition.class),
-    //开服天数
-    OPEN_DAY(OpenDayCondition.class),
-    //开关类条件
-    ON_OFF(ONOffCondition.class),
-    //开关类条件
-    ITEM_RANGE(TimeRangeCodition.class),
-    //日期条件
-    DAY_RANGE(DayRangeCondition.class),
-...
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>商店配置其实是对商店中商品的配置，因为商店本身就是有商品组成的。而购买商品的过程，其实与合成、升级物品一样，都是”代价-回报”的过程，有消耗<code></code>ConsumeResource<code>有奖励</code>RewardResource`，然后再辅以进行这个过程先决条件（环境的、玩家的）。</p>
+<pre><code class="java">@Resource
+public class ShopResource implements IAferResouce, IResouceCheck {
+    @ResourceId
+    private int id;
+    // 购买条件
+    private ConditionsOrAndResource conditionResource;
+    private ConditionsOrAnd&lt;Player&gt; buyConditions;
 
-    private Class&lt;? extends ICondition&lt;?&gt;&gt; conditionClass;
-    // 构造方法
-    ConditionType(Class&lt;? extends ICondition&lt;?&gt; conditionClass) {
-        this.conditionClass = conditionClass;
+    // 展示条件
+    private ConditionsOrAndResource showCondition;
+    private ConditionsOrAnd&lt;Player&gt; showConditions;
+
+    // 购买消耗
+    private List&lt;ConsumeResource&gt; consumeResources;
+    private stepConsumee&lt;Player&gt; consumes;
+
+    // 购买奖励
+    private List&lt;RewardResource&gt; rewardResource;
+    private Rewaerd reward;
+
+    // 购买消耗
+    private List&lt;RewardResource&gt; rewardResources;
+    private Reward reward;
+
+    // 快速购买
+    private List&lt;RewardResource&gt; rewardResources;
+    private Reward reward;
+
+    // 商城页签
+    private ShopTab tab;
+
+    // 单次可购买最大数量
+    private int maxCount;
+
+    // 限购刷新策略
+    private TimeResource flushResource;
+    private TimeStrategy flushStrategy;
+
+    // 限制,&lt;涉及限制的类型,限制的数目&gt;
+    private Map&lt;LimiteBuyType, Integer&gt;  limitContents;
+
+    // 关联商品id集合,有些商品的限购是与同类商品相关的
+    private  List&lt;Integer&gt; attachIds;
+
+    // 赠送的东西
+    private Reward givingResouce;
+
+    // 启服是否刷新限购次数
+    private boolean openServerRefreshLimitBuy;
+
+    // 省略......
+
+    // 是否是全服或公会限购
+    public boolean isServerOrGangLimit() {
+        return limitContents != null &amp;&amp;
+        limitContents.containsKey(LimitBuyType.GangLimitBuy); ||
+        limitContents.containsKey(LimitBuy);
     }
 
-    // 创建一个没有初始化的条件
-    public &lt;T extends ICondition&gt; T create() {
-        try {
-            return (T) conditionClass.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);        }
+    // 是否跨服限购
+    public boolean isTransferLimit() {
+        return limitContents.containsKey(LimitBuyType.TransferLimitBuy);
     }
 
-    // 根据配置创建条件
-    public &lt;T extends ICondition&gt; T create(ConditionResource resouece) {
-        T condition = create();
-        condition.init(resource);
-        retrun condition;
+    // ......
+}
+</code></pre>
+<p>商城限购类型</p>
+<pre><code class="java">@Desc(&quot;商城限购类型&quot;)
+public enum LimitBuyType {
+    // 玩家限购
+    PlayerLimitBuy {
+        @Override
+        public boolean isNotLimited(Player player, int shopId, int limitCount, int mount) {
+            ShopRecordEntity entity = ShopManager.getInstance().getShopRecordEntity(shopId);
+            Map&lt;Long, Integer&gt; record = entity.getLimitBuyRecord();
+            int count = record.getOrDefault(player.getPlayerId(), 0);
+            ShopResource resource = ShopManger.getInstance().getShopRecordEntity(shopId);
+            if(resource.getArracheIds() != null) {
+                for(int attachId : resource.getAttachIds()) {
+                    if(attachId == shopId) {
+                        continue;
+                    }
+                    count += ShopManager.getInstance().getPlayerBuyNum(plyaer, attachId);
+                }
+                count += mount;
+                return count &lt;= limitCount;
+            }
+        }
+
+        @Override
+        public void record(Plyaer player, int shopId, int amount) {
+            ShopRecordEntity entity = ShopManager.getInstance().getShopRecordEntity(shopId);
+            Map&lt;Long, Integer&gt; limitBuyRecord = entity.getLimitBuyRecord();
+            limitBuyRecord.put(player.getPlayerId(), limitBuyReCord.getOrDefault(player.getPlayerId(),0) + amount);
+            ShopManager.getInstance().update(entity);
+        }
+    },
+
+    // 全服限购
+    @Desc(&quot;全服限购&quot;)
+    ServerLimitBuy {
+        @Override
+        public boolean isNotLimited(Player player, int shopId, int limitCount, int mount) {
+            ShopRecordEntity entity = ShopManager.getInstance().getShopRecordEntity(shopId);
+            int buyCount = mount;
+            for(Collection&lt;Integer&gt; itemBuyRecords : entity.getLimitBuyRecord()) {
+                for(int record : itemBuyRecords) {
+                    buyCount += record;
+                }
+            }
+             return buyCount &lt;= limitCount;
+        }
+        @Override
+        public void record(Player player, int shopId, int amount) {
+            // nothing
+        }
     }
+
+    // 公会限购
+    @Desc(&quot;公会限购&quot;)
+    GangLimitBuy{
+
+    },
+
+    // 跨服分组限购
+    @Desc(&quot;跨服分组限购&quot;)
+    TransferLimitBuy {
+
+    };
+
+    public abstract boolean isNotLimited(Player player, int shopId, int limitCOunt, int mount);
+    public abstract void record(Player player, int shopId, int amount);
+}
+</code></pre>
+<h2 id="购买信息的持久化"><a href="#购买信息的持久化" class="headerlink" title="购买信息的持久化"></a>购买信息的持久化</h2><p>玩家的购买记录需要持久化，特别是对需要进行限购的商品。</p>
+<p>玩家商城购买记录</p>
+<pre><code class="java">@Entity
+@Cached(type = CacheType.MANUAL)
+@InitialConfig(type = InitialType.ALL)
+@IPublicEntity
+public class ShopRecordEntity  extends AbstractEntity&lt;Integer&gt; {
+    // 商品id
+    @Id
+    private int id;
+    // 玩家周期购买记录&lt;玩家id,购买数量&gt;
+    @Lob
+    private String gangContent;
+    // 公会周期否买记录&lt;公会id,购买数量&gt;
+     private transient Map&lt;Long, Integer&gt; limitBuyRecord = new ConcurrentHashMap&lt;&gt;(0);
+     private transient Map&lt;Long, Integer&gt; gangLimitBuyRecord = new ConcurrentHashMap&lt;&gt;(0);
+
+    @Lob
+    private String gangContext;
+    // 商品下次刷新时间
+    private long flushTime;
+
+    // ......
 
 }
 
-
 </code></pre>
-<ul>
-<li><code>&lt;T extends ICondition&gt; T created()</code> 创建一个没有初始化的条件</li>
-<li><code>T extends ICondition&gt; T create(ConditionResource resource)</code> 根据配置创建条</li>
+<h2 id="商店的业务逻辑"><a href="#商店的业务逻辑" class="headerlink" title="商店的业务逻辑"></a>商店的业务逻辑</h2><ul>
+<li><p><code>ShopManager</code>中有初始化商城，定时刷新商品信息集合、重置商品限购信息等方法，涵盖了商城的公共方法。</p>
+</li>
+<li><p><code>ShopService</code>中定义了商品的购买、发送商品信息的方法。</p>
+</li>
 </ul>
-<h3 id="验证结果-Result"><a href="#验证结果-Result" class="headerlink" title="验证结果 Result"></a>验证结果 <code>Result</code></h3><p>每一个<code>result</code>都具有唯一性，不可变性</p>
-<hr>
-<h2 id="条件管理-ConditionManager"><a href="#条件管理-ConditionManager" class="headerlink" title="条件管理 ConditionManager"></a>条件管理 <code>ConditionManager</code></h2><ul>
-<li><code>&lt;Obj&gt; Conditions&lt;Obj&gt; create(ConditionResource resource)</code> 创建单个条件的组，如果传入的条件组为null,返回一个无条件的空</li>
-<li><code>&lt;Obj&gt; Condition&lt;Obj&gt; create(List&lt;ConditionResource&gt; resources, boolean isDefaultSuccess)</code> 创建多个条件的组，如果传入的条件组为null,返回一个无条件的空。</li>
-<li><code>&lt;Obj&gt; ConditionOrAnd</code> createOrAnd(ConditionOrAndResource orAndResource) 创建支持与(&amp;&amp;)或(||)检测的条件组</li>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>商店商品应该被抽象到很通用。</li>
+<li>由于商店物品可能被限购，处于跨服环境时更为复杂，所以限购逻辑的设计很重要。</li>
 </ul>
-<hr>
-<h2 id="条件系统的使用"><a href="#条件系统的使用" class="headerlink" title="条件系统的使用"></a>条件系统的使用</h2><ol>
-<li><p>创建<code>ICondition&lt;Obj&gt;</code>实现类<br> 编写<code>ICondition&lt;Obj&gt;</code>的实现类，重写验证条件的方法。</p>
-<pre><code class="java">     ConditionType getType();
-
-     void init(ConditionResource resource);
-
-     Result verify(Obj objm int amount, Map&lt;Object, Object&gt; param);
-
-</code></pre>
-</li>
-<li><p>编写<code>ConditionType</code>枚举类</p>
-<p> 通过构造参数绑定条件相关的<code>ICondition&lt;Obj&gt;</code>实现类。</p>
-<pre><code class="java"> // 玩家等级条件枚举
- PLAYER_LEVLE(PlayerLevelCondition.class)
-
-</code></pre>
-</li>
-<li><p>excel配置条件<br> excel配置条件会转化<code>ConditionResource</code>对象。可以在某模块的配置中以json格式的方式配置条件或者在<code>ConditionResource.xlsx</code>中配置。</p>
-<p> json配置格式例子：<code>[{key:1, type:&quot;PLAYER_LEVLE&quot;}]</code></p>
-<p> 在<code>ConditionResource.xlsx</code>配置的条件通过<code>ConditionManager</code>使用(目前还没有提供使用方法)</p>
-<pre><code class="java">     @Static
-     private Storage&lt;String,ConditionResource&gt; conditionResource;
-</code></pre>
-</li>
-<li><p>使用检验</p>
-<pre><code class="java"> // createConditions方法传入的是一个List&lt;ConditionResource&gt;，需要配置在xlxs文件中。根据ConditionType调用create方法创建一个AbstractCondition实现类。
-
- Conditions conditions  = Conditions.valueOf(channelResource.getSendConditions());
-
- // 调用conditions的verify方法逐个AbstractCondition实现类的verify
- Result result = conditions.verify(player,1);
- if(!result.isSuccess()) {
-     throw ManagedException.valueOf(result.getCode())
- }
-
-</code></pre>
-</li>
-</ol>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/条件系统学习笔记/" data-id="cjys176ej004c7ovtb1s5gxh6" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/10/17/项目笔记/商店系统学习/" data-id="ck84a9qls004xsovtdhmfcz2y" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -239,7 +308,7 @@ public enum ConditionType {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/条件系统学习笔记" ></div> 
+<div id="SOHUCS" sid="项目笔记/商店系统学习" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -257,10 +326,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-项目笔记/服务开发原则" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-项目笔记/游戏线程模型学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/08/01/项目笔记/服务开发原则/" class="article-date">
-  <time datetime="2019-08-01T01:54:07.264Z" itemprop="datePublished">2019-08-01</time>
+    <h3 href="/2019/10/14/项目笔记/游戏线程模型学习/" class="article-date">
+  <time datetime="2019-10-14T08:45:32.291Z" itemprop="datePublished">2019-10-14</time>
 </h3>
     
   </div>
@@ -272,120 +341,380 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="服务开发原则"><a href="#服务开发原则" class="headerlink" title="服务开发原则"></a>服务开发原则</h1><ol>
-<li>通信<code>pack</code>、<code>event</code>事件、<code>corn</code>定时任务必须在facade层作为开始。</li>
-<li><code>service</code>层不允许作为被其他模块调用。只能被自己模块的facade调用。<code>manager</code>层允许其他业务模块调用。如果涉及到多线程<code>manager</code>自己考虑自身的线程安全。</li>
-<li>可以把用用的（其他模块也会用到的，确定只有自己会用到的条件没必要做抽象了，避免代码不直观）条件设计成<code>condition</code>。根据策划接收程度考虑用json配置或者<code>conditionResource</code>配置</li>
-<li>跨模块资源消耗、策划需要统一配置的资源必须抽象出<code>Consumes</code>去消耗。</li>
-<li>跨模块资源发放、策划需要统一配置的资源发送不允许直接修改领域对象。必须走<code>reward</code>方便管理和记录日志。</li>
-<li><code>chooser</code>作为条件选择器。可以抽象出一些统一的筛选规则。比如条件筛选、概率筛选。</li>
-<li>不允许在代码中拼接文本内容。</li>
-<li>玩家自身的任务采用的是玩家的<code>account</code>的<code>hashcode</code>来作为任务分发。公共模块例如交易、公会等业务需要模块自身维护加锁。使用到锁的模块必须与项目主程沟通协商。`AtomicXX.compareAndSet()解决不了代码块的问题，如果觉得可以用和主程讨论以后再决定。</li>
-<li>实践证明，程序参与配置表配置然后策划改修数值比直接掉给策划一张空表开发效率会高很多。</li>
-<li>每一张Resource配置表。必须要包含一个sheet配置说明，并且不断维护更新。这个说明的起草通常由服务端开发人员发起。然后各方维护。</li>
-<li>配置表映射的Resource类中为了防止配置表对象被无意中修改。应当不包含<code>set*</code>方法。</li>
-<li>每一模块，开发完成后以后，必须用findbugs和阿里编程规范插件扫面。高级别的错误必须修正。</li>
-<li>设计一个活动系统的时候。无论策划文档是否有明确指出，都应该将是否热更新考虑进去。</li>
-<li>项目中不允许出现<code>System.out.println()</code>,统一使用<code>SystemOut.println()</code>代替。</li>
-<li>服务端开发应视为客户端已经被破解。所以设计到安全和收益相关的逻辑，必须做好严格的验证。不得依赖客户端的消息。</li>
-<li>所有开发中的常量都必须使用配置的方式实现，不允许将常量定义在代码中，可以配置在ConfigValue.xml中。</li>
-<li>所有代码中需要被处理的错误，都应该用<code>Logger.error</code>记录下来，及时查看error日志并解决。</li>
-<li><p>代码中的<code>return</code>,仔细思考为什么需要中断业务，不应该什么都不做直接return。<br>协议处理时需要<code>return</code>的地方，应该选择以下三种方式<br>a 客户端没法预判断，需要服务器来判断的，提示对应错误信息</p>
-<pre><code>`throw ManagedException.valueOf(result.getCode())`
-</code></pre><p>b 客户端可以预检验的情况下发过来的 没有被检测的请求 统一返回请求非法就行</p>
-<pre><code>`throw ManagedException.valueOf(MessageCode.ERROR_MSG)`
-</code></pre><p>c 其他不属于上面，只能直接return的，用Logger.error记录日志</p>
-</li>
-<li><p>必须安装提交日志的插件，提交日志需要遵循规定的格式，插件中的类型、标题、说明为必填项</p>
-</li>
-<li>提交代码时必须勾选以下选项</li>
-</ol>
-<ul>
-<li>Alibaba Code idelines</li>
-<li>Reformat code</li>
-<li>Optimize import</li>
-<li>Perform code annlysis</li>
-<li>Check TODO</li>
-</ul>
+        <h1 id="游戏线程模型学习"><a href="#游戏线程模型学习" class="headerlink" title="游戏线程模型学习"></a>游戏线程模型学习</h1><h2 id="任务调度器"><a href="#任务调度器" class="headerlink" title="任务调度器"></a>任务调度器</h2><pre><code class="java">public class dentityEventExectorGroup {
 
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/服务开发原则/" data-id="cjys176g7004k7ovt4epffozt" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
+    private static fanal String EXECUTOR_NAME_PREFIX = &quot;Identity-dispatcher&quot;;
 
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/服务开发原则" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+    static private EventExecutor[] childrens;
+    static private Profile threadProfile = new Profile();
+    static private Profile taskProfile = new Prfile;
 
-  </div>
-  
-</article>
+    // 初始化, nThreads 线程数量
+    synchronized public static void init() {
+        if(childrens == null) {
+            childrens = new EventExecutor[nThreads];
+            ThreadFactory threadFactory = new DefaultThreadFactory(EXECUTOR_NAME_PREFIX);
+            for(int i=0; i&lt; nThreaeds; i++) {
+                EventExecutor eventExecutors = new EventExecutor(i+1, null, threadDactory, true);
+                childrebs[i] = eventEventors;
+            }
+        }
+    }
 
+    public static void shutdown() {
+        for(EventExcutor c : childrens) {
+            c.shutdownGracefully();
+        }
+    }
 
+    private static EventExcutor takeExecutor(int dispatcherHashCode) {
+        return childrens[Math.abs(dispatcherHashCode % childrens.length)];
+    }
 
+    // 添加同步任务
+    public static Future&lt;?&gt; addTask(AbstractDispatcherHashCodeRunnable dispatcherHashCodRunnable) {
+        checkName(dispatcherHashCodRunnable.name());
+        EventExecutor eventExecutor = takeExecutor(dispatcherHashCodRunnable.getDispatcherHashCode());
+        dispathcherHashCodeRunnable.submit(eventExecutor.getIndex(),false);
+        return eventExecutor.addTask(dispatcherHashCodeRunnable);
+    }
 
+    // 添加同步任务
+    public static Future&lt;?&gt; addTask(int dispatcherCode,String name, Runnable runnable) {
+        checkName(name);
+        return addTask(new AbstractDispatcherHashCodeRunnable() {
+            @Override
+            public String name() {
+                return name;
+            }
+            @Ovveride
+            public int getDispatcherHashCode() {
+                return dispatcherCode();
+            }
+            @Override
+            public void doRun() {
+                runnable.ru();
+            }
+        });
+    }
 
-  
-    <article id="post-项目笔记/新的事件处理机制" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2019/08/01/项目笔记/新的事件处理机制/" class="article-date">
-  <time datetime="2019-08-01T01:54:07.253Z" itemprop="datePublished">2019-08-01</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="新的事件处理机制"><a href="#新的事件处理机制" class="headerlink" title="新的事件处理机制"></a>新的事件处理机制</h1><h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>监视生物的行为状态（例如：生物开始移动(<code>onCreatureStartMove</code>),生物死亡(ICreatureDead)，在不同的状态下产生相应的事件并通知感兴趣的对象做出相应的处理。</p>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="1-在-object-observer下定义事件接口（如果没有合适的事件）"><a href="#1-在-object-observer下定义事件接口（如果没有合适的事件）" class="headerlink" title="1. 在/object/observer下定义事件接口（如果没有合适的事件）"></a>1. 在/object/observer下定义事件接口（如果没有合适的事件）</h3><pre><code class="java">public interface ICreatureXxx {
-    // 这个事件机制基于apache.commons.lang3.evnet.EventListenerSupport,EventListenerSupport基于接口的动态代理实现，因此一个接口可以有多个方法
-    void onCreatureXxx(...);
-}
+    // 添加延迟任务
+    public static ScheduleFuture&lt;?&gt; addScheduleTask(AbstractDispatcherHashCodeRunnable dispatcherHashCodRunnable, long delay, TimeUtil unit) {
+         checkName(dispatcherHashCodRunnable.name());
+        EventExecutor eventExecutor = takeExecutor(dispatcherHashCodRunnable.getDispatcherHashCode());
+        dispathcherHashCodeRunnable.submit(eventExecutor.getIndex(),false);
+        return eventExecutor.addScheduleTask(dispatcherHashCodeRunnable);
+    }
+
+    public static ScheduledFuture&lt;?&gt; addScheduleTask(int dispatcherHashCode, String name,  String name, long delay, TimeUtil unit, Runnable runnable) {
+        checkName(name);
+        return addScheduleTask(new AbstractDispatcherHashCodeRunnable() {
+            @Override
+            public int getDispatcherHashCode() {
+                return dispatcherHashCode;
+            }
+            @Override
+            public String name() {
+                return name;
+            }
+            @Override
+            public void doRun() {
+                runnable.run();
+            }
+        }, delay, unit);
+    }
+
+    // 添加定时器任务
+    // 该任务按照周期执行
+    public static addScheduleAtFixedRate(AbstractDispatcherHashCodeRunnable dispatcherHashCodeRunnable,
+    long initialDeley, long period, TimeUnit unit) {
+        checkName(dispatcherHashCodeRunnable.name());
+        EventExecutor eventExecutor = taskExecutor(dispatcherHashCodeRunnable.getDisatcherHashCode());
+        // 延迟任务等待耗时统计无意义
+        dispatcherHashCodeRunnable.submit(eventExecutor.getIndex(), true);
+        return eventExecutor.addScheduleAtFixedRate(dispatcherHashCodeRunnable, initialDelay, period, unit);
+    }
+
+    // 添加定时器任务
+    // 该任务按照周期执行
+    public static ScheduledFuture&lt;?&gt; addScheduleAtFixedRate(int dispatcherHashCode, String name,  String name, long initialDelay, long  period, TimeUtil unit, Runnable runnable ) {
+         return addScheduleAtFixedRate(new AbstractDispatcherHashCodeRunnable() {
+            @Override
+            public int getDispatcherHashCode() {
+                return dispatcherHashCode;
+            }
+            @Override
+            public String name() {
+                return name;
+            }
+            @Override
+            public void doRun() {
+                runnable.run();
+            }
+        }, initialDelay,period, unit);
+    }
+
+    // 添加定时器任务
+    // 该任务按延迟时间执行
+    public static addScheduleAtFixedRate(AbstractDispatcherHashCodeRunnable dispatcherHashCodeRunnable,
+    long initialDeley, long period, TimeUnit unit) {
+        checkName(dispatcherHashCodeRunnable.name());
+        EventExecutor eventExecutor = taskExecutor(dispatcherHashCodeRunnable.getDisatcherHashCode());
+        // 延迟任务等待耗时统计无意义
+        dispatcherHashCodeRunnable.submit(eventExecutor.getIndex(), true);
+        return eventExecutor.addScheduleAtFixedDelay(dispatcherHashCodeRunnable, initialDelay, period, unit);
+    }
+
+    // 添加定时器任务
+    // 该任务按照延迟时间执行
+    public static ScheduledFuture&lt;?&gt; addScheduleAtFixedRate(int dispatcherHashCode, String name,  String name, long initialDelay, long  period, TimeUtil unit, Runnable runnable ) {
+         return addScheduleAtFixedDelay(new AbstractDispatcherHashCodeRunnable() {
+            @Override
+            public int getDispatcherHashCode() {
+                return dispatcherHashCode;
+            }
+            @Override
+            public String name() {
+                return name;
+            }
+            @Override
+            public void doRun() {
+                runnable.run();
+            }
+        }, initialDelay,period, unit);
+    }
+
+    // 获取线程池线程数量
+
+    public static getThreadNum() {
+        return childrens.length;
+    }
+
+    // 等待线程池前面提交的任务全部执行完成
+    public static void blockWaitRunOver() {
+        int threadNum = getThreadNum();
+        AtomicInteger ready = new AtomicInteger(threadNum);
+        // 注意，这里是要原子变量的任务塞满任务队列
+        for(int i =0; i&lt; threadNum; i++&gt;) {
+            addTask(i, &quot;checkReady&quot;, ready::decrementAndGet);
+        }
+        // 直到所有加入任务队列的原子减一任务执行完毕，ready的值变为0，才会结束while循环,结束函数结束阻塞
+        while(ready.get() &gt; 0) {
+                try{
+                    TimeUnit.MillLISECONDS.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+        }
+    }
+
+    private static void checkName(String name) {
+        if(StringUtils.isEmpty(name)) {
+            throw new NullPointerException(&quot;name is null!&quot;);
+        }
+    }
+} 
+
 </code></pre>
-<h3 id="2-事件触发"><a href="#2-事件触发" class="headerlink" title="2. 事件触发"></a>2. 事件触发</h3><pre><code class="java">abstractCreature.getObserveController().fire(ICreatureUseXxx.class).onCreatureXxx(...);
-</code></pre>
-<h3 id="3-在对事件感兴趣的类上实现相应的接口"><a href="#3-在对事件感兴趣的类上实现相应的接口" class="headerlink" title="3. 在对事件感兴趣的类上实现相应的接口"></a>3. 在对事件感兴趣的类上实现相应的接口</h3><pre><code class="java">public class Xxx implements ICreatureXxx {
+<p>事件执行器</p>
+<pre><code class="java">class EventExecutor extends SingleTreadEventExecutor {
+
+    private int index;
+
+    protected EventExecutor(int index, EventExecutorGroup parent, ThreadFacotry threadFactory, boolean addTaskWakeUp{   super(parent, threadFactory, addTaskWakesUp);
+        this.index = index;
+    }
+
     @Override
-    void onCreatureXxx(...) {
+    protected void run() {
+        do {
+            Runnable task = takeTask();
+            if(task != null) {
+                task.run();
+                updateLastExecutionTime();
+            }
+        } while (!confirmShutdown());
+    }
 
+    public ScheduleFuture&lt;?&gt; addScheduleTask(AbstractDispatcherHashCodeRunnable task, long delay, TimeUnit unit) {
+        return schedule(task, deley, unit);
+    }
+
+    // ... 接下来一堆定时器方法
+
+
+    public Future&lt;?&gt; addTask() {
+        return submit(task);
+    }
+
+    public int getIndex() {
+        return index;
     }
 }
 
 </code></pre>
-<h3 id="4-把观察者添加到对应abstractCreature上"><a href="#4-把观察者添加到对应abstractCreature上" class="headerlink" title="4.把观察者添加到对应abstractCreature上"></a>4.把观察者添加到对应abstractCreature上</h3><pre><code class="java">// xxx：观察者对象
-absrtactCreature.getObserveController().attach(ICreatureXxx,xxx)
+<p>任务分发标记器</p>
+<pre><code class="java">public abstract class AbstractDispatcherHashCodeRunnable implements Runnable {
+
+    private Consumer&lt;AbstractDispatcherHashCodeRunnable&gt; runBefore;
+    private Consumer&lt;AbstractDispatcherHashCodeRunnable&gt; runAfter;
+
+    // 是否为定时任务
+    private boolean scheduleTask;
+    private int threadIndex;
+    private long submitTime;
+
+    // 执行的任务
+    abstract public void doRun();
+
+    // 用于分发的编号
+    public abstract int getDispatcherHashCode();
+
+    // 任务类型，同一种类型任务添加一种任务即可
+    public abstract String name();
+
+    // 该任务纳秒时间
+    protected long timeoutNanoTime() {
+        return TimeUnit.MILLISECONDS.toNanos(1);
+    }
+
+    public void submit(int threadIndex, boolean scheduleTask) {
+        this.threadIndex = threadIndex;
+        this.scheduleTask = scheduleTask;
+        this.submitTime = System.nanoTime();
+        IdentityEventExecutorGroup.recordSubmit(name());
+    }
+
+    @Override
+    final public void run() {
+        long start = System.nanoTime();
+        try {
+            if(runBefore != null) {
+                runBefore.accept(this);
+            }
+            doRun();
+            if(runAfter != null) {
+                runAfter.accept(this);
+            }
+        } catch(Throwable e) {
+            IdentityEventExecutorGroup.recordException(name());
+        } finally {
+            long now = System.nanoTime();
+            long useNanoTime = now - start;
+            long waitNanoTime = start - submitTime;
+            IdentityEventExcutorGroup.recordExc(name(), threadIndex, scheduleTask, useNanoTime, waitNanoTime);
+            this.submitTime = now;
+        }
+    }
+
+    // 任务前后函数的get/set方法 ...
+
+}
 
 </code></pre>
-<p>##不使用EventBus事件系统的原因</p>
-<ol>
-<li>EventBus是全局性质的事件机制，这里的事件机制是全生物状态的观察监听机制，也就是说，如果使用EventBus应当用submit（或者同步的synSubmit）发布事件时，所有的@ReceiverAnno注解的方法都会被触发，但是这里的事件机制只有attach到对应相应生物上的接口实现类的方法被触发。</li>
-<li>EventBus不具备移除观测者的功能。这里可以使用<code>abstractCreature.getObserveController().removeObserver(ICreatureXxx,Xxx)</code>移除迷人<code>abstractCreature</code>身上的特定观察者。</li>
-</ol>
+<h2 id="io线程池"><a href="#io线程池" class="headerlink" title="io线程池"></a>io线程池</h2><p>Io线程池是一种特殊的存在，用来处理有IO操作的业务。</p>
+<pre><code class="java">public class IoThreadPool {
+
+    // 统计任务名前缀
+    private static final String IO_WORK_PREFIX = &quot;IO-WORK-&quot;;
+    // 线程名前缀
+    private static final String THREAD_NAME_PREFIX = &quot;io-thread-pool&quot;;
+    // 线程池线程保持存货x分钟
+    private staitc final int KEEP_ALIVE_MIN = 1;
+    // 队伍中允许的最大容量
+    private static final QUEUE_CAPACITY = 5000;
+
+    private static final LinkedBlockingDeque&lt;Runnable&gt; workQueue = new LinkedBlockDeque&lt;&gt;();
+
+    private static ExecutorService executorService;
+
+    // 队列满再提交失败次数
+    private static AtomicInteger submitFailCounter = new AtomicInteger(0);
+    // 队列长读最大值
+    private static AtomicInteger queueMax = new AtomicInteger(0);
+    // 拒绝服务数量峰值
+    private static int maxSubmitFail;
+    private staitc Profile profile = new Profile();
+
+    // 初始化id线程池
+    public static void init(int nThread) {
+        executorService = new ThreadPoolExecutor(
+            nThread / 2 ,
+            nThread,
+            KEEP_ALIVE_MIN,
+            TimeUnit.MINUTES,
+            workQueue,
+            new DefaultThreadFactory(THREAD_NAME_PREFIX),
+            (r, executor) -&gt; {
+                // 业务被拒绝，队列已满，线程已全部被占用，直接在当前线程执行业务代码
+                r.run();
+                // 提交失败次数+1
+                submitFailCounter.incrementAndGet();
+            }
+        );
+    }
+
+    // 添加io业务
+    public static void execute(String name, Runnable runnable) {
+        if(StringUtils.isEmpty(name)) {
+            throw new NullPointerException(&quot;name is null&quot;);
+        }
+        executorService.submit(IoWork.valueOf(name, runnable));
+        queueMax.accumulateAndGet(workQueue.size(), Math::max);
+    }
+
+    // 关闭io线程池，最多等待15s
+    public statac void shutdown() throws InterruptedException {
+        executorService.awaitTermination(15, TimeUnit.SECONDS);
+    }
+
+    // 获取提交失败峰值
+    public static int getMaxSubmitFail() {
+        return mexSubmitFail;
+    }
+    // 获取队列最大长度
+    public static int getQueueMax() {
+        return queueMax.get();
+    }
+
+    // 性能统计信息
+    private static class IoWork implements Runnable {
+        String name;
+        Runnable runnable;
+        ProInfo proInfo;
+        long submitTime;
+
+        privte static IoWork valueOf(String name, Runnable runnable) {
+            IoWork vo = new IoWork();
+            vo.name = IO_WORK_PREFIX + name;
+            vo.runnable = runnable;
+            vo.proInfo = profile.getOrCreateProInfo(name);
+            vo.proInfo.recordSubmit();
+            vo.subimitTime = System.nanoTime();
+            return vo;
+        }
+
+        @Override
+        public voisd run() {
+            long start = System.nanoTime();
+            try {
+                runnable.run();
+            } catch(Exception e) {
+                proInfo.recordException();
+            }
+            proInfo.recordExc(System.nanoTime() - start, 0);
+        }
+    }
+}
+
+</code></pre>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/新的事件处理机制/" data-id="cjys176fx004g7ovtqqjz5y6c" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/10/14/项目笔记/游戏线程模型学习/" data-id="ck84a9qma005csovt5cdgxmx6" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -393,7 +722,305 @@ absrtactCreature.getObserveController().attach(ICreatureXxx,xxx)
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/新的事件处理机制" ></div> 
+<div id="SOHUCS" sid="项目笔记/游戏线程模型学习" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-项目笔记/游戏跨服开发笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/10/10/项目笔记/游戏跨服开发笔记/" class="article-date">
+  <time datetime="2019-10-10T12:54:00.804Z" itemprop="datePublished">2019-10-10</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="游戏跨服开发笔记"><a href="#游戏跨服开发笔记" class="headerlink" title="游戏跨服开发笔记"></a>游戏跨服开发笔记</h1><h2 id="服务器管理入口"><a href="#服务器管理入口" class="headerlink" title="服务器管理入口"></a>服务器管理入口</h2><pre><code class="java">
+@Component
+@SocketClass
+public class ServerFacade {
+
+    // 所有游戏服连接时，合服事件
+    @ReceiverAnno
+    public void onAllGameServerConnected(EventMergeServer  eventMergeServer) {
+        serverGroupManager.mergeServerExitGroup(eventMergeServer.getGameServer(), eventMergeServer.getChildServerIds());
+    }
+
+    // 所有游戏服连接时，所有游戏服连接事件
+    @ReceiverAnno
+    public void onAllGameServerConnected() {
+        serverGroupManager.forceRefresh();
+    }
+
+    // 注册
+    @SocketMethod
+    public void register(Wsession wsessoin, G2cGameServerRegister g2cGameServerRegister) {
+        gameServerManager.register(wsession, g2cGameServerRegister);
+    }
+
+    // 游戏服心跳事件
+    @SocketMethod
+    public void register(GameSerever gameServer, G2cGameServerRegist g2cGameServerHeartbeat) {
+         gameServerManager.register(wsession,  g2cGameServerHeartbeat);
+    }
+    // 战斗服心跳事件
+    @SocketMethod
+    public void transferHeartbeat(Wsession wsession, T2cTeansferHeartbeat) {
+        transferServerManger.heartbeat(wsession, heartbeat);
+    }
+    // 接受分组参数
+    @SocketMethod
+    public void receiveGroupParam(GameServer gameServer, G2cGroupParamUpload paramUpload) {
+        serverGroupManager.uploadGroupParam(gameServer, paramUpload);
+    }
+    // 重新分组
+    @SocketMethod
+    public void reServerGroup(GameServer gameServer, G2cCommandReServerGroup commandReServerGroup) {
+        serverGroupManager.commandReGroup();
+    }
+    // 接受分组
+    @SocketMethod
+    public void assignServerGroup(GameServer gameServer, G2cCommandAssignServerGroupResp cCommandAssignServerGroupResp) {
+        serverGroupManager.commandAssignGroup(gameServer.getEntity(), cCommandAssignServerGroupResp.getGroupType());
+    }
+
+}
+
+
+
+// 游戏服 - 跨服处理相关入口
+//  注意：Wsession不是玩家会话，是游戏服与中心服的会话
+
+```java
+@Componet
+@SocketClass
+public class GameServerFacade {
+
+    // 开服连接
+    @ReceiverAnno
+    public void onGameServerOpen(ServerOpenEvent event) {
+        if(serverManager.getOpenDay().isOpen()) {
+            centerManager.connect();
+        }
+    }
+
+    // 开服了，注册到中心服
+    @ReceiverAnno
+    public void onServerDayBegin(ServerDayBeginEvent event) {
+        centerManager.connect();
+    }
+
+    // 连接成功了，尝试注册，如果这时候服务器未达成开服条件，不注册
+    @ReceiverAnno
+    public void onConnerctCenter(EventCenterC) {
+        if(ServerType.isGameServer()) {
+            gameServerService.tryRegisterGameServer2Center();
+        }
+    }
+
+    // 玩家断开连接，检测是否需要退出跨服
+    @ReceiverAnno
+    public void onPlayerLogout(LogoutEvent event) {
+        Player player = event.getPlayer();
+        gameServerService.onPlayerOffine(player);
+    }
+
+    // 收到门票，开始前往跨服
+    @SocketMethod
+    public void receiverTicketFormCenter() {
+        gamServerService.beginEnter(ticketResp.getPlayerId(), ticketResp.getTransferIp(),
+        ticketResp.getTransferPort(), ticketResp.getTicket());
+    }
+
+    // 确认退出跨服
+    @SocketMethod
+    public void confirmExitTransfer(Player player, T2gTransferExitConfirmResp resp) {
+        gameServerService.exitTransferConfirm(player, resp);
+    }
+
+    // 中心服发送给玩家的通知信息
+    @SocketMethod
+    public void sendMessage(Wsession wsession, C2GMessagePacket, c2GMessagePacket) {
+        gameServerService.sendMessagePacket(c2GMessagePacket);
+    }
+
+    // 确认进入跨服
+    @SocketMethod
+    public void enterTransfer(Player player, T2gTransferEnteredResp resp) {
+        player.submitEvent(TeansgerEnteredEvent.valueOf(resp.getTransferType()));
+    }
+
+    // 收到中心返回的所有跨服地图门票信息
+    // 中心服会在启动完成初始化之后，主动推送到游戏服
+    @SocketMethod
+    public void receiveTransportTicketFromCenter(Wsesion wsession, C2gTransportTicketsResp c2TransportTicketsResp) {
+
+    }
+
+    // 收到中心服返回的分组信息
+    @SocketMethod
+    public void receiveServerGroupInfoFromCneter(Wsession wsession, C2gServerGroupType2ServerIds c2gServerGroupType2ServerIds) {
+
+    }
+
+    // 收到战斗服回传的玩家事件
+    @SocketMethod(coustomPacketId = CrossPacketId.GLOBAL_EVENT_RESP)
+    @IRunInNioThread
+    public void transferPlayerEvent(Wsession wsession, IEvent eventPacket) {
+        // 异步提交事件
+        String simpleName = eventPacket.getClass().getSimpleName();
+        EventBusManager.getInstance().sumbmit(eventPacket, &quot;globalEvent_&quot;+SimpleName, simpleName.hashCode());
+    }
+
+    // 跨服发奖
+    @SocketMethod
+    public void gainReward(Player player, T2gGainRewardResp t2gGainRewardResp) {
+        palyer.gainReward(t2gGainRewardResp.getReward(), t2gGainRewardResp.getModuleInfo());
+    }
+
+    // 战斗服 -&gt; 游戏服 跨服事务
+    @SocketMethod
+    public T2gTransactionResp transaction(Player player, T2gTransactioReq) {
+
+    }
+
+    // 分组销毁
+    @SocketMethod
+    public void receiveServerGroupDestroy(Wsession wsession, C2gTicketsDetroyPacket c2gTicketsDestroyPacket) {
+        centerManger.onServerGroupDestroy(c2gTicketDestroyPacket.getServerGroupType());
+    }
+}
+</code></pre>
+<pre><code class="java">
+
+
+</code></pre>
+<h2 id="服务器管理逻辑处理"><a href="#服务器管理逻辑处理" class="headerlink" title="服务器管理逻辑处理"></a>服务器管理逻辑处理</h2><p>跨服类型</p>
+<pre><code class="java">    @Desc(&quot;跨服3V3&quot;)
+    transfer_t3v3,
+    @Desc(&quot;跨服地图&quot;)
+    transfer_land,
+    @Desc(&quot;跨服灭神塔&quot;)
+    transfer_godKillTower,
+    @Desc(&quot;跨服灭神塔全服&quot;)
+    transfer_godKillTowerServer,
+    @Desc(&quot;跨服沙巴克&quot;)
+    shabake,
+
+    // ...
+</code></pre>
+<p>服务器分组类型</p>
+<pre><code class="java">@Desc(&quot;服务器哦分组类型&quot;)
+public enum ServerGroupType {
+    @Desc(&quot;3v3&quot;)
+    t3v3(false, false),
+    @Desc(&quot;第四大陆&quot;)
+    land4(true, true),
+    @Desc(&quot;第五大陆&quot;)
+    land5(true, true),
+    @Desc(&quot;公会秘境争霸&quot;)
+    secretArea(false,false)
+
+
+    // 该战区是否预分配战斗服
+    private boolean groupOnServerOpen;
+
+    // 预分配战斗服之后，是否通知战斗服，检测该战区下面的地图是否需要预创建地图， ps:只判断是否发送检测通知
+    // 具体某一张地图是否预创建，是检测地图配置MapType枚举里面的initTrandferMap字段
+    private boolean initMapAfterGroupTransfer;
+}
+</code></pre>
+<p>跨服门票</p>
+<pre><code class="java">@ProtobufClass
+public class Ticket {
+    @Protobuf(description = &quot;跨服类型&quot;)
+    private TransferType type;
+    @Protobuf(description = &quot;门票id,同一&quot;)
+    private long ticketId;
+     @Protobuf(description = &quot;分组类型（战区）&quot;)
+    private ServerGroupType groupType;
+     @Protobuf(description = &quot;组号&quot;)
+    private int groupIndex;
+
+    // 其他额外信息
+
+    @Protobuf(description = &quot;阵营类型&quot;)
+    private CampType campType;
+    @Protobuf(description = &quot;前往的跨服地图ID&quot;)
+    private int mapId;
+    @Protobuf(description = &quot;x&quot;)
+    private int x;
+    @Protobuf(description = &quot;y&quot;)
+    private int y;
+
+    // 创建一张门票 ...
+
+}
+
+
+</code></pre>
+<p>中心服通用业务处理</p>
+<pre><code class="java">@Component
+public class CenterManager {
+    // ...
+
+    // 创建一个唯一的门票id
+    public long createTicketId() {
+        return idGen.getAndIncrement();
+    }
+1
+    // 发送门票到游戏服
+    public void sendTicket(TransferType transferType, long playerId, int gameServerId, TransferServer transferServer, Ticket ticket) {
+        GameServer gameServer = gameServerManager.getSreverIfRegister(gameServerId);
+        if(gameServer == null) {
+            return;
+        }
+        C2gTransferTicketResp resp = C2gTransferTicketResp.valueOf(
+            transferServer.getIp(),
+            transferServer.getPort(),
+            playerId,
+            ticket
+        );
+        // 通知游戏服
+        gameServer.send(resp);
+    }
+}
+</code></pre>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/10/10/项目笔记/游戏跨服开发笔记/" data-id="ck84a9qmb005dsovtrjnz2fvu" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/游戏跨服开发笔记" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -413,7 +1040,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -427,23 +1054,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2019/08/01/项目笔记/背包系统学习笔记/">(no title)</a>
+            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
           </li>
         
           <li>
-            <a href="/2019/08/01/项目笔记/目标系统学习笔记/">(no title)</a>
+            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2019/08/01/项目笔记/玩家实体的抽象/">(no title)</a>
+            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2019/08/01/项目笔记/游戏生物体的抽象/">(no title)</a>
+            <a href="/2019/10/31/项目笔记/通讯组件学习/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2019/08/01/项目笔记/消耗系统学习笔记/">(no title)</a>
+            <a href="/2019/10/17/项目笔记/线上经典bug汇总/">(no title)</a>
           </li>
         
       </ul>
@@ -455,7 +1082,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -464,7 +1091,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
@@ -485,7 +1112,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2019 WeiJian Qian
+      &copy; 2020 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>

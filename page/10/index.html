@@ -83,308 +83,173 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-《网络游戏核心技术与实战》笔记-1" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-项目笔记/游戏生物体的抽象" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/02/16/《网络游戏核心技术与实战》笔记-1/" class="article-date">
-  <time datetime="2019-02-16T08:25:05.498Z" itemprop="datePublished">2019-02-16</time>
+    <h3 href="/2019/08/01/项目笔记/游戏生物体的抽象/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.307Z" itemprop="datePublished">2019-08-01</time>
 </h3>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
   </div>
   <div class="article-inner">
   <div class="curve-down">
   <div class="fill-content">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/16/《网络游戏核心技术与实战》笔记-1/">《网络游戏核心技术与实战》笔记-1</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="《网络游戏核心技术与实战》笔记-1"><a href="#《网络游戏核心技术与实战》笔记-1" class="headerlink" title="《网络游戏核心技术与实战》笔记-1"></a>《网络游戏核心技术与实战》笔记-1</h1><h2 id="网络和游戏编程的技术基础"><a href="#网络和游戏编程的技术基础" class="headerlink" title="网络和游戏编程的技术基础"></a>网络和游戏编程的技术基础</h2><h3 id="网络分层结构"><a href="#网络分层结构" class="headerlink" title="网络分层结构"></a>网络分层结构</h3><p>游戏开发的传输层大多使用TCP协议，不需要直接操纵网络层一下的分层。</p>
-<p>应用层需要在游戏中予以实现。</p>
-<blockquote>
-<p>高性能，高功能服务器的特性 —- 网络游戏所需具备的要素</p>
-</blockquote>
-<ol>
-<li>小带宽</li>
-<li>极高的连接数</li>
-<li>低延迟</li>
-<li>稳定</li>
-</ol>
-<h3 id="套接字"><a href="#套接字" class="headerlink" title="套接字"></a>套接字</h3><p>TPC通信链路的状态迁移和套接字API</p>
+        <h1 id="游戏生物的抽象"><a href="#游戏生物的抽象" class="headerlink" title="游戏生物的抽象"></a>游戏生物的抽象</h1><h2 id="世界唯一对象-AbstractMirObject"><a href="#世界唯一对象-AbstractMirObject" class="headerlink" title="世界唯一对象 AbstractMirObject"></a>世界唯一对象 <code>AbstractMirObject</code></h2><p>构造器</p>
+<pre><code class="java">public AbstractMirObject(IMirObjectSoulFill mirObjectSoulFill) {
+    setobjectId(mirObjectSoulFill.createId());
+}
+
+public interface IMirObjectSoulFill {
+    // 生成单位唯一id
+    long createId();
+}
+</code></pre>
+<p>主要属性</p>
 <ul>
-<li>socket()</li>
-<li>connect()</li>
-<li>bind()</li>
-<li>listen()</li>
-<li>accept()</li>
-<li>read()/write()</li>
+<li>对象唯一id <code>protected long objectId</code></li>
+<li>对象id的包装类型 <code>protected long objId</code></li>
 </ul>
-<h3 id="处理并发连接的方法"><a href="#处理并发连接的方法" class="headerlink" title="处理并发连接的方法"></a>处理并发连接的方法</h3><ul>
-<li>每次连接时启动一个进程</li>
-<li>实行异步的多重输入输出（多重I/O）</li>
-<li><p>使用线程并行进行同步处理</p>
-<p>网络游戏输入输出的特定 —-  单线程、非阻塞、事件驱动</p>
-</li>
-</ul>
-<p>libevent的特点</p>
+<hr>
+<h2 id="可见物-AbstractVisibleObject-extends-AbsreactMirObject"><a href="#可见物-AbstractVisibleObject-extends-AbsreactMirObject" class="headerlink" title="可见物 AbstractVisibleObject extends AbsreactMirObject"></a>可见物 <code>AbstractVisibleObject extends AbsreactMirObject</code></h2><p>主要属性</p>
 <ul>
-<li>使用套接字出与某个自定状态时（可以writ、也可以read、可以accept），调用实现指定的函数。</li>
-<li>libevent库会自动选择各个OS中最高效的方法（比如，在Linux中套接字数量很多时，选择epoll函数等）来轮询当前状态。</li>
-<li>应用程序用事先设置的函数调用（成为回调函数）来获取这一结果，在回调函数中十级执行read,accept等本来应该在等待的函数。</li>
-</ul>
-<h3 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h3><p>自动生成RPC存根代码的RPC工具</p>
-<p>网络游戏和二级制数据交换格式/库</p>
-<h3 id="网络游戏及其基本结构"><a href="#网络游戏及其基本结构" class="headerlink" title="网络游戏及其基本结构"></a>网络游戏及其基本结构</h3><p>游戏的基础 —— 认知、判断、操作的重复</p>
-<p>网络游戏与测试</p>
-<ul>
-<li>封闭测试（CBT）</li>
-<li>公开测试（OBT）</li>
-</ul>
-<p>不断更新 —— 网络游戏的运营和更新</p>
-<ul>
-<li>定期的补丁</li>
-<li>大型补丁（拓展包、追加包）</li>
-<li>紧急维护</li>
-</ul>
-<h3 id="游戏空间划分"><a href="#游戏空间划分" class="headerlink" title="游戏空间划分"></a>游戏空间划分</h3><ul>
-<li>空间分割（地图分隔）</li>
-<li>平行世界（多服务器/区）</li>
-<li>实例化（副本）</li>
-</ul>
-<h3 id="服务器功能性划分"><a href="#服务器功能性划分" class="headerlink" title="服务器功能性划分"></a>服务器功能性划分</h3><table>
-<thead>
-<tr>
-<th>名称</th>
-<th>缩略语</th>
-<th>用途</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>客户端</td>
-<td>gmsv</td>
-<td>运行在用户客户端上</td>
-</tr>
-<tr>
-<td>登陆服务器</td>
-<td>loginsv</td>
-<td>用于广利游戏数据的逻辑</td>
-</tr>
-<tr>
-<td>数据库服务器</td>
-<td>loginsv</td>
-<td>登陆，负责服务整体使用情况的管理、解压缩以及解密等处理，减轻游戏服务器的负荷</td>
-</tr>
-<tr>
-<td>反向代理服务器</td>
-<td>proxy</td>
-<td>接受连接，负责进行TCP会话本身的管理、解压缩以及解密等处理，减轻游戏服务器的负荷</td>
-</tr>
-<tr>
-<td>消息服务器</td>
-<td>msgsv</td>
-<td>用于使网上聊天、即时消息、公会等社交活动能够跨越平行世界和空间分割来进行消息交换。</td>
-</tr>
-<tr>
-<td>世界服务器</td>
-<td>worksv</td>
-<td>使用空间分割的情况下，属于该世界的所有gmsv连接至这个服务器进程，负责</td>
-</tr>
-<tr>
-<td></td>
-</tr>
-<tr>
-<td>通用数据库服务器（整体通用的数据库服务器）</td>
-<td>commondbsv</td>
-<td>用于实现所有世界都需要的内存处理，实时统计处理和等级排名等处理</td>
-</tr>
-</tbody>
-</table>
-<h3 id="服务器硬件规格"><a href="#服务器硬件规格" class="headerlink" title="服务器硬件规格"></a>服务器硬件规格</h3><ul>
-<li>以CPU为中心的服务器：CPU较快，内核较多，内存一般，容错性低。一次性的。</li>
-<li>以储存为中心的服务器：CPU一般，内核一般，内存高，储存量大，容错性高。使用期长。</li>
-</ul>
-<h3 id="一般游戏需要持久化的信息"><a href="#一般游戏需要持久化的信息" class="headerlink" title="一般游戏需要持久化的信息"></a>一般游戏需要持久化的信息</h3><ul>
-<li>用户（id、密码、计费方式等）</li>
-<li>角色（体力、经验、金钱、当前位置，名字等）</li>
-<li>技能</li>
-<li>任务日志 （正在进行、已完成）</li>
-<li>拍卖</li>
-<li>好友列表</li>
-<li>邮件</li>
-<li>公会</li>
-<li>日志</li>
-</ul>
-<h3 id="路径搜索和实际的移动处理"><a href="#路径搜索和实际的移动处理" class="headerlink" title="路径搜索和实际的移动处理"></a>路径搜索和实际的移动处理</h3><ul>
-<li><p>阶段1：玩家自己进行移动路径的计算，实际的移动也在客户端进行，服务器无法限制地接受</p>
+<li>配置id <code>int objectkey</code></li>
+<li>观察者列表 <code>KnownList knownList</code></li>
+<li>视野位面 <code>int planes</code> (决定视野可见，等于0表示可被所有位面可见)</li>
+<li>位置 <code>WorldPosition position</code></li>
+<li>控制器 <code>AbstractVisibleObjectController controller</code></li>
+<li>可见对象的目标 <code>AbstractVisibleObject target</code></li>
+<li>刷新资源 <code>SpawnResource spawnResource</code></li>
+<li>出生的X轴 <code>bornX</code></li>
+<li>出生的Y轴 <code>bornY</code></li>
+<li><p>朝向 <code>DirectionEnum bornHeading</code></p>
 </li>
-<li><p>阶段2：与阶段1相同，但是在服务端加入一项限制：限制移动请求的接受频率</p>
+<li><p>该对象的心跳业务 <code>Map&lt;ObjectTickType, objectTick&gt;&lt;?&gt; tickMap</code> 主要用于防止取消心跳，统一取消</p>
 </li>
-<li><p>阶段3：与阶段1相同，但是在服务端加入一项限制：限制移动请求的接受频率</p>
+<li><p>是否为出生 <code>boolean birth</code> 用于客户端表现出生特效</p>
 </li>
-<li><p>阶段3： 与阶段2相同，但是在move函数中加入客户端的发送时间，一起发送给服务器</p>
-</li>
-<li><p>阶段4：服务端进行路径搜索和移动处理</p>
-</li>
-<li><p>阶段5：在客户端中只进行路径搜索中的搜索处理</p>
-</li>
+<li>过滤器 FilterController filterController</li>
+<li>人物状态 <code>MergeSubmit&lt;CreatureUpdateType&gt; creatureUpdateTask</code></li>
 </ul>
-<p>移动路径的发送方式 —- 优先发送最终结果</p>
+<p>构造器</p>
+<pre><code class="java">public AbstractVisibleObject(IVisibleObjectSoulFill visibleObjectSoulFill) {
+    super(visibleObjectSoulFill);
 
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏开发/">游戏开发</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2019/02/16/《网络游戏核心技术与实战》笔记-1/" data-id="cjys1768v003l7ovtu54pxyu7" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《网络游戏核心技术与实战》笔记-1" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
+    this.filterController = new FilterController();
+    this.objectKet = visibleObjectSoulFill.getObjKey();
+    this.controller = visibleObjectSoulFill.createController(this);
+    this.controller.setOwner(this);
+    this.position = visibleObjectSoulFill.createPosition();
+    this.knownList = visibleObjectSoulFill.createKnownList(this);
+    creatureUpdateTask = new MergeSubmit&lt;&gt;(CreatureUpdateType.class);
+}
 
 
+</code></pre>
+<p>启动一个针对该对象的心跳，使用者要注意定时业务的回收，避免内存泄漏</p>
+<pre><code class="java">public &lt;T extends AbstractVisibleObject&gt; ObjectTick&lt;T&gt; createTick(ObjectTickType tickType, long initialDelay, long initialDelay, 
+long initialDelay, long period, TimeUnit timeUnit, Tick&lt;T&gt; tick) {
 
-
-
-  
-    <article id="post-2019-1-14-开发笔记" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2019/01/14/2019-1-14-开发笔记/" class="article-date">
-  <time datetime="2019-01-14T07:47:42.122Z" itemprop="datePublished">2019-01-14</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/开发笔记/">开发笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/14/2019-1-14-开发笔记/">2019-1-14-开发笔记 Executors.newSingleThreadScheduledExecutor</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="Executors-newSingleThreadScheduledExecutor异常后执行停止，不显示任何报错信息"><a href="#Executors-newSingleThreadScheduledExecutor异常后执行停止，不显示任何报错信息" class="headerlink" title="Executors.newSingleThreadScheduledExecutor异常后执行停止，不显示任何报错信息"></a>Executors.newSingleThreadScheduledExecutor异常后执行停止，不显示任何报错信息</h1><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>使用newSingleThreadScheduledExecutor作为场景执行器执行任务时，发现客户端没有返回数据，后端日志也没有显示任何异常。</p>
-<p>于是，在调用的方法每个阶段打印前调用打log，发现方法执行到一个阶段就停止打印了。</p>
-<p>拍卖行竞拍的代码，执行时log只打印 1.</p>
-<pre><code class="java">    /**
-     *  竞拍物品
-     * @param player 玩家
-     * @param auctionItem  拍卖品
-     * @param price 出价
-     */
-    private void bidAuctionItem(Player player, AuctionItem auctionItem, int price) {
-        log.debug(&quot;1&quot;);
-        Integer auctionMoney = auctionItem.getBiddersMap().get(player.getId());
-        log.debug(&quot;2&quot;);
-        if (Objects.isNull(auctionMoney)) {
-            //  第一次竞拍
-            auctionItem.addBidder(player,price);
-            player.moneyChange(price);
-        } else {
-            auctionItem.addBidder(player,price);
-            // 减去继续竞的差价
-            player.moneyChange(-(price-auctionItem.getAuctionPrice()));
-        }
-        log.debug(&quot;3&quot;);
-        notificationManager.notifyPlayer(player,MessageFormat.format(&quot;叫价功成。当前拍卖品价格是{0}&quot;,
-                auctionItem.getAuctionPrice()));
-        log.debug(&quot;4&quot;);
+    ObjectTick exits = tickMap.remove(tickType);
+    if(exist != null) {
+        exist.tryCancle();
+        LOGGER.error(&quot;exist tick task&quot;+ tickType);
     }
+    ObjectTick&lt;T&gt;  objectTick = ObjectTick.valueOf(tickType,(T) this, initialDelay, period, timeUnit);
+    tickMap.put(tickType,objectTick)
+    return objectTick;
+}
 </code></pre>
-<p>执行这个方法的线程是一个场景执行器，</p>
-<pre><code class="java">
-    private static ThreadFactory sceneThreadFactory = new ThreadFactoryBuilder()
-            .setNameFormat(&quot;scene-loop-%d&quot;).build();
-    /** 通过一个场景一个线程处理器的方法保证每个场景的指令循序 */
-    ExecutorService singleThreadSchedule = Executors.newSingleThreadScheduledExecutor(sceneThreadFactory);
+<p>添加会合并的延迟任务，同一种<code>CreatureUpdateType</code>类型的任务.在延迟时间内提交过多次也只会执行一次<br>PS:这里的延迟任务是不保证关服时一定能够执行完成，如果必须是在关服前执行的任务，请在玩家等处或者停服接口处执行<br><code>public void addMergeDelayTask(CreatureUpdateType type, int dispatcherCode, String name, int delay, TimeUnit timeUnit, Runnable runnable)</code></p>
+<hr>
+<h2 id="AbstractCreature-生物体，有血有肉的-AbstractCreature-extends-AbstractVisibleObject"><a href="#AbstractCreature-生物体，有血有肉的-AbstractCreature-extends-AbstractVisibleObject" class="headerlink" title="AbstractCreature 生物体，有血有肉的  AbstractCreature extends AbstractVisibleObject"></a><code>AbstractCreature</code> 生物体，有血有肉的  <code>AbstractCreature extends AbstractVisibleObject</code></h2><ul>
+<li>攻击模式</li>
+<li>移动控制器</li>
+<li>使用中技能</li>
+<li>生物血量状态  <code>CreatureLifeStats&lt;?&gt; lifeStats</code></li>
+<li>生物属性管理器 <code>CreatureGameStats gameStats</code></li>
+<li>效果管理器</li>
+<li>事件管理器 <code>ObserveController observeController</code></li>
+<li><p>技能管理器</p>
+</li>
+<li><p>实际扣血控制器</p>
+</li>
+<li><p>所有的召唤物，每种类型的召唤物在场上可能有多个，像五条狗这种 <code>Map&lt;SummonType, List&lt;Summon&gt;&gt;</code></p>
+</li>
+<li><p>有时效的标记 <code>AgingMark&lt;CreatureAgingMark&gt; agingMark</code></p>
+</li>
+</ul>
+<p>构造器</p>
+<pre><code class="java">public AbstractCreature(ICreatureSoulFill creatureSoulFill) {
+    super(creatureSoulFill);
+
+    this.lifeStats  = creatureSoulFill.createLifeStats(this);
+    this.lifeStats.init();
+    this.moveController = new MoveController(this);
+    this.observeController = creatureSoulFill.createObserveController(this);
+    this.gameStats = creatureSoulFill.createCreatureGameStats(this);
+    this.effectController = creatureSoulFill.createEffectController(this);
+    this.skillController = creatureSoulFill.createSkillController(this);
+    this.agingMark = new AgingMark();
+}
 
 </code></pre>
-<p>场景执行器开始执行任务的代码。</p>
-<pre><code class="java">    // 玩家在场景内则用场景的执行器执行
-    Optional.ofNullable(player).map(Player::getCurrentScene).ifPresent(
-        scene -&gt; scene.getSingleThreadSchedule().execute(
-                () -&gt; controller.handle(ctx,msg))
-    );
+<p>方法</p>
+<ul>
+<li>获取单位等级</li>
+</ul>
+<hr>
+<h2 id="NPC-Npc-extends-AbstractCreature"><a href="#NPC-Npc-extends-AbstractCreature" class="headerlink" title="NPC Npc extends AbstractCreature"></a>NPC <code>Npc extends AbstractCreature</code></h2><ul>
+<li>路由 <code>RouteRoad</code></li>
+<li>AI <code>AbstractAi  ai</code></li>
+<li>生成时间 <code>long createTime</code></li>
+<li>抽象仇恨列表 <code>AbstractAggroList aggroList</code></li>
+<li><p>攻击时间 <code>Map&lt;Long, Long&gt; ontrAttackTime</code></p>
+</li>
+<li><p>攻击控制器 <code>NpcAttackController attackController</code></p>
+</li>
+<li><p>当前选中的目标 <code>AbstractCreature curTarget</code></p>
+</li>
+<li><p>当前目标加入时间 <code>long curTargetJoinTime</code><br>*<br>构造器</p>
+</li>
+</ul>
+<pre><code class="java">public NPC(INpcSoulFill npcSoulFill) {
+    super(npcSoulFill);
 
+    this.aggroList = npcSoulFill.createAggroList(this);
+    this.followPolicy = npcSoulFill.createFollowPolicy(this);
+    this.attackControler = ncSoulFill.createAttackController(this);
+
+    createTime = System.currentTimeMillis();
+}
 </code></pre>
-<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>在网上查询后发现，在JDK的源码，在源码的Java doc中的发现了如下一句话：</p>
-<blockquote>
-<p>If any execution of the task encounters an exception, subsequent executions are suppressed.Otherwise, the task will only terminate via cancellation or termination of the executor.</p>
-</blockquote>
-<p>也就是说：</p>
-<blockquote>
-<p>如果定时任务执行过程中遇到发生异常，则后面的任务将不再执行。</p>
-</blockquote>
-<p>而且，异常也不会被捕获并打印信息。</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>我的解决方式是直接在执行任务时使用try/catch。</p>
-<pre><code class="java">    // 玩家在场景内则用场景的执行器执行
-    Optional.ofNullable(player).map(Player::getCurrentScene).ifPresent(
-        scene -&gt; scene.getSingleThreadSchedule().execute(
-                () -&gt; {
-                    log.debug(&quot;{}  {} 的 {} 在执行命令 {}&quot;,scene.getSingleThreadSchedule(),
-                            scene.getName(),player.getName(),new String(msg.getContent()));
-                    try {
-                        controller.handle(ctx,msg);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-        })
-    );
-</code></pre>
-<p>报错信息终于显示出来了。</p>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>这个问题折腾了我好久，方法执行到一半不执行我就猜测是出现了异常，但是异常没有被捕获。这件事教训我以后使用ExecutorService的实现类都要注意异常处理。</p>
+<ul>
+<li><code>ObjectResource getObjectResource()</code> 获取NVPC的对象配置</li>
+<li><code>ObjectFIghtAttrResource getObjectFightAttrResource()</code></li>
+</ul>
+<hr>
+<h2 id="怪物实体-Monster-extends-NPC"><a href="#怪物实体-Monster-extends-NPC" class="headerlink" title="怪物实体 Monster extends NPC"></a>怪物实体 <code>Monster extends NPC</code></h2><ul>
+<li><code>boolean needRefreshAggroList()</code> 判断某些事情发生(仇恨列表中的玩家死亡)后，该怪物是否需要立刻刷新仇恨列表</li>
+</ul>
+<p>重写的方法</p>
+<ul>
+<li><code>Object createShowInfo(FightPlayer witness)</code> 创建客户端显示用的信息体</li>
+<li><code>boolean canGo(int targetX, int targetY)</code> 是否可以到达</li>
+</ul>
+<h3 id="NPC攻击控制器"><a href="#NPC攻击控制器" class="headerlink" title="NPC攻击控制器"></a>NPC攻击控制器</h3><ul>
+<li>攻击任务 `Future&lt;?&gt; attackTask</li>
+</ul>
+<hr>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2019/01/14/2019-1-14-开发笔记/" data-id="cjys175sq00007ovte43l54on" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/游戏生物体的抽象/" data-id="ck84a9qm9005bsovtee0oynmb" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -392,7 +257,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="2019-1-14-开发笔记" ></div> 
+<div id="SOHUCS" sid="项目笔记/游戏生物体的抽象" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -410,45 +275,102 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-Netty消息分发和业务逻辑分离" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-项目笔记/消耗系统学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/09/20/Netty消息分发和业务逻辑分离/" class="article-date">
-  <time datetime="2018-09-20T10:27:36.909Z" itemprop="datePublished">2018-09-20</time>
+    <h3 href="/2019/08/01/项目笔记/消耗系统学习笔记/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.299Z" itemprop="datePublished">2019-08-01</time>
 </h3>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/游戏开发/">游戏开发</a>
-  </div>
-
   </div>
   <div class="article-inner">
   <div class="curve-down">
   <div class="fill-content">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/20/Netty消息分发和业务逻辑分离/">Netty消息分发和业务逻辑分离</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="Netty消息分发和业务逻辑分离"><a href="#Netty消息分发和业务逻辑分离" class="headerlink" title="Netty消息分发和业务逻辑分离"></a>Netty消息分发和业务逻辑分离</h1><hr>
-<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2>
+        <h1 id="消耗系统学习笔记"><a href="#消耗系统学习笔记" class="headerlink" title="消耗系统学习笔记"></a>消耗系统学习笔记</h1><hr>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><ol>
+<li>配置文件: resource/ConsumeResource.xlsx</li>
+<li>配置实体类 <code>ConsumeResource</code><ul>
+<li>配置主键 <code>key</code></li>
+<li>配置类型 <code>ConsumeType type</code></li>
+<li>分级参数，从0开始 <code>step</code></li>
+<li>分级类型，根据玩家可获取当前分级 <code>StepType stepType</code></li>
+<li>根据唯一id消耗（用于道具） <code>long objId</code></li>
+<li>背包列表类型列表 <code>List&lt;PackType&gt; packTyps</code></li>
+<li>消耗id <code>String code</code></li>
+<li>消耗值 <code>long value</code></li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="领域模型"><a href="#领域模型" class="headerlink" title="领域模型"></a>领域模型</h2><h3 id="消费对象-AbstractConsume-lt-Obj-gt"><a href="#消费对象-AbstractConsume-lt-Obj-gt" class="headerlink" title="消费对象 AbstractConsume&lt;Obj&gt;"></a>消费对象 <code>AbstractConsume&lt;Obj&gt;</code></h3><ul>
+<li><code>Result verify(Obj obj, long multiple)</code> 校验资源是否足够</li>
+<li><code>abstract void consume(Obj obj,ModuleInfo mouduleInfo, long multiple)</code> 消耗资源</li>
+<li><code>abstract ConsumeType getType()</code> 获取消费类型</li>
+<li><code>final AbstractConsume&lt;Obj&gt; merge(AbstractConsume&lt;Obj&gt; consume)</code> 合并</li>
+</ul>
+<p>消耗对象会继承该类并<code>getType()</code>和<code>consume(...)</code>方法。</p>
+<h3 id="消耗消息封装-消耗组-Consumes-lt-Obj-gt"><a href="#消耗消息封装-消耗组-Consumes-lt-Obj-gt" class="headerlink" title="消耗消息封装  消耗组 Consumes&lt;Obj&gt;"></a>消耗消息封装  消耗组 <code>Consumes&lt;Obj&gt;</code></h3><ul>
+<li><code>verity(Obj obj, int int account)</code> 检测消耗条件是否满足</li>
+<li><code>void act(Obj obj, ModuleInfo moduleInfo, int amount)</code> 消耗</li>
+<li><code>void actOrFailException(Obj obj, ModuleInfo moduleInfo, int amount)</code> 检测消耗条件并执行消耗</li>
+</ul>
+<h3 id="分级消耗-StepConsumes-lt-Obj-gt"><a href="#分级消耗-StepConsumes-lt-Obj-gt" class="headerlink" title="分级消耗 StepConsumes&lt;Obj&gt;"></a>分级消耗 <code>StepConsumes&lt;Obj&gt;</code></h3><p>采用TreeMap的结构储存,key为下限，value为消耗组</p>
+<ul>
+<li><code>addConsume(int step, Consume&lt;Obj&gt; consumes)</code> 添加分级消耗</li>
+<li><code>Consumes&lt;Obj&gt; getConsumes</code> 获取该级的消耗，使用</li>
+</ul>
+<h3 id="消耗类型-ConsumeType"><a href="#消耗类型-ConsumeType" class="headerlink" title="消耗类型 ConsumeType"></a>消耗类型 ConsumeType</h3><ul>
+<li><code>HP</code> 耗血</li>
+<li><code>MP</code> 耗蓝</li>
+<li><code>ITEM</code> 消耗物品</li>
+<li><code>CURRENCY</code> 消耗货币</li>
+<li><code>EFFECT</code> 消耗一个被动效果</li>
+<li><code>ENERGY_EXP</code> 消耗内功经验</li>
+<li><code>GANG_FUNDS</code> 消耗公会资金</li>
+<li><code>GOD_MIGHT</code> 神威值</li>
+<li><code>TREASURE_SCORE</code> 探宝积分</li>
+<li><code>JING_JIE_SCORE</code> 消耗境界点</li>
+<li><code>STOVE_SCORE</code> 消耗公会积分</li>
+<li><code>GANG_CONTRIBUTIONS</code> 消耗公会贡献</li>
+<li><code>TRANSFER_ITEM</code> 消耗跨服物品</li>
+</ul>
+<p>类型枚举<code>ConsumeType</code>拥有抽象方法<code>abstract &lt;T extends AbstractConsume&gt; create(ConsumeResource resource)</code></p>
+<h2 id="消费管理器-ConsumeManager"><a href="#消费管理器-ConsumeManager" class="headerlink" title="消费管理器 ConsumeManager"></a>消费管理器 <code>ConsumeManager</code></h2><ul>
+<li><code>Consumes getResource(ConsumeKey key)</code> 获取配置表的消耗</li>
+<li><code>&lt;Obj&gt; Consumes&lt;Obj&gt; createConsumes(List&lt;ConsumeResource&gt; resources)</code> 创建消耗组</li>
+<li><code>&lt;Obj&gt; StepConsumes&lt;Obj&gt; createStepConsumes(List&lt;ConsumeResource&gt; resource)</code> 创建分级消耗，需要保证<code>ConsumeResource#step</code>不冲突</li>
+</ul>
+<hr>
+<h2 id="如何使用消耗"><a href="#如何使用消耗" class="headerlink" title="如何使用消耗"></a>如何使用消耗</h2><ol>
+<li>如何要玩法需要的消耗是新的，要在<code>ConsumeType</code>内定义消耗类型并重写<code>create(...)</code>方法</li>
+<li>获取消耗的配置对象</li>
+<li>通过配置对象创建消耗消息组</li>
+<li>检测消耗组条件是否满足</li>
+<li>执行消耗</li>
+</ol>
+<pre><code class="java">    XxxResource&gt; XxxResource = XxxManager.getXxxResource();
+
+    Consume&lt;Player&gt; consumes = XxxResource.getConsumes();
+
+    Result result = consumes.verify(player,1);
+    if(!result.isSuccess()) {
+        throw ManagedException.valueOf(result.getCode())
+    }
+
+    consumes.actOrFailException(palyer,ModuleInfo.valueOf(ModuleType.Xxx,SubModuleType.Xxxx),1)
+
+</code></pre>
+
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty/">Netty</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2018/09/20/Netty消息分发和业务逻辑分离/" data-id="cjys175wy000d7ovtrymbeosd" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/消耗系统学习笔记/" data-id="ck84a9qm8005asovt5gayvgnt" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -456,7 +378,55 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="Netty消息分发和业务逻辑分离" ></div> 
+<div id="SOHUCS" sid="项目笔记/消耗系统学习笔记" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-项目笔记/条件选择器学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/08/01/项目笔记/条件选择器学习笔记/" class="article-date">
+  <time datetime="2019-08-01T01:54:07.283Z" itemprop="datePublished">2019-08-01</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="条件选择器学习笔记"><a href="#条件选择器学习笔记" class="headerlink" title="条件选择器学习笔记"></a>条件选择器学习笔记</h1><p><code>chooser</code>作为条件选择器。可以抽象出一些统一的</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/条件选择器学习笔记/" data-id="ck84a9qm70059sovtuo4y3gfq" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/条件选择器学习笔记" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -476,7 +446,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -490,23 +460,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2019/08/01/项目笔记/背包系统学习笔记/">(no title)</a>
+            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
           </li>
         
           <li>
-            <a href="/2019/08/01/项目笔记/目标系统学习笔记/">(no title)</a>
+            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2019/08/01/项目笔记/玩家实体的抽象/">(no title)</a>
+            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2019/08/01/项目笔记/游戏生物体的抽象/">(no title)</a>
+            <a href="/2019/10/31/项目笔记/通讯组件学习/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2019/08/01/项目笔记/消耗系统学习笔记/">(no title)</a>
+            <a href="/2019/10/17/项目笔记/线上经典bug汇总/">(no title)</a>
           </li>
         
       </ul>
@@ -518,7 +488,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -527,7 +497,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
@@ -548,7 +518,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2019 WeiJian Qian
+      &copy; 2020 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>

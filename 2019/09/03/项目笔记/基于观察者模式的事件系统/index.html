@@ -1,0 +1,603 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="基于观察者模式的事件系统事件系统是游戏服务端的必要系统。原先游戏里已经有一个基于注解和事件分派风格的事件系统了，这个事件系统被广泛用于各种游戏业务的开发，比如等级事件触发模块开启检验、杀怪事件触发任务进度检验等。当时对于生物受伤、死亡、攻击等时间敏感事件，使用的是另外的一套基于观察者模式的时间系统 事件管理器观察者 public class Observer&amp;lt;L&amp;gt; {     priv">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gonefuture">
+<meta property="og:url" content="http://gonefuture.top/2019/09/03/项目笔记/基于观察者模式的事件系统/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="基于观察者模式的事件系统事件系统是游戏服务端的必要系统。原先游戏里已经有一个基于注解和事件分派风格的事件系统了，这个事件系统被广泛用于各种游戏业务的开发，比如等级事件触发模块开启检验、杀怪事件触发任务进度检验等。当时对于生物受伤、死亡、攻击等时间敏感事件，使用的是另外的一套基于观察者模式的时间系统 事件管理器观察者 public class Observer&amp;lt;L&amp;gt; {     priv">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-10-30T09:36:59.749Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gonefuture">
+<meta name="twitter:description" content="基于观察者模式的事件系统事件系统是游戏服务端的必要系统。原先游戏里已经有一个基于注解和事件分派风格的事件系统了，这个事件系统被广泛用于各种游戏业务的开发，比如等级事件触发模块开启检验、杀怪事件触发任务进度检验等。当时对于生物受伤、死亡、攻击等时间敏感事件，使用的是另外的一套基于观察者模式的时间系统 事件管理器观察者 public class Observer&amp;lt;L&amp;gt; {     priv">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-项目笔记/基于观察者模式的事件系统" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/09/03/项目笔记/基于观察者模式的事件系统/" class="article-date">
+  <time datetime="2019-09-03T09:05:30.292Z" itemprop="datePublished">2019-09-03</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="基于观察者模式的事件系统"><a href="#基于观察者模式的事件系统" class="headerlink" title="基于观察者模式的事件系统"></a>基于观察者模式的事件系统</h1><p>事件系统是游戏服务端的必要系统。原先游戏里已经有一个基于注解和事件分派风格的事件系统了，这个事件系统被广泛用于各种游戏业务的开发，比如等级事件触发模块开启检验、杀怪事件触发任务进度检验等。当时对于生物受伤、死亡、攻击等时间敏感事件，使用的是另外的一套基于观察者模式的时间系统</p>
+<h2 id="事件管理器"><a href="#事件管理器" class="headerlink" title="事件管理器"></a>事件管理器</h2><p>观察者</p>
+<pre><code class="java">public class Observer&lt;L&gt; {
+    private WeakReference&lt;OnserverSupport&lt;L&gt;&gt; supporWeakReference;
+    private L o;
+    private int version;
+
+    // 失效方式，如果为null，表示手动控制失效
+    private ObserverInvalidType invalidType;
+
+    Observer(ObserverSupport&lt;L&gt; support) {
+        this.supportWeakReference = new WwakReference&lt;&gt;(support);
+        this.o = o;
+        this.invalidType = invalidType;
+        this.version = version;
+    }
+
+    // 取消监听
+    public void cancel() {
+        ObserverSupport&lt;L&gt; support = supportWeakReference.get();
+        if(support == null) {
+            return;
+        }
+        supporrt.remove(this);
+    }
+
+    // 实际观察者
+    L getO() {
+        return o;
+    }
+
+    public ObserverInvalidType getInvalidType() {
+        return invalidType;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+}
+</code></pre>
+<p>事件管理器</p>
+<pre><code class="java">public class ObserveController {
+    private AbstractCreature owner;
+
+    // &lt;事件class,观察者&gt;
+    private final Map&lt;Class&lt;? extends IObserver&gt;, ObserverSupport&lt;?&gt;&gt; observers = new ConcurrentHashMap&lt;&gt;();
+
+    private AtmoicInteger version = new AtomicInteger(1);
+
+    public ObserveController(AbstractCreature owner) {
+        this.owner = owner;
+    }
+
+    // 获取事件代理，如果不存在，则创建
+    private &lt;L extends IObserver&gt; ObserverSupport&lt;L&gt; getOrCreateSupport(Class&lt;L&gt; listenerClass&gt;) {
+        ObserverSupport support = observers.get(listenerClass);
+        if(support == null) {
+            synchronized(observers) {
+                support = observers.get(listenerClass);
+                if(support == null) {
+                    support = new ObserverSupport(listenerClass);
+                    observers.put(listenerClass,support);
+                }
+            }
+        }
+        return (ObserverSupport&lt;L&gt;) support;
+    }
+
+    // 获取事件代理，如果不存在，返回null
+    private &lt;L extends IObserver&gt; ObserverSupport&lt;L&gt; getMaybeNullSuppport(Class&lt;L&gt; listenerClass) {
+        ObserverSupport support = observers.get(listenerClass);
+         return (ObserverSupport&lt;L&gt;) support;
+    }
+
+    // 获取一个事件的代理对象，用于触发事件，该方法采用异步处理的方式
+    public &lt;L extends IObserver&gt; void fire(Class&lt;L&gt; listenerClass, Consumer&lt;L&gt; consumer, Runnable afterFire) {
+        ObserverSupport&lt;L&gt; observerSupport = getMaybeNullSupport(listenerClass);
+        if(observerSupport == null || observerSupport.isEmpty()) {
+            // 没有观察者
+            if(afterFire != null) {
+                afterFire.run();
+            }
+            return;
+        }
+        int version = this.version.get();
+        IdentityEventExecutorGroup.addTask(owner.getDispatcherHashCode(), &quot;async fire observer&quot;, () -&gt; {
+            // 根据版本号抛出事件
+            syncFireByVersion(version, listenerClass, consumer);
+            // 事件抛出后的处理
+            if(aferFire != null) {
+                aferFire.run();
+            }
+        });
+    }
+
+    // 获取一个事件的代理对象，用于触发事件
+    // 该方法采用同步处理的方式
+    // 大多数情况下，不需要使用同步，请使用异步处理接口
+    public &lt;L extends IObserver&gt; void syncFire(Class&lt;L&gt; listenerClass, Consumer&lt;L&gt; consumer) {
+        int version = this.version.get();
+        syncFireByVersion(version,listenerClass, consumer);
+    }
+
+    public &lt;L extends IObserver&gt; void syncFireByVersion(int version, Class&lt;L&gt; listenerClass, Consumer&lt;L&gt; consumer) {
+        ObserverSupport&lt;L&gt; observerSupport = getMaybeNullSupport(listenerClass);
+        if(observerSupport == null || observerSupport.isEmpty()) {
+            // 没有观察者
+            return;
+        }
+        observerSupport.fire(version, consummer);
+    }
+
+    // 添加永久有效的观察者，自己维护观察者的生命周期
+    // 如果是怪物，则怪物复活依然有效
+    public &lt;L extends IObserver, O  extends L&gt; Observer&lt;L&gt; attachForever(Class&lt;L&gt; IClass, O observer) {
+        int version = this.version.getAndIncrement();
+        return getOrCreateSupport(lClss).attach(observer, null, version);
+    }
+
+    // 添加观察者，切换该场景失效，如果只是在当前场景中有效的，请使用该接口
+    public &lt;L extends IObserver, O extends L&gt;  Observer&lt;L&gt; attachWithCurrentMap(Class) {
+        int version = this.version.getAndIncrement();
+        return getOrCreateSupport(lClass)
+    }
+
+    // 添加观察者，在当前存活期间有效，对象死亡后失效，请注意切换地图不会失效
+    // 如果是怪物，则怪物死亡后失效
+    public &lt;L extends IObserver, O extends L&gt; Obsever&lt;L&gt; attachWithAlive(Class&lt;L&gt; lClass, O observer) {
+        int version = this.version.getAndIncrement();
+        return getOrCreateSupport(IClass).attach(observer, ObserverInvali);
+    }
+
+    // 添加观察者，监听一次后即失效，请注意，该接口表示必然要触发以后，才会失效
+    public &lt;L extends IObsever, O extends L&gt; Observer&lt;L&gt; attachWithOneOff(Class&lt;L&gt; lClass, O observer){
+       int version = this.version.getAndIncrement();
+       return getOrCreateSupport(lClass).attach(observer, ObserverInvalidType.oneOff, version);
+    }
+
+    // 尝试移出指定类型的观察者
+    private void tryRemoveInvalid(ObserverInvalidType invalidType, int version) {
+        observers.values().forEach(observerSupport -&gt;observerSupport.tryRemoveInvalid(invalidType,version));
+    }
+
+    // 移出所有观察者
+    public void clear() {
+        observers.clrear();
+    }
+
+    public void onDie(AbstractCreature lastAttacker) {
+        int version = this.version.get();
+        // 抛出死亡事件后，移出死亡失效观察者
+        fire(ICreatureDead.class, iCreatureDead -&gt; {
+            // 触发事件
+            iCreatureDead.onCreatureDead(owner, lastAttacker);
+        }, () -&gt; tryRemoveInvalid(ObserverInvalidType.alive, version));
+    }
+
+    public void onLeaveMap(WorldMapInstance mapInstance) {
+        int version = this.version.get();
+        // 同步抛出离开场景事件，移出场景失效观察者
+        fire(ICreatureLevelMap.class, iCreatureLevelMap -&gt; {
+            int mapId = 0;
+            if(owner.isPlayer() &amp;&amp; ((FightPlayer) owner).isOnline()) {
+                // 玩家在线切换地图，才生效，如果是离线超时退出，为0
+                mapId = owner.getPosition().getMapId();
+            }
+            // 触发事件
+            iCreatureLeaveMap.onCreatureLeaveMap(owner, mapInstance, mapId);
+        }, () -&gt; tryRemoveInvalid(ObserverInvalidType.changeMap,version));
+    }
+}
+</code></pre>
+<p>观察者支持，用于检测观察者是否失效</p>
+<pre><code class="java">class ObserverSupport&lt;L&gt; {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ObserverSupport.class);
+
+    // 监听的接口
+    private Class&lt;L&gt; listenerClass;
+
+    // 备用观察者与失效接口
+    private List&lt;Observer&lt;L&gt;&gt; observers;
+
+    public ObserverSupport(Class&lt;L&gt; listenerClass) {
+        this.listenerClass = listenerClass;
+        this.observers = new CopyOnWriteArrayList&lt;&gt;();
+    }
+
+    // 添加观察者
+    public &lt;O extends L&gt; Observer&lt;L&gt; attach(O o, ObserverInvalidType invalidType, int version) {
+        Observer&lt;L&gt; observer = new Observer&lt;&gt;(this, o, invalidType, version);
+        observers.add(this,o, invalidType, version);
+        return observer;
+    }
+
+    // 移出观察者
+    public &lt;O extends L&gt; void remove(Observer&lt;L&gt; observer) {
+        observer.remove(obsrever);
+    }
+
+    // 触发事件
+    public void fire(int version, Consumer&lt;L&gt; consumer) {
+        // 抛出事件
+        Observer&lt;L&gt;[] observerCache = this.observers.toArray(new Observer[o]);
+        int begin = RandomUtils.betweenInt(0, observerCache.length-1,true);
+        List&lt;Observer&gt; removs = new ArrayList&lt;&gt;(observers.size());
+        for(int i=0; i&lt;observerCache.length; i++) {
+            int index = (i+begin) % observerCache.length;
+            Observer&lt;L&gt; observer = observerCahce[index];
+            if(observer.getVersion() &gt;= version) {
+                continue;
+            }
+            try {
+
+            } catch (Exception e) {
+                LOGGER.error(&quot;observer fire error&quot;, e);
+            } finally {
+                if(observer.getInvalidType() == ObserverIvalidType.oneOff) {
+                    removes.add(observer);
+                }
+            }
+        }
+        if(!remove.isEmpty()) {
+            this.observers.removeAll(removes);
+        }
+    }
+
+    // 移出对应失效条件的观察者
+    public void tryRemoveInvalid(ObserverInvalidType invalidType, int version) {
+        List&lt;Observer&gt; removes = new ArrayList&lt;&gt;(observer.size());
+        for(Observer observer: observers) {
+            if(observer.getInvalidType() != invalidType) {
+                continue;
+            }
+            if(observer.getVesion() &gt;= version) {
+                continue;
+            }
+            removes.add(observer);
+        }
+        if(removes.isEmpty()) {
+            return;
+        }
+        this.observers.removeAll(removes);
+    }
+
+    // 是否没有观察者
+    public boolean isEmpty() {
+        return observers.isEmpty();
+    }
+
+    public ClassM&lt;L&gt; getListenerClass() {
+        return listenerClass;
+    }
+
+}
+</code></pre>
+<pre><code class="java">public enum ObserverInvalidType {
+    // 切换地图后失效，之生效于当前地图，退出当前地图就失效
+    changeMap,
+    // 死亡后就失效：死亡时移出
+    alive,
+    // 运行一次后失效
+    oneOff;
+}
+</code></pre>
+<h2 id="观察者的实现"><a href="#观察者的实现" class="headerlink" title="观察者的实现"></a>观察者的实现</h2><p>观察者接口</p>
+<pre><code class="java">public interface IObserver {
+
+}
+</code></pre>
+<p>观察者时实现了观察接口，用于监听各种事件,例如：</p>
+<p>死亡事件</p>
+<pre><code class="java">public interface ICreatureDead extends IObserver {
+
+    // 生物死亡
+    void onCreatureDead(AbstractCrature creature, AbsrtractCreature lastAttacker);
+}
+</code></pre>
+<p>击杀目标以后</p>
+<pre><code class="java">public interface ICreatureKill extends IObserver {
+    // 击杀目标触发
+    void afterKill(AbstractCreature beKiller, SKill skill);
+}
+</code></pre>
+<h2 id="事件的监听"><a href="#事件的监听" class="headerlink" title="事件的监听"></a>事件的监听</h2><p>使用事件该事件系统时</p>
+<ol>
+<li>在触发事件的地方抛出事件</li>
+</ol>
+<pre><code class="java">// 抛出击杀事件
+if(lastAttacker != null) {
+    lastAttacker.getObserveController().fire(ICreatureKill.class, iCreatureKill -&gt; iCreatureKill.afterKill(owner,skill));
+    owner.getObserveController().fire(ICreatureDie.class, iCreatureDie -&gt; iCreatureDie.onDie(lastAattacker, skill));
+}
+</code></pre>
+<ol start="2">
+<li>在特定需要监听事件的地方绑定事件与事件处理逻辑</li>
+</ol>
+<pre><code class="java">
+    // 自身击杀目标后触发法球的类中有以前两个方法
+
+    @Override
+    public void startEffect(AbstractCreature effected, Effect effect) {
+        effect.createObserver(effected, ICreatureKill.class, (beKiller, skill) -&gt; afferkill(effected, effect, beKiller, skill));
+    }
+
+    private void afterKill() {
+        TriggerCfg triggerCfg = effect.getEffectResource().getEffectContext().getTriggerCfg();
+        int beKillerObjType = triggerCfg.getBeKillerObjType();
+        if(beKillerObjType != 0 &amp;&amp; !beKiller.getObjectType().getTargetObjType().has(beKillerObjType)) {
+            // 被击杀者类型不满足
+            return;
+        }
+        tryTrigger(effected, skill, effect, null, beKiller);
+    }
+
+    // 在Effecct类中的`createObserver`方法
+     public &lt;L extends IObserver, O extends L&gt; void createObserver(AbstractCrature watchTarget, Class&lt;L&gt; clz, O l) {
+        Observer observer = watchTarget.getObserverController().attachForever(clz,l);
+        if(this.observers == null) {
+            synchronized(this) {
+                if(this.observers == null) {
+                    this.observers = new CopyOnWriteArrayList&lt;&gt;();
+                }
+            }
+        }
+        this.observers.add(observer);
+     }
+</code></pre>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/09/03/项目笔记/基于观察者模式的事件系统/" data-id="ck84a9qlt004ysovtsga9lanx" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/基于观察者模式的事件系统" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/09/03/项目笔记/有时效的标记/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/09/03/项目笔记/技能系统学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/10/31/项目笔记/通讯组件学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/10/17/项目笔记/线上经典bug汇总/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

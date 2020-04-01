@@ -83,10 +83,10 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-项目笔记/游戏生物体的抽象" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-项目笔记/通讯组件学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/08/01/项目笔记/游戏生物体的抽象/" class="article-date">
-  <time datetime="2019-08-01T01:54:07.307Z" itemprop="datePublished">2019-08-01</time>
+    <h3 href="/2019/10/31/项目笔记/通讯组件学习/" class="article-date">
+  <time datetime="2019-10-31T08:05:32.225Z" itemprop="datePublished">2019-10-31</time>
 </h3>
     
   </div>
@@ -98,158 +98,1025 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="游戏生物的抽象"><a href="#游戏生物的抽象" class="headerlink" title="游戏生物的抽象"></a>游戏生物的抽象</h1><h2 id="世界唯一对象-AbstractMirObject"><a href="#世界唯一对象-AbstractMirObject" class="headerlink" title="世界唯一对象 AbstractMirObject"></a>世界唯一对象 <code>AbstractMirObject</code></h2><p>构造器</p>
-<pre><code class="java">public AbstractMirObject(IMirObjectSoulFill mirObjectSoulFill) {
-    setobjectId(mirObjectSoulFill.createId());
-}
+        <h1 id="通讯组件学习"><a href="#通讯组件学习" class="headerlink" title="通讯组件学习"></a>通讯组件学习</h1><p>网络连接是游戏服务器的基础中的基础。此游戏服务器使用<code>Jprotobuf</code>事先编译好protobuf文件。通过注解标志各种协议包，接受客户端发送的协议时，自动将其转化为<code>Wsesion</code>对象,玩家角色登陆后再进一步转化为<code>Player</code>对象。</p>
+<h2 id="用于标记的枚举"><a href="#用于标记的枚举" class="headerlink" title="用于标记的枚举"></a>用于标记的枚举</h2><p>模块声明</p>
+<pre><code class="java">@Target(ElementTpye.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface SocketClass {
 
-public interface IMirObjectSoulFill {
-    // 生成单位唯一id
-    long createId();
 }
 </code></pre>
-<p>主要属性</p>
-<ul>
-<li>对象唯一id <code>protected long objectId</code></li>
-<li>对象id的包装类型 <code>protected long objId</code></li>
-</ul>
-<hr>
-<h2 id="可见物-AbstractVisibleObject-extends-AbsreactMirObject"><a href="#可见物-AbstractVisibleObject-extends-AbsreactMirObject" class="headerlink" title="可见物 AbstractVisibleObject extends AbsreactMirObject"></a>可见物 <code>AbstractVisibleObject extends AbsreactMirObject</code></h2><p>主要属性</p>
-<ul>
-<li>配置id <code>int objectkey</code></li>
-<li>观察者列表 <code>KnownList knownList</code></li>
-<li>视野位面 <code>int planes</code> (决定视野可见，等于0表示可被所有位面可见)</li>
-<li>位置 <code>WorldPosition position</code></li>
-<li>控制器 <code>AbstractVisibleObjectController controller</code></li>
-<li>可见对象的目标 <code>AbstractVisibleObject target</code></li>
-<li>刷新资源 <code>SpawnResource spawnResource</code></li>
-<li>出生的X轴 <code>bornX</code></li>
-<li>出生的Y轴 <code>bornY</code></li>
-<li><p>朝向 <code>DirectionEnum bornHeading</code></p>
-</li>
-<li><p>该对象的心跳业务 <code>Map&lt;ObjectTickType, objectTick&gt;&lt;?&gt; tickMap</code> 主要用于防止取消心跳，统一取消</p>
-</li>
-<li><p>是否为出生 <code>boolean birth</code> 用于客户端表现出生特效</p>
-</li>
-<li>过滤器 FilterController filterController</li>
-<li>人物状态 <code>MergeSubmit&lt;CreatureUpdateType&gt; creatureUpdateTask</code></li>
-</ul>
-<p>构造器</p>
-<pre><code class="java">public AbstractVisibleObject(IVisibleObjectSoulFill visibleObjectSoulFill) {
-    super(visibleObjectSoulFill);
+<p>模块声明</p>
+<pre><code class="java">@Target(ElementTpye.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface SocketMethod {
+    // 自定义协议号，用于事件体系
+    int coustomPacketId() default 0;
 
-    this.filterController = new FilterController();
-    this.objectKet = visibleObjectSoulFill.getObjKey();
-    this.controller = visibleObjectSoulFill.createController(this);
-    this.controller.setOwner(this);
-    this.position = visibleObjectSoulFill.createPosition();
-    this.knownList = visibleObjectSoulFill.createKnownList(this);
-    creatureUpdateTask = new MergeSubmit&lt;&gt;(CreatureUpdateType.class);
 }
-
-
 </code></pre>
-<p>启动一个针对该对象的心跳，使用者要注意定时业务的回收，避免内存泄漏</p>
-<pre><code class="java">public &lt;T extends AbstractVisibleObject&gt; ObjectTick&lt;T&gt; createTick(ObjectTickType tickType, long initialDelay, long initialDelay, 
-long initialDelay, long period, TimeUnit timeUnit, Tick&lt;T&gt; tick) {
+<p>通讯包声明</p>
+<pre><code class="java">@Target(ElementTpye.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Lazy
+public @interface SocketMethod {
+    // 协议号
+    int packetId();
+}
+</code></pre>
+<h2 id="Socket服务器"><a href="#Socket服务器" class="headerlink" title="Socket服务器"></a>Socket服务器</h2><p>Socket服务器<code>Wserver</code>在启动时加载注解标记的通讯包，</p>
+<pre><code class="java">@Component
+public class Wserver implements ApplicationContextAware {
+    private static final Logger logger = LoggerFactory.getLogger(Wserver.class);
 
-    ObjectTick exits = tickMap.remove(tickType);
-    if(exist != null) {
-        exist.tryCancle();
-        LOGGER.error(&quot;exist tick task&quot;+ tickType);
+    @Autowired
+    private CustomHandlerManager customHandlerManager;
+    @Autowired
+    private SessionHandler sessionHandler;
+    @Autowired
+    private FlowFirewall flowFirewall;
+    @Autowired
+    private IpFirewall ipFirewall;
+    @Autowired
+    private SocketPacketHandler socketPacketHandler;
+
+    // 自定义的连接日志处理接口
+    public static LoggingHandler logginHandler;
+
+    private int[] ports;
+    private ApplicationCintext applicationContex;
+    private int maxlength;
+
+    // 开启
+    public void open() {
+        ipFirewal.open();
     }
-    ObjectTick&lt;T&gt;  objectTick = ObjectTick.valueOf(tickType,(T) this, initialDelay, period, timeUnit);
-    tickMap.put(tickType,objectTick)
-    return objectTick;
+
+    // 网络端口是否打开
+    public boolean ioOpen() {
+        return ipFirewall.isOpened();
+    }
+
+    // 关闭
+    public void block() {
+        ipFirewall.block();
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException{
+        this.applicationContext = applicationContext;
+    }
+
+    // 加载配置
+    public void loadProperties(Resource rsource) {
+        Properties prop = new Properties();
+        prop.load(resource.getInputStream());
+        this.prots = ConfigUtils.getPorts(prop, ServerConfigConstant.SERVER_PORT);
+
+        String maxLengthProp = prop.getProperty(ServerConfigConstant.PACKET_MAXLEGHTH);
+        if(maxLengthProp == null) {
+            // 默认1m
+            maxLength = 1024*1024;
+        } else  {
+            maxLength = INteger.valueOf(mxaLengthProp) * 1024;
+        }
+    }
+
+    public void bind() throws InterruptedException, IOException{
+        bind(new DummyFirewallManger());
+    }
+
+    // 绑定端口
+    public void bind(FirewallManager firewallManger) thrwos InterruptedException, IOException{
+        socketPacketHandler.setFirewallManager(firewallManager);
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        ServerBootstrap serverBootstrap = new ServerBootstrap();
+        if(loggingHandler != null) {
+            serverBootstrap.handler(loggingHandler);
+        }
+        serverBootstrap.group(bossGrop, workerGroup)
+            .channel(NioSreverSocketchannel.class)
+            .option(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
+            .option(ChannelOption.SO_BACKLOG,1024)
+            .childOption(ChannelOption.TCP_NODELAY, true).
+            .childOption(ChannelOption.TCP_NODELAY)
+            .childOption(ChannelOption.SO_RCVBUF,1024*32)
+            .childOption(ChannelOption.SO_SNDBUF,1024*32)
+            .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK,new WriteBufferWaterMark(0,128*1024))
+            .childHandler(nwe ChannelInitializer&lt;SocketChannel&gt; -&gt; {
+                @Override
+                public void initChannel(SocketChannel sc) {
+                    ChannelPipeline pipeline = sc.pipeline();
+                    pipeline.addLast(&quot;encoder&quot;, new WpacketEncoder());
+                    pipeline.addLast(&quot;ipFirewall&quot;, ipFirewall);
+                    pipeline.addLast(&quot;flowFirewal&quot;, flowFirewall);
+                    pipeline.addLast(&quot;decoder&quot;, new WpacketDecoder(maxLength)).
+                    pipeline.addLast(&quot;session&quot;, sessionHandler);
+                    pipeline.addLast(&quot;socketPackHandler&quot;,new SocketChooserHandler());
+                    for (ChannelHandlerAdapeter cha : customHandlerManager.getHandlers()) {
+                        sc.pipeline().addLast(cha);
+                    }
+                }
+            }) ;
+        for(int port : ports) {
+            ChannelFuture cf = serverBootstrap.bind(port);
+            if (StringUitls.isNotEmpty(host)) {
+                cf = serverBootstrap.bind(host, port);
+            } else {
+                cf = serverBootStrap.bind(port);
+            }
+            cf.sync();
+            channelFutures.add(cf);
+        }
+    }
+
+    class SocketChoserHandler extends ByteToMessageDecoder {
+        private final int CHECK_LEN = 5;
+        private final String WSOCKET_PREFIX = &quot;GET&quot;;
+
+        @Override
+        protected void decode(ChannelHandlerContex ctx, ByteBuf in, List&lt;Object&gt; out) throws Ecception{
+            String protocol = getProtocol(in);
+            if(protocol == null) {
+                return;
+            }
+            ChannelPipeline pipeline = ctx.pipeline();
+            if(protocol.startWith(WSOCKET_PREFIX)) {
+                addWebSocketHandler(pipeline);
+            } else {
+                addSocketHandler(pipeline);
+            }
+            pipeline.remove(SocketChooserHandler.class);
+
+            WpacketDecoder wpacketDecoder = new WpacketDecoder(maxLength);
+            pipeline.addLast(&quot;decoder&quot;, wpacketDecoder);
+            ctx.channel().attr(WpacketDecoder.DECODER).set(wpacketDecoder);
+            pipeline.addLast(&quot;socketPacketHandler&quot;, socketPacketHandler);
+            for(ChanelHandlerAdpater cha : customHandlerManager.getHandlers()) {
+                pipeline.addLast(cha);
+            }
+        }
+    }
+    private List&lt;ChannelFuture&gt; channelFutures = new ArrayList&lt;&gt;();
+
+    private EventLoopGroup bossGroup;
+
+    private EventLoopGroup workerGroup;
+
+    public void shutdownGracefully() {
+        try {
+            for(ChannelFuture cf : channelFutures) {
+                if(cf.channel() != null) {
+                    try {
+
+                    } catch(Exception w) {
+                        logger.error(&quot;通讯server channel 关闭异常&quot;,e);
+                    }
+                }
+            }
+        } finally {
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
+    }
+
+    // get/set.....
+
+}
+
+</code></pre>
+<p>用户自定义handler管理器</p>
+<pre><code class="java">@Component
+
+public final class CustomHandlerManager {
+    private List&lt;ChannelHandlerAdapter&gt; handlers = new ArrayList&lt;&gt;();
+
+    @PostConstruct
+    public void init() {
+        doInit();
+    }
+
+    private void doInit() {
+        // TODO
+    }
+
+    public List&lt;ChannelHanderAdapter&gt; getHandeers() {
+        return handlers;
+    }
+
+    public void setHandlers(ChannelHandlerAdapter handlers) {
+        this.handlers = handlers;
+    }
+}
+
+</code></pre>
+<h2 id="分发器"><a href="#分发器" class="headerlink" title="分发器"></a>分发器</h2><p>消息处理器handler</p>
+<pre><code class="java">@Sharable
+@Component
+public class SocketPacketHandler extends ChannelInboundHandlerAdpter implements ApplicationContextAware,
+    ApplicationContextAware  {
+    private static final boolean OPEN_PROTOBUF_COMPILE = Boolean.valueOf(System.getProperty(&quot;openProtobufComplile&quot;, &quot;false&quot;));
+
+    /**
+    *   类class与packetId的快速映射
+    */
+    private Map&lt;Class&lt;?&gt;, Integer&gt; calssToPacketId = new ConcurrentHashMap&lt;&gt;();
+
+    /**
+    *   packetId与类class的快速映射
+    */
+
+    private Map&lt;Integer, Codec&gt; paccketIdToCodec = new ConcurrentHashMap&lt;&gt;();
+
+    private Set&lt;Integer&gt; runInNIOThreadPacketIds = new HashSet&lt;&gt;();
+
+    @Autowired
+    private SessionManager sessionManager;
+
+    @Autowierd
+    private IEventBusManager  eventManager;
+
+    private FirewallManager firewallManager;
+    private ExceptionHandler exceptionHandler;
+    private IPacketStatistics packetStatistics;
+
+    public static SocketPacketHandler getInstance() {
+        return self;
+    }
+    private static SocketPacketHandler self;
+
+    @PostConstruct
+    private void init() {
+        SocketPacketHandler.self = this;
+        if(OPEN_PROTOBUF_COMPILE) {
+            System.err.println(&quot;open protobuf dynamic complie!&quot;);
+        } else {
+            ProtobufProxy.closeCompile();
+            System.err.println(&quot;close protobuf dynamic complie!&quot;);
+        }
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        String[] classNames = applicationContext.getBeanNamesForAnnotation(SocketPacket.class);
+        for(String className : classNames) {
+            Class&lt;?&gt; packetClass = applicationContex.getType(className);
+            SocketPacket socketPacket = packetClass.getAnnotion(SocketPacket.class);
+            if(packetIdToCodec.containkey(socketPacket.packetId())) {
+                throw new RuntimeException(String.format(&quot;socketPacket.packetId() [%s] 重复使用！&quot;, socketPacket.packetId()));
+            }
+            Codec codec = ProtobufProxy.create(packetClass);
+            packetIdToCodec.put(socketPacket.packetId(), codec);
+            classToPacketId.put(packetClass, socketPacket.packetId());
+            packetIdToClass.put(socketPacket.packetId(), packetClass);
+        }
+        stopWatch.stop();
+        loogger.debug(&quot;load protoProxy {} use time {}s&quot;, classNames.length, TimeUnit.MILLSECONDS.toSeconds(stopWatch.getTime()));
+        // 默认协议拦截器
+        if(packetInterceptor == null) {
+            packetIneterceptor = new IPacketInterceptor() {
+                @Override
+                public boolean isRealPacketMethod() {
+                    return true;
+                }
+                @Override
+                public boolran intercept(Wsession wsession, WrequestPacket packet) {
+                    return false;
+                }
+                @Override
+                public boolean intercept(Wsession wsession, WresponsePacket packet) {
+                    return false;
+                }
+            };
+        } else {
+            packetInterceptor.afterInit(this);
+        }
+    }
+
+
+    @Override
+    public Object postProcessAfterInirialization() throws BeansException{
+        Class&lt;?&gt; clazz = bean.getClass();
+        if(clazz.isAnnotationPersent(SocektClass.class)) {
+            for(Method method : clazz.getMethods()) {
+                 SocektMethod methodAnnotation = method.getAnnotation(SocketMethod.class);
+                 if(methodAnnotion == null) {
+                     continue;
+                 }
+                 // 参数和返回值验证
+                 Class&lt;?&gt;[] clzs = method.getParameterTypes();
+                 if(clas.length != 2) {
+                     throw new IllegalArgumentException(bean.getClass().getName() + 
+                     &quot;.&quot;  +method.getName() + &quot;只能拥有两个参数&quot;);
+                 }
+                 // 接收参数验证
+                 Calss&lt;?&gt; packetClass = method.getPatameterTypes()[1];
+                 int packetId = methodAnnotation.consutomPacketId();
+                 if(pcaketId == 0) {
+                    SocketPacket socketPacekt = packetCalss.getAnnotation(SocketPacket.class);
+                    if(socketPacket == null) {
+                        // 该对象没有class注册
+                        throw new IllegalArgumentException(String.format(&quot;class[%s] 没有包含SocketPacket注解！&quot;, packetClass));
+                    }
+                    packetId = socketPacket.packetId();
+                 }
+                 if(!&quot;void&quot;.equals(method.getReturnType().getName())) {
+                     if(method.getReturnType().getAnnotation(SocketPacket.class) == null) {
+                        throw new IllegalArgumentException(
+                            bean.getClass().getName() + &quot;.&quot;+method.getName() + &quot;返回值必须包含SocketPacket注解&quot;
+                        );
+                     }
+                 }
+                 if(packetInterceptor != null &amp;&amp; !packetInterceptor.isRacketMethod(packetId, method)) {
+                     // 检测是否需要注册该协议处理方法
+                     continue;
+                 }
+                 // 是否有其他执行对象已经注册了此消息
+                 SocektHandkerDefinition shd = handlerDefinitions.get(packetId);
+                 if(shd != null) {
+                     throw new IllegalArgumentException(String.format(&quot;class[%s]和class[%s]重复使用，一个packetId只能用在一个方法上！&quot;， shd.getBean().getClass, packetClass, packetId));
+                 }
+                 boolean runInNioThread = method.getAnnotation(IRunInNioThread.class) != null;
+                 handlerDefinitions.put(packetId, SocketHandlerDefinition.valueOf(bean, method, runInNioThread));
+            }
+           return bean;
+        }
+    }
+
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String name) throws BeansException{
+        return bean;
+    }
+
+        public interface ExceptionHandler {
+        // 协议处理异常处理
+        void handlerPacketException(Wsession session, Throwable e);
+
+        // 连接异常处理
+        void handlerConException(ChannelHandlerContext ctx, Throwable cause);
+    }
+
+    private ExceptionHandler exceptionHandler;
+
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Obejct msg) throws Exception {
+        // 将包转化为 WrequestPacket 类型 , 编码器已经编码好了
+        final WrequestPacket packet = (WrequestPacket) msg;
+        // 根据channel获得一个session
+        final Wsession session = sessionManager.getSession(ctx.channel().id());
+
+        if(firewallManager != null &amp;&amp; !firewallManger.packerFilter(session, packet)) {
+            logger.error(String.format(&quot;session[%s] packetId[%s]发送非法的信息，可能客户端没有登陆就放在发送信息!&quot;));
+            return;
+        }
+        if(packetInterceptor.intercept(session, packet)) {
+            return;
+        }
+        if(packetStatistics != null) {
+            packetStatistics.receive(packet);
+        }
+        final Object message;
+        try {
+            message = packetInterceptor.customDecodePacket(packet.getPacketId(), packet.getData());
+        } catch(IOException e) {
+            logger.error(&quot;decode error&quot;, e);
+            return;
+        }
+        excMaessage(session, packet.getPacketId(), message);
+    }
+
+    /**
+    *   解析消息包
+    */
+    public Object decodePacket(int packetId, byte[] data) {
+        Code codec = SocketPacketHanndler.getInstance().getCodec(packetId);
+        if(codec == null) {
+            logger.error(&quot;not found codec with packetId {}&quot;, packetId);
+            return null;
+        }
+        try {
+
+        } catch(IOException e) {
+            throw new RuntimeException(String.format(&quot;decode packet[%d] error&quot;, packetId), e);
+        }
+    }
+
+
+    // 执行协议
+    public void excMessage(Wsession session, int packetId, Obejct message) {
+        if(message == null) {
+            return;
+        }
+        final SocketHandlerDefinition shd = handlerDefinitions.get(packetId);
+        if(shd == null) {
+            logger.error(String.format(&quot;没有找到处理[%s]的SocketHandlerDefinition&quot;, packetId));
+        }
+        session.onReceivePacket(message);
+        if(shd.isRunInNioThread()) {
+            // 特殊业务，在NIO线程执行
+            excMessage(session, shd, message);
+            return;
+        }
+        IdentityEventExcutorGrop.addTask(new AbstractDispatcherCodeRUnnable() {
+            @Override
+            public void doRun() {
+                excMessage(session, shd, message);
+            }
+
+            @Override
+            public long timeoutNanoTime() {
+                // 3毫秒
+                return 3 * 1000 * 1000;
+            }
+
+            @Override
+            public String name() {
+                return &quot;wSocket_&quot; + packetId;
+            }
+            @Override
+            public int gerDispatcherHashCode() {
+                return session.selectDispatcherHashCode();
+            }
+        });
+    }
+
+    public vooid excMessage(Wession session, SocketHandlerDefinition shd, Object message) {
+        try {
+            Object returnMessage = shd.invoke(session, message);
+            if(returnMessage == null) {
+                return;
+            }
+            session.sendPacket(returnMessage);
+        } catch(Exception e) {
+            if(exceptionHandler != null) {
+                exceptionHandler.handlerPacketException(sessoin, e);
+            } else {
+                logger.error(&quot;SocketHandlerDefinition任务执行失败&quot;, e);
+            }
+        }
+    }
+
+    private IEventCallback buildEnvetCallback(Wession session) {
+        return new IEventCallback() {
+            @Override
+            public void callback(Object returnMsg) {
+                if(returnMsg == null) {
+                    return;
+                }
+                session.sendPacket(returnMsg);
+            }
+
+            @Override
+            public void exception(Throwable throwable) {
+                if(exceptionHandelr != null) {
+                    exceptionHandler.handlePacketException(session, throwable);
+                } else {
+                    logger.error(&quot;SocketHandlerDefinition任务执行失败！&quot;,throwable);
+                }
+            }
+        };
+    }
+
+    // 所有的业务消息必须走这里过去
+    public ChannelFuture sendPacket(Wsession session, Channel channel, Object message, boolean flush) {
+        try {
+            WresponsePacket wp = encodePacket(message);
+            if(packetStatistics != null) {
+                packetStatistcs.send(wp);
+            }
+            if(flush) {
+                return channel.writeAndFlush(wp);
+            }
+            ChannelFuture future = channel.write(wp);
+            if(session.getFlushTimer().compareAndSet(false, true)) {
+                delayFlushTimer.newTimeout(timeout -&gt; {
+                    session.getFlushTimer().compareAndSet(true, false);
+                    channel.flush();
+                    }, 100, TimeUnit.MILLISECONDS);
+            }
+            return future;
+        } catch(Throwable e) {
+            String errorMessage = (message == null ? &quot;&quot; ： message.getClass().getName()) + &quot; encode编码失败！&quot;;
+            logger.error(errorMessage, e);
+        }
+        return null;
+    }
+
+    private HashedWheelTimer deleyFlushTimer = new HashedWheelTimeer(100, TimeUnit.MILLISECONDS);
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if(exceptionHandler == null) {
+            cause.printStackTrace();
+            logger.error(&quot;通讯包异常!&quot;, cause);
+        } else {
+            exceptionHandler.handleConException(xtx, cause);
+        }
+        ctx.close();
+    }
+
+    // get/set
+
+
+    public WresponsePacket encodePacket(Object message) {
+        if(message instanceof WresponsePacket) {
+            return (WreponsePacket) message;
+        }
+        WresponsePacket wresponsePacket =  WresponsePacket.valueOf();
+        fillPacket(wresponsePacket, message);
+        return wresponsePacket;
+    }
+
+    // 创建一个网络协议包
+    public void fillPacket(WresponsePacket wresponsePacket, Object message) {
+        Class&lt;?&gt; messageClass = message.getClass();
+        Integer packetId = classToToPacketId.get(messageClass);
+        if(packetId == null) {
+            throw new NullPointerException(&quot;nor found packetId with&quot; + messageClass);
+        }
+        byte[]  retureMessageBytes = new byte[0];
+        try {
+            wresponsePacket.setPacketId(packetId);
+            returnMessageBytes = getCodec(packetId).encode(message);
+            wresponsePacket.setData(returnMessageBytes);
+            if(logger.isDebugEnabled()) {
+                wresponsePacket.setDebugPacket(message);
+            }
+        } catch (IOExcetion e) {
+            throw new RuntimeException(String.format(&quot;encode packet [%d] error&quot;, wresponsePacket.getPacketId()), e);
+        }
+    }
+
+
+}
+
+</code></pre>
+<p>消息处理器描述</p>
+<pre><code class="java">public class SocketHandlerDefinition {
+    private static final Obeject NOT_EXC = new Object();
+
+    private Obeject bean;
+    private Map&lt;Class, Method&gt; methodMap;
+    private boolean runInNioThread;
+
+    public static SocketHandlerDefition valueOf(Object bean, Method method, boolean runInNioThread) {
+        SocketHandlerDefition shd = new SocketHandlerDefinition();
+        shd.bean = bean;
+        shd.method =  method;
+        shd.sessionPatameter = Wsession.class.isAssignableFrom(method.getParameterTypes()[0]);
+        shd.runInNioThread = runInNioThread;
+        return shd;
+    }
+
+    // 调用方法
+    public Object invoke(Wsession session, Obejct packet) {
+        if(sessionParameter) {
+            return ReflectionUtils.invokeMethod(method, bean, session, packet);
+        } else {
+            Object player = session.getPlayer();
+            if(palayer == null) {
+                LOGGER.warn(&quot;{} player not login, cannot exc socekt packet {}&quot;, session, packet);
+                return null;
+            } else {
+                return ReflectionUtils.invokeMethod(method, bean, player, packet);
+            }
+        }
+    }
+
+
+    // get/set
+}
+
+</code></pre>
+<h2 id="编码器"><a href="#编码器" class="headerlink" title="编码器"></a>编码器</h2><p>解码器</p>
+<pre><code class="java"> /**
+ *  |size-int-4|packetId-short-2|data|
+ */
+ public class WpacketDecoder extends ByteToMessageDecoder {
+
+     public static final AttaributeKey&lt;WpacketDecoder&gt; DECODER = AttributeKey.valueOf(&quot;WpacketDecode&quot;);
+
+    /**
+    *   1m
+    */
+    private static int MAX_SIZE = 1*1024*1024;
+    private static int MIN_SIZE = 2;
+
+    /**
+    *   length+packetId+6
+    */
+    private static final int NO_AUTH_MIN_READABLE = 4 + 2;
+    /*
+    *  length+packetId = 10
+    */
+    private static final int AUTH_MIN_READABLE = 4 + 2 + 4;
+    /**
+    *   是否有设置加密解锁
+    */ 
+    private boolean auth;
+    /**
+    *   是否开启解密
+    */
+    private boolean openAuth;
+    /**
+    *  消息加密索引
+    */
+    private int index;
+
+    private int staerIndex;
+
+    public WpacketDecoder(int maxLength) {
+        if(maxLength &lt;=  MIN_SZIE) {
+            logger.error(&quot;maxLength error ! length[%s] MIN_SIZE[%s]&quot;, maxLength, MIN_SIZE);
+        }
+        MAX_SIZE = maxLength;
+    }
+
+    @Override
+    public void channelRegistered() throws Exception{
+        super.chanelRegistered(ctx);
+        ctx.channel().attr(DECODER).set(this);
+    }
+
+    @Ovreride
+    protected void decode(ChannelHandkerContext ctx, ByteBuf in, List&lt;Object&gt; out) throws Exception {
+        if(in.refCnt() == 0 ) {
+            // 协议已被提前释放
+            return;
+        }
+        int size =  in.markReaderIndex();
+        if(readableBytes &lt; (auth ? AUTH_MIN_READABLE : NO_AUTH_MIN_READABLE)) {
+            return;
+        }
+        in.markReaderIndex();
+        int size = in.readInt();
+        if(sise &gt;= MAX_SIZE) {
+            in.clrear();
+            ctx.close();
+            NetIpCollectUtls.incErrorPacket(ctx);
+            logger.warn(&quot;{} error size {}&quot;, ctx, size);
+            retrun;
+        }
+        if(in.readableBytes() &lt; size) {
+            in.resetReaderIndex();
+            return;
+        }
+        short packetId = in.readShort();
+        byte[] data;
+        if(auth) {
+            int reckey = in.readInt();
+            data = new byte[size -6];
+            in.readytes(data);
+            if(openAuth) {
+                int token = claDataToken(data);
+                int selfKey = (size ^ packetId ^ index) + token;
+                if(recKey != selfKey) {
+                    in.clear();
+                    ctx.close();
+                    logger.warn(&quot;{} auth key error! packetId[{}], self[{}], rec[{}], index[{}]&quot;,
+                    xtx, packetId, selfKey, recKey, index);
+                    return;
+                }
+            }
+            index += packetId;
+            if(index &gt; INDEX_MAX) {
+                this.index = startIndex;
+            }
+        } else {
+                data = new byte[size -2];
+                in.readBytes(data);
+        }
+        WrequestPacket wp = WrequestPacket.valueOf(packetId, data);
+        out.add(wp);
+    }
+
+    // 开启验证
+    public void setAuth(int startIndex, boolean open) {
+        this.auth = true;
+        this.openAuth = open;
+        this.index = startIndex;
+        this.startIndex = startIndex;
+    }
+
+    // 计算数据验证值
+    private int calDataToken(byte[] data) {
+        int count = 0;
+        for(int i=0; i&lt; data.length; i++) {
+            count += data[i] &amp; 0xFF;
+        }
+        return count;
+    }
+
+ }
+
+</code></pre>
+<p>编码器</p>
+<pre><code class="java">public class WpacketEncoder extends MeessageToByteEncoder&lt;WresponsePacket&gt; {
+    @Override
+    protected void encode(ChannelHandlerCoentext ctx, WresponsePacket msg, ByteBuf out) throws Exception {
+        msg.write(out);
+    }
+}
+
+</code></pre>
+<h2 id="核心"><a href="#核心" class="headerlink" title="核心"></a>核心</h2><p>会话管理</p>
+<pre><code class="java">@Componet
+public class SessionManager {
+    private static SessionManager instance;
+
+    public SessionManager() {
+        instance = this;
+    }
+
+    public static SessionManager self() {
+        return instance;
+    }
+
+    // 所有会话
+    private ConcurrentHashMap&lt;ChannelId, Wsession&gt; allSessions = new ConcurrrntHashMap&lt;&gt;();
+
+    public void add(Wession session) {
+        if(!allSessions.containKey(session.getChannel().id())) {
+            addSession.put(session.getChannel().id(), session));
+        } else {
+            // 不应该进入到这里
+            logger.error(String.format(&quot;channelId[%s], ip[%s]重复注册 sessionManager&quot;, session.getChannel().id().asShortText(), session.getChannel().remoteAddress()));
+        }
+    }
+
+    public int ipSessionCount(String ip) {
+        int count = 0;
+        for(Wession session : allSessions.values()) {
+            if(session.getChannel().remoteAddress().toString().contains(ip)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public Wsession getSession(ChannelId channelId) {
+        return allSesions.get(channelId);
+    }
+
+    public Wession remove(ChannelId channelId) {
+        return allSessions.get(channeId);
+    }
+
+    public Wsession remove(ChannelId id) {
+        Wsession sesion = allSessions.remove(id);
+        if (session != null) {
+            session.notifyClose();
+        }
+        return session;
+    }
+
+    public ConcurrentHashMap&lt;ChannelId, Wession&gt; getAllSessions() {
+        return allSessions;
+    }
+
+}
+
+</code></pre>
+<p>基础包</p>
+<pre><code class="java">public class WrequestPacket {
+
+    private int packetId;
+    private byte[] data;
+
+    public static WrequestPacket valueOf(short packetId, byte[] data) {
+        WrequestPacket wp = new WrequestPacket();
+        wp.setPacketId(packetId);
+        wp.data =  data;
+        return wp;
+    }
+
+    // get/set
+}
+
+</code></pre>
+<pre><code class="java">@ProtobufClass
+public class WresponsePacket {
+    @Protobuf(description = &quot;协议&quot;)
+    private int packetId;
+    @Protobuf(description = &quot;数据&quot;)
+
+    private Object debugPacket;
+
+    public static WresponsePacket valueOf(int packetID, byte[] data) {
+        WresponawPacket wp = new WresponsePacket();
+        wp.setPacketId(packetId);
+        wp.data = data;
+        return wp;
+    }
+
+    public static WresponePacket valueOf(inr packetId, bytep[] data) {
+        WresponsePacket wp = new WresponsePacket();
+        wp.setPacketId(packetId);
+        wp.data = data;
+        return wp;
+    }
+
+    // 写入协议内容
+    public void wirte(ByteBuf out) {
+         // length
+         out.writeInt(data.length + 2);
+         out.wiriteShort(packetId);
+         out.writeBytes(data);
+    }
+
+    // get/set
+}
+
+</code></pre>
+<p>会话</p>
+<pre><code class="java">public class Wsession {
+    private static final AttributeKey&lt;Object&gt; MAIN_ENTITY = AttributeKey.valueOf(&quot;MAIN_ENTITY&quot;);
+    private static final AtomicInteger SEQ = new AtomicInteger(1);
+
+    private int id;
+
+    private Channel channel;
+
+    private String ip;
+
+    private int dispatcherHashCOde;
+
+    // 流量记录
+    private FirewallRecord firewallRecord = new FirewallRecord();
+
+    private List&lt;CloseListener&gt; closeListeners = new CopyOnWriteArrayList&lt;&gt;();
+
+    private List&lt;SendPacketListener&gt; sendPacketListeners = new ArrayList&lt;&gt;(1);
+
+    private List&lt;ReceivePacketListener&gt; receivePacketListeners = new ArrayList&lt;&gt;(1);
+
+    // 连接时间
+    private long connectTime;
+
+    @FunctionalInterface
+    public interface CloseListener {
+        void run();
+    }
+
+    @FunctionalInterface
+    public interface SendPacketListener {
+        void run(Object packet);
+    }
+
+    public static Wession valueOf() {
+        Wsession session = new Wsession();
+        session.channel = channel;
+        session.id = SEQ.incrementAndGet();
+        session.dispatcherHashCode = channel.hashCode();
+        String ip = channel.removeAddress().toString();
+        session.ip = ip.substring(1, ip.indexOd(&quot;:&quot;));
+        session.connectTime = System.currentTimeMillis();
+
+        if(LOGGER.isDebugEnabled()) {
+            session.getSendPacketListeners().add(packet -&gt; {
+                Object realPacket = packet;
+                if(realPacket instanceof WresponsePacket) {
+                    realPacket = ((Wrespon) realPacket).getDebugPacket();
+                }
+                if(realPacket instanceof ISipDebugOut &amp;&amp; ((ISkipDebugOut realPacket).skip()) {
+                    return;
+                }
+                Object target = session.getMainEntity();
+                LOGGER.debug(String.fotmat(&quot;----&gt;&gt;&gt;%s [%s]%S&quot;，
+                target == null ? channel : target,
+                realPacket.getClass().getSimpleName(),
+                JsonUtils.object2String(realPacket)));
+            });
+            session.getReceivePacketListrners().add(packet -&gt; {
+                if(packet instanceof ISkillDebugOut &amp;&amp; ((ISkipDebugOut) packet).skip()) {
+                    return;
+                }
+                if(packet.getClass().isAnnotationPresent(SkipDebugOut.class)) {
+                    return;
+                }
+                Object target = session.getMainEntity();
+                LOGGER.debug(String.format(&quot;&lt;&lt;&lt;--%s [%s]%s&quot;,
+                target == null ? channel : target,
+                packet.getClass().getSumpleName(),
+                JsonUtils.object2String( packet)));
+            });
+        }
+        return session;
+    }
+
+    private Wsession() {
+
+    }
+
+    public &lt;T&gt; getAttr(AttributeKey&lt;T&gt; key) {
+        Attribute&lt;T&gt; attr = channel.attr(key);
+        return attr == null ? null : attr.get();
+    }
+
+    public &lt;T&gt; void setAttr(AttributeKey&lt;T&gt; key, T t) {
+        channel.attr(key).set(t);
+    }
+
+    // 绑定玩家
+    public void bindPlayer(Object player) {
+        setAttr(PLAYER, null);
+    }
+    // 清除玩家绑定
+    public void unBindPlayer() {
+        setAttr(PLAYER, null);
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;Player&gt; Player getPlayer() {
+        return (Player) getAttr(Player);
+    }
+
+    // set/get
+
+    // 当dispatcherHashCode没有初始化时选择channel的hashcode作为分发code
+
+    // 业务消息推送
+    public ChannelFuture sendPacket(Object packet) {
+        ChannelFuture future = SocketPacketHandler.getIsntance().sendPacket(this, channel, packet, flusNow);
+        for (SendPacketListener listener : sendPacketListeners) {
+            listener.run(packet);
+        }
+        return future;
+    }
+
+    // 接收到协议触发
+    public void onReceivePacket(Object pacekt) {        
+        if(receivePacketListeners.isEmpty()) {
+            return;
+        }
+        try {
+            receivePacketListeners.forEach(receivePacketListener -&gt; receivePacketListener.run(packet));
+        } catch(Exception e) {
+            LOGGER.error(&quot;receivePacketListener error!&quot;, e);
+        }
+    }   
+
+    private AtomicBoolean flushTimer = new AtomicBoolean(false);
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = prime * result + id;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(obj == null) {
+            return false;
+        }
+        if(getClass() != obj.getClass()) {
+            return false;
+        }
+        Wsession other = (Wsession) obj;
+        if(id != other.id) {
+            return false;
+        }
+        return true;
+    }
+
+    // toString()
+
+
+    // 通知
+
+    public void notiftClose() {
+        for(CloseListenr listener : closeListeners) {
+            try {
+                listener.run();
+            } catch(Exception e) {
+                LOGGER.error(&quot;session CloseListener异常&quot;, e);
+            }
+        }
+    }
+
+
 }
 </code></pre>
-<p>添加会合并的延迟任务，同一种<code>CreatureUpdateType</code>类型的任务.在延迟时间内提交过多次也只会执行一次<br>PS:这里的延迟任务是不保证关服时一定能够执行完成，如果必须是在关服前执行的任务，请在玩家等处或者停服接口处执行<br><code>public void addMergeDelayTask(CreatureUpdateType type, int dispatcherCode, String name, int delay, TimeUnit timeUnit, Runnable runnable)</code></p>
-<hr>
-<h2 id="AbstractCreature-生物体，有血有肉的-AbstractCreature-extends-AbstractVisibleObject"><a href="#AbstractCreature-生物体，有血有肉的-AbstractCreature-extends-AbstractVisibleObject" class="headerlink" title="AbstractCreature 生物体，有血有肉的  AbstractCreature extends AbstractVisibleObject"></a><code>AbstractCreature</code> 生物体，有血有肉的  <code>AbstractCreature extends AbstractVisibleObject</code></h2><ul>
-<li>攻击模式</li>
-<li>移动控制器</li>
-<li>使用中技能</li>
-<li>生物血量状态  <code>CreatureLifeStats&lt;?&gt; lifeStats</code></li>
-<li>生物属性管理器 <code>CreatureGameStats gameStats</code></li>
-<li>效果管理器</li>
-<li>事件管理器 <code>ObserveController observeController</code></li>
-<li><p>技能管理器</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li><p><code>SocketPacket</code>注释标识的类会被认为是协议类，在<code>SocketPacketHander</code>的初始化时会根据协议类编译对应的生成JProtobuf协议类<code>Codec</code>，并将<code>packetId</code>,<code>packetClass</code>,<code>Codec</code>的关系储存在起来。</p>
 </li>
-<li><p>实际扣血控制器</p>
+<li><p><code>SocketMethod</code>是接受请求的声明，在Spring bean 加载启动中</p>
 </li>
-<li><p>所有的召唤物，每种类型的召唤物在场上可能有多个，像五条狗这种 <code>Map&lt;SummonType, List&lt;Summon&gt;&gt;</code></p>
-</li>
-<li><p>有时效的标记 <code>AgingMark&lt;CreatureAgingMark&gt; agingMark</code></p>
-</li>
-</ul>
-<p>构造器</p>
-<pre><code class="java">public AbstractCreature(ICreatureSoulFill creatureSoulFill) {
-    super(creatureSoulFill);
-
-    this.lifeStats  = creatureSoulFill.createLifeStats(this);
-    this.lifeStats.init();
-    this.moveController = new MoveController(this);
-    this.observeController = creatureSoulFill.createObserveController(this);
-    this.gameStats = creatureSoulFill.createCreatureGameStats(this);
-    this.effectController = creatureSoulFill.createEffectController(this);
-    this.skillController = creatureSoulFill.createSkillController(this);
-    this.agingMark = new AgingMark();
-}
-
-</code></pre>
-<p>方法</p>
-<ul>
-<li>获取单位等级</li>
-</ul>
-<hr>
-<h2 id="NPC-Npc-extends-AbstractCreature"><a href="#NPC-Npc-extends-AbstractCreature" class="headerlink" title="NPC Npc extends AbstractCreature"></a>NPC <code>Npc extends AbstractCreature</code></h2><ul>
-<li>路由 <code>RouteRoad</code></li>
-<li>AI <code>AbstractAi  ai</code></li>
-<li>生成时间 <code>long createTime</code></li>
-<li>抽象仇恨列表 <code>AbstractAggroList aggroList</code></li>
-<li><p>攻击时间 <code>Map&lt;Long, Long&gt; ontrAttackTime</code></p>
-</li>
-<li><p>攻击控制器 <code>NpcAttackController attackController</code></p>
-</li>
-<li><p>当前选中的目标 <code>AbstractCreature curTarget</code></p>
-</li>
-<li><p>当前目标加入时间 <code>long curTargetJoinTime</code><br>*<br>构造器</p>
-</li>
-</ul>
-<pre><code class="java">public NPC(INpcSoulFill npcSoulFill) {
-    super(npcSoulFill);
-
-    this.aggroList = npcSoulFill.createAggroList(this);
-    this.followPolicy = npcSoulFill.createFollowPolicy(this);
-    this.attackControler = ncSoulFill.createAttackController(this);
-
-    createTime = System.currentTimeMillis();
-}
-</code></pre>
-<ul>
-<li><code>ObjectResource getObjectResource()</code> 获取NVPC的对象配置</li>
-<li><code>ObjectFIghtAttrResource getObjectFightAttrResource()</code></li>
-</ul>
-<hr>
-<h2 id="怪物实体-Monster-extends-NPC"><a href="#怪物实体-Monster-extends-NPC" class="headerlink" title="怪物实体 Monster extends NPC"></a>怪物实体 <code>Monster extends NPC</code></h2><ul>
-<li><code>boolean needRefreshAggroList()</code> 判断某些事情发生(仇恨列表中的玩家死亡)后，该怪物是否需要立刻刷新仇恨列表</li>
-</ul>
-<p>重写的方法</p>
-<ul>
-<li><code>Object createShowInfo(FightPlayer witness)</code> 创建客户端显示用的信息体</li>
-<li><code>boolean canGo(int targetX, int targetY)</code> 是否可以到达</li>
-</ul>
-<h3 id="NPC攻击控制器"><a href="#NPC攻击控制器" class="headerlink" title="NPC攻击控制器"></a>NPC攻击控制器</h3><ul>
-<li>攻击任务 `Future&lt;?&gt; attackTask</li>
-</ul>
-<hr>
+</ol>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/游戏生物体的抽象/" data-id="cjys176gc004m7ovtguz3ezbu" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/10/31/项目笔记/通讯组件学习/" data-id="ck84a9qmh005jsovth7mnj3kc" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -257,7 +1124,7 @@ long initialDelay, long period, TimeUnit timeUnit, Tick&lt;T&gt; tick) {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/游戏生物体的抽象" ></div> 
+<div id="SOHUCS" sid="项目笔记/通讯组件学习" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -275,10 +1142,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-项目笔记/消耗系统学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-项目笔记/线上经典bug汇总" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/08/01/项目笔记/消耗系统学习笔记/" class="article-date">
-  <time datetime="2019-08-01T01:54:07.299Z" itemprop="datePublished">2019-08-01</time>
+    <h3 href="/2019/10/17/项目笔记/线上经典bug汇总/" class="article-date">
+  <time datetime="2019-10-17T13:48:22.295Z" itemprop="datePublished">2019-10-17</time>
 </h3>
     
   </div>
@@ -290,87 +1157,96 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="消耗系统学习笔记"><a href="#消耗系统学习笔记" class="headerlink" title="消耗系统学习笔记"></a>消耗系统学习笔记</h1><hr>
-<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><ol>
-<li>配置文件: resource/ConsumeResource.xlsx</li>
-<li>配置实体类 <code>ConsumeResource</code><ul>
-<li>配置主键 <code>key</code></li>
-<li>配置类型 <code>ConsumeType type</code></li>
-<li>分级参数，从0开始 <code>step</code></li>
-<li>分级类型，根据玩家可获取当前分级 <code>StepType stepType</code></li>
-<li>根据唯一id消耗（用于道具） <code>long objId</code></li>
-<li>背包列表类型列表 <code>List&lt;PackType&gt; packTyps</code></li>
-<li>消耗id <code>String code</code></li>
-<li>消耗值 <code>long value</code></li>
-</ul>
-</li>
-</ol>
-<hr>
-<h2 id="领域模型"><a href="#领域模型" class="headerlink" title="领域模型"></a>领域模型</h2><h3 id="消费对象-AbstractConsume-lt-Obj-gt"><a href="#消费对象-AbstractConsume-lt-Obj-gt" class="headerlink" title="消费对象 AbstractConsume&lt;Obj&gt;"></a>消费对象 <code>AbstractConsume&lt;Obj&gt;</code></h3><ul>
-<li><code>Result verify(Obj obj, long multiple)</code> 校验资源是否足够</li>
-<li><code>abstract void consume(Obj obj,ModuleInfo mouduleInfo, long multiple)</code> 消耗资源</li>
-<li><code>abstract ConsumeType getType()</code> 获取消费类型</li>
-<li><code>final AbstractConsume&lt;Obj&gt; merge(AbstractConsume&lt;Obj&gt; consume)</code> 合并</li>
-</ul>
-<p>消耗对象会继承该类并<code>getType()</code>和<code>consume(...)</code>方法。</p>
-<h3 id="消耗消息封装-消耗组-Consumes-lt-Obj-gt"><a href="#消耗消息封装-消耗组-Consumes-lt-Obj-gt" class="headerlink" title="消耗消息封装  消耗组 Consumes&lt;Obj&gt;"></a>消耗消息封装  消耗组 <code>Consumes&lt;Obj&gt;</code></h3><ul>
-<li><code>verity(Obj obj, int int account)</code> 检测消耗条件是否满足</li>
-<li><code>void act(Obj obj, ModuleInfo moduleInfo, int amount)</code> 消耗</li>
-<li><code>void actOrFailException(Obj obj, ModuleInfo moduleInfo, int amount)</code> 检测消耗条件并执行消耗</li>
-</ul>
-<h3 id="分级消耗-StepConsumes-lt-Obj-gt"><a href="#分级消耗-StepConsumes-lt-Obj-gt" class="headerlink" title="分级消耗 StepConsumes&lt;Obj&gt;"></a>分级消耗 <code>StepConsumes&lt;Obj&gt;</code></h3><p>采用TreeMap的结构储存,key为下限，value为消耗组</p>
-<ul>
-<li><code>addConsume(int step, Consume&lt;Obj&gt; consumes)</code> 添加分级消耗</li>
-<li><code>Consumes&lt;Obj&gt; getConsumes</code> 获取该级的消耗，使用</li>
-</ul>
-<h3 id="消耗类型-ConsumeType"><a href="#消耗类型-ConsumeType" class="headerlink" title="消耗类型 ConsumeType"></a>消耗类型 ConsumeType</h3><ul>
-<li><code>HP</code> 耗血</li>
-<li><code>MP</code> 耗蓝</li>
-<li><code>ITEM</code> 消耗物品</li>
-<li><code>CURRENCY</code> 消耗货币</li>
-<li><code>EFFECT</code> 消耗一个被动效果</li>
-<li><code>ENERGY_EXP</code> 消耗内功经验</li>
-<li><code>GANG_FUNDS</code> 消耗公会资金</li>
-<li><code>GOD_MIGHT</code> 神威值</li>
-<li><code>TREASURE_SCORE</code> 探宝积分</li>
-<li><code>JING_JIE_SCORE</code> 消耗境界点</li>
-<li><code>STOVE_SCORE</code> 消耗公会积分</li>
-<li><code>GANG_CONTRIBUTIONS</code> 消耗公会贡献</li>
-<li><code>TRANSFER_ITEM</code> 消耗跨服物品</li>
-</ul>
-<p>类型枚举<code>ConsumeType</code>拥有抽象方法<code>abstract &lt;T extends AbstractConsume&gt; create(ConsumeResource resource)</code></p>
-<h2 id="消费管理器-ConsumeManager"><a href="#消费管理器-ConsumeManager" class="headerlink" title="消费管理器 ConsumeManager"></a>消费管理器 <code>ConsumeManager</code></h2><ul>
-<li><code>Consumes getResource(ConsumeKey key)</code> 获取配置表的消耗</li>
-<li><code>&lt;Obj&gt; Consumes&lt;Obj&gt; createConsumes(List&lt;ConsumeResource&gt; resources)</code> 创建消耗组</li>
-<li><code>&lt;Obj&gt; StepConsumes&lt;Obj&gt; createStepConsumes(List&lt;ConsumeResource&gt; resource)</code> 创建分级消耗，需要保证<code>ConsumeResource#step</code>不冲突</li>
-</ul>
-<hr>
-<h2 id="如何使用消耗"><a href="#如何使用消耗" class="headerlink" title="如何使用消耗"></a>如何使用消耗</h2><ol>
-<li>如何要玩法需要的消耗是新的，要在<code>ConsumeType</code>内定义消耗类型并重写<code>create(...)</code>方法</li>
-<li>获取消耗的配置对象</li>
-<li>通过配置对象创建消耗消息组</li>
-<li>检测消耗组条件是否满足</li>
-<li>执行消耗</li>
-</ol>
-<pre><code class="java">    XxxResource&gt; XxxResource = XxxManager.getXxxResource();
+        <h1 id="线上经典bug汇总"><a href="#线上经典bug汇总" class="headerlink" title="线上经典bug汇总"></a>线上经典bug汇总</h1><h2 id="原子变量的incrementAndGet-和get-连用造成的并发问题"><a href="#原子变量的incrementAndGet-和get-连用造成的并发问题" class="headerlink" title="原子变量的incrementAndGet()和get()连用造成的并发问题"></a>原子变量的<code>incrementAndGet()</code>和<code>get()</code>连用造成的并发问题</h2><p>这是一段关于秘境玩法的业务代码，是在控制秘境这中个人副本中怪物和boss的刷新。<br>秘境的玩法：进入副本后，第一波小怪开始刷新，玩家击杀小怪，得到能量值。一波小怪死亡刷新下一波小怪，直到能量值达到指定数，开始刷新最终boss。杀死boss，玩法结束，获得奖励。</p>
+<h3 id="出现bug的代码"><a href="#出现bug的代码" class="headerlink" title="出现bug的代码"></a>出现bug的代码</h3><p>下面为开发版本修复后的代码</p>
+<pre><code class="java">// 官阶幻境场景脚本
+public class MysterySceneObserver extends WorldWorldMapInstanceObserverAdapter {
 
-    Consume&lt;Player&gt; consumes = XxxResource.getConsumes();
+    // 能量
+    private AtomicInteger energy = new AtomicInteger();
 
-    Result result = consumes.verify(player,1);
-    if(!result.isSuccess()) {
-        throw ManagedException.valueOf(result.getCode())
+    // 当前场景小怪数量
+    private AtomicInteger monsterNum = new AtomicInteger();
+
+    // ....... 省略....
+
+    @Overrdide
+    public void objectEnterMap(AbstractVisibleObject object, WorldMapInstance mapInstance) {
+        if(object instanceof Boss) {
+            // ....... 省略....
+        } else if (object instancof Monster) {
+            monsterNum.incrementAndGet();
+            ((Monster) object).getObserveController().attachWithCurrentMap(ICreatureDead.class, (monsterDead, lastAttacker -&gt; {
+                // 原本没有修复前这里并没有`monsterLeftNum`这个参数，而是直接执行`decrementAndGet()`就算了，并未赋值变量
+                int monsterLeftNum = monsterNum.decrementAndGet();
+                if(mysterySceneResource.getMonsterEnergy().contailnsKey(monsterDead.getObjectKey())) {
+                    int addEnergy = mysterySceneResource.getMonsterEnergy().get(monsterDead.getObjectKey());
+                    energy.addAndGet(addEnergy);
+                    if(!refreshBoss &amp;&amp; status == SceneStatus.INIT) {
+                        refreshMonster(monsterLeftNum, mapInstance);
+                    }
+                    // 发送当前能量
+                    mapInstance.playerIterator().forEachRemaining();
+                    mapInstance.playerIterator().forEachRemaining(fightPlayer -&gt; fightPlayer.sendPacket(MysterySceneEneryResp.valueOf(enery.get(), getLeftSeconds())));
+                }
+            }));
+        }
     }
 
-    consumes.actOrFailException(palyer,ModuleInfo.valueOf(ModuleType.Xxx,SubModuleType.Xxxx),1)
 
+    // 判断刷怪 剩余的小怪数量
+    private void refreshMonster(int monsterLeftNum, WorldMapInstance mapInstance) {
+        // 攒满能量
+        if(energy.get() &gt;= mysterySceneResource.getMaxEnergy()) {
+            refreshBoss = true;
+            energy.getAndSet(mySterySceneResoure.getMaxEnergy());
+            // 清除小怪
+            mapInstance.asyncClearObject(visibleObject -&gt; visibleObjec instanceof Monster &amp;&amp; !(visibleObject instanceof Boss));
+            // 召唤boss
+            SpawnManger.getInstance().spawnAllNpc(mapInstance, mysterySceneResource.getBossLayerIndex(), spawnResource -&gt; {
+                if(spawnResource.size() == 1) {
+                    return spawnResources;
+                }
+                List&lt;SpawnResource&gt; randomList = new ArrayList&lt;&gt;(spawnResource);
+                int index = RandomUtils.betweenInt(0,randomList.size()-1, true);
+                List&lt;SpawnResource&gt; result = new  ArrayList&lt;&gt;();
+                result.add(randomList.get(index));
+                return result;
+                );
+            });
+        } else {
+            // 能量未召唤boss继续刷小怪
+            /**
+            *  这里未修复之前是`if(monsterNum.get()== 0)`，
+            **/
+            if(monsterLeftNum == 0) {
+                if(refreshMonsterIndex &lt; mysterySceneResource.getMonsterIndexList().size()) {
+                    // 召唤小怪波次
+                    SpawnManager.getInstance().spawnAllNpc(mapInstance, mysterySceneResource.getMonsterIndexList().get(refreshMonsterIndex), null);
+                }
+                refreshMonsterIndex++;
+            }
+        }
+    }
+}
 </code></pre>
-
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><p>由于怪物死亡的事件是异步执行的，当玩家同时杀死多个怪物时，就可能出现一种情况：当某个线程刚执行原子变量<code>monsterNum</code>的<code>decrementAndGet()</code>方法并且尚未执行<code>get()方法</code>时，另一个线程可能执行了<code>decrementAndGet()</code>方法，导致前者线程中<code>monsterNum</code>不正确。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul>
+<li>线上版本的热修: 用<code>synchronize(this)</code>包裹<code>decrementAndGet()</code>方法和<code>get()</code>方法的调用。</li>
+<li>开发版本的修复：为<code>refreshMonster</code>方法增加一个参数<code>int monsterLeftNum</code>，由<code>decrementAndGet()</code>直接赋值，在<code>refreshMonster</code>内不再使用<code>if(monsterNum.get()== 0)</code>，而是改为<code>if(monsterLeftNum == 0)</code></li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>在实际开发中，对原子变量的使用必须要小心，不要以为原子变量就不会出现并发问题。</li>
+<li>原子变量的<code>decrementAndGet()</code>和<code>get()</code>方法连续使用时，一定要注意<code>get()</code>方法求出的值是够有可能已经改变</li>
+<li>上诉代码中两个原子变量<code>AtomicInteger energy</code>和<code>AtomicInteger monsterNum</code>的同时操作和参与判断，也是很有可能有并发问题的，这要根据业务场景来处理。</li>
+</ul>
+<h2 id="修改配置类"><a href="#修改配置类" class="headerlink" title="修改配置类"></a>修改配置类</h2>
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/消耗系统学习笔记/" data-id="cjys176g2004i7ovtqc4b2jch" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/10/17/项目笔记/线上经典bug汇总/" data-id="ck84a9qmf005hsovt5afkdfl0" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -378,7 +1254,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/消耗系统学习笔记" ></div> 
+<div id="SOHUCS" sid="项目笔记/线上经典bug汇总" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -396,10 +1272,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-项目笔记/条件选择器学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-项目笔记/排名系统学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/08/01/项目笔记/条件选择器学习笔记/" class="article-date">
-  <time datetime="2019-08-01T01:54:07.283Z" itemprop="datePublished">2019-08-01</time>
+    <h3 href="/2019/10/17/项目笔记/排名系统学习/" class="article-date">
+  <time datetime="2019-10-17T09:31:42.707Z" itemprop="datePublished">2019-10-17</time>
 </h3>
     
   </div>
@@ -411,14 +1287,648 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="条件选择器学习笔记"><a href="#条件选择器学习笔记" class="headerlink" title="条件选择器学习笔记"></a>条件选择器学习笔记</h1><p><code>chooser</code>作为条件选择器。可以抽象出一些统一的</p>
+        <h1 id="排名系统学习"><a href="#排名系统学习" class="headerlink" title="排名系统学习"></a>排名系统学习</h1><p>排名榜用于游戏中玩家间的排名和对比，从战力、等级、装备评分、公会、副本通关层数等很多其他模块的数据可以来用进行排行。为了减少代码重复和工作量，所以一个通用排行系统是必须。</p>
+<h2 id="排行的抽象"><a href="#排行的抽象" class="headerlink" title="排行的抽象"></a>排行的抽象</h2><p><code>Rank</code>是对所有排名名词的抽象，每个进行排名的角色都拥有<code>Rank</code></p>
+<pre><code class="java">public class Rank {
+    // 注意，第一名为零
+    public static final NO1 = 0;
+    public static final Rank NOT_IN_RANK = new Rank(false, -1);
+    // 是否上榜
+    private final boolean inRank;
+
+    private final int rank;
+
+    private Rank(boolean inRank, int rank) {
+        this.inRank = inRank;
+        this.rank = rank;
+    }
+
+    public Rank(int rank) {
+        this(true, rank);
+    }
+
+    // 在榜上玩家处理
+    public void ifInRank(Consumer&lt;Integer&gt; consumer) {
+        if(this.isInRank()) {
+            consumer.accept(rank);
+        }
+    }
+
+    // 判断排名是否在排行榜上
+    public boolean isInRank() {
+        return inRank;
+    }
+
+    // 获取排名值
+    public int getRank() {
+        return rank;
+    }
+}
+</code></pre>
+<p>单个排行榜的信息,多个<code>Rank</code>可以组成<code>RankList</code>，而<code>RankList</code>包含各种类型的排名，并且会持久化的</p>
+<pre><code class="java">@Entity
+@Cached(type=CacheType.MANUAL)
+@InitailConfig(type=InitialType.ALL)
+public class RankList extends AbstractEntity&lt;RankPk&gt; {
+    // 排名前n名变化时，才通知，包括调出前3名的
+    private transient static final int NOTIFY_RANK = 3;
+    @Id
+    private RankPk key;
+    @Lob
+    private String rankJson;
+    private transient List&lt;RankEntity&gt; rankList;
+    private transient Map&lt;Long, RankEntity&gt; rankMap;
+
+    private transient ReentrantWriteLock lock = new ReentrantReadWriteLock();
+
+    // 跨服结算
+    private long lastSettleTime;
+    // 跨服同步缓存
+    private transient AtomicBoolean sync = new AtomiBoolean(false);
+
+    // 记录有改变的排名实体，用于跨服增量同步
+    private transient RankUpdateSet changeSet;
+    // true为内存排行，不用入库
+    private transient boolean memory;
+
+    public static RankList valueOf(RankPk rankPk, boolean memory) {
+        RankList vo = new RankList();
+        vo.kwy = rankPk;
+        //+1是为了排行榜满时，新增上榜数据，在逻辑运算时不用扩容
+        vo.rankList = new ArrayList&lt;&gt;(rankPk.getRankType().getMaxRankSize()+1);
+        vo.rankMap. = new ConcurrentHashMap&lt;&gt;(rankPk.getRankType().getMAxRankSize()+1);
+        if(rankPk.getRankType().isCross()) {
+            vo.changeSet = new RankUpdateSet(vo.key);
+        }
+        vo.memory = memory;
+        return vo;
+    }
+
+    public static RankList valueOf(RankPk rankPk) {
+        return valueOf(rankPk, false);
+    }
+
+    public void directInsertRank(RankEntity rankEntity) {
+        if(rankMap.put(rankEntity.getUuid(), rankEntity) == null) {
+            this.rankList.add(rankEntity.getRank(), rankEntiy);
+        }
+    }
+
+    public RankEntity removeFromRank(int rank) {
+        RankEntity remove = this.rankList.remove(rank);
+        this.rankMap.remove(remove.getUuid());
+        return remove;
+    }
+
+    private void updateRecord(RankEntity rankEntity) {
+        if(getId().getRankType().isCross() &amp;&amp; ServerType.isCenterServer()) {
+            this.changeSet.updateRank(rankEntity.getUuid());
+        }
+    }
+
+    @Ovveride
+    public RankPk getId() {
+        return key;
+    }    
+
+    @Override
+    protected void serialize() {
+        rankList.forEach(RankEntity::serialize);
+        rankJson = rankJson.object2String(rankList);
+    }
+
+    @Override
+
+    public void unSerialize() {
+
+    }
+
+    public boolean isNo1(long uuid) {
+        RankEntity rankEntity = rankMap.get(uuid);
+        if(rankEntity == null) {
+            return false;
+        }
+        return rankEntity.isNo1();
+    }
+
+    public Rank getRank(long uuid) {
+        RankList rankEntity = rankMap.get(uuid);
+        if(rankEntity == null) {
+            return Rank.NOT_IN_RANK;
+        } else {
+            return new Rank(rankEntity.getRank());
+        }
+    }
+
+    public RankEntity getRankEntity(long uuid) {
+        return rankMap.get(uuid);
+    }
+
+    // 清空排行榜
+    public void clear() {
+        lock.writeLock.lock();
+        try {
+            rankMap.clear();
+            rankList.clear();
+        } finally {
+            lock.writeLock().unlock();
+        }
+        RankManager.self().update(this);
+    }
+
+    // 清空排行榜,但不更新
+    public void clear() {
+        lock.writeLock.lock();
+        try {
+            rankMap.clear();
+            rankList.clear();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    // 添加数据，不做排序处理
+    public void addRankEntity(RankEntity rankEntyry) {
+        if(rankMap.put(rankEntity.getUuid(), rankEntity) == null) {
+            rankList.add(rankEntity);
+        }        
+    }
+
+    // 清除过多的数据
+    public void removevOverfull(Predicate&lt;RankEntity&gt; predicate) {
+        // 可移除玩家数 = 榜单玩家数量-榜单可显示最大值
+        int count = rankList.size() - key.getRankType().getLimit();
+        if(count &lt;= 0) {
+            return;
+        }
+        lock.writeLock().lock();
+        try {
+            for(int i=0; i &lt; rankList.size() &amp;&amp; c&lt;count; i++) {
+                rankEntity = rankList.get(i);
+                if(predicae.test(rankEntity)) {
+                    removeWithIndex(i);
+                    c++;
+                }
+            }
+            // 重新设置排名
+            for(int i=0; i &lt; rankList.size(); i++) {
+                setNewRank(rankList.get(i),i);
+            }
+            RankManager.self().update(this);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    private void setNewRank(RankEntity rankEntity, int newRank) {
+        int oldRank = rankEntity.getRank();
+        if(newRank == oldRank) {
+            return;
+        }
+        rankEntity.getRank(newRank);
+        rankEntity.setUpdateTime(System.currentTimeMills());
+        if(newRank &lt; NOTIFY_RANK || oldRank &lt; NOTIFY_RANK&gt;) {
+            try {
+                this.key.getRankType().getHandler().onChange(rankEntity.getUuid(), oldRank, rankEntity.getRank());
+            } catch(Exception e) {
+                logger.error(&quot;rank change&quot;, e);
+            }
+        }
+    }
+
+    // 移出数据，不做排序处理
+    public void removeWithIndex(int index) {
+        RankEntity rankEntity = rankList.remove(index);
+        if(rankEntity != null) {
+            rankMap.remove(rankEntity.getUuid());
+        }
+        RankManger.self().update(this);
+    }
+
+    // 重置排行顺序
+    public void sortWithRank() {
+        lock.writeLock().lock();
+        try {
+            Collections.sort(rankList);
+            for(int i=0; i&lt; rankList.size(); i++) {
+                rankList.get(i).sentRank(i);
+            }
+        } finally {
+            lock.writeLock().unlock();
+    }
+
+    // 更新排行榜数据
+    public RankEntity update(long uuid, long newValue, Consumer&lt;RankEntity&gt; extraUpdater) {
+        lock.writeLock().lock();
+        try {
+            RankEntity rankEntity = rankMap.get(uuid);
+            if(rankEntity == null) {
+                // 未上榜的单位
+                if(!canIntoRank(newValue)) {
+                    return null;
+                }
+                rankEntity = new RankEntity(key.getRankType(), uuid, rnkList.size(), newValue);
+                // 上榜更新
+                addRankEntity(rankEntity);
+                update(rankEntity, RankWave.UP, extraUpdater, true);
+                // 记录新增的排名
+                updateRecord(rankEntity);
+            } else {
+                // 已经在榜上的单位
+                long oldValue = rankEntity.getValue();
+                if(!key.getRankType().needUpdateWhenChange(oldValue,newValue)) {
+                    // 排行值不需要进行变化
+                    return null;
+                }
+                rankEntity.setValue(newValue);
+                update(rankEntity, key.getRankType().comprator(oldValue, newValue), extraUpdater, false);
+                // 记录新增的排名
+                updateRecord(rankEntity);
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    // 判断是否满足进入排行榜条件
+    public boolean canIntoRank(long newValue) {
+        return !(isFull() &amp;&amp; key.getRankType().comparator(getLastValue(), newVlaue) != RankWave.UP);
+    }
+
+    // 更新排行榜
+    private void update(RankEntuty updateEntity, RankWave wave, Consumer&lt;RankEntity&gt; extraUpdater, boolean first) {
+        if(wave == RankWave.NONE) {
+            return;
+        }
+        int mark = wave.getMark();
+        int myOldRank = updateEntity.getRank();
+        for(int i=updateEntiy.getRank()+ mark; i&lt;rankList.size() &amp;&amp; i&gt;=0; i +=mark) {
+            RankEntity exist = rankList.get(i);
+            if(key.getRankType().comparator(exist.getValue(), updateEntity.getValue()) != wave) {
+                break; // 找到合适的位置了
+            }
+            // 交换位置
+            rankList.set(i - mark, exist);
+            setNewRank(exist, i-mark);
+            rankList.set(i, updateEntiy);
+            updateEntity.setRank(i);
+            updateEntiy.setRank(i);
+        }
+        // 更新额外信息
+        if(extraUpdater != null) {
+            extraUpdater.accept(updateEntiy);
+        }
+        if(rankList.size() &gt; key.getRankType().getMaxRankSize) {
+            removeWithIndex(rankList.size() -1);
+        }
+        boolean isRankChange = myOldRank != updateEntity.getRank();
+        if(isRankChange) {
+            // 名次有变更在记录更新时间
+            updateEntity.setUpdateTime(System.currentTimeMills());
+        }
+        boolean isChange = first || (isRankChange &amp;&amp; (myOldRank &lt; NOTIFY_RANK || updateEntity.getRank() &lt; NOTIFY_RANK ));
+        if(isChange) {
+            this.key.getRankType().getHandler.onChange(updateEntity.getUuid(), myOldRank, updateEntity.getRank());
+        }
+    }
+
+    // 排行榜最低
+    public long getLastValue() {
+        lock.readLock.lock();
+        try {
+            if(rankList.isEmpty()) {
+                return 0;
+            }
+            return rankList.get(rankList.size()-1).getValue();
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    // 排行榜是否已满
+    public boolean isFull() {
+        lock.readLock().lock();
+        try {
+            return rankList.size() &gt;= key.getRankType().getMaxRankSize();
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    // 获取分页数据，例如获取前20名（0，20）
+    public List&lt;RankEntity&gt; page(int start, int end) {
+        // ...
+    }
+
+    public List&lt;RankEntity&gt; getAll() {
+        // ...
+    }
+
+    // 获取榜单第一
+    public RankEntity getFirstRankEntity() {
+        if(rankList.isEmpty()) {
+            return null;
+        }
+        return rankList.get(0);
+    }
+    // 移出数据，更新排名
+    public void removeWithUuidAndSort(long uuid) {
+
+    }
+
+    // 重置排名
+    public void resetRank(int rank) {
+        for(int i=rank; i&lt; this.rankList.size(); i++) {
+            this.rankList.get(i).setRank(i);
+        }
+    }
+    public void replaceRankList(List&lt;RankEntity&gt; rankList) {
+        lock.writeLock().lock();
+        try {
+            this.rankList = rankList;
+            this.rankMap.clear();
+            for(RankEntity rankEntiy : this.rankList)) {
+                this.ranjMap.puifAbsent(rankEntity.getUuid(), rankEntity);
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public boolean isMemory() {
+        return memory;
+    }
+
+}
+</code></pre>
+<p>排行榜数据波动方式</p>
+<pre><code class="java">public enum RankWave {
+    // 排名上升
+    UP(-1),
+    // 排名下降
+    DOWN(1),
+    // 不变
+    NONE(0),
+
+    private int mark;
+
+    RankWave(int mark) {
+        this.mark = mark;
+    }
+    public int getMark() {
+        return mark;
+    }
+}
+</code></pre>
+<p>排行榜数据库联合主键</p>
+<pre><code class="java">@Embeddable
+public class RankPk implements Serializable, Comparable&lt;RankPk&gt; {
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = &quot;varchar(32) NOT NULL&quot;)
+    private RankType rankType;
+
+    private long subKey;
+
+    public RankPk() {
+
+    }
+
+    public static RankPk valueOf(RankType rankType, long subKey) {
+        RankRk vo = new RankPk();
+        vo.subKey = subkey;
+        vo.rankType = rankType;
+        return vo;
+    }
+
+   // 各种get/set ......
+    @Override
+    public int compareTo(RankPk p) {
+        if(rankType != o.rankType()) {
+            return Integer.compare(rankType.oridianl(), o.rankType.ordinal());
+        }
+        return Long.compare(subKey,o.subKey);
+    }
+
+    @Override
+    public boolean equals() {
+        if(this== o) {
+            return true;
+        }
+        if(o ==null || getClass() != o.getClass()) {
+            return false;
+        }
+        RankRk ranRk = (RankPk) o;
+        return rankType == rankPk.rankType &amp;&amp; 
+        Objects.equals(subKey, rankPk.subKey);
+    }
+
+    // hashCode() 与 toString() 方法 .......
+
+
+</code></pre>
+<h2 id="排行类型"><a href="#排行类型" class="headerlink" title="排行类型"></a>排行类型</h2><p>排行榜类型在枚举里定义，然后也要在RankResource.xlsx里配置相同的排行类型。</p>
+<pre><code class="java">@Desc(&quot;排行榜类型&quot;)
+public enum RankType implements EnumReadable,ValueConverter, EnumValue {
+
+    @Desc(&quot;战力排行&quot;)
+    FIGHT_FORCE(1) {
+        @Override
+        public int getMaxRankSize() {
+            // 比排行榜可现实的最大数大0.2，为了在移除流失玩家时做候补
+            return (int) (this.getLimit() * 1.2);
+        }
+    }
+    @Desc(&quot;等级排行&quot;)
+    LEVEL(2) {
+        @Override
+        public int getMaxRankSize() {
+            // 比排行榜可显示的最大数大0.2，为了在移除流失玩家时做候补
+            return (int) (this.getLimit() * 1.2);
+        }
+    }
+
+    // ......
+
+    @Desc(&quot;跨服争霸全服模式个人英雄塔排行&quot;)
+    TRANSFER_HERO_TOWER_SER_PER(34,ServerGroupType.godKillTowerServer),
+    @Desc(&quot;飞升等级榜&quot;)
+    FLY_LEVEL(38),
+
+    RankType(int value) {
+        this(value,null);
+    }
+
+    RankType(int value, ServerGroupType serverGroupType) {
+        this.value = value;
+        this.serverGroupType = serverGroupType;
+    }
+    // 排行榜可显示的最大数
+    public int getLimit() {
+        return RankManger.self().getRankResource(this).getRankAmount();
+    }
+    // 服务器排行的最大数
+    public int getMaxRankSize() {
+        return this.getLimit();
+    }
+
+    // 比较排行榜值的大小，如果有不同的排序方式，可以覆盖该方法
+    public RankWave comparator(long oldValue, long newValue) {
+        return (oldValue &lt; newValue) ? RankWave.UP : ((oldValue == newValue) ? rankWave.NONE:RankWave.DOWN);
+    }
+
+    // 当排行榜内的单位，在数据变化后，检测是否需要更新值，更新后会导致排行变动
+    public boolean needUpdateWhenChange(long oldValue, long newValue) {
+        return oldValue != newValue;
+    }
+
+    @Override
+    public int value() {
+        return value;
+    }
+
+    // 获取排行榜处理器
+    public BaseRankHandler getHandler() {
+        return BaseRankHandler.get(this);
+    }
+
+    public boolean isCross() {
+        return serverGroupType != null;
+    }
+
+    public ServerGroupType getServerGroupType() {
+        return serverGroupType;
+    }
+}
+</code></pre>
+<p>排行配置</p>
+<pre><code class="java">@Resouce
+public class RankResource {
+    @ResourceId
+    public RankType rankType;
+    // 排行榜上榜最大人数
+    private ubr rankAmount;
+    // 客户端显示最大数量。因为发奖原因，可能服务端需要保存的排行榜比客户端需要显示的数量大
+    private int showAmount;
+    // 达到排行榜第一的通告
+    private MessageCode rankUpNumberOne;
+    // 排行榜第一登陆的通告
+    private MessageCode numberOneLoginOn;
+
+
+}
+</code></pre>
+<h2 id="排行处理器"><a href="#排行处理器" class="headerlink" title="排行处理器"></a>排行处理器</h2><p>角色的游戏数据变化会影响排行榜的变化，所以需要对各种排行类型定义对应的处理器</p>
+<p>排行榜处理接口</p>
+<pre><code class="java">public abstract class BaseRankHandler {
+    // 所有排行榜类型对应处理器接口
+    private static EnumMap&lt;RankType, BaseRankHandler&gt; handlerMap = new EnumMap&lt;&gt;(RankType.class);
+
+    public static BaseRankHandler get(RankType type) {
+        return handlerMap.get(type);
+    }
+
+    public static Collection&lt;BaseRankHandler&gt; getHandlers() {
+        return handlerMap.values();
+    }
+
+    @PostConstruct
+    public void init() {
+        RankTpye type = type();
+        if(handlerMap.constaisKey(type)) {
+            throw new RuntimeException(String.format(&quot;RankHandler type[%s]重复！&quot;,type));
+        }
+        handlerMap.put(type, this);
+    }
+
+    public RankList getRanKList() {
+        return RankManager.self().getRankList(type());
+    }
+
+    public RankList getRankList(long subKey) {
+        return RankManager.self().getRankList(type(), subKey);
+    }
+
+    public Rank getRank(long uuid) {
+        return getRankList().getRank(uuid);
+    }
+
+    // 更新排行信息
+    protected void updateRank(long subKey, long uuid, long newValue, Consumer&lt;RankEntiy&gt; extraUpdater)   {
+        getRankList(subKey).update(uuid,newValue, extraUdater);
+    }
+
+    // 每一个排行榜类型，都应该有一个`BaseRankHandler`
+    public abstract RankType type() ;
+
+    // 获取该排行榜中，与玩家关联的排名实体。以玩家为主体的排行就是玩家本身的排行实体
+    // 不以玩家为主体的排行，例如公会排名名，就是玩家所属工会排名
+    public abstract RankEntity getRankEntity(long uuid);     
+
+    // 排行主键
+    public abstract RankEntity getRankEntity(long uuid);
+
+    // 游戏服发送排行榜信息
+    public void sendRankList(long playerId, int start, int terminal) {
+
+    }
+
+    public &lt;T&gt; T getRankListPacket(long playerId, int start, int terminal) {
+        return null;
+    }
+
+    // 该排名奖励发给哪些玩家
+    public List&lt;Long&gt; getRewardPlayerIds(long uuid) {
+        return Collection.emptyList()
+    }
+
+    // 清空排行榜
+    public void clear() {
+        RankManager.self().walkRankList(type(), RankList::clear());
+    }
+
+    // 名次变化，只有前几名排行变化才触发
+    public void onChange(long uuid, int oldRank, int newRank) {
+
+    }
+
+    // 给排行榜内发奖
+    public void sendRankReward(long uuid, int rank) {}
+
+}
+</code></pre>
+<p>实现了<code>BaseRankHandler</code>接口的处理器</p>
+<p>玩家等级排行榜处理器</p>
+<pre><code class="java">@Component
+public class PlayerLevelRankHandler extends BasePlayerRankHandler {
+    @Overide
+    public RankType type() {
+        retrun RankType.LEVEL;
+    }
+
+    @Override
+    public long getRankValue(Player player) {
+        return palyer.getLevel();
+    }
+
+    // 战力排行
+    @ReceiverAnno
+    public void updateRank(Player player) {
+        // 玩家等级不会降低，不做降低移出排行榜操作，如果前提不成立，需要支持降级导致的出榜逻辑
+        if(getRankValue(player) &gt;= RankContants.getInstance().getEnterLevelRankListValue()) {
+            super.updateRank(player);
+        }
+    }
+}
+</code></pre>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>添加一个新的排行榜，需要在<code>RankType</code>添加一个新的枚举，在<code>RankResource.xlsx</code>添加对应的排行类型。实现<code>BasePlayerRankHandler</code>为排行榜指定处理器，描述如果获取排行值、如果处理排行的更新。</p>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/08/01/项目笔记/条件选择器学习笔记/" data-id="cjys176fz004h7ovt082gr26z" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2019/10/17/项目笔记/排名系统学习/" data-id="ck84a9qlx0052sovtqnf1ao6j" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -426,7 +1936,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/条件选择器学习笔记" ></div> 
+<div id="SOHUCS" sid="项目笔记/排名系统学习" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -446,7 +1956,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -460,23 +1970,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2019/08/01/项目笔记/背包系统学习笔记/">(no title)</a>
+            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
           </li>
         
           <li>
-            <a href="/2019/08/01/项目笔记/目标系统学习笔记/">(no title)</a>
+            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2019/08/01/项目笔记/玩家实体的抽象/">(no title)</a>
+            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2019/08/01/项目笔记/游戏生物体的抽象/">(no title)</a>
+            <a href="/2019/10/31/项目笔记/通讯组件学习/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2019/08/01/项目笔记/消耗系统学习笔记/">(no title)</a>
+            <a href="/2019/10/17/项目笔记/线上经典bug汇总/">(no title)</a>
           </li>
         
       </ul>
@@ -488,7 +1998,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -497,7 +2007,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
     </div>
   </div>
 
@@ -518,7 +2028,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2019 WeiJian Qian
+      &copy; 2020 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>

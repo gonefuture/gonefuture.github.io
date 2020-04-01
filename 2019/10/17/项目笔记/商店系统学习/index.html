@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="商店系统学习商店系统几乎是RPG游戏里的标配，玩家可以通过NPC、游戏界面用各种代币购买各种物品。商店有各种各样的表现形式，可以是指定某个NPC，也可以游戏界面直达。一个通用的商店可以减少大量的重复代码。 业务抽象商城分类 public enum ShopType {      // 普通商城     COMMONSHOP {         @Override         public bo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gonefuture">
+<meta property="og:url" content="http://gonefuture.top/2019/10/17/项目笔记/商店系统学习/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="商店系统学习商店系统几乎是RPG游戏里的标配，玩家可以通过NPC、游戏界面用各种代币购买各种物品。商店有各种各样的表现形式，可以是指定某个NPC，也可以游戏界面直达。一个通用的商店可以减少大量的重复代码。 业务抽象商城分类 public enum ShopType {      // 普通商城     COMMONSHOP {         @Override         public bo">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-10-28T07:18:31.710Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gonefuture">
+<meta name="twitter:description" content="商店系统学习商店系统几乎是RPG游戏里的标配，玩家可以通过NPC、游戏界面用各种代币购买各种物品。商店有各种各样的表现形式，可以是指定某个NPC，也可以游戏界面直达。一个通用的商店可以减少大量的重复代码。 业务抽象商城分类 public enum ShopType {      // 普通商城     COMMONSHOP {         @Override         public bo">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-项目笔记/商店系统学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/10/17/项目笔记/商店系统学习/" class="article-date">
+  <time datetime="2019-10-17T08:18:26.604Z" itemprop="datePublished">2019-10-17</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="商店系统学习"><a href="#商店系统学习" class="headerlink" title="商店系统学习"></a>商店系统学习</h1><p>商店系统几乎是RPG游戏里的标配，玩家可以通过NPC、游戏界面用各种代币购买各种物品。商店有各种各样的表现形式，可以是指定某个NPC，也可以游戏界面直达。一个通用的商店可以减少大量的重复代码。</p>
+<h2 id="业务抽象"><a href="#业务抽象" class="headerlink" title="业务抽象"></a>业务抽象</h2><p>商城分类</p>
+<pre><code class="java">public enum ShopType {
+
+    // 普通商城
+    COMMONSHOP {
+        @Override
+        public boolean canBuy(Player player) {
+            return true;
+        }
+    }
+    // 公会商店
+    GANGSHOP {
+        @Override
+        public boolean canBuy(Player player) {
+            return player.hasGang();
+        }
+    }
+
+    public abstract boolean canBuy(Player player);
+}
+
+</code></pre>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>商店配置其实是对商店中商品的配置，因为商店本身就是有商品组成的。而购买商品的过程，其实与合成、升级物品一样，都是”代价-回报”的过程，有消耗<code></code>ConsumeResource<code>有奖励</code>RewardResource`，然后再辅以进行这个过程先决条件（环境的、玩家的）。</p>
+<pre><code class="java">@Resource
+public class ShopResource implements IAferResouce, IResouceCheck {
+    @ResourceId
+    private int id;
+    // 购买条件
+    private ConditionsOrAndResource conditionResource;
+    private ConditionsOrAnd&lt;Player&gt; buyConditions;
+
+    // 展示条件
+    private ConditionsOrAndResource showCondition;
+    private ConditionsOrAnd&lt;Player&gt; showConditions;
+
+    // 购买消耗
+    private List&lt;ConsumeResource&gt; consumeResources;
+    private stepConsumee&lt;Player&gt; consumes;
+
+    // 购买奖励
+    private List&lt;RewardResource&gt; rewardResource;
+    private Rewaerd reward;
+
+    // 购买消耗
+    private List&lt;RewardResource&gt; rewardResources;
+    private Reward reward;
+
+    // 快速购买
+    private List&lt;RewardResource&gt; rewardResources;
+    private Reward reward;
+
+    // 商城页签
+    private ShopTab tab;
+
+    // 单次可购买最大数量
+    private int maxCount;
+
+    // 限购刷新策略
+    private TimeResource flushResource;
+    private TimeStrategy flushStrategy;
+
+    // 限制,&lt;涉及限制的类型,限制的数目&gt;
+    private Map&lt;LimiteBuyType, Integer&gt;  limitContents;
+
+    // 关联商品id集合,有些商品的限购是与同类商品相关的
+    private  List&lt;Integer&gt; attachIds;
+
+    // 赠送的东西
+    private Reward givingResouce;
+
+    // 启服是否刷新限购次数
+    private boolean openServerRefreshLimitBuy;
+
+    // 省略......
+
+    // 是否是全服或公会限购
+    public boolean isServerOrGangLimit() {
+        return limitContents != null &amp;&amp;
+        limitContents.containsKey(LimitBuyType.GangLimitBuy); ||
+        limitContents.containsKey(LimitBuy);
+    }
+
+    // 是否跨服限购
+    public boolean isTransferLimit() {
+        return limitContents.containsKey(LimitBuyType.TransferLimitBuy);
+    }
+
+    // ......
+}
+</code></pre>
+<p>商城限购类型</p>
+<pre><code class="java">@Desc(&quot;商城限购类型&quot;)
+public enum LimitBuyType {
+    // 玩家限购
+    PlayerLimitBuy {
+        @Override
+        public boolean isNotLimited(Player player, int shopId, int limitCount, int mount) {
+            ShopRecordEntity entity = ShopManager.getInstance().getShopRecordEntity(shopId);
+            Map&lt;Long, Integer&gt; record = entity.getLimitBuyRecord();
+            int count = record.getOrDefault(player.getPlayerId(), 0);
+            ShopResource resource = ShopManger.getInstance().getShopRecordEntity(shopId);
+            if(resource.getArracheIds() != null) {
+                for(int attachId : resource.getAttachIds()) {
+                    if(attachId == shopId) {
+                        continue;
+                    }
+                    count += ShopManager.getInstance().getPlayerBuyNum(plyaer, attachId);
+                }
+                count += mount;
+                return count &lt;= limitCount;
+            }
+        }
+
+        @Override
+        public void record(Plyaer player, int shopId, int amount) {
+            ShopRecordEntity entity = ShopManager.getInstance().getShopRecordEntity(shopId);
+            Map&lt;Long, Integer&gt; limitBuyRecord = entity.getLimitBuyRecord();
+            limitBuyRecord.put(player.getPlayerId(), limitBuyReCord.getOrDefault(player.getPlayerId(),0) + amount);
+            ShopManager.getInstance().update(entity);
+        }
+    },
+
+    // 全服限购
+    @Desc(&quot;全服限购&quot;)
+    ServerLimitBuy {
+        @Override
+        public boolean isNotLimited(Player player, int shopId, int limitCount, int mount) {
+            ShopRecordEntity entity = ShopManager.getInstance().getShopRecordEntity(shopId);
+            int buyCount = mount;
+            for(Collection&lt;Integer&gt; itemBuyRecords : entity.getLimitBuyRecord()) {
+                for(int record : itemBuyRecords) {
+                    buyCount += record;
+                }
+            }
+             return buyCount &lt;= limitCount;
+        }
+        @Override
+        public void record(Player player, int shopId, int amount) {
+            // nothing
+        }
+    }
+
+    // 公会限购
+    @Desc(&quot;公会限购&quot;)
+    GangLimitBuy{
+
+    },
+
+    // 跨服分组限购
+    @Desc(&quot;跨服分组限购&quot;)
+    TransferLimitBuy {
+
+    };
+
+    public abstract boolean isNotLimited(Player player, int shopId, int limitCOunt, int mount);
+    public abstract void record(Player player, int shopId, int amount);
+}
+</code></pre>
+<h2 id="购买信息的持久化"><a href="#购买信息的持久化" class="headerlink" title="购买信息的持久化"></a>购买信息的持久化</h2><p>玩家的购买记录需要持久化，特别是对需要进行限购的商品。</p>
+<p>玩家商城购买记录</p>
+<pre><code class="java">@Entity
+@Cached(type = CacheType.MANUAL)
+@InitialConfig(type = InitialType.ALL)
+@IPublicEntity
+public class ShopRecordEntity  extends AbstractEntity&lt;Integer&gt; {
+    // 商品id
+    @Id
+    private int id;
+    // 玩家周期购买记录&lt;玩家id,购买数量&gt;
+    @Lob
+    private String gangContent;
+    // 公会周期否买记录&lt;公会id,购买数量&gt;
+     private transient Map&lt;Long, Integer&gt; limitBuyRecord = new ConcurrentHashMap&lt;&gt;(0);
+     private transient Map&lt;Long, Integer&gt; gangLimitBuyRecord = new ConcurrentHashMap&lt;&gt;(0);
+
+    @Lob
+    private String gangContext;
+    // 商品下次刷新时间
+    private long flushTime;
+
+    // ......
+
+}
+
+</code></pre>
+<h2 id="商店的业务逻辑"><a href="#商店的业务逻辑" class="headerlink" title="商店的业务逻辑"></a>商店的业务逻辑</h2><ul>
+<li><p><code>ShopManager</code>中有初始化商城，定时刷新商品信息集合、重置商品限购信息等方法，涵盖了商城的公共方法。</p>
+</li>
+<li><p><code>ShopService</code>中定义了商品的购买、发送商品信息的方法。</p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>商店商品应该被抽象到很通用。</li>
+<li>由于商店物品可能被限购，处于跨服环境时更为复杂，所以限购逻辑的设计很重要。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/10/17/项目笔记/商店系统学习/" data-id="ck84a9qls004xsovtdhmfcz2y" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/商店系统学习" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/10/17/项目笔记/排名系统学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/10/14/项目笔记/游戏线程模型学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/10/31/项目笔记/通讯组件学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/10/17/项目笔记/线上经典bug汇总/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

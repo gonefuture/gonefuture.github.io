@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Spring源码组件学习-BeanPostProcessor定义BeanPostProcessor称为Bean后置处理器，他是Spring中定义的接口，在Spring容器的创建过程中（具体为Bean初始化前端）会回调BeanPostProcessor中定义的两个方法。 public interface BeanPostProcessor {     Object interface postPro">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gonefuture">
+<meta property="og:url" content="http://gonefuture.top/2019/08/01/学习笔记/Spring源码组件学习-BeanPostProcessor/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="Spring源码组件学习-BeanPostProcessor定义BeanPostProcessor称为Bean后置处理器，他是Spring中定义的接口，在Spring容器的创建过程中（具体为Bean初始化前端）会回调BeanPostProcessor中定义的两个方法。 public interface BeanPostProcessor {     Object interface postPro">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-08-05T04:30:57.480Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gonefuture">
+<meta name="twitter:description" content="Spring源码组件学习-BeanPostProcessor定义BeanPostProcessor称为Bean后置处理器，他是Spring中定义的接口，在Spring容器的创建过程中（具体为Bean初始化前端）会回调BeanPostProcessor中定义的两个方法。 public interface BeanPostProcessor {     Object interface postPro">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-学习笔记/Spring源码组件学习-BeanPostProcessor" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2019/08/01/学习笔记/Spring源码组件学习-BeanPostProcessor/" class="article-date">
+  <time datetime="2019-08-01T13:43:03.709Z" itemprop="datePublished">2019-08-01</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="Spring源码组件学习-BeanPostProcessor"><a href="#Spring源码组件学习-BeanPostProcessor" class="headerlink" title="Spring源码组件学习-BeanPostProcessor"></a>Spring源码组件学习-BeanPostProcessor</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p><code>BeanPostProcessor</code>称为Bean后置处理器，他是Spring中定义的接口，在Spring容器的创建过程中（具体为Bean初始化前端）会回调<code>BeanPostProcessor</code>中定义的两个方法。</p>
+<pre><code class="java">public interface BeanPostProcessor {
+    Object interface postProcessBeforeInitialization(Object bean,String beanName) throws BeanException;
+
+    Object interface postProcessAfterInitialization(Object bean,String beanName) throws BeanException;
+}
+
+</code></pre>
+<p>其中<code>postProcessBeforeInitiallization</code>方法会在每一个bean对象的初始化方法调用之前回调；<br>其中<code>postProcessAfterInitiallization</code>方法会在每一个bean对象的初始化方法调用之后回调；</p>
+<p>自定义<code>BeanPostProcessor</code></p>
+<p>查看BeanPostProcessor源码，可以看到它两个方法的参数都相同，其中第一个参数<code>Object bean</code>表示当前正在初始化的bean对象。此外两个方法都返回Object类型的实例，返回值既可以是将入参<code>Object bean</code>原封不动的返回出去，也可以对当前bean进行包装再返回。</p>
+<h2 id="执行原理"><a href="#执行原理" class="headerlink" title="执行原理"></a>执行原理</h2><p><code>BeanPostProcessor</code>的执行是定义在容器的刷新过程中，容器刷新对象具体的方法为：<br><code>AbstractApplicationContext.refresh()</code><br>在<code>refresh</code>方法执行的调用栈中会去调用<br><code>AbstractAutowireCapableBeanFactory.deCreateBean()</code>方法，该方法节选源码如下:</p>
+<pre><code class="java">protected Object initializeBean(final String beanName, final Object bean, RootBeanDefinition mbd) {
+    if(mbd == null || !mbd.isSynthetic()) {
+        wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
+    }
+    invokeInitMethods(beanName, wrappedBean, mbd);
+
+    if(mbd == null || !mbd.isSynthetic()) {
+        wrappedBean = applyBeanPostProcessorsAfterInitialzation(wrappedBean, beanName);
+    }
+    return wrappedBean;
+}
+</code></pre>
+<p>看到在调用初始化方法前后会分别调用<code>applyBeanPostProcessorsBeforeInitializatioan()</code>和<code>applyBeanPostProcessorsAfterInitialization()</code>。<br><code>applyBeanPostProcessorsBeforeInitialization()</code>方法的源码如下</p>
+<pre><code class="java">public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeansException {
+    Object result = existingBean;
+    // 获取所有的BeanPostProcessor进行遍历
+    for(BeanPostProcessor beanProcessor : getBeanPostProcessor()) {
+        result = beanProcessor.postProcessBeanBeforeInitiallization(result, beanName);
+        if(result == null) {
+            return result;
+        }
+    }
+    return result;
+}
+</code></pre>
+<p>可以看到其逻辑为遍历得到容器中所有的<code>BeanPostProcessor</code>,然后一次执行<code>postProcessBeforeInitialization</code>,一旦返回null,就跳出for循环不执行后面的<code>BeanPostProcessor.postProcessBeforeInitialization()</code>,也就是说如果返回的<br>是null那么我们通过getBean方法将得不到目标Bean。<br><code>applyBeanPostProceorsAfterInitialzation()</code>方法的逻辑与上面一样。</p>
+<h2 id="Spring中常见的几个Bean后置处理器"><a href="#Spring中常见的几个Bean后置处理器" class="headerlink" title="Spring中常见的几个Bean后置处理器"></a>Spring中常见的几个Bean后置处理器</h2><p>Spring底层的很多功能特性都是借助<code>BeanPostProcessor</code>的子类来实现。</p>
+<h3 id="AppliacationContextAwareProcessor"><a href="#AppliacationContextAwareProcessor" class="headerlink" title="AppliacationContextAwareProcessor"></a>AppliacationContextAwareProcessor</h3><p><code>AppliacationContextAwareProcessor</code>作用是当应用程序定义的Bean实现<code>ApplicationContextAware</code>接口时注入<code>ApplicationContext</code>对象。</p>
+<pre><code class="java">class ApplicationContextAwareProcessor implements BeanPostProcessor {
+    private final ConfigurableApplicationCotext applicationContext;
+
+    private final StringValueResolver embeddedVakueResolver;
+
+    // Create a new ApplicationContextAwareProcessor for the given context
+    public ApplicationContextAwareProcessor(ConfigurableApplicationContext applicationContext ) {
+        this.applicationContext = applicationContext;
+        this.embeddedValueResolver = new EmbeddedValueResolver(applicationContext.getBeanFactory());
+    }
+
+    @Override
+    public Object postProcessBeforeInitialization(final Object bean, String beanName) throws BeansException {
+        AccessControlContext acc = null;
+        // 这里bean是Car,它实现了ApplicationContextAware接口
+        if (System.getSecurityManager() != null &amp;&amp;
+                (bean instanceof EnvironmentAware || bean instanceof EmbeddedValueResolverAware ||
+                        bean instanceof ResourceLoaderAware || bean instanceof ApplicationEventPublisherAware ||
+                        bean instanceof MessageSourceAware || bean instanceof ApplicationContextAware)) {
+            invokeAwareInterfaces(bean);
+        }
+
+        return bean;
+    }
+
+    private void invokeAwareInterfaces(Object bean) {
+        if (bean instanceof Aware) {
+            if (bean instanceof EnvironmentAware) {
+                ((EnvironmentAware) bean).setEnvironment(this.applicationContext.getEnvironment());
+            }
+            if (bean instanceof EmbeddedValueResolverAware) {
+                ((EmbeddedValueResolverAware) bean).setEmbeddedValueResolver(this.embeddedValueResolver);
+            }
+            if (bean instanceof ResourceLoaderAware) {
+                ((ResourceLoaderAware) bean).setResourceLoader(this.applicationContext);
+            }
+            if (bean instanceof ApplicationEventPublisherAware) {
+                ((ApplicationEventPublisherAware) bean).setApplicationEventPublisher(this.applicationContext);
+            }
+            if (bean instanceof MessageSourceAware) {
+                ((MessageSourceAware) bean).setMessageSource(this.applicationContext);
+            }
+            if (bean instanceof ApplicationContextAware) {
+                // 会执行这里回调实现类重写的setApplicationContext方法，然后将this.applicationContext注入给Car
+                ((ApplicationContextAware) bean).setApplicationContext(this.applicationContext);
+            }
+        }
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) {
+        return bean;
+    }
+
+}
+</code></pre>
+<h3 id="InitDestroyAnnotationBeanPostProcessor"><a href="#InitDestroyAnnotationBeanPostProcessor" class="headerlink" title="InitDestroyAnnotationBeanPostProcessor"></a>InitDestroyAnnotationBeanPostProcessor</h3><p><code>InitDestroyAnnotationBeanPostProcessor后</code>置处理器是用来处理自定义的初始化方法和销毁方法。Spring中提供了3种自定义初始化和销毁方法：</p>
+<ol>
+<li>通过@Bean指定<code>init-method</code>和<code>destroy-method</code>属性</li>
+<li>Bean实现InitializingBean（定义初始化逻辑），DisposableBean（定义销毁逻辑）;</li>
+<li>@PostConstruct：在bean创建完成并且属性赋值完成；来执行初始化方法<br> @PreDestroy：在容器销毁bean之前通知我们进行清理工作</li>
+</ol>
+<p><code>InitDestroyAnnotationBeanPostProcessor</code>的作用就是让第3种方式生效。</p>
+<p>InitDestroyAnnotationBeanPostProcessor会在Bean创建的时候通过反射的方式查找包含@PostConstruct和@PreDestroy注解的方法，然后再通过反射执行方法。InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization()的源码</p>
+<pre><code class="java">public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    // 获取bean的metadata
+    LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());
+    try {
+        // 执行@PostConstruct指定的init方法
+        metadata.invokeInitMethods(bean, beanName);
+    }
+    catch (InvocationTargetException ex) {
+        throw new BeanCreationException(beanName, &quot;Invocation of init method failed&quot;, ex.getTargetException());
+    }
+    catch (Throwable ex) {
+        throw new BeanCreationException(beanName, &quot;Failed to invoke init method&quot;, ex);
+    }
+    return bean;
+}
+</code></pre>
+<h3 id="ConfigurationClassPostProcessor"><a href="#ConfigurationClassPostProcessor" class="headerlink" title="ConfigurationClassPostProcessor"></a>ConfigurationClassPostProcessor</h3><h3 id="PostProcessorRegistrationDelegate"><a href="#PostProcessorRegistrationDelegate" class="headerlink" title="PostProcessorRegistrationDelegate"></a>PostProcessorRegistrationDelegate</h3><h3 id="CommonAnnotationBean"><a href="#CommonAnnotationBean" class="headerlink" title="CommonAnnotationBean"></a>CommonAnnotationBean</h3><h3 id="RequiredAnnotationBeanPostProcessor"><a href="#RequiredAnnotationBeanPostProcessor" class="headerlink" title="RequiredAnnotationBeanPostProcessor"></a>RequiredAnnotationBeanPostProcessor</h3><h3 id="ApplicationListenerDetetor"><a href="#ApplicationListenerDetetor" class="headerlink" title="ApplicationListenerDetetor"></a>ApplicationListenerDetetor</h3>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2019/08/01/学习笔记/Spring源码组件学习-BeanPostProcessor/" data-id="ck84a9qkq0049sovt0lywsoft" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="学习笔记/Spring源码组件学习-BeanPostProcessor" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/05/项目笔记/项目全部模块速览/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/01/项目笔记/背包系统学习笔记/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/10/31/项目笔记/通讯组件学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/10/17/项目笔记/线上经典bug汇总/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>
