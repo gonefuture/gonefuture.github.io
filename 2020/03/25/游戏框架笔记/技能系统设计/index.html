@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="gonefuture">
 <meta property="og:description" content="概述生物拥有SkillContoller和EffectController 技能Skill并不直接对目标产生影响，而是通过效果Effcect对目标产生形形色色的效果作用（如伤害、控制、属性变化、位移、buffer/debuffer等）。 天赋Innate则会影响Effect的作用和组合。 技能法球一种触发器效果，只有达到某个触发条件时（如进行普攻、使用技能、死亡时）才会触发效果。 为了方便配置作用">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-04-01T06:39:45.965Z">
+<meta property="og:updated_time" content="2020-04-01T10:23:50.885Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="技能系统设计">
 <meta name="twitter:description" content="概述生物拥有SkillContoller和EffectController 技能Skill并不直接对目标产生影响，而是通过效果Effcect对目标产生形形色色的效果作用（如伤害、控制、属性变化、位移、buffer/debuffer等）。 天赋Innate则会影响Effect的作用和组合。 技能法球一种触发器效果，只有达到某个触发条件时（如进行普攻、使用技能、死亡时）才会触发效果。 为了方便配置作用">
@@ -116,8 +116,9 @@
 <p>技能<code>Skill</code>并不直接对目标产生影响，而是通过效果<code>Effcect</code>对目标产生形形色色的效果作用（如伤害、控制、属性变化、位移、buffer/debuffer等）。 天赋<code>Innate</code>则会影响<code>Effect</code>的作用和组合。</p>
 <h2 id="技能"><a href="#技能" class="headerlink" title="技能"></a>技能</h2><h3 id="法球"><a href="#法球" class="headerlink" title="法球"></a>法球</h3><p>一种触发器效果，只有达到某个触发条件时（如进行普攻、使用技能、死亡时）才会触发效果。</p>
 <p>为了方便配置作用目标，这里的法球效果在<code>SkillResouce</code>的<code>orbGrops</code>触发法球组中配置才能生效。</p>
-<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>技能会触发效果，</p>
-<h2 id="天赋"><a href="#天赋" class="headerlink" title="天赋"></a>天赋</h2><p>天赋配置的关键由于天赋参数<code>param</code>，这个字段有多个配置方式，可以是公式、id(效果id、技能id、目标选择id等)、属性、属性Ma、属性公式Map。天赋的配置防止方式由天赋类型来决定，已经在枚举中定义好。</p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>技能会触发效果。</p>
+<h3 id="触发器效果-Trigger"><a href="#触发器效果-Trigger" class="headerlink" title="触发器效果 Trigger"></a>触发器效果 Trigger</h3><h2 id="天赋"><a href="#天赋" class="headerlink" title="天赋"></a>天赋</h2><p>天赋配置的关键由于天赋参数<code>param</code>，这个字段有多个配置方式，可以是公式、id(效果id、技能id、目标选择id等)、属性、属性Ma、属性公式Map。天赋的配置防止方式由天赋类型来决定，已经在枚举中定义好。</p>
+<p>天赋不仅可以配置在EffectResouce表中，也可以在SkillResouce、TargetChooerResuece。</p>
 <p>天赋让一个<code>Effect</code>类型可以触发更多的<code>Effect</code></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2>
       
