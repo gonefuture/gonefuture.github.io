@@ -83,1659 +83,6 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-项目笔记/属性系统学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2020/08/22/项目笔记/属性系统学习笔记/" class="article-date">
-  <time datetime="2020-08-22T08:42:00.569Z" itemprop="datePublished">2020-08-22</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="属性系统学习笔记"><a href="#属性系统学习笔记" class="headerlink" title="属性系统学习笔记"></a>属性系统学习笔记</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h2 id="持有属性物品抽象"><a href="#持有属性物品抽象" class="headerlink" title="持有属性物品抽象"></a>持有属性物品抽象</h2><p>生物属性管理器</p>
-<pre><code class="java">public class CreatureGameStats implements IStatRoot  {
-    protected static Logger logger = LoggerFactoty.getLogger(CreatureGameStats.class);
-    /**
-    *   总属性
-    */
-    protected Map&lt;StatEnum, StatValue&gt; stats;
-    /**
-    *  属性根节点
-    */
-    protected StatNode statRoot;
-
-    protected AbstractCreature owner;
-    protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
-    // 属性拥有者
-    public CreatureGameStats(AbstractCreature owner) {
-        this.owner = owner;
-        this.stats = new ConcurrentHashMap&lt;&gt;();
-        this.statRoot = StatNode.crateRoot(this);
-    }
-
-    @Override
-    public void changeStats() {
-        Map&lt;StatEnum, Long&gt; diffMap = StatUtils.diffWithNewMap(oldStats, bewStats);
-        if(diffMap.isEmpty()) {
-            return;
-        }
-        Map&lt;StatEnum, Long&gt; changeMap = new HashMap&lt;&gt;(diffMap.size());
-        lock.writeLock().lock();
-        try {
-            // 添加
-            change(childNode, diffMap, changeMap)
-        } finally {
-            lock.writeLock().unlock();
-        }
-        if(Start.debug) {
-            // 抽烟检查
-            checkException(childNode);
-        }
-        // 通知属性变化
-        notifyChange(childNode, changeMap);
-    }
-
-    // 该属性，溜子类执行空间，但是注意这个方法在锁中
-    protected void change(StatNode childNode, Map&lt;StatEnum, Long&gt; diffMap, Map&lt;StatEnum, Long&gt; changeMap) {
-        StatUtils.mergeToMap(stats, childNode.isToBase(), diffMap, changeMap);
-    }
-
-    // 属性变化后的逻辑
-    protected void notifyChange(StatNode childNode, Map&lt;StatEnum, Long&gt; changeStatMap) { 
-        lock.readLock().lock();
-        try {
-            if (changeStatMap.containsKey(StatEnum.MAX_HP)) {
-                // 最大血量变化
-                owner.getLifeStats().changeMaxHp(stats.get(StatEnum.MAX_HP).getTotal());
-            }
-            if (changeStatMap.containsKey(StatEnum.MAX_MP)) {
-                // 最大蓝量变化
-                owner.getLifeStats().changeMaxMp(stats.get(StatEnum.MAX_MP).getTotal());
-            }
-            if (changeStatsMap.containsKey(StatEnum.MAX_ENERGY)) {
-                // 最大内功变化
-                owner.getLifeStats().changeMaxEnergy(stats.get(StatEnum.MAX_ENERGY).getTotal());
-            }
-            if(owner.isSpawned())  {
-                // 已经出生状态下的属性同步
-                syncStat(changeStatsMap);
-            }
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    private void syncStat(Map&lt;StatEnum, Long&gt; changeStatsMap) {
-        List&lt;Stat&gt; list = new ArrayList&lt;&gt;(2);
-        if(changeStatsMap.containsKey(StatEnum.ATTACK_SPEED)) {
-            list.add(Stat.valueOf(StateEnum.SPEED, getCurrentStat(StatEnum.SPEED)));
-        }
-        if(changeStatMap.containsKey(StatEnum.ATTACK_SPEED)) {
-            list.add(Stat.valueOf(StatEnum.ATTACK_SPEED, getCurrentStat(StatEnum.ATTACK_SPEED)));
-        }
-        if(!list.isEmpty()) {
-            PacketSendUtility.broadcastPacketImmediately(owner, CreatureStatChangeResp.valueOf(owner.getObjectId(), list), true);
-        }
-    }
-
-    @Override
-    public void removeChild(Serializable key) {
-        throw new RuntimeException(&quot;stat root can not remove!&quot;);
-    }
-
-    @Override
-    public void fillParentKey(List&lt;String&gt; list) {
-
-    }
-
-    // 获取属性树显示信息
-    public String getPrintStatTree() {
-        return JSON.toJSONString(statRoot, JsonUtils.SERIALIZE_CONFIG, StatNodeFilter.INSTANCE, JsonUtils.SERIALIZER_FEATURES);
-    }
-    // 获取属性树显示信息
-    public StatNode getPrintStatTreeStatNode() {
-        return statRoot;
-    }
-    // 属性来源
-    public StatNode getOrCreateStatNode(StatSource statSource) {
-        return statRoot.getOrCreateChild(statSource);
-    }
-    // 获取子节点
-    public StatNode getChildNode(List&lt;String&gt; childKeys) {
-        StatNode node = statRoot;
-        lock.readLock().lock();
-        try {
-            for(String childKey : childKeys) {
-                node = node.getOrCreateChild(childKey);
-            }
-        } finally {
-            lock.readLock().unlock();
-        }
-        return node;
-    }
-    // 属性集合
-    public Map&lt;StatEunm, StatValue&gt; getStatTotal() {
-        return stats;
-    }
-    // 所有属性集合
-    public Map&lt;StatEnum, Long&gt; getAllStat() {
-        lock.readLock().lock();
-        try {
-            return StatUtils.toSimpleMap(stats);
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    // 清空属性
-    public void clear() {
-        lock.writeLock().lock();
-        try {
-            stats.clear();
-            this.statRoot = StatNode.createRoot(this);
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
-    // 指定类型的属性值
-    public long getCurrentStat(StatEnum stat) {
-        switch(stat) {
-            case HP_CUR:
-                return owener.getLifeStats().getCurrrentHp();
-            case MP_CUR:
-                return owner.getLifeStats().getCurrentMp();
-            case ENERGY_CUR:
-                return owner.getLifeStats().getCurrentEnergy();
-            case HP_CUR_R :
-                return owner.getLifeStats().getHpRct();
-            default : {
-                long value = 0;
-                lock.readLock().lock();
-                try {
-                    if(stats.contiansKey(stat)) {
-                        value = stats.get(stat).getTotal();
-                    }
-                } finally {
-                    lock.readLock().unlock();
-                }
-                // 属性使用时，不能为负数
-                return Math.max(value, 0);
-            }
-        }
-    }
-
-    // 获取万分比属性类型的小数形式，比如储存时是5000，表示概率/比值为0.5,返回值就为0.5
-    public double getCurrentStatWithOdds(StatEnum stat) {
-        double value = getCurrentStat(stat);
-        return value / GameMathUtil.ODDS_BASE;
-    }
-    // 获取属性集合List,包含基础值
-    public List&lt;Stat&gt; getStatList() {
-        lock.readList().lock();
-        try {
-            return StatUtils.toList(stats);
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-    // 增强版本，获取属性集合List,包含基础值
-    public List&lt;StatExInfo&gt; getStatExList() {
-        lock.readLock().lock();
-        try {
-            return StatUtils.toStatExList(stats);
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    // 获取属性集合Map
-    public Map&lt;StatEnum, Long&gt; getStatMap() {
-        lock.readLock().lock();
-        try {
-            return StatUtils.toSimpleMap(stats);
-        } finally {
-            lock.radLock().unlock();
-        }
-    }
-    // 通过属性列表进行初始化
-    public void initWithStatMap(Map&lt;StatEnum, Long&gt; initStats) {
-        initStats.forEach( (statEnum, value) -&gt; {
-            StatValue statValue = new StarValue();
-            statValue.alter(true, value);
-            stats.put(statEnum, statValue);
-        });
-    }
-    // 检测#{@link #stats} 与 statRoot. # {@link #statRoot::getStatTotal()} 是否一致
-    public void checkException(StatNode childNode) {
-
-    }
-
-    // 创建跨服传输属性数据
-    public StatNode buildStatMoedel() {
-        return statRoot.buildMedel();
-    }
-    // 解析跨服传输的属性数据
-    public void parseStatModel(StatNodeModel model) {
-        StatNode.parseModelOnlyChild(statRoot, model);
-    }
-}
-
-玩家属性管理器
-
-```java
-public class PlayerGameStats extends CreatureGameStats {
-    // 可计算战力的总属性
-    protected Map&lt;StatEnum, StatValue&gt; fightForceStats;
-    // 用于合并玩家属性变化信息
-    private Set&lt;StatEnum&gt; changeStats = new ConcurrentSet();
-    // 记录变化的节点
-    private Map&lt;String, Map&lt;StatEnum, Long&gt;&gt; changeStatsNode = new ConcurrentHashMap&lt;&gt;();
-    // 属性拥有者
-    public PlayerGameStats(AbstractCreature owner) {
-        super(owner);
-        this.fightForceStats = new ConcurrentHashMap&lt;&gt;();
-    }
-    @Override
-    protected void change(StatNode childNode, Map&lt;StatEnum, Long&gt; diffMap, Map&lt;StatEnum, Long&gt; changeStatsMap) {
-        super.change(childNode, diffMap, changeSatsMap);
-        if(childNode.isToFightForce()) {
-            StatUtils.mergeToMap(fightForceStats, childNode.isToBase(), diffMap, null);
-        }
-        FightPlayer fightPlayer = (FightPlayer) this.owner;
-        if(PlayerManager.getInstace().isOnline(this.owner.getObjectId())) {
-            fightPlayer.excPlayer(player -&gt; {
-                // 本服玩家属性变化，尝试抛属性变化事件到跨服
-                PlayerSyncManger.self().trySubmitTransferPlayerEvent(player, G2tStatNodeChangeEvent.valueOf(childNode));
-            }, transferPlayer -&gt; {
-                // 跨服玩家属性变化
-            });
-        }
-        if(fightPlayer.hasRefreshAgingMark(CreatureAgingMark.statsChange) {
-            ArrayList&lt;String&gt; statKeys = new ArrayList&lt;&gt;();
-            childNode.fillParentKey(statKeys);
-            // .......
-        }
-    }
-    @Override
-    protected void notifyChange(StatNode childNode, Map&lt;StatEnum, Long&gt; changeStatsMap) {
-        super.notifyChange(childNode, changeStatsMap);
-        lock.readLock().lock();
-        try {
-            // 记录变化的节点key
-            Map&lt;StatEnum, Long&gt; map = this.changeStatsNode.computeIfAbsent(childNode.getFullKeyString(), s -&gt; ConcurrentHashMap&lt;&gt;());
-            // 记录变化的属性
-            StatUtils.mergeHashMap(map, changeStatMap);
-        } finally {
-            lock.readLock().unlock();
-        }
-        changeStats.addAll(changeStatsMap.keySet());
-        // 如果是玩家，延迟合并通知玩家自身属性变化
-        owner.addSelfMergeDelayTaskWithMills(CreatureUpdateType.UPDATE_STAT, 200, () -&gt; notifyPlayerChange(StatEnum.SPEED, StatEnum.ATTACK_SPEED));
-    }
-
-    // 获取所有可对战力加成的属性
-    public Map&lt;StatEnum, Long&gt; getAllFightForceStat() {
-        lock.readLock().lock();
-        try {
-            return StatUtils.toSimpleMap(fighrForceStats);
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    // 获取可加成战斗的属性值
-    public long getFightForceStat(StatEnum statEnum) {
-        lock.readLock().lock();
-        try {
-            StatValue statValue = fightForceStats.get(statEnum);
-            retrun statValue == null ? 0 : statValue.getTotal();
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    // 通知玩家属性变化情况
-    public void notifyPlayerChange(StatEnum... igonre) {
-        if(changeStats.isEmpty()) {
-            return;
-        }
-        Set&lt;StatEnum&gt; ignoreSet = new HashSet&lt;&gt;();
-        if(ignore != null) {
-            ignoreSet.addAll(Arrays.asList(ignore));
-        }
-        lock.readLock().lock();
-        try {
-            // 通知属性变化细信息
-            List&lt;Stat&gt; changeStats = new ArrayList&lt;&gt;(this.changeStats.size());
-            for(StatEnum statEnum : this.changeStats) {
-                if(!igonreSet.contains(statEnum)) {
-                    changeStats.add(Stat.valueOf(statEnum, getCurrentStat(statEnum)));
-                }
-                if(!changeStats.isEmpty()) {
-                    CreatureStatChangeResp resp = CreatureChangeResp.valueOf(owner.getObjectId(), changeStats);
-                    PacketSendUtility.sendPacket(owner, resp);
-                }
-                // 抛出属性变化事件
-                ((FightPlayer) owner).submitEvent(PlayerStatChangeEvent.valueOf(new HashMap&lt;&gt;(this.changeStatsNode)));
-
-                // 清除属性变化事件
-                this.changeStatsNode.clear();
-                this.changeStats.clear();
-            } finally {
-                lock.readLock().unlock();
-            }
-        }
-    }
-
-    @Override
-    public StatNodeModel buildStatModel() {
-        StatNodeModel statNodeModel = statRoot.buildModel();
-        notifyPlayerChange();
-        return statNodeMoedel;
-    }
-}
-</code></pre>
-<h2 id="属性的抽象"><a href="#属性的抽象" class="headerlink" title="属性的抽象"></a>属性的抽象</h2><p>属性值</p>
-<pre><code class="java">public class StatValue {
-    private static final int RATIO_DENOMINATOR = 10000;
-    // 总值
-    private long total;
-    // 基础值
-    private long base;
-    // 额外加成固定值，不算入基础值
-    private long addtional;
-    // 额外加成比例
-    private int ratio;
-
-    // 合并
-    public static StatValue merge(StatValue s1, StatValue s2) {
-        StatValue statValue = new StatValue();
-        statValue.base = s1.base + s2.base;
-        statValue.ratio = s1.ratio + s2.ratiio;
-        statValue.calTotal();
-        return statValue;
-    }
-
-    // 获取总值
-    public long getTotal() {
-        return total;
-    }
-
-    // 除去不算入基础值的总值
-    public long getTotalWithoutAdditional() {
-        return total - additional;
-    }
-    // 重置
-    public void clear() {
-        this.total = base = additional = 0;
-    }
-    // 增减属性
-    public long alter(boolean toBase, long alter) {
-        if(toBase) {
-            this.base += alter;
-        } else {
-            this.addtional += alter;
-        }
-        return calTotal();
-    }
-    // 修改属性加成比例
-    public long aleterRatio(long alterRatio) {
-        ratio += alterRatio;
-        return calTotal();
-    }
-
-    // 计算总值
-    private long calTotal() {
-        totaol = base + addtional + base * ratio / RATIO_DENOMINATOR;
-        return total;
-    }
-
-    // 获取基础值
-    public long getBase() {
-        return base;
-    }
-
-    // 重写Object几个基础方法
-
-}
-
-</code></pre>
-<p>战斗属性定义</p>
-<pre><code class="java">@Desc(&quot;战斗属性定义&quot;)
-public enum StatEnum implements EnumReadable {
-
-    @Desc(&quot;最大气血&quot;)
-    MAX_HP(0,&quot;最大气血&quot;),
-    @Desc(&quot;最大蓝量&quot;)
-    MAX_HP(1,&quot;最大蓝量&quot;),
-
-    @Desc(&quot;内功值加成比例&quot;)
-    ENERGY_R(124,&quot;内功值加成比例&quot;, MAX_ENERGY),
-    @Desc(&quot;精灵速度加成比例&quot;)
-    SPIRIT_SPEED_R(503,&quot;精灵速度加成比例&quot;),
-    @Desc(&quot;血量万分比伤害&quot;)
-    HP_HURT_R(504, &quot;血量万分比伤害&quot;),
-
-    private final int value;
-
-    // 属性名称
-    private final String name;
-
-    // 如果该数组不为null
-    // 表示是按比例加成
-    // 数组内容为加成的基本属性列表
-    private final StatEnum[] ratioBase；
-
-    StatEnum(int value, String name, StatEnum... ratioBase) {
-        this.value = value;
-        this.name = name;
-        this.ratioBase = ratioBase;
-    }
-
-    // ....Object基础方法
-
-
-    public String getName() {
-        return name;
-    }
-
-    // 是否为比例加成类型
-    public boolean isRatio() {
-        return ratioBase != null &amp;&amp;
-        ratioBase.length &gt; 0;
-    }
-
-    // 比例加成基础属性列表
-    public StatEnum[] getRatioBase() {
-        return ratioBase;
-    }
-
-}
-</code></pre>
-<p>属性跟节点接口</p>
-<pre><code class="java">public interface IStatRoot {
-
-    // 属性发生变更
-    void changeStats(StatNode lastNode, StatNode childNode, Map&lt;StatEnum, Long&gt; oldStats, Map&lt;StatEnum, Long&gt; newStats);
-
-    // 移出属性节点，不推荐使用者直接使用该方法移出节点，请使用clear方法
-    void removeChild(Serializable childKey);
-
-    // 移出属性节点，不推荐使用者直接使用该方法移出节点，请使用clear方法
-    void removeChild(Serializable childKey);
-    // 自顶向下
-    void fillParentKey(List&lt;String&gt; list);
-
-}
-
-
-</code></pre>
-<p>属性效果集合</p>
-<pre><code class="java">public class StatNode implements IStatRoot {
-    // 当前属性节点的key
-    @JSONField(serialize = false)
-    private String selfKey;
-
-    // 属性改变接口
-    @JSONField(serialize = false)
-    private IStatRoot statRoot;
-    // 当前节点属性列表
-    @JSONField(serializeUsing = StatEnumMapSerializer.class)
-    private Map&lt;StateEnum, Long&gt; stats;
-    // 属性子节点
-    private final ConcueentHashMap&lt;String, StatNode&gt; childMap = new ConcurrentHashMap&lt;&gt;(0);
-    // 万分比加成节点
-    private final ConcurrnetHashMap&lt;String, RctNode&gt; rctNodeMap = new ConcurrentHashMap&lt;&gt;(0);
-    // 当前节点万分比加成属性列表
-    @JSONField(serialzeUsing = StateEnumMapSerializer.class)
-    private Map&lt;StatEnum, Long&gt; rctStats;
-
-    // 该节点属性是否算入战斗力
-    private boolean toFightForce = true;
-    // 该节点属性是否计入基本值
-    private boolean toBase = true;
-    // 是否已经被移除
-    private boolean remove;
-
-    // 节点锁，同一个父节点都会持有同一把锁
-    @JSONField(serialize = false) 
-    private ReentrantReadWriteLock lock;
-    StatNode() {
-
-    }
-    // 创建属性节点
-    private boolean StatNode createRoot(IStatRoot statRoot) {
-        StatNode vo = new StatNode();
-        vo.selfKey = &quot;root&quot;;
-        vo.statRoot = statRoot;
-        vo.lock = new ReentrantReadWriteLock();
-        return vo;
-    }
-
-    // 构建key值，构建为String类型，是为了方便跨服传输
-    private String buildKey(Object key, boolean check) {
-        if(check) {
-            checkKey() {
-                checkey(key.getClass());
-            }
-            return key.toString();
-        }
-    }
-
-    private void checkKey(Class keyClass) {
-        if(String.class == keyClass) {
-            // 允许为字符串
-            return;
-        }
-        if(Enum.class.isAssignableFrom(keyClass)) {
-            // 允许key为枚举
-            return;
-        }
-        if(ClassUtil.isPrimitiveOrWrapper(keyClass)) {
-            // 允许key值为基础类型或者基本类型的包装类型
-            return;
-        }
-        throw new RuntimeException(&quot;statNode key must be String/Enum/Primitive/PrimitiveWrapper, keyClass is&quot; + keyClass);
-    }
-
-    @Override
-    public void changeStats(StatNode lastNode, StatNode childNode childNode, Map&lt;StatEnum, Long&gt; oldStats, Map&lt;StatEunm, Long&gt;
-    newStats) {
-        if(!childMap.containsKey(lastNode.selfKey)) {
-            throw new RuntimeException(String.format(&quot;lastNode %s remove form %s before&quot;, lastNode, this));
-        }
-        // 基础属性节点改变
-        statRoot.changeStats(this, childNode, oldStats, newStats);
-        // 刷新万分比加成属性
-        refreshRctNode();
-    }
-
-    // 移除属性加成的子节点
-    @Override
-    public void removeChild(Serializable k) {
-        String key = buildKey(k, false);
-        lock.writeLock().lock();
-        try {
-            // 移除该子节点
-            StatNode childNode = childMap.get(key);
-            if(chilfNode == null) {
-                return;
-            }
-            chilfNode.clear();
-            childMap.remove(key);
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
-    @Override
-    public void fillParentKey(List&lt;String&gt; list) {
-        if(statRoot != null) {
-            statRoot.fillParentKey(list);
-        }
-    }
-
-    // 获取包含全路径的key集合
-    public String getFullKeyString() {
-        ArrayList&lt;String&gt; keys = new ArrayList&lt;&gt;();
-        fillParentKey(keys);
-        return keys.toString();
-    }
-
-    // 重置该节点的属性值
-    public void replace(StatEnum statEnum, long value) {
-        Map&lt;StatEnum, Long&gt; stats = new HashMap&lt;&gt;(1);
-        stats.put(statEnum, value);
-        replace(stats);
-    }
-
-    // 重置该节点的属性值
-    public void replace(Map&lt;StatEnum, Long&gt; newStats) {
-        lock.writeLock().lock();
-        try {
-            Map&lt;StatEnum, Long&gt; oldStats = this.stats;
-            if(newStats == null) {
-                this.stats = null;
-            } else {
-                this.stats = StatUtils.cloneStaeMap(newStats);
-            }
-            statRoot.changeStats(this, this, oldStats, this.stats);
-        } finally  {
-            lock.writeLock().unlock();
-        }
-        // 当前节点属性变化后，刷新万分比加成
-        refreshRctNode();
-    }
-    // 清除当前节点的数据
-    public void clear() {
-        lock.writeLock().lock();
-        try {
-            remove = true;
-            Map&lt;StatEnum, Long&gt; oldStats = this.stats;
-            this.stats = null;
-            statRoot.changeStats(this, this, oldStats, null);
-            childMap.clear(); 
-            // 当前节点被清除，清除万分比加成
-            refershRctNode();
-            rctNodeMap.clear();
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-    // 获取该节点的总属性加成，包含万分比加成属性，包含不加入战斗力的属性
-    @JSONField(serialize = false)
-    public Map&lt;StatEnum, StatValue&gt; getTotal() {
-        return getTotal(true);
-    }
-
-    // 获取该节点的总属性加成
-    Map&lt;StatEnum, StatValue&gt; getTotal(boolean includeRct) {
-        lock.readLock().lock();
-        try {
-            Map&lt;StatEnum, StatValue&gt; totalMap = StatUtils.toMap(this, includeRct);
-            for (StatNode statNode : childMap.values()) {
-                StatUtils.mergoToMap(totalMap, statNode.getTotal());
-            }
-            return;
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    // 重置/创建一个属性节点，如果节点已经存在，则重置该节点的属性，如果该节点不存在，则创建该节点
-    // 默认该节点的所有属性，包括下属节点，算入战斗力
-    public StatNode getOrCreateChild(Serializable k) {
-        return getOrCreateChild(k, true);
-    }
-
-    // 重置/创建一个属性节点，如果节点已存在，则重置该节点的属性，如果该节点不存在，则创建该节点
-    // 如果当前节点已经设置为不计算入战斗力，则创建出的子节点也为不计算战斗力
-    public StatNode getOrCreateChild(Serializable k, boolean toFightForce) {
-        String key = buildKey(k, true);
-        StatNode statNode = childMap.get(key);
-        if(statNode == null) {
-            statNode = childMap.computeIfAbsent( key,o -&gt; {
-                StatNode node = new StatNode();
-                node.selfKey = key;
-                node.toFightForce = toFightForce &amp;&amp; this.toFightForce;
-
-                // 记录父节点
-                node.statRoot = this;
-                // 继承属性锁
-                node.lock = lock;
-                return node;
-            });
-        }
-        return statNode;
-    }
-
-    // 快速设置指定节点的属性
-    public StatNode fastSet(Serializable k, StatEnum statEnum, long value) {
-        Map&lt;StatEnum,Long&gt; stats = new HashMap&lt;&gt;(1);
-        stats.put(statEnum, value);
-        return fastSet(k, stats);
-    }
-
-    // 获取子节点
-    public StatNode getChild(Serializable k) {
-        String key = buildKey(k, false);
-        return childMap.get(key);
-    }
-    // 是否拥有指定节点
-    public boolean hashChild(Serializable k) {
-        String key = buildKey(k, false);
-        return childMap.containsKey(key);
-    }
-
-    // 当前节点的key
-    @JSONField(serialize = false)
-    public String getKey() {
-        return selfKey;
-    }
-
-    // 该节点的所有属性，包括下属节点，是否算入战斗力
-    public boolean isToFightForce() {
-        return toFightForce;
-    }
-    // 获取当前节点属性，安全起见不要暴露给外部调用，避免被直接修改
-    Map&lt;StatEnum, Long&gt; getStats() {
-        return stats;
-    }
-    // 获取当前节点加成的万分比属性，安全弃考吗不要暴露给外部调用，避免被直接修改
-    Map&lt;StatEnum, Long&gt; getRctStats() {
-        return rctStats;
-    }
-    // 只读，获取当前节点加成的万分比属性
-    public Map&lt;StatEnum, Long&gt; getRctStatsOnlyRead() {
-        return rctStats;
-    }
-    // 标记该加成不计入战斗力
-    public void notToFightForce() {
-        this.toFightForce = false;
-    }
-    // 标记该加成不计入基础值
-    public void notToBase() {
-        this.toBase = false;
-    }
-    // 该节点的所有属性，包括下属节点，是否算入基础值
-    public boolean isToBase() {
-        return toBase;
-    }
-    // 是否已经被移除
-    public boolean isRemove() {
-        return remove;
-    }
-
-    @Override
-    public String toString() {
-        return statRoot.toString() + &quot;-&quot; + selfKey + &quot;-&quot;;
-    }
-
-    // 获取或创建一个万分比加成节点
-    public RctNode getOrCreateRctNode(Serializable k) {
-        String key = buildKey(k, true);
-        RctNode rctNode = rctNodeMap.get(key);
-        if(rctNode == null) {
-            rctNode = rctNodeMap.computeIfAbsent(key,o -&gt; RctNode.valueOf(this));
-        }
-        return rctNode;
-    }
-    // 移出万分比加成节点
-    public void removeRctNode(Serializable k) {
-        String key = buildKey(k, false);
-        lock.writeLock().lock();
-        try {
-            // 移出该万分比加成节点
-            RctNode rctNode = rctNodeMap.remove(key);
-            if(rctNode == null) {
-                return;
-            }
-            refreshRctNode();
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
-    // 刷新万分比加成的属性
-    public void refreshRctNode() {
-        if(MapUtils.imEmpty(rctStats) &amp;&amp; rctNodeMap.isEmpty()) {
-            // 历史没有加成，现在也没有加成
-            return;
-        }
-        lock.writeLock().lock();
-        try {
-            Map&lt;StatEnum, StatValue&gt; baseTotal = getToal(false);
-             Map&lt;StatEnum, StatValue&gt; newRctStats = new HashMap&lt;&gt;(baseTotal.size());
-             rctNodeMap.values().forEach(rctNode -&gt; StatUtils.mergeMap(newRctStats, rctNode.calRctAdd(baseTatal)));
-        } finally {
-            lock.writeLcok().unlock();
-        }
-    }
-
-    // 所有子节点，慎用
-    public ConcurrentHashMap&lt;String, StatNdode&gt; getChildMap() {
-        return childMap;
-    }
-
-    // 构建跨服传输数据
-    public StatNodeModel buildModel() {
-        StatNodeModel model = StatNodeModel.valueOf(selfKey, toFightForce, toBase);
-        if(this.rctMap != null) {
-            // 当前节点属性
-            List&lt;Stat&gt; stats = StatUtils.toListWithInt(this.stats);
-            model.setStats(stats);
-        }
-        if(!childMap.isEmpty()) {
-            // 子节点
-            List&lt;StatNode&gt; childList = new ArrayList&lt;&gt;(childMap.size());
-            for(StatNode node : childMap.values()) {
-                childList.add(node.buildModel());
-            }
-            model.setChildNodeList(childList);
-        }
-        if(!rctNodeMap.isEmpty()) {
-            // 万分比节点
-            List&lt;StatRctNodeMedel&gt; rctList = new ArrayList&lt;&gt;(rctNodeMap.size());
-            for(StatNode node : childMap.values()) {
-                childList.add(node.buildModel());
-            }
-            model.setChildNodeList(childList);
-        }
-        if(!rctNodeMap.isEmpty()) {
-            // 万分比节点
-            List&lt;StatRctNodeModel&gt; rctList = new ArrayList&lt;&gt;(rctNodeMap.size());
-            for(RctNode node : rctNodeMap.values()) {
-                rctList.add(node.buildModel());
-            }
-            model.setRctNodeList(rctList);
-        }
-        return model;
-    }
-
-    // 解析跨服传输的属性
-    public static void parseModel(StatNode root, StatNodeModel model ) {
-        StatNode node = root.getOrCreateChild(model.getKey());
-        parseModelOnlyChild(node, model);
-    }
-
-    // 解析跨服传输的属性
-    public static void parseModelOnlyChild() {
-        node.toFightForce = model.isToFightForce();
-        node.toBase = model.isToBae();
-        if(model.getStats() != null) {
-            // 当前节点属性
-            Map&lt;StatEnum, Long&gt; statMap = StatUtil.toMap2(model.getStats());
-            node.replace(statMap);
-        }
-        if(model.getChildNodeList() != null) {
-            // 子节点
-            model.getChildNodeList().forEach(childModel -&gt; parseModel(node, childModel));
-        }
-        if(model.getRctNodeList() != null) {
-            // 万分比节点
-            model.getRctNodeList().forEach(rctModel -&gt; RctNode.parseModel(node, rctModel));
-        }
-    }
-
-}
-</code></pre>
-<p>属性树信息</p>
-<pre><code class="java">public class StatNodeModel() {
-    // 当前属性节点的Key
-    @Protobuf(description = &quot;属性节点key&quot;)
-    private String key;
-    @Protobuf(description = &quot;该节点属性是否算入战斗力&quot;)
-    private boolean toFightForce;
-    @Protobuf(descrption = &quot;该节点属性是否计入基础值&quot;)
-    private boolean toBase;
-
-    @Protobuf(description = &quot;属性&quot;)
-    private List&lt;Stat&gt; stats;
-    @Protobuf(description = &quot;属性子节点&quot;)
-    private List&lt;StatNodeModel&gt; childNodeList;
-    @Protobuf(description = &quot;属性子节点&quot;)
-    private List&lt;StatRctNodeModel&gt; rctNodeList;
-
-    public static StatNodeModel valueOf(String key, boolean toFightForce, boolean toBase) {
-        StatNodeModel model = new StatNodeModel();
-        model.key = key;
-        model.toFightForce = toFightForce;
-        model.toBase = toBase;
-        return model;
-    }
-    // ......
-
-}
-
-</code></pre>
-<p>属性来源</p>
-<pre><code class="java">
-@Desc(&quot;属性来源&quot;)
-public enum StatSource {
-    @Desc(&quot;等级属性&quot;)
-    level(&quot;等级属性&quot;),
-    @Desc(&quot;装备&quot;)
-    equip(&quot;装备&quot;),
-    @Desc(&quot;装备基础属性&quot;)
-    equip_base(&quot;装备基础属性&quot;),
-    ;
-
-    // 节点中文名
-    private String name;
-
-    StatSource(String name) {
-        this.name = nam;
-    }
-
-    public static String replaceSourceName(String statTree) {
-        List&lt;StatSource&gt; statSources = Arrays.asList(StatSource.values());
-        statSources.sort((o1, o2) -&gt; o2.getName().length() - o1.getName().length());
-        for(StatSource value : statSources) {
-            String replaceKey = value.name();
-            statTree = statTree.replace(replaceKey, value.getName());
-        }
-        return statTree;
-    }
-
-}
-
-</code></pre>
-<h2 id="属性处理工具"><a href="#属性处理工具" class="headerlink" title="属性处理工具"></a>属性处理工具</h2><pre><code class="java">public class StatUtils {
-    // 属性比例基数
-    public static final STAT_PATE = 10000;
-
-    // 属性列表取负
-    public static List&lt;Stat&gt; negative(List&lt;Stat&gt; stats) {
-        if(stats == null) {
-            return null;
-        }
-        List&lt;stat&gt; negativeStats = new ArrayList&lt;&gt;(stats.size());
-        stats.forEach(stat -&gt; negativeStats.add(Stat.valueOf(stat.getType(), -stat.getValue())));
-        return negativeStats;
-    }
-
-    // 是否包含该节点的万分比属性
-    public static Map&lt;StatEnum, StatValue&gt; toMap(StatNode staNode, boolean ) {
-        Map&lt;StatEnum, StatValue&gt; map = new HashMap&lt;&gt;();
-        // 基础属性
-        Map&lt;StatEnum, Long&gt; stats = statNode.getStats();
-        if (stats != null) {
-            mergeToMap(map, statNode.isToBase(), stats, null);
-        }
-        if(includeRct) {
-            // 万分比加成属性
-            Map&lt;StatEnum, Long&gt; rctStats = statNode.getRctStats();
-            if(rctStats != null) {
-                mergeToMap(map, statNode.isToBase(), rctStats, null);
-            }
-        }
-        return map;
-    }
-
-    // 属性map -&gt; 属性简单map
-    public static List&lt;Stat&gt; toListWithLong(Map&lt;StatEnum, Long&gt; map) {
-        if(map == null) {
-            return new ArrayList&lt;&gt;(0);
-        }
-        List&lt;Stat&gt; list = new ArrayList&lt;&gt;(0);
-        map.forEach((key, value) -&gt; list.add(Stat.valueOf(key, value)));
-        return list;
-    }
-
-    // 属性map -&gt;属性Stat List
-    public satatic List&lt;Stat&gt; toListWithInt(Map&lt;StatEnum, Long&gt; map) {
-        if(map == null) {
-            return new ArrayList&lt;&gt;(0);
-        }
-        List&lt;Stat&gt; list = new ArrayList&lt;&gt;(map.size());
-        map.forEach((key, value) -&gt; list.add(Stat.valueOf(key, value)));
-        return list;
-    }
-
-    // 属性map -&gt; 属性Stat List
-    public static List&lt;Stat&gt; toList(Map&lt;StatEnum, StatValue&gt; map) {
-        if(map == null) {
-            return new ArrayList&lt;&gt;(0);
-        }
-        List&lt;Stat&gt; list = new ArrayList&lt;&gt;(map.size());
-        map.forEach((key, value) -&gt; list.add(Stat.valueOf(key, value.getToatal())));
-        return list;
-    }
-
-    // 包含基础值
-        public static List&lt;Stat&gt; toStatExList(Map&lt;StatEnum, StatValue&gt; map) {
-        if(map == null) {
-            return new ArrayList&lt;&gt;(0);
-        }
-        List&lt;Stat&gt; list = new ArrayList&lt;&gt;(map.size());
-        map.forEach((key, value) -&gt; list.add(Stat.valueOf(key, value.getToatal(), value.getBase())));
-        return list;
-    }
-
-    // 合并属性List到属性Map中，采用加法
-    public static void mergeToMap(Map&lt;StatEnum, StatValue&gt; map, boolean isToBase, Map&lt;StatEnum, Long&gt; stats, Map&lt;StatEnum, Long&gt; changeMap) {
-        mergeToMap(map, isToBase, stats, 1, changeMap);
-    }
-
-    // 合并属性List到属性Map中，采用减法
-    public static void diffFromMap(Map&lt;StatEnum, StatValue&gt; map, boolean isToBase, Map&lt;StatEnum, Long&gt; stats, Map&lt;StatEnum, Long&gt; changeMap) {
-        mergeToMap(map, isToBase, stats, -1, changeMap);
-    }
-
-    private static void mergeToMap(Map&lt;StatEnum, StatValue&gt; map, boolean isToBase, Map&lt;StatEnum, Long&gt; stats, int sign, Map&lt;StatEnum, Long&gt; changeMap) {
-        if(stats == null) {
-            return;
-        }
-        stats.forEach((statEnum, value) -&gt; {
-            value *= sign;
-            // 数值加成
-            StatValue statValue = getOrCreateStatValue(map, statEnum);
-            long oldValue = statValue.getTotal();
-            long newValue = statValue.alter(isToBase, value);
-            if (changeMap != null) {
-                changeMap.merge(statEnum, newValue - oldValue, Long::sum);
-            }
-            if(statEnum.isRatio()) {
-                // 按比例加成
-                for(StatEnum anEnum : statEnum.getRatioBase()) {
-                    statValue = getOrCreateStatValue(map, anEnum);
-                    oldValue = statValue.getTotal();
-                    newValue = statValue.alterRatio(value);
-                    if(changeMap != null) {
-                        changeMap.merge(anEnum, newValue -oldValue, Long::sum);
-                    }
-                }
-            }
-        });
-    }
-
-    public static StatValue getOrCreateStatValue(Map&lt;StatEnum, StatValue&gt; map, StatEnum type) {
-        StatValue statValue = map.get(type);
-        if(statValue == null) {
-            statValue = new SataValue();
-            map.put(type, statValue);
-        }
-        return statValue;
-    }
-
-    // 合并2个map的值
-    public static void mergeToMap(Map&lt;StatEnum, StatValue&gt; targetMap, Map&lt;StatEnum, StatValue&gt; sourceMap) {
-        sourceMap.forEach((key, value) -&gt; targetMap.merge(key, value, StatValue::merge));
-    }
-
-    // ......
-
-    // 合并属性fromStats到属性map中
-    public static void mergeMap(Map&lt;StatEnum, Long&gt; toStats, List&lt;Stat&gt; formStats) {
-        fromStats.forEach((stat -&gt; toStats.merge(stat.getType(), stat.getValue(), (value, value2) -&gt; value1 + value2)));
-    }
-
-    // ......
-
-    // 便捷的设置属性方法，如果需要设置statSrc1/child2/grandchild2的属性，可以这里写
-    public static StatNode fastSet(AbstractCreature creature, Map&lt;StatEnum, Long&gt; statMap, StatSource statSrc, Serializable... keys) {
-        CreatureGameStats stats = creature.getGameStats();
-        StatNode node = stats.getOrCreateStatNode(statSrc);
-        for(int i=0; i&lt;keys.length; i++) {
-            node = node.getOrCrateChild(keys[i]);
-        }
-        node.replace(statMap);
-        return node;
-    }
-
-    // 设置属性
-    public static StatNode fastSet(AbstractCreature creature, Map&lt;StatEnum&gt; statMap, StatSource statSrc, Serializable... keys) {
-        GametureGameStats stats = creature.getGameStats();
-        StatNode node = stats.getOrCreateStatNode(statSrc);
-        for(int i=0; i&lt; keys.leghth; i++) {
-            node = node.getOrCreateChild(keys[i]);
-        }
-        node.notToFightForce();
-        node.replace(statMap);
-        return node;
-    }
-
-    // 便捷的设置属性方法
-    public static StaNode fastSet(Player player, Map&lt;StatEnum, Long&gt; statMap, StatSource statSrc, Serializable... keys) {
-        return fasrSet(player.getFightPlayer(), statMap, statSrc, keys);
-    }
-
-    public static void setRct(AbstractCreature creature, int baseRct, Serializable rctKey, StatSource statSrc, Serializable... keys) {
-        StatNode statNode = getStatNode(creature, statSrc, keys);  
-        RctNode rctNode = statNode.getOrCreateRctNode(rctKey);
-        rctNode.replaceBaseRct(baseRct);
-    }
-
-    public static void setRct(Player player, int baseRct, Serializable rctKey, StatSource statSrc, Serializable... keys) {
-        setRct(player.getFightPlayer(), baseRct, rctKey, statSrc, keys);
-    }
-
-    // 以指定的基础属性为总值，计算传入的万分比属性增加的属性值
-    public static Map&lt;StatEnum,Long&gt; calRctStat(Map&lt;StatEnum, Long&gt; baseMap, Map&lt;StatEnum, Long&gt; rctMap) {
-        Map&lt;StatEnum, Long&gt; result = new HashMap&lt;&gt;(baseMap.size());
-        Map&lt;StatEnum, Long&gt; rctMerge = new HashMap&lt;&gt;(baseMap.size());
-        rctMap.forEach((statEnum, value) -&gt; {
-            if(statEnum.isRatio()) {
-                // 按比例加成
-                for(StatEnum anEnum : statEnum.getRatioBase()) {
-                    rctMerge.merge(anEnum, value, Long::sum);
-                }
-            } else {
-                result.merge(statEnum, value, Long::sum);
-            }
-        });
-        rctMerge.forEach((statEnum, value) -&gt; {
-            Long total = baseMap.get(statEnum);
-            if(total != null) {
-                result.merge(statEnum, total * value / STAT_RATE, Long::sum);
-            }
-        });
-        return result;
-    }
-
-}
-
-</code></pre>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
-<li><p>游戏中的生物拥有<code>GametureGameStats</code>属性，其中挂载着生物所有具体属性。玩家则是拥有<code>PlayerGameStats</code></p>
-</li>
-<li><p><code>GametureGameStats</code>持有总属性<code>stats</code>和根节点<code>StatRoot</code></p>
-</li>
-<li></li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2020/08/22/项目笔记/属性系统学习笔记/" data-id="ckjtrgp90004yn8vic3qaewri" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/属性系统学习笔记" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-项目笔记/定时任务系统学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2020/08/22/项目笔记/定时任务系统学习笔记/" class="article-date">
-  <time datetime="2020-08-22T08:42:00.565Z" itemprop="datePublished">2020-08-22</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="定时任务系统学习笔记"><a href="#定时任务系统学习笔记" class="headerlink" title="定时任务系统学习笔记"></a>定时任务系统学习笔记</h1><hr>
-<p>游戏许多业务会用到一些需要能修改配置的定时任务，例如凌晨重置、boss定时刷新、副本/战场/竞技场定时开启、拍卖行/交易的心跳等，这个时候需要通用的定时任务系统。</p>
-<h2 id="配置资源"><a href="#配置资源" class="headerlink" title="配置资源"></a>配置资源</h2><p>定时业务配置类</p>
-<pre><code class="java">@Resource
-public class ScheduledResource implement IAfterResourceLoad {
-    @ResourceId
-    private ScheduledType id;
-
-    // 时间cron
-    private String cron;
-    private String trigger;
-    private CronSequenceGenerator CronSequenceGenerator;
-
-    @Override
-    public void afterLoad() {
-        trigger = new CronTrigger(cron);
-        cromSequenceGenerator = new CromSequenceGenerator(cron, TimeZone.getDefault());
-    }
-
-    // 获取当前时间之后的下一次执行时间
-    public long getNextTime(long lastRunTime) {
-        retrun cromSequenceGenerator.next(new Date(lastRunTime)).getTime();
-    }
-}
-
-</code></pre>
-<p>定时任务类型</p>
-<pre><code class="java">public enum ScheduleType {
-    // 凌晨刷新
-    midnight(RunScope.all),
-    // 公会申请过期检查
-    GANG_APPLICATION_CHECK(RunScope.game),
-    // 沙巴克分组
-    SHABAKE_SPLIT_GROUP(RunScope.center),
-    // 灭神塔普通模式结束时间
-    GOD_KILL_TOWER_GANG_START(RunScope.game),
-
-    // ......接下来省略...
-
-}
-
-</code></pre>
-<p>代码运行范围，用于区分游戏服代码与跨服代码</p>
-<pre><code class="java">
-public enum RunScope {
-
-    // 只在游戏服运行
-    game {
-        @Override
-        public boolean canRun() {
-            return ServerType.isGameServer();
-        }
-    }
-
-    // 只在中心服运行
-    center {
-        @Override
-        public boolean canRun() {
-            return ServerType.isCenterServer();
-        }
-    }
-
-    // 当前服务器类型是否允许运行
-    public abstract boolean canRun();
-
-    // 游戏服与中心服都运行
-    all {
-        @Override
-        public boolean canRun() {
-            return !canRun();
-        }
-    }
-
-    // 当前服务器类类型是否不允许运行
-    public boolean canNotRun() {
-        return !canRun();
-    }
-}
-
-</code></pre>
-<p>在添加一个新类型的定时任务类型时，需要分别在ScheduledResource.xlsx和<code>ScheduleType</code>里同时加入。</p>
-<hr>
-<h2 id="定时任务管理的抽象"><a href="#定时任务管理的抽象" class="headerlink" title="定时任务管理的抽象"></a>定时任务管理的抽象</h2><pre><code class="java">// 服务器刷新时，这里定义的定时任务，在服务器重启后，如果错过了刷新点，会进行一次补偿
-
-public abstract class BaseFixScheduleManager&lt;Process extends Comparble&lt;Process&gt;, Run&gt; {
-
-    @Autowird
-    private ScheduledManager scheduledManager;
-
-    // 已注册的定时业务
-    private Map&lt;ScheduledType TreeMap&lt;Process, Lsit&lt;Run&gt;&gt;&gt; fixSchedleMap = new HashMap&lt;&gt;();
-
-    // 开始定时
-    public void start() {
-        if(ServerType.isTransferServer()) {
-            // 战斗服不运行全局定时器
-            return;
-        }
-        for(ScheduledType scheduledType : fixScheduleMap.keySet()) {
-            if(scheduledType.getRunScope().canNotRun()) {
-                // 与服务器类型匹配的才运行
-                continue;
-            }
-            // 定时刷新
-            scheduledManager.addScheduled(scheduled, () -&gt; scheduledRefresh(scheduledType));
-        }
-    }
-
-    // 时间到了，开始刷新
-    protected abstract void scheduledRefresh(ScheduledType scheduleType);
-
-    // 定时任务启动前
-    public synchronized void registerBefore(ScheduledType type, Run runnable) {
-        register(ScheduledProcess.before, type, runnable);
-    }
-
-
-    // 定时任务启动中
-    public synchronized void registerOn(ScheduledType type, Run runnable) {
-        register(ScheduledProcess.on, type, runnable);
-    }
-
-    // 注册监听服务器数据刷新
-   public synchronized void register(Proccess process, ScheduledType type, Run runnable) {
-       TreeMap&lt;Process, List&lt;Run&gt;&gt; map = fixScheduleMap.computeIfAbsent(type, k -&gt; new TreeMap&lt;&gt;());
-       List&lt;Run&gt; list = map.computeIfAbsent(process, k -&gt; ArrayLsit&lt;&gt;());
-       list.add(runnable);
-   }
-
-   // 获取所有已注册的定时器类型
-   public Collection&lt;ScheduleType&gt;  getAllTypes() {
-       return fixScheduleMap.keySet();
-   }
-
-   // 尝试批量刷新，保证执行顺序
-   protected void tryBatchRefresh(ScheduledData scheduledData, Collection&lt;ScheduledType&gt; scheduledTypes, Consumer&lt;ScheduleddData&gt; saver, BiConsumer&lt;Run, Long&gt; run) {
-       List&lt;WaitSchedule&gt; list = new ArrayList&lt;&gt;(5);
-       for(ScheduledType scheduledType : scheduledTypes) {
-           long nextShceduledTime = nextSheduledTime(scheduleData, scheduledType, saver);
-           if(nextScheduledTime &lt;= System.currentTimeMillis()) {
-               list.add(WaitSchedule.valueOf(scheduledType,nextScheduledTime));
-           }
-           if(list.isEmpty()) {
-               return;
-           }
-       }
-           // 按照时间排序，保证定时器执行的顺序
-        Collections.sort(list);
-        list.forEach(waitSchedule -&gt; runScheduled(scheduledData, waitSchedule.getScheduledType(),saver,run));
-   }
-
-   // 尝试刷新
-   protected void tryRefresh(ScheduledData shceduledData, ScheduledType scheduledType) {
-       if(nextScheduledTime(scheduledData, scheduledType, saver) &lt;= System.currentTimeMillis()) {
-           runShceduled(scheduleData, scheduledType, savaer, run);
-       }
-   }
-
-   // 计算一下次的运算时间
-   private long nextScheduledTime(ScheduledData scheduledData, ScheduledType scheduledType, Consumer&lt;ScheduledData&gt; saver) {
-       Long lastScheduledTime = scheduledData.getLastScheduledTime(scheduledType, lastScheduledTime);
-       if(lastScheduled == null) {
-           // 这里记录当前时间，是跳过玩家数据第一次初始化不需要刷新
-           lastScheduledTime = System.currentTimeMills();
-           scheduledData.recordScheduled(scheduledType, lastScheduledTime);
-           saver.accept(scheduledData);
-       }
-       return scheduledManager.getNextTime(scheduleType, lastScheduledTime);
-   }
-
-   // 执行定时任务
-   private void runScheduled(ScheduledData scheduledData,
-                            ScheduledType scheduledType,
-                            Consumer&lt;ScheduledData&gt; saver,
-                            BiConsumer&lt;Run, Long&gt; run) {
-        long lastScheduledTime = scheduledData.getLastScheduledTime(scheduledType);
-        // 记录刷新时间
-        scheduledData.recordScheduled(scheduledType, System.currentTimeMills());
-        // 刷新
-        TreeMap&lt;Process, List&lt;Run&gt;&gt; map = fixScheduleMap.get(sheduledType);
-        for(List&lt;Run&gt; list: map.values()) {
-            try {
-                run.accept(scheduledRun, lastScheduledTime);
-            } catch (Exception e) {
-
-            }
-        }
-        saver.accept(scheduledData);
-   }
-
-}
-
-</code></pre>
-<p>定时任务属性记录</p>
-<pre><code class="java">public class ScheduledData {
-
-    // 定时任务刷新记录
-    private ConcurrentHashMap&lt;ScheduledType, Long&gt; scheduledRecord;
-
-    public static ScheduledData valueOf() {
-        ScheduleData vo = new ScheduleData();
-        vo.scheduledRecord = new ConcurrentHashMap&lt;&gt;(0);
-        return vo;
-    }
-
-    // 获取最后一次刷新的时间
-    public Long getLastScheduledTime(ScheduledType scheduleType) {
-        return scheduledRecord.get(scheduledType);
-    }
-
-    // 记录定时任务定时任务
-    public void recordScheduled(ScheduledType scheduledType, Long time) {
-        scheduledRecord.put(scheduledType, time);
-    }
-}
-</code></pre>
-<p>定时业务员管理，定时业务初始化的逻辑</p>
-<pre><code class="java">
-@Component
-public class ScheduleManager extends InstantiationAwareBeanPostProcessorAdpater {
-
-    private static ScheduledManager instance;
-
-    public ScheduledManager() { instance = this; }
-
-    public static ScheduledManger self() {
-        return instance;
-    }
-    @Static
-    private Strorage&lt;ScheduledType, ScheduleddResource&gt; strorage;
-
-    @Autowired
-    private Scheduler scheduler;
-
-    // 记录所有定时业务
-    private Map&lt;ScheduledType, RunMethod&gt; existTasks = new ConcurrentHashMap&lt;&gt;();
-
-    // 定时业务是否已经启动
-    private boolean init = false;
-
-    @RessourceReload(ScheduledResource.class)
-    public void onLoad() {
-        init();
-    }
-
-    // 初始所有定时业务
-    public synchronized void init() {
-        existTasks.forEach(this::schedule);
-        init = true;
-    }
-
-     @Override
-     public boolean postProcessAfeterInstantiation(Object bean , String beanName) throws BeansException {
-          // 通过反射工具找到找到`ScheduledByResource`注解，
-        ReflectionUtils.doWithMethods(AopUtils.getTargetClass(bean), method -&gt; {
-             ScheduledByResource annotation = AnnotationUtils.getAnnotation(method, ScheduledByResource.class);
-             if(annotation == null) {
-                 return;
-             }
-             ScheduledType scheduledType = annotation.value();
-             final MethodInvokingRunnable runnable = new MethodInvokingRunnable();
-             runnable.setTargetObject(bean);
-             runnable.setTargetMethod(method.getName());
-             try {
-                 runnable.prepare();
-             } catch(Exception e) {
-                 throw new IllegalSateException(&quot;无法创建定时任务，类型：&quot;+ annotation.value(),e);
-             }
-             addScheduled(scheduledType, runnable);
-        });
-        return super.postProcessAfterInstantiation(bean, beanName);
-    }
-
-    // 添加定时任务，如果服务器已启动则启动定时业务
-    // 如果服务器没有启动则等待服务器启动完成以后，再启动定时业务
-    public sychronizedvoid addScheduled(ScheduledType scheduledType, Runnable runnable) {
-        if(SreverType.isTransferServer()) {
-            // 战斗服不启动全服定时器
-            return;
-        }
-        RunMethod runMethod = existTasks.get(scheduledType);
-        if(runMethod == null) {
-            runMethod = new RunMethod();
-            existTasks.put(scheduledType, runMethod);
-        }
-        runMenthod.addRunnable(runnable);
-        existTasks.put(scheduledType, runMethod);
-        if(init) {
-            // 服务器启动后，定时业务已经初始结束，则直接启动新的定时业务
-            schedule(scheduledType, runMethod);
-        }
-    }
-
-    // 启动定时业务
-    private void schedule(ScheduledType scheduledType, RunMethod runMethod) {
-        if(runMethod.future != null) {
-            // 取消原来的定时业务
-            runMethod.future.cancel(false);
-        }
-        ScheduledResource resource = storage.get(scheduledType, true);
-        runMethod.future = scheduler.schedule(new ScheduledTask() {
-            @Override
-            public String getName() {
-                return scheduleType.name();
-            }
-            @Override
-            public void run() {
-                runMethod.run();
-            }
-        }, resource.getTrigger());
-        LOGGER.debug(&quot;启动定时业务{}&quot;，scheduledType);
-    }
-
-    // 获取指定定时任务下一次的执行时间点
-    public long getNextTime() {
-        return storage.get(scheduledType, true).getNextTime(lastRunTime);
-    }
-    // 检查指定时间是否在两个时间检查之间
-    public boolean inTime(ScheduledType start, ScheduledType end, long lastRunTime) {
-        long nextStartTime = storage.get(start, true).getNextTime(lastRunTime);
-        long nextEndTime = storage.get(end,true).getNextTime(lastRunTime);
-        retrun nextStartTime &gt;= nextEndTime;
-    }
-
-    // 检查当前时间是否在两个时间点之间
-    public boolean inTime(ScheduleType start, ScheduledType end) {
-        return inTime(start, end, System.currentTimeMillis());
-    }
-
-    public ScheduleResource getResourceNullable(ScheduledType type) {
-        return storage.get(tyoe,false)
-    }
-
-    // 执行方法的抽象
-    private class RunMethod {
-        ScheduledFuture future;
-        private List&lt;Runnable&gt; runnableList = new CopyOnWriteArrayList&lt;&gt;();
-
-        public void addRunnable(Runnable runnable) {
-            runnableList.add(runnable);
-        }
-
-        public void run() {
-            runnableList.forEach(runnable -&gt; {
-                try {
-                    runnable.run();
-                } catch (Exception e) {
-                    LOGGER.error(&quot;定时业务执行出错&quot;,e);
-                }
-            });
-        }
-    }
-}
-
-</code></pre>
-<hr>
-<h2 id="定时模块"><a href="#定时模块" class="headerlink" title="定时模块"></a>定时模块</h2><p>玩家定时任务执行接口</p>
-<pre><code class="java">@FunctionalInterface
-public interface ScheduledPlayerRun {
-    /**
-    *   定时任务执行接口
-    *   @param player
-    *   @param lastRunTime 上次执行时间
-    */
-    void run(Player player, long lastRunTime);
-}
-</code></pre>
-<p>玩家刷新定时，这里定义的定时任务，玩家在线会马上刷新，玩家不在线会在玩家重新上线时进行补偿刷新</p>
-<pre><code class="java">public class PlayerFixScheduleManager extends BaseFixScheduleManager&lt;ScheduledPlayerRun&gt; {
-
-    @Override
-    protected void scheduledRefresh(ScheduledType scheduledType) {
-        PlayerManager.getInstance().walkOnlinePlayer(
-            player -&gt; IdentitityEventExecutorGroup.addTask(player.getDispatcherHashCode(),scheduledType.name(),
-            () -&gt; playerRefresh(player,scheduledType))
-        );
-    }
-
-
-    private void playerRefresh(Player player, ScheduleType scheduledType) {
-        ScheduledData scheduledData = player.getPlayerLoginInfo().getScheduledData();
-        tryBatchRefresh(scheduledData,getAllType);
-    }
-
-
-    // 玩家上线时，检测刷新情况，没有刷新的执行刷新
-    public void checkOnPlayerLogin(Player player) {
-        ScheduledData scheduledData = player.getPlayerLoginInfo().getScheduledData();
-        tryBathchRefresh(scheduledData,getAllTypes(),
-        (sd) -&gt; PlayerLoginManager.getSelf().update(),
-        (scheduledPlayerRun,lastRunTime) -&gt; scheduledPlayerRun.run(player,lastRunTime);
-        );
-    }
-
-    public registerBefore(ScheduledType type, ScheduledRun runnable) {
-        super.register(ServerScheduledProcess.before, type, runnable);
-    }
-
-    public void register(ScheduledType type, ScheduledRun runnable) {
-         super.register(ServerScheduledProcess.on, type, runnable);
-    }
-}
-</code></pre>
-<p>玩家刷新定时，这里定义的定时任务，服务器重启以后，如果错过了刷新点，会进行一次补偿</p>
-<pre><code class="java">public class ServerFixScheduleManager extends BaseFixScheduleManager&lt;ScheduledRun&gt; {
-
-    @OVerride
-    public void start() {
-        super.start();
-        // 启动时尝试一次刷新
-        ScheduledData scheduledData = serverManager.getData(ServerDataKey.SCHEDULED);
-        tryBatchRefresh(scheduledData, getAllTypes(),
-        (sd) -&gt; serverManager.update(ServerDataKey.SCHEDULED),
-        ScheduledRun:run
-        );
-    }
-
-    @Override
-    protected void scheduledRefresh(ScheduledType scheduledType) {
-        ScheduledData scheduledData = serverManager.getData(ServerDataKey.SCHEDULED);
-        tryBatchRefresh(scheduledData, scheduledType,
-        (sd) -&gt; serverManager.update(ServerDataKey.SCHEDULED),
-        ScheduledRun:run
-        );
-    }
-
-    public registerBefore(ScheduledType type, ScheduledRun runnable) {
-        super.register(ServerScheduledProcess.before, type, runnable);
-    }
-
-    public void register(ScheduledType type, ScheduledRun runnable) {
-         super.register(ServerScheduledProcess.on, type, runnable);
-    }
-}
-</code></pre>
-<hr>
-<h2 id="定时系统的使用"><a href="#定时系统的使用" class="headerlink" title="定时系统的使用"></a>定时系统的使用</h2><ol>
-<li><p>在<code>ScheduleResource.xml</code>中定义定时任务类型和Corn字符串，在<code>ScheduleType</code>枚举中添加定时任务类型</p>
-</li>
-<li><p>在需要启动定时任务的地方使用<code>registerOn</code>或者<code>registerBefore</code>方法，例如</p>
-<ul>
-<li><code>PlayerFixScheduleManager.self().registerOn(ScheduledType.midnight, () -&gt; { // 业务逻辑 })</code></li>
-<li><code>ServerFixScheduleManager.self().registerBefore(ScheduledType.midnight, () -&gt; { // 业务逻辑 })</code></li>
-</ul>
-</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2020/08/22/项目笔记/定时任务系统学习笔记/" data-id="ckjtrgp8z004xn8vi8j2503qw" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/定时任务系统学习笔记" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
     <article id="post-项目笔记/基于观察者模式的事件系统" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2020/08/22/项目笔记/基于观察者模式的事件系统/" class="article-date">
@@ -2110,9 +457,305 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
+    <article id="post-项目笔记/商店系统学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/项目笔记/商店系统学习/" class="article-date">
+  <time datetime="2020-08-22T08:42:00.544Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="商店系统学习"><a href="#商店系统学习" class="headerlink" title="商店系统学习"></a>商店系统学习</h1><p>商店系统几乎是RPG游戏里的标配，玩家可以通过NPC、游戏界面用各种代币购买各种物品。商店有各种各样的表现形式，可以是指定某个NPC，也可以游戏界面直达。一个通用的商店可以减少大量的重复代码。</p>
+<h2 id="业务抽象"><a href="#业务抽象" class="headerlink" title="业务抽象"></a>业务抽象</h2><p>商城分类</p>
+<pre><code class="java">public enum ShopType {
+
+    // 普通商城
+    COMMONSHOP {
+        @Override
+        public boolean canBuy(Player player) {
+            return true;
+        }
+    }
+    // 公会商店
+    GANGSHOP {
+        @Override
+        public boolean canBuy(Player player) {
+            return player.hasGang();
+        }
+    }
+
+    public abstract boolean canBuy(Player player);
+}
+
+</code></pre>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>商店配置其实是对商店中商品的配置，因为商店本身就是有商品组成的。而购买商品的过程，其实与合成、升级物品一样，都是”代价-回报”的过程，有消耗<code></code>ConsumeResource<code>有奖励</code>RewardResource`，然后再辅以进行这个过程先决条件（环境的、玩家的）。</p>
+<pre><code class="java">@Resource
+public class ShopResource implements IAferResouce, IResouceCheck {
+    @ResourceId
+    private int id;
+    // 购买条件
+    private ConditionsOrAndResource conditionResource;
+    private ConditionsOrAnd&lt;Player&gt; buyConditions;
+
+    // 展示条件
+    private ConditionsOrAndResource showCondition;
+    private ConditionsOrAnd&lt;Player&gt; showConditions;
+
+    // 购买消耗
+    private List&lt;ConsumeResource&gt; consumeResources;
+    private stepConsumee&lt;Player&gt; consumes;
+
+    // 购买奖励
+    private List&lt;RewardResource&gt; rewardResource;
+    private Rewaerd reward;
+
+    // 购买消耗
+    private List&lt;RewardResource&gt; rewardResources;
+    private Reward reward;
+
+    // 快速购买
+    private List&lt;RewardResource&gt; rewardResources;
+    private Reward reward;
+
+    // 商城页签
+    private ShopTab tab;
+
+    // 单次可购买最大数量
+    private int maxCount;
+
+    // 限购刷新策略
+    private TimeResource flushResource;
+    private TimeStrategy flushStrategy;
+
+    // 限制,&lt;涉及限制的类型,限制的数目&gt;
+    private Map&lt;LimiteBuyType, Integer&gt;  limitContents;
+
+    // 关联商品id集合,有些商品的限购是与同类商品相关的
+    private  List&lt;Integer&gt; attachIds;
+
+    // 赠送的东西
+    private Reward givingResouce;
+
+    // 启服是否刷新限购次数
+    private boolean openServerRefreshLimitBuy;
+
+    // 省略......
+
+    // 是否是全服或公会限购
+    public boolean isServerOrGangLimit() {
+        return limitContents != null &amp;&amp;
+        limitContents.containsKey(LimitBuyType.GangLimitBuy); ||
+        limitContents.containsKey(LimitBuy);
+    }
+
+    // 是否跨服限购
+    public boolean isTransferLimit() {
+        return limitContents.containsKey(LimitBuyType.TransferLimitBuy);
+    }
+
+    // ......
+}
+</code></pre>
+<p>商城限购类型</p>
+<pre><code class="java">@Desc(&quot;商城限购类型&quot;)
+public enum LimitBuyType {
+    // 玩家限购
+    PlayerLimitBuy {
+        @Override
+        public boolean isNotLimited(Player player, int shopId, int limitCount, int mount) {
+            ShopRecordEntity entity = ShopManager.getInstance().getShopRecordEntity(shopId);
+            Map&lt;Long, Integer&gt; record = entity.getLimitBuyRecord();
+            int count = record.getOrDefault(player.getPlayerId(), 0);
+            ShopResource resource = ShopManger.getInstance().getShopRecordEntity(shopId);
+            if(resource.getArracheIds() != null) {
+                for(int attachId : resource.getAttachIds()) {
+                    if(attachId == shopId) {
+                        continue;
+                    }
+                    count += ShopManager.getInstance().getPlayerBuyNum(plyaer, attachId);
+                }
+                count += mount;
+                return count &lt;= limitCount;
+            }
+        }
+
+        @Override
+        public void record(Plyaer player, int shopId, int amount) {
+            ShopRecordEntity entity = ShopManager.getInstance().getShopRecordEntity(shopId);
+            Map&lt;Long, Integer&gt; limitBuyRecord = entity.getLimitBuyRecord();
+            limitBuyRecord.put(player.getPlayerId(), limitBuyReCord.getOrDefault(player.getPlayerId(),0) + amount);
+            ShopManager.getInstance().update(entity);
+        }
+    },
+
+    // 全服限购
+    @Desc(&quot;全服限购&quot;)
+    ServerLimitBuy {
+        @Override
+        public boolean isNotLimited(Player player, int shopId, int limitCount, int mount) {
+            ShopRecordEntity entity = ShopManager.getInstance().getShopRecordEntity(shopId);
+            int buyCount = mount;
+            for(Collection&lt;Integer&gt; itemBuyRecords : entity.getLimitBuyRecord()) {
+                for(int record : itemBuyRecords) {
+                    buyCount += record;
+                }
+            }
+             return buyCount &lt;= limitCount;
+        }
+        @Override
+        public void record(Player player, int shopId, int amount) {
+            // nothing
+        }
+    }
+
+    // 公会限购
+    @Desc(&quot;公会限购&quot;)
+    GangLimitBuy{
+
+    },
+
+    // 跨服分组限购
+    @Desc(&quot;跨服分组限购&quot;)
+    TransferLimitBuy {
+
+    };
+
+    public abstract boolean isNotLimited(Player player, int shopId, int limitCOunt, int mount);
+    public abstract void record(Player player, int shopId, int amount);
+}
+</code></pre>
+<h2 id="购买信息的持久化"><a href="#购买信息的持久化" class="headerlink" title="购买信息的持久化"></a>购买信息的持久化</h2><p>玩家的购买记录需要持久化，特别是对需要进行限购的商品。</p>
+<p>玩家商城购买记录</p>
+<pre><code class="java">@Entity
+@Cached(type = CacheType.MANUAL)
+@InitialConfig(type = InitialType.ALL)
+@IPublicEntity
+public class ShopRecordEntity  extends AbstractEntity&lt;Integer&gt; {
+    // 商品id
+    @Id
+    private int id;
+    // 玩家周期购买记录&lt;玩家id,购买数量&gt;
+    @Lob
+    private String gangContent;
+    // 公会周期否买记录&lt;公会id,购买数量&gt;
+     private transient Map&lt;Long, Integer&gt; limitBuyRecord = new ConcurrentHashMap&lt;&gt;(0);
+     private transient Map&lt;Long, Integer&gt; gangLimitBuyRecord = new ConcurrentHashMap&lt;&gt;(0);
+
+    @Lob
+    private String gangContext;
+    // 商品下次刷新时间
+    private long flushTime;
+
+    // ......
+
+}
+
+</code></pre>
+<h2 id="商店的业务逻辑"><a href="#商店的业务逻辑" class="headerlink" title="商店的业务逻辑"></a>商店的业务逻辑</h2><ul>
+<li><p><code>ShopManager</code>中有初始化商城，定时刷新商品信息集合、重置商品限购信息等方法，涵盖了商城的公共方法。</p>
+</li>
+<li><p><code>ShopService</code>中定义了商品的购买、发送商品信息的方法。</p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>商店商品应该被抽象到很通用。</li>
+<li>由于商店物品可能被限购，处于跨服环境时更为复杂，所以限购逻辑的设计很重要。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2020/08/22/项目笔记/商店系统学习/" data-id="ckjtrgp8u004tn8vio79niz63" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/商店系统学习" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-项目笔记/周期任务执行工具学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/项目笔记/周期任务执行工具学习笔记/" class="article-date">
+  <time datetime="2020-08-22T08:42:00.535Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="周期任务执行工具"><a href="#周期任务执行工具" class="headerlink" title="周期任务执行工具"></a>周期任务执行工具</h1><pre><code class="java">public class DelayedTaskList&lt;T&gt; {
+
+
+
+}
+</code></pre>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2020/08/22/项目笔记/周期任务执行工具学习笔记/" data-id="ckjtrgp8r004qn8vi1rn5p7jb" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/周期任务执行工具学习笔记" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -2130,19 +773,19 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
           </li>
         
           <li>
-            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
-          </li>
-        
-          <li>
             <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
           </li>
         
           <li>
             <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/通讯组件学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/背包系统学习笔记/">背包学习笔记</a>
           </li>
         
       </ul>
@@ -2154,7 +797,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">33</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -2163,7 +806,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
     </div>
   </div>
 
@@ -2188,7 +831,8 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
-    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
+    <a href="https://beian.miit.gov.cn" target="_blank">粤ICP备17094722号-1</a> 
+    <br>
 
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
       .

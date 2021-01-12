@@ -83,288 +83,6 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-《Java并发编程实战》-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2020/08/22/《Java并发编程实战》-1/" class="article-date">
-  <time datetime="2020-08-22T08:41:59.350Z" itemprop="datePublished">2020-08-22</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/22/《Java并发编程实战》-1/">《Java并发编程实战》-1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="第2章-线程安全性"><a href="#第2章-线程安全性" class="headerlink" title="第2章 线程安全性"></a>第2章 线程安全性</h1><h2 id="2-1-什么是线程安全性"><a href="#2-1-什么是线程安全性" class="headerlink" title="2.1 什么是线程安全性"></a>2.1 什么是线程安全性</h2><blockquote>
-<p>当多个线程访问某个类时，不管运行时环境采用何种调度方式或者这些线程架构如何交替执行，并且在主调用代码中不需要任何额外的同步或协同，这个类都表示出正确的行为，那么就称这个类是线程安全。</p>
-</blockquote>
-<blockquote>
-<p>在线程安全类中封装了必要的同步机制，因此客户端无需进一步采用同步措施。</p>
-</blockquote>
-<blockquote>
-<p>无状态对象一定是线程安全的。</p>
-</blockquote>
-<h2 id="2-2-原子性"><a href="#2-2-原子性" class="headerlink" title="2.2 原子性"></a>2.2 原子性</h2><h3 id="2-2-1-竞态条件"><a href="#2-2-1-竞态条件" class="headerlink" title="2.2.1 竞态条件"></a>2.2.1 竞态条件</h3><h3 id="2-2-2-延迟初始化中的竞态条件"><a href="#2-2-2-延迟初始化中的竞态条件" class="headerlink" title="2.2.2 延迟初始化中的竞态条件"></a>2.2.2 延迟初始化中的竞态条件</h3><p>延迟初始化中的竞态条件（不要这样做）</p>
-<pre><code class="java">@NotThreadSafe
-public class LazyInitRace {
-    private ExpensiveObject instance = null;
-    public ExpensiveObject getInstance() {
-    if( instance == null)
-        instance = new ExpensiveObject();
-    return instance;
-}
-</code></pre>
-<h3 id="2-2-3-复合操作"><a href="#2-2-3-复合操作" class="headerlink" title="2.2.3 复合操作"></a>2.2.3 复合操作</h3><blockquote>
-<p>假定有两个操作A和B，如果从执行A的线程来看，当另一个线程执行B时，要么将B全部执行完，要么完成不执行B，那么A和B对彼此来说时原子的。原子操作是指，对于访问同一个状态的所有操作(包括该操作本身)来说，这个操作是一个以原子方式执行的操作。</p>
-</blockquote>
-<blockquote>
-<p>在实际情况中，应尽可能使用现有的线程安全对象（例如AcomicLong）来管理类的状态。与非线程安全的对象相比，判断线程安全对象的可能状态及其状态转换情况要更为容易，从而也更容易维护和验证线程安全性。</p>
-</blockquote>
-<h2 id="2-3-加锁机制"><a href="#2-3-加锁机制" class="headerlink" title="2.3 加锁机制"></a>2.3 加锁机制</h2><blockquote>
-<p>要保持状态的一致性，就需要在单个原子操作中更新所有相关的状态变量。</p>
-</blockquote>
-<h3 id="2-3-1-内置锁"><a href="#2-3-1-内置锁" class="headerlink" title="2.3.1 内置锁"></a>2.3.1 内置锁</h3><h3 id="2-3-2-重入"><a href="#2-3-2-重入" class="headerlink" title="2.3.2 重入"></a>2.3.2 重入</h3><h2 id="2-4-用锁来保护状态"><a href="#2-4-用锁来保护状态" class="headerlink" title="2.4 用锁来保护状态"></a>2.4 用锁来保护状态</h2><h3 id="对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。"><a href="#对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。" class="headerlink" title="对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。"></a>对于可能被多个线程同时访问的可变状态变量，在访问它的时都需要持有同一个锁，在这种情况下，我们称状态变量是由这个锁保护的。</h3><h3 id="每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。"><a href="#每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。" class="headerlink" title="每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。"></a>每个共享的和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。</h3><h3 id="对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。"><a href="#对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。" class="headerlink" title="对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。"></a>对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。</h3><pre><code class="java"> if (!vector.contains(element) )
-     vector.add(element)
-</code></pre>
-<blockquote>
-<p>即使Vector时同步的，因为上米娜的复合操作不是原子的，所以上面的代码也是非线程安全的。</p>
-</blockquote>
-<h2 id="2-5-活跃性与性能"><a href="#2-5-活跃性与性能" class="headerlink" title="2.5 活跃性与性能"></a>2.5 活跃性与性能</h2><blockquote>
-<p>通常，在简单性与性能之间存在着互相约制因素。当实现某个同步策略时，一定不要盲目地为了性能而牺牲简单性（这可能破坏安全性）。</p>
-</blockquote>
-<blockquote>
-<p>当执行时间较长的计算或者可能无法完成的操作时(例如，网络I/O或控制台I/O)，一定不要持有锁。</p>
-</blockquote>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2020/08/22/《Java并发编程实战》-1/" data-id="ckjtrgp5e0010n8visvqbkza4" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-1" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-springboot-summary" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2020/08/22/springboot-summary/" class="article-date">
-  <time datetime="2020-08-22T08:41:59.346Z" itemprop="datePublished">2020-08-22</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/22/springboot-summary/">springboot （转载自zooooooooy）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h3 id="springMVC"><a href="#springMVC" class="headerlink" title="springMVC"></a>springMVC</h3><p>springboot提供了开箱即用的web mvc，项目中用到的是gradle，只需要引用两个包就可以了</p>
-<pre><code>compile(&#39;org.springframework.boot:spring-boot-starter&#39;)
-compile(&#39;org.springframework.boot:spring-boot-starter-web&#39;)
-</code></pre><p>并不需要做什么其他配置，就可以启动web项目，编写restful接口。还是有一些需要个性化定制的功能需要我们手动去配置。有一些并不是springboot独有，配置的时候都是采用代码代替xml的方式。问题记录如下：</p>
-<ul>
-<li><p>Json序列化，<br>springmvc都是需要配置的，之前都是通过xml来配置。在springboot里面需要自定义MessageConverter。注册bean的方式加载到spring消息转换器里面，默认是放置到转换器队列的最前面优先解析。<br>springmvc默认的json解析器是Jackson,我这边算是先继承MappingJackson2HttpMessageConverter，修改覆盖初始方法来定制化项目需要的json格式化规则。</p>
-<pre><code>public class JsonMessageConverter extends MappingJackson2HttpMessageConverter {
-
-       @Override
-       protected void init(ObjectMapper objectMapper) {
-           objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-           objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-           objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
-           objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-           objectMapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
-           objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
-
-           objectMapper.setDateFormat(new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;));
-
-           super.init(objectMapper);
-       }
-   }
-
-</code></pre><p>后面需要将这个注册到spring bean管理里面。在configuration类里面注册</p>
-<pre><code>@Bean
-public HttpMessageConverters customConverters() {
-   return new HttpMessageConverters(new JsonMessageConverter());
-}
-
-</code></pre></li>
-<li><p>UTF8编码<br>同样是在configuration类里面注册，其实configuration就相当于spring的一个xml文件，每个方法相当于定义的一个bean，方法之间是可以互相依赖的。spring已经考虑到这点，不用担心依赖的时候破坏单例的特性。</p>
-<pre><code>@Bean
-public CharacterEncodingFilter encodingFilter() {
-
-   CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
-   encodingFilter.setEncoding(&quot;UTF-8&quot;);
-   encodingFilter.setForceEncoding(true);
-   return encodingFilter;
-}
-
-</code></pre></li>
-<li><p>拦截器<br>用到拦截器的时候，需要继承WebMvcConfigurerAdapter，通过适配器的模式，覆盖相应的方法。当然同时这个类需要标注为configuration类。</p>
-<p>| 方法 |<br>|——–|<br>|configurePathMatch|<br>|configureContentNegotiation|<br>|configureAsyncSupport|<br>|configureDefaultServletHandling|<br>|addFormatters|<br>|addInterceptors|<br>|addResourceHandlers|<br>|addCorsMappings|<br>|addViewControllers|<br>|configureViewResolvers|<br>|addArgumentResolvers|<br>|addReturnValueHandlers|<br>|configureMessageConverters|<br>|extendMessageConverters|<br>|configureHandlerExceptionResolvers|<br>|extendHandlerExceptionResolvers|<br>|getValidator|<br>|getMessageCodesResolver|<br>拦截器添加选择覆盖addInterceptors</p>
-<pre><code>@Override
-public void addInterceptors(InterceptorRegistry registry) {
-   registry.addInterceptor(new MappedInterceptor(new String[]{&quot;/**&quot;}, new String[]{&quot;&quot;},
-           new MvcInterceptor()));
-}
-</code></pre><p>MvcInterceptor是自定义的拦截器，如果需要用到url拦截的功能，需要使用spring带的MappedInterceptor定义拦截的url和排除的url<br>项目中还用到了addArgumentResolvers，addReturnValueHandlers就不一一列举了。</p>
-</li>
-</ul>
-<h3 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h3><ul>
-<li><p>属性文件<br>使用@PropertySources({@PropertySource(value = “classpath:setting.properties”)})来引入，不过这个不是springboot里面的东西。</p>
-</li>
-<li><p>项目分布</p>
-<ul>
-<li>css,js前端等用到的组件都分布在public下面或者static下面<br>需要渲染的模板定义在templates里面，安利一下我正在使用的模板<a href="http://www.mitchellbosecke.com/pebble/documentation/guide/basic-usage" target="_blank" rel="noopener">pebble</a></li>
-<li>数据库使用的是mybatis，sql还是写在xml里面在，始终觉得在代码里面写sql比较别扭。</li>
-<li><p>打包工具使用的是gradle，第一次接触，感觉还是不错，在编译速度上超过了maven。</p>
-<pre><code>compile(&#39;org.springframework.boot:spring-boot-starter&#39;)
-compile(&#39;org.springframework.boot:spring-boot-starter-log4j2&#39;)
-compile(&#39;org.springframework.boot:spring-boot-starter-web&#39;) {
-  //exclude group:&#39;org.springframework.boot&#39;,module:&quot;spring-boot-starter-tomcat&quot;
-}
-compile(&#39;org.springframework.boot:spring-boot-devtools&#39;)
-compile(&#39;org.springframework.boot:spring-boot-starter-test&#39;)
-compile(&#39;org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.0&#39;)
-
-compile(&#39;mysql:mysql-connector-java:6.0.5&#39;)
-compile(&#39;com.zaxxer:HikariCP:2.6.1&#39;)
-
-compile(&#39;org.projectlombok:lombok:1.16.16&#39;)
-
-//token
-compile(&quot;io.jsonwebtoken:jjwt:0.7.0&quot;)
-
-//bean copy
-compile(&#39;commons-beanutils:commons-beanutils:1.9.3&#39;)
-
-//apache commons lang3
-compile(&#39;org.apache.commons:commons-lang3:3.6&#39;)
-
-compile(&#39;javax.validation:validation-api:2.0.0.CR2&#39;)
-
-testCompile(&#39;junit:junit:4.12&#39;)
-
-</code></pre><p>项目中用到的jar包如上，springboot的版本号定义在buildscript里面在。使用的是1.5.2</p>
-</li>
-</ul>
-</li>
-<li><p>项目发布<br>项目还是采用外置的tomcat发布，需要在启动类Application继承SpringBootServletInitializer，覆盖</p>
-<pre><code>@Override
-protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-   return builder.sources(Application.class);
-}
-
-</code></pre><p>发布的脚本上gradle clean build -x test</p>
-</li>
-<li>profile配置<br>使用了gradle，在dev环境和prod环境的配置上，相对来说是没有maven好使的，<br>需要启动的时候在环境变量里面配置-Dspring.profiles.active=dev<br>其他的跟平常的spring开发还都是保持一致的。随着后续功能的开发慢慢会涉及到更多springboot的功能，个人感觉在开发效率上还是提升了不少。</li>
-</ul>
-<hr>
-<p>后续研究了下gradle的分环境打包方式，参数网上的例子，操作步骤如下</p>
-<ul>
-<li>添加配置文件config.groovy<br>environments {<br>   dev {<br>   }<br>   prod {<br>   }<br>}<br>在dev和prod写不同环境下的变量值，按照groovy的方式</li>
-<li>在build.gradle获取打包时指定的环境参数<pre><code>ext {
-   profile = System.properties[&#39;spring.profiles.active&#39;]
-}
-</code></pre></li>
-<li><p>读取config.groovy对应环境的的变量值</p>
-<pre><code>def loadGroovyConfig(){
-   def configFile = file(&#39;config.groovy&#39;)
-   new ConfigSlurper(profile).parse(configFile.toURL()).toProperties()
-}
-
-processResources {
-   from(sourceSets.main.resources.srcDirs) {
-       filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: loadGroovyConfig())
-   }
-}
-</code></pre></li>
-<li>变量覆盖如图<br><img src="/images/TIM截图20180605114425.png" alt="log4j2"><br>后续打包还是按照正常的方式，指定-Dspring.profiles.active=dev或者prod就可以</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2020/08/22/springboot-summary/" data-id="ckjtrgp5b000xn8vii5wbloq6" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="springboot-summary" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
     <article id="post-semaphore" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2020/08/22/semaphore/" class="article-date">
@@ -428,9 +146,652 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
+    <article id="post-Netty消息分发和业务逻辑分离" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/Netty消息分发和业务逻辑分离/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.338Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/游戏开发/">游戏开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/22/Netty消息分发和业务逻辑分离/">Netty消息分发和业务逻辑分离</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="Netty消息分发和业务逻辑分离"><a href="#Netty消息分发和业务逻辑分离" class="headerlink" title="Netty消息分发和业务逻辑分离"></a>Netty消息分发和业务逻辑分离</h1><hr>
+<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty/">Netty</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2020/08/22/Netty消息分发和业务逻辑分离/" data-id="ckjtrgp4i0003n8vi5ke769w6" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="Netty消息分发和业务逻辑分离" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-Netty, SpringBoot, MyBatis搭建游戏服务器 - 1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/Netty, SpringBoot, MyBatis搭建游戏服务器 - 1/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.332Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/游戏开发/">游戏开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/22/Netty, SpringBoot, MyBatis搭建游戏服务器 - 1/">Netty, SpringBoot, MyBatis搭建游戏服务器 - 1</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="Netty-SpringBoot-MyBatis搭建游戏服务器-1"><a href="#Netty-SpringBoot-MyBatis搭建游戏服务器-1" class="headerlink" title="Netty, SpringBoot, MyBatis搭建游戏服务器 - 1"></a>Netty, SpringBoot, MyBatis搭建游戏服务器 - 1</h1><hr>
+<h2 id="各框架简介"><a href="#各框架简介" class="headerlink" title="各框架简介"></a>各框架简介</h2><p>Netty是步的、事件驱动的网络应用程序框架和工具，,很适合做游戏服务器。</p>
+<p>使用SpringBoot可以抛弃传统Spirng框架的繁琐配置和依赖版本管理，更方便地打包与部署。这里我们主要是使用SpringBoot的依赖注入功能。</p>
+<p>MyBatis 是一款优秀的持久层框架，它支持定制化 SQL、存储过程以及高级映射。因为我们的数据库可能因为业务需求不断地变化，所以我们可以用MyBaits的逆向工程实时根据数据库的表生成实体类、Mapper接口，Mapper  XML。或者利用注解注解写SQL语句查询。</p>
+<hr>
+<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>我们要使用Netty构建一个游戏服务端，她可以接受客户端的信息，并根据业务逻辑做出响应。<br><img src="https://img-blog.csdn.net/20180919161809161?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="架构图"></p>
+<p>Spring负责依赖注入，管理对象（游戏业务对象另外由缓存模块管理），使得项目代码直之间解耦合。</p>
+<p>MyBatis负责依据业务需求持久化各类数据。</p>
+<hr>
+<h2 id="依赖配置"><a href="#依赖配置" class="headerlink" title="依赖配置"></a>依赖配置</h2><p>项目使用Maven来管理依赖，依赖结构初步想法是</p>
+<ul>
+<li>mmorpg<ul>
+<li>gameserver<ul>
+<li>mysql</li>
+<li>缓存模块</li>
+<li>游戏配置管理模块</li>
+<li>….</li>
+</ul>
+</li>
+<li>gameclient</li>
+</ul>
+</li>
+</ul>
+<p>下面是当前版本项目的pom文件</p>
+<p>总项目定义文件</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;com.wan37&lt;/groupId&gt;
+    &lt;artifactId&gt;mmorpg&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;packaging&gt;pom&lt;/packaging&gt;
+
+    &lt;name&gt;mmorpg&lt;/name&gt;
+    &lt;description&gt;Demo project for Spring Boot&lt;/description&gt;
+
+    &lt;modules&gt;
+        &lt;module&gt;gameserver&lt;/module&gt;
+        &lt;module&gt;mysql&lt;/module&gt;
+    &lt;/modules&gt;
+
+    &lt;parent&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+        &lt;version&gt;2.0.5.RELEASE&lt;/version&gt;
+        &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
+    &lt;/parent&gt;
+
+    &lt;properties&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;
+        &lt;java.version&gt;1.8&lt;/java.version&gt;
+    &lt;/properties&gt;
+
+    &lt;dependencies&gt;
+        &lt;!--&lt;dependency&gt;--&gt;
+            &lt;!--&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;--&gt;
+            &lt;!--&lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;--&gt;
+        &lt;!--&lt;/dependency&gt;--&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+
+    &lt;repositories&gt;
+        &lt;repository&gt;
+            &lt;id&gt;spring-snapshots&lt;/id&gt;
+            &lt;name&gt;Spring Snapshots&lt;/name&gt;
+            &lt;url&gt;https://repo.spring.io/snapshot&lt;/url&gt;
+            &lt;snapshots&gt;
+                &lt;enabled&gt;true&lt;/enabled&gt;
+            &lt;/snapshots&gt;
+        &lt;/repository&gt;
+        &lt;repository&gt;
+            &lt;id&gt;spring-milestones&lt;/id&gt;
+            &lt;name&gt;Spring Milestones&lt;/name&gt;
+            &lt;url&gt;https://repo.spring.io/milestone&lt;/url&gt;
+            &lt;snapshots&gt;
+                &lt;enabled&gt;false&lt;/enabled&gt;
+            &lt;/snapshots&gt;
+        &lt;/repository&gt;
+    &lt;/repositories&gt;
+
+    &lt;pluginRepositories&gt;
+        &lt;pluginRepository&gt;
+            &lt;id&gt;spring-snapshots&lt;/id&gt;
+            &lt;name&gt;Spring Snapshots&lt;/name&gt;
+            &lt;url&gt;https://repo.spring.io/snapshot&lt;/url&gt;
+            &lt;snapshots&gt;
+                &lt;enabled&gt;true&lt;/enabled&gt;
+            &lt;/snapshots&gt;
+        &lt;/pluginRepository&gt;
+        &lt;pluginRepository&gt;
+            &lt;id&gt;spring-milestones&lt;/id&gt;
+            &lt;name&gt;Spring Milestones&lt;/name&gt;
+            &lt;url&gt;https://repo.spring.io/milestone&lt;/url&gt;
+            &lt;snapshots&gt;
+                &lt;enabled&gt;false&lt;/enabled&gt;
+            &lt;/snapshots&gt;
+        &lt;/pluginRepository&gt;
+    &lt;/pluginRepositories&gt;
+&lt;/project&gt;
+
+</code></pre>
+<p>持久化模块定义文件</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;parent&gt;
+        &lt;artifactId&gt;mmorpg&lt;/artifactId&gt;
+        &lt;groupId&gt;com.wan37&lt;/groupId&gt;
+        &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;/parent&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;artifactId&gt;mysql&lt;/artifactId&gt;
+    &lt;packaging&gt;jar&lt;/packaging&gt;
+
+
+    &lt;dependencies&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;
+            &lt;version&gt;1.3.2&lt;/version&gt;
+        &lt;/dependency&gt;
+
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+        &lt;/dependency&gt;
+
+        &lt;!-- https://mvnrepository.com/artifact/com.alibaba/druid --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+            &lt;artifactId&gt;druid&lt;/artifactId&gt;
+            &lt;version&gt;1.0.26&lt;/version&gt;
+        &lt;/dependency&gt;
+
+
+        &lt;!-- 分页插件 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.github.pagehelper&lt;/groupId&gt;
+            &lt;artifactId&gt;pagehelper&lt;/artifactId&gt;
+            &lt;version&gt;4.1.6&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;!--Json Support--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+            &lt;artifactId&gt;fastjson&lt;/artifactId&gt;
+            &lt;version&gt;1.1.43&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;!--mybatis逆向工程--&gt;
+        &lt;!--&lt;dependency&gt;--&gt;
+            &lt;!--&lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;--&gt;
+            &lt;!--&lt;artifactId&gt;mybatis-generator-core&lt;/artifactId&gt;--&gt;
+            &lt;!--&lt;version&gt;1.3.2&lt;/version&gt;--&gt;
+        &lt;!--&lt;/dependency&gt;--&gt;
+
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+
+            &lt;!--mybatis插件--&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
+                &lt;artifactId&gt;mybatis-generator-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;1.3.2&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;configurationFile&gt;src\main\resources\mybatis\generatorConfig.xml&lt;/configurationFile&gt;
+                    &lt;!--允许移动生成的文件--&gt;
+                    &lt;verbose&gt;true&lt;/verbose&gt;
+                    &lt;!--允许覆盖生成的文件--&gt;
+                    &lt;overwrite&gt;true&lt;/overwrite&gt;
+                &lt;/configuration&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;GenerateMyBatis Artifacts&lt;/id&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;generate&lt;/goal&gt;
+                        &lt;/goals&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+                &lt;dependencies&gt;
+                    &lt;dependency&gt;
+                        &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
+                        &lt;artifactId&gt;mybatis-generator-core&lt;/artifactId&gt;
+                        &lt;version&gt;1.3.2&lt;/version&gt;
+                    &lt;/dependency&gt;
+                &lt;/dependencies&gt;
+            &lt;/plugin&gt;
+
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+
+&lt;/project&gt;
+</code></pre>
+<p>服务端模块</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+
+    &lt;parent&gt;
+        &lt;artifactId&gt;mmorpg&lt;/artifactId&gt;
+        &lt;groupId&gt;com.wan37&lt;/groupId&gt;
+        &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;/parent&gt;
+
+
+
+    &lt;artifactId&gt;gameserver&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;packaging&gt;jar&lt;/packaging&gt;
+
+    &lt;name&gt;gameserver&lt;/name&gt;
+    &lt;description&gt;A game server project for Spring Boot&lt;/description&gt;
+
+
+    &lt;properties&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;
+        &lt;java.version&gt;1.8&lt;/java.version&gt;
+    &lt;/properties&gt;
+
+    &lt;dependencies&gt;
+        &lt;!-- Netty --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;io.netty&lt;/groupId&gt;
+            &lt;artifactId&gt;netty-all&lt;/artifactId&gt;
+            &lt;version&gt;4.1.29.Final&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;!-- 引用基于MySQL和--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.wan37&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql&lt;/artifactId&gt;
+            &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+        &lt;/dependency&gt;
+
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+
+&lt;/project&gt;
+
+</code></pre>
+<hr>
+<h2 id="Spring和myBatis的配置文件"><a href="#Spring和myBatis的配置文件" class="headerlink" title="Spring和myBatis的配置文件"></a>Spring和myBatis的配置文件</h2><p>gameserver模块中的application.yml</p>
+<pre><code class="yml">spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/game?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+  check-config-location: true
+  type-aliases-package: com.wan37.mysql.pojo.entity
+
+debug: true
+</code></pre>
+<p>MyBitis配置类（分页助手不知是否能用到）</p>
+<pre><code>package com.wan37.gameServer.config;
+
+import com.github.pagehelper.PageHelper;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.Properties;
+
+
+/**
+ * @author 钱伟健 gonefutre
+ * @date 2017/9/12 22:27.
+ * @E-mail gonefuture@qq.com
+ */
+
+/*
+ * 注册MyBatis分页插件PageHelper
+ */
+
+@Configuration
+@MapperScan(basePackages = {&quot;com.wan37&quot;})
+public class MybatisConfig {
+
+    @Bean
+    public PageHelper pageHelper() {
+        System.out.println(&quot;MyBatisConfiguration.pageHelper()&quot;);
+        PageHelper pageHelper = new PageHelper();
+        Properties p = new Properties();
+        p.setProperty(&quot;offsetAsPageNum&quot;, &quot;true&quot;);
+        p.setProperty(&quot;rowBoundsWithCount&quot;, &quot;true&quot;);
+        p.setProperty(&quot;reasonable&quot;, &quot;true&quot;);
+        pageHelper.setProperties(p);
+        return pageHelper;
+    }
+}
+</code></pre><p>MyBatis逆向工程文件</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE generatorConfiguration PUBLIC &quot;-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd&quot; &gt;
+&lt;generatorConfiguration &gt;
+    &lt;!-- 引入配置文件 --&gt;
+    &lt;!--     &lt;properties resource=&quot;db.properties&quot;/&gt; --&gt;
+    &lt;!-- 指定数据连接驱动jar地址 --&gt;
+    &lt;classPathEntry location=&quot;C:\project\mmorpg\mysql\mysql-connector-java-5.1.47.jar&quot;/&gt;
+    &lt;!-- 一个数据库一个context --&gt;
+    &lt;context id=&quot;msql&quot; targetRuntime=&quot;MyBatis3&quot; &gt;
+
+        &lt;!-- generate entity时，生成hashcode和equals方法 --&gt;
+        &lt;!--&lt;plugin type=&quot;org.mybatis.generator.plugins.EqualsHashCodePlugin&quot; /&gt;--&gt;
+        &lt;!-- generate entity时，生成serialVersionUID --&gt;
+        &lt;plugin type=&quot;org.mybatis.generator.plugins.SerializablePlugin&quot; /&gt;
+        &lt;!-- 这个插件只会增加字符串字段映射到一个JDBC字符的方法 --&gt;
+        &lt;!--&lt;plugin type=&quot;org.mybatis.generator.plugins.CaseInsensitiveLikePlugin&quot; /&gt;--&gt;
+        &lt;!-- genenat entity时,生成toString --&gt;
+        &lt;plugin type=&quot;org.mybatis.generator.plugins.ToStringPlugin&quot; /&gt;
+
+
+        &lt;!-- 注释 --&gt;
+        &lt;commentGenerator&gt;
+            &lt;property name=&quot;suppressAllComments&quot; value=&quot;true&quot;/&gt;&lt;!-- 是否取消注释 --&gt;
+            &lt;property name=&quot;supperssDate&quot; value=&quot;false&quot;/&gt;&lt;!-- 是否生成注释代码时间戳 --&gt;
+        &lt;/commentGenerator&gt;
+        &lt;!-- jdbc连接 --&gt;
+        &lt;jdbcConnection driverClass=&quot;com.mysql.jdbc.Driver&quot;
+                        connectionURL=&quot;jdbc:mysql://localhost:3306/game&quot;
+                        userId=&quot;root&quot;
+                        password=&quot;123456&quot; /&gt;
+        &lt;!-- 类型转换 --&gt;
+        &lt;javaTypeResolver&gt;
+            &lt;!-- 是否使用bigDecimals,false可自动转化以下类型(Long,Integer,Short,ets..) --&gt;
+            &lt;property name=&quot;forceBigDecimals&quot; value=&quot;false&quot;/&gt;
+        &lt;/javaTypeResolver&gt;
+        &lt;!-- 生成实体类地址 --&gt;
+        &lt;javaModelGenerator targetPackage=&quot;com.wan37.mysql.pojo.entity&quot; targetProject=&quot;src/main/java&quot;&gt;
+            &lt;!-- 是否在当前路径下新加一层schema,eg:
+            fase路径：com.sky.ssm.po ； true路径：com.sky.ssm.po.[shemaName]
+             --&gt;
+            &lt;property name=&quot;enableSubPackages&quot; value=&quot;true&quot;/&gt;
+            &lt;!-- 是否针对string类型的字段在set的时候进行trim调用 --&gt;
+            &lt;property name=&quot;trimStrings&quot; value=&quot;true&quot;/&gt;
+        &lt;/javaModelGenerator&gt;
+
+        &lt;!-- 生成mapxml文件 --&gt;
+        &lt;sqlMapGenerator targetPackage=&quot;mapper&quot; targetProject=&quot;src/main/resources&quot;&gt;
+            &lt;!-- 是否在当前路径下新加一层schema,eg:
+            fase路径：com.sky.ssm.mapper ； true路径：com.sky.ssm.mapper.[shemaName]
+             --&gt;
+            &lt;property name=&quot;enableSubPackages&quot; value=&quot;true&quot;/&gt;
+        &lt;/sqlMapGenerator&gt;
+        &lt;!-- 生成mapxml对应client，也就是接口dao --&gt;
+        &lt;javaClientGenerator targetPackage=&quot;com.wan37.mysql.pojo.mapper&quot; targetProject=&quot;src/main/java&quot;
+                             type=&quot;XMLMAPPER&quot; &gt;
+            &lt;!-- 是否在当前路径下新加一层schema,eg:
+            fase路径：com.sky.ssm.mapper ； true路径：com.sky.ssm.mapper.[shemaName]
+             --&gt;
+            &lt;property name=&quot;enableSubPackages&quot; value=&quot;true&quot;/&gt;
+        &lt;/javaClientGenerator&gt;
+        &lt;!-- 配置表信息 --&gt;
+        &lt;!-- schema即为数据库名； tableName为对应的数据库表 ；domainObjectName是要生成的实体类 ；enable*ByExample是否生成 example类 --&gt;
+        &lt;!-- &lt;table schema=&quot;store&quot; tableName=&quot;user&quot;
+            domainObjectName=&quot;User&quot; enableCountByExample=&quot;true&quot;
+            enableDeleteByExample=&quot;true&quot; enableSelectByExample=&quot;true&quot;
+            enableUpdateByExample=&quot;ture&quot;&gt;
+            忽略列，不生成bean字段
+             &lt;ignoreColumn column=&quot;FRED&quot;/&gt;
+                 指定列的java数据类型
+           &lt;columnOverride column=&quot;PRICE&quot; javaType=&quot;double&quot; /&gt;
+          &lt;/table&gt; --&gt;
+        &lt;!-- 指定数据库表，要生成哪些表，就写哪些表，要和数据库中对应，不能写错！ --&gt;
+        &lt;table tableName=&quot;game_role&quot;/&gt;
+        &lt;table tableName=&quot;player&quot;/&gt;
+        &lt;table tableName=&quot;player_roles&quot;/&gt;
+
+    &lt;/context&gt;
+&lt;/generatorConfiguration&gt;
+</code></pre>
+<h2 id="整合Netty"><a href="#整合Netty" class="headerlink" title="整合Netty"></a>整合Netty</h2><p>我使用的办法是把Netty服务的Handler，启动类都都变成由Spring管理的类。通过在类定义上加@Component注解，SpringBoot启动时会自动扫描注解并将Bean注入到容器中。使用   @PostConstruct修饰启动方法来启动Netty服务。</p>
+<pre><code class="java">import com.wan37.gameServer.server.handler.ServerHandler;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
+
+/**
+ * @author gonefuture  gonefuture@qq.com
+ * time 2018/9/10 11:36
+ * @version 1.00
+ * Description: 游戏服务端
+ */
+@Slf4j
+@Component
+@ChannelHandler.Sharable
+public class GameServer {
+
+    @Resource
+    private ServerHandler serverHandler;
+
+    //绑定端口
+    private void bind(int port) throws Exception {
+        // 逻辑线程组
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        // 工作线程
+        EventLoopGroup workGroup = new NioEventLoopGroup();
+
+        ServerBootstrap bootstrap = new ServerBootstrap(); // 启动器
+        bootstrap.group(bossGroup, workGroup)
+                .channel(NioServerSocketChannel.class)
+                .option(ChannelOption.SO_BACKLOG, 1024) // 最大客户端连接数为1024
+                //是否启用心跳保活机制
+                .childOption(ChannelOption.SO_KEEPALIVE, true)
+        .childHandler(new ChannelInitializer&lt;SocketChannel&gt;() {
+
+            @Override
+            protected void initChannel(SocketChannel ch) throws Exception {
+                // 这里添加业务处理handler
+                ch.pipeline().addLast( serverHandler);
+            }
+        });
+
+        try {
+            ChannelFuture future = bootstrap.bind(port).sync();
+            if (future.isSuccess()) {
+                System.out.println(&quot;Server starts success at port:&quot;+port);
+            }
+            future.channel().closeFuture().sync();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            bossGroup.shutdownGracefully();
+            workGroup.shutdownGracefully();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        int port = 8000;
+        new GameServer().bind(port);
+    }
+
+
+    @PostConstruct
+    public void start() {
+        int port = 8000;
+        try {
+          bind(port);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+}
+
+</code></pre>
+<h2 id="期间遇到的各种问题"><a href="#期间遇到的各种问题" class="headerlink" title="期间遇到的各种问题"></a>期间遇到的各种问题</h2><p>整合的时候遇到过很多问题</p>
+<ol>
+<li>整合Netty时，由于使用new关键字创建Handler实例，导致在Handle中装配的服务实例为空，不能使用。</li>
+<li>MyBatis配置类写在了mysql模块而没有写在gameserver模块,导致mapper文件扫描不到。</li>
+<li>逆向工程时产生了同名的mapper xml文件未及时删除，导致出现mapper result map 重复的错误。</li>
+</ol>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>当前只整合了持久化模块，接下来还要编写请求分发的部分和整合缓存模块。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MyBatis/">MyBatis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty/">Netty</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/">SpringBoot</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2020/08/22/Netty, SpringBoot, MyBatis搭建游戏服务器 - 1/" data-id="ckjtrgp4y000cn8viro219esz" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="Netty, SpringBoot, MyBatis搭建游戏服务器 - 1" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/28/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="page-number current">29</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/30/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/28/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><span class="page-number current">29</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/30/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -448,19 +809,19 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
           </li>
         
           <li>
-            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
-          </li>
-        
-          <li>
             <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
           </li>
         
           <li>
             <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/通讯组件学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/背包系统学习笔记/">背包学习笔记</a>
           </li>
         
       </ul>
@@ -472,7 +833,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">33</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -481,7 +842,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
     </div>
   </div>
 
@@ -506,7 +867,8 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
-    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
+    <a href="https://beian.miit.gov.cn" target="_blank">粤ICP备17094722号-1</a> 
+    <br>
 
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
       .

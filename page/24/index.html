@@ -83,216 +83,6 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-《Netty实战》-第五章-ByteBuf" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2020/08/22/《Netty实战》-第五章-ByteBuf/" class="article-date">
-  <time datetime="2020-08-22T08:41:59.425Z" itemprop="datePublished">2020-08-22</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/22/《Netty实战》-第五章-ByteBuf/">《Netty实战》-第五章-ByteBuf</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="《Netty实战》-第五章-ByteBuf"><a href="#《Netty实战》-第五章-ByteBuf" class="headerlink" title="《Netty实战》-第五章-ByteBuf"></a>《Netty实战》-第五章-ByteBuf</h1><hr>
-<h2 id="5-1-ByteBuf的API"><a href="#5-1-ByteBuf的API" class="headerlink" title="5.1 ByteBuf的API"></a>5.1 ByteBuf的API</h2><p>Netty的数据处理API通过两个组件暴露—abstract class ByteBuf和interface ByteBufHolder。<br>下面是一些ByteBuf API的优点：</p>
-<ul>
-<li>他可以被用户自定义的缓冲区类型扩展</li>
-<li>通过内置的复合缓冲区类型实现了透明的零拷贝</li>
-<li>容量可以按需增长（类似于JDK的StringBuilder）</li>
-<li>在读和写这两种模式之间切换不需要调用ByteBuffer的flip()方式</li>
-<li>读和写使用不同了的索引</li>
-<li>支持方法的链式调用</li>
-<li>支持引用计数</li>
-<li>支持池化</li>
-</ul>
-<p>其他类可用于管理ByteBuf实例的分配，以及执行各种针对数据容器本身和它所持有的数据的操作。</p>
-<hr>
-<h2 id="5-2-ByteBuf类-——-Netty的数据容器"><a href="#5-2-ByteBuf类-——-Netty的数据容器" class="headerlink" title="5.2 ByteBuf类 —— Netty的数据容器"></a>5.2 ByteBuf类 —— Netty的数据容器</h2><h3 id="5-2-1-它是如何工作的"><a href="#5-2-1-它是如何工作的" class="headerlink" title="5.2.1 它是如何工作的"></a>5.2.1 它是如何工作的</h3><p>ByteBuf维护两个不同的索引：一个用于读取，一个用于写入。</p>
-<p>名称以read或者write开头的ByteBuf方法，将会推进其对应的索引，而名称以set或者get开头的操作则不会。后面的这些方法将一个参数传入的一个相对索引上执行操作。</p>
-<h3 id="5-2-2-ByteBuf的使用模式"><a href="#5-2-2-ByteBuf的使用模式" class="headerlink" title="5.2.2 ByteBuf的使用模式"></a>5.2.2 ByteBuf的使用模式</h3><ol>
-<li>堆缓冲区<br> 最常用的ByteBuf模式是将数据储存在JVM的堆空间中。这种模式被成为支撑数组。</li>
-<li>直接缓冲区<br> 直接缓冲区是另一种ButeBuf模式，在垃圾回收之外。<br>3.复合缓冲区<br> 复合缓冲区为多个ByteBuf提供了一个聚合视图，</li>
-</ol>
-<h2 id="5-3-字节级操作"><a href="#5-3-字节级操作" class="headerlink" title="5.3 字节级操作"></a>5.3 字节级操作</h2><h3 id="5-3-1-随机访问索引"><a href="#5-3-1-随机访问索引" class="headerlink" title="5.3.1 随机访问索引"></a>5.3.1 随机访问索引</h3><p>BuyteBuf的索引是从零开始的：第一个字节的索引是0，最后一个字节的索引总是capacity()-1</p>
-<h3 id="5-3-2-顺序访问索引"><a href="#5-3-2-顺序访问索引" class="headerlink" title="5.3.2 顺序访问索引"></a>5.3.2 顺序访问索引</h3><p>ByteBuf同时具有读索引和写索引，但是JDK的ByteBuffer却只有一个索引，这也是为甚恶魔必须调用filp()方法来在读模式和写模式之间进行切换的原因。</p>
-<h3 id="5-3-3-可丢弃字节"><a href="#5-3-3-可丢弃字节" class="headerlink" title="5.3.3 可丢弃字节"></a>5.3.3 可丢弃字节</h3><h3 id="5-3-4-可读字节"><a href="#5-3-4-可读字节" class="headerlink" title="5.3.4 可读字节"></a>5.3.4 可读字节</h3><p>ByteBuf的可读字节分段储存例如实际数据。新分配的、包管理的或者复制的缓冲区的默认的readerIndex的值为0。</p>
-<h3 id="5-3-5-可写字节"><a href="#5-3-5-可写字节" class="headerlink" title="5.3.5 可写字节"></a>5.3.5 可写字节</h3><p>可写字节分段是指一个拥有未定义内容的、写入就绪的内存区域。新分配的缓冲区的writerIndex的默认值为0。</p>
-<h3 id="5-3-6-索引管理"><a href="#5-3-6-索引管理" class="headerlink" title="5.3.6 索引管理"></a>5.3.6 索引管理</h3><h3 id="5-3-7-查找管理"><a href="#5-3-7-查找管理" class="headerlink" title="5.3.7 查找管理"></a>5.3.7 查找管理</h3><p>调用clear()比调用discardReadBytes()轻量得多，因为它将只是重置索引而不会复制任何得内存。</p>
-<h3 id="5-3-7-查找操作"><a href="#5-3-7-查找操作" class="headerlink" title="5.3.7 查找操作"></a>5.3.7 查找操作</h3><p>indexOf()方法可以用来确定指定值得索引的方法。</p>
-<h3 id="5-3-8-派生缓冲区"><a href="#5-3-8-派生缓冲区" class="headerlink" title="5.3.8 派生缓冲区"></a>5.3.8 派生缓冲区</h3><p>派生缓冲区为ByteBuf提供了专门的方式来呈现其内容的视图。这类视图是通过一下方法被创建的：</p>
-<ul>
-<li>duplicate()</li>
-<li>slice()</li>
-<li>slice(int, int)</li>
-<li>Unpoooled.unmodifiableBuffer { … }</li>
-<li>order(ByteOrder)</li>
-<li>readSlice(int)</li>
-</ul>
-<p>每个这些方法都将返回一个新的ByteBuf实例，它具有自己的读索引、写索引和标记索引。</p>
-<p><strong>BYteBuf复制</strong> 如果需要一个现有缓冲区的真实副本，请使用copy()或者copy(int, int)方法。不同于派生缓冲区，由于这个调用所返回的ByteBuf拥有独立的数据副本。</p>
-<h3 id="5-3-9-读-写操作"><a href="#5-3-9-读-写操作" class="headerlink" title="5.3.9 读/写操作"></a>5.3.9 读/写操作</h3><p>netty有两种类别的读/写操作。</p>
-<ul>
-<li>get()和set()操作，从给定的索引开始，并且保持索引不变。</li>
-<li>read()和write()操作，从给定的索引开始，并且会根据已经访问过的字节数对索引进行掉整。</li>
-</ul>
-<h3 id="5-3-10-更多的操作"><a href="#5-3-10-更多的操作" class="headerlink" title="5.3.10 更多的操作"></a>5.3.10 更多的操作</h3><h2 id="ByteBufHolder接口"><a href="#ByteBufHolder接口" class="headerlink" title="ByteBufHolder接口"></a>ByteBufHolder接口</h2><p>ByteBufHolder有几种用于访问底层数据和引用计算的方法。</p>
-<h2 id="5-5-ByteBuf分配"><a href="#5-5-ByteBuf分配" class="headerlink" title="5.5 ByteBuf分配"></a>5.5 ByteBuf分配</h2><h3 id="5-5-1-按需分配：ByteBufAllocator接口"><a href="#5-5-1-按需分配：ByteBufAllocator接口" class="headerlink" title="5.5.1 按需分配：ByteBufAllocator接口"></a>5.5.1 按需分配：ByteBufAllocator接口</h3><p> 为了降低分配和释放内存的开销，Netty通过interface ByteBufAllocator实现了(ByteBuf的)池化，它可以用来分配我们所描述过的任意类型的ByteBuf实例。使用池化是应用程序的决定，其并不会以任何方式改变ByteBuf API(的语义)。</p>
-<p> Netty提供了两种ByteBufAllocator的实现：<strong>PooledByteBufAllocator</strong>和<strong>UnpooledByteBufAllocator</strong>。前者池化了ByteBuf的实例以提高性能并最大限度地减少内存碎片.此实现使用了一种为jemalloc的已被大量现代操作系统所采用的高效方法来分配内存。后者的实现不池化ByteBuf实例，并且在每次被它调用时都会返回一个新的实例。</p>
-<h3 id="5-5-2-Unpooled缓冲区"><a href="#5-5-2-Unpooled缓冲区" class="headerlink" title="5.5.2 Unpooled缓冲区"></a>5.5.2 Unpooled缓冲区</h3><p>Unpooled的工具类提供了静态的辅助方法来创建未池化的ByteBuf实例。</p>
-<h3 id="5-5-3-ByteBufUtil类"><a href="#5-5-3-ByteBufUtil类" class="headerlink" title="5.5.3 ByteBufUtil类"></a>5.5.3 ByteBufUtil类</h3><p>ByteBufUtil.hexdump()方法以十六进制的表示形式打印bytebuf的内容。</p>
-<h2 id="5-6-引用计算"><a href="#5-6-引用计算" class="headerlink" title="5.6 引用计算"></a>5.6 引用计算</h2><p>引用计算是一种通过在某个对象所持有的资源不再被其他对象引用时释放该对象所持有的资源来优化内存使用和性能的技术。ByteBuf和BytebufHolder引入了引用计数计数，它们都实现了interface ReferenceCounted。</p>
-<h2 id="5-7-小结"><a href="#5-7-小结" class="headerlink" title="5.7 小结"></a>5.7 小结</h2><p>ByteBuf的要点：</p>
-<ul>
-<li>使用不同的读索引和写索引来控制数据访问。</li>
-<li>使用内存的不同方式——基于字节数组和直接缓冲区</li>
-<li>通过CompositeByteBuf生成多个ByteBuf的聚合视图</li>
-<li>数据访问方法——搜索、切片以及复制</li>
-<li>读、写、获取和设置API</li>
-<li>ByteBufAllocator池化和引用计算</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NIO/">NIO</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Netty/">Netty</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2020/08/22/《Netty实战》-第五章-ByteBuf/" data-id="ckjtrgp600029n8vi59x6zyie" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Netty实战》-第五章-ByteBuf" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-《Java并发编程实战》-9" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2020/08/22/《Java并发编程实战》-9/" class="article-date">
-  <time datetime="2020-08-22T08:41:59.421Z" itemprop="datePublished">2020-08-22</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/22/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="第10章-避免活跃性危险"><a href="#第10章-避免活跃性危险" class="headerlink" title="第10章 避免活跃性危险"></a>第10章 避免活跃性危险</h1><hr>
-<h2 id="10-1-死锁"><a href="#10-1-死锁" class="headerlink" title="10.1 死锁"></a>10.1 死锁</h2><p>哲学家问题</p>
-<h3 id="10-1-1-锁顺序死锁"><a href="#10-1-1-锁顺序死锁" class="headerlink" title="10.1.1 锁顺序死锁"></a>10.1.1 锁顺序死锁</h3><blockquote>
-<p>如果所有线程以固定的顺序来获得锁，那么在线程中就不会出现锁顺序死锁问题。</p>
-</blockquote>
-<h3 id="10-1-2-动态的顺序死锁"><a href="#10-1-2-动态的顺序死锁" class="headerlink" title="10.1.2 动态的顺序死锁"></a>10.1.2 动态的顺序死锁</h3><p>通过锁顺序来避免死锁</p>
-<h3 id="10-1-3-在协助对象之间发生的死锁"><a href="#10-1-3-在协助对象之间发生的死锁" class="headerlink" title="10.1.3 在协助对象之间发生的死锁"></a>10.1.3 在协助对象之间发生的死锁</h3><p>如果在持有锁时调用某个外部方法，那么将出现活跃性问题。在这个外部方法中可能会获取其他锁(这可能会产生死锁)，或者阻塞时间过长，导致其他线程无法及时获得当前被持有的锁。</p>
-<h3 id="10-1-4-开放调用"><a href="#10-1-4-开放调用" class="headerlink" title="10.1.4 开放调用"></a>10.1.4 开放调用</h3><p>如果在调用某个方法时不需要持有锁，那么这种调用被称为开放调用(Open Call)。</p>
-<blockquote>
-<p>在程序中应尽量使用开发调用。与那些在持有锁时调用外部方法的程序相比，更易于对依赖于开放调用的程序进行死锁分析。</p>
-</blockquote>
-<h3 id="10-1-5-资源死锁"><a href="#10-1-5-资源死锁" class="headerlink" title="10.1.5 资源死锁"></a>10.1.5 资源死锁</h3><p>当多个线程早相同的资源集合上等待时，也会发生死锁。</p>
-<h2 id="10-2-死锁的避免与诊断"><a href="#10-2-死锁的避免与诊断" class="headerlink" title="10.2 死锁的避免与诊断"></a>10.2 死锁的避免与诊断</h2><h3 id="10-2-1-支持定时的锁"><a href="#10-2-1-支持定时的锁" class="headerlink" title="10.2.1 支持定时的锁"></a>10.2.1 支持定时的锁</h3><p>显式使用Lock类中定时tryLock功能代替内置锁机制可以检测死锁和从死锁中恢复过来。</p>
-<h3 id="10-2-2-通过线程转储信息来分析死锁"><a href="#10-2-2-通过线程转储信息来分析死锁" class="headerlink" title="10.2.2 通过线程转储信息来分析死锁"></a>10.2.2 通过线程转储信息来分析死锁</h3><p>虽然防止死锁的主要责任在于你自己，但JVM仍然通过线程转储(Thread Dump)来帮助识别死锁的发生。线程转储包括各个运行中的线程的栈追踪信息，这类似发生异常时的栈追踪信息。</p>
-<h2 id="10-3-其他活跃性危险"><a href="#10-3-其他活跃性危险" class="headerlink" title="10.3 其他活跃性危险"></a>10.3 其他活跃性危险</h2><p>活跃性危险：</p>
-<ul>
-<li>死锁</li>
-<li>饥饿</li>
-<li>丢失信号</li>
-<li>活锁</li>
-</ul>
-<h3 id="10-3-1-饥饿"><a href="#10-3-1-饥饿" class="headerlink" title="10.3.1 饥饿"></a>10.3.1 饥饿</h3><p>当线程由于无法访问它所需要的资源而无法继续执行时，就发生了“饥饿”,引发饥饿的最常见资源就是CPU时钟周期。</p>
-<blockquote>
-<p>要避免使用线程优先级，因为这会增加平台依赖性，并可能导致活跃性问题。在大多数并发应用程序中，都可以使用默认的线程优先级。</p>
-</blockquote>
-<h3 id="10-3-2-糟糕的响应性"><a href="#10-3-2-糟糕的响应性" class="headerlink" title="10.3.2 糟糕的响应性"></a>10.3.2 糟糕的响应性</h3><h3 id="10-3-3-活锁"><a href="#10-3-3-活锁" class="headerlink" title="10.3.3 活锁"></a>10.3.3 活锁</h3><p>活锁是另一种形式的活跃性问题，该问题尽管不会阻塞线程，但也不能继续执行，因为线程将不断重复地执行相同的操作，并且总会失败。活锁通常发生在处理事务消息的应用程序中：如果蹦年成功处理某个消息，那么消息处理机制将回滚整个事务，并且将它重新发到队列的开头。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>活跃性故障时一个非常严重的问题，因为当出现活跃性故障时，除了终止应用程序之外没有其他任何机制可以邦帮助从这些故障中恢复过来。最常见的活跃性故障就是所顺序死锁。在设计时应该避免产生锁顺序死锁：确保线程在获取多个锁时采用一致的顺序。最好的解决方法是在程序中始终使用开放调用。这种大大减少需要同时持有多个锁的地方，也更容易发现这些地方。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2020/08/22/《Java并发编程实战》-9/" data-id="ckjtrgp5u001un8vi7n5wtn2u" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-9" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
     <article id="post-《Java并发编程实战》-8" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2020/08/22/《Java并发编程实战》-8/" class="article-date">
@@ -377,9 +167,282 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
+    <article id="post-《Java并发编程实战》-7" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/《Java并发编程实战》-7/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.414Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/22/《Java并发编程实战》-7/">《Java并发编程实战》-7</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="第8章-线程池的使用"><a href="#第8章-线程池的使用" class="headerlink" title="第8章 线程池的使用"></a>第8章 线程池的使用</h1><hr>
+<h2 id="8-1-在任务与执行策略之间的隐形耦合"><a href="#8-1-在任务与执行策略之间的隐形耦合" class="headerlink" title="8.1 在任务与执行策略之间的隐形耦合"></a>8.1 在任务与执行策略之间的隐形耦合</h2><p>并非所有的任务有些任务需要明确地指明执行策略，包括：</p>
+<ul>
+<li>依赖性任务</li>
+<li>使用线程封闭机制的任务。</li>
+<li>对应时间敏感的任务。</li>
+<li>使用ThreadLocal的任务</li>
+</ul>
+<blockquote>
+<p>在一些任务中，需要拥有或排除某种特定的执行策略。如果某些任务依赖于其他的任务，那么会要求线程池足够大，从而确保它们依赖任务不会被放入等待队列中或者被拒绝，而采用线程封闭机制的任务需要串行执行。通过将这些需求写入文档，将来的代码维护人员就不会由于使用了某种不合适的执行策略而破坏安全性或活跃性。</p>
+</blockquote>
+<h3 id="8-1-1-线程饥饿死锁"><a href="#8-1-1-线程饥饿死锁" class="headerlink" title="8.1.1 线程饥饿死锁"></a>8.1.1 线程饥饿死锁</h3><blockquote>
+<p>每当提交了一个有依赖性的Executor任务时，要清楚地知道可能会出现线程“饥饿”死锁，因此需要在代码或配置Executor的配置文件中记录线程池的大小限制或配置限制。</p>
+</blockquote>
+<h3 id="8-1-2-运行时间较长的任务"><a href="#8-1-2-运行时间较长的任务" class="headerlink" title="8.1.2 运行时间较长的任务"></a>8.1.2 运行时间较长的任务</h3><p>如果任务阻塞的时间过长，那么即使不出现死锁，线程池的响应性也会变得糟糕。</p>
+<p>定任务等待资源得时间，而不是无限制地等待可以缓解执行时间较长得任务造成的影响。</p>
+<h2 id="8-2-设置线程池得大小"><a href="#8-2-设置线程池得大小" class="headerlink" title="8.2 设置线程池得大小"></a>8.2 设置线程池得大小</h2><p>一般情况下正确地设置线程池的大小（假设有n个CPU）：</p>
+<ul>
+<li>计算密集型： 2n+1</li>
+<li>I/O密集型：2n</li>
+</ul>
+<h2 id="8-3-配置ThreadPoolExecutor"><a href="#8-3-配置ThreadPoolExecutor" class="headerlink" title="8.3 配置ThreadPoolExecutor"></a>8.3 配置ThreadPoolExecutor</h2><p>ThreadPoolExecutor的通用构造函数</p>
+<pre><code class="java">public ThreadPoolExecutor(int corePoolSize,
+                        int maximumPollSize,
+                        long keepAliveTime,
+                        BlockingQueue&lt;Runnable&gt; workQueue,
+                        ThreadFactory threadFactory,
+                        RejectedExecutionHandler handler)
+                        { ... }
+</code></pre>
+<h3 id="线程的创建与销毁"><a href="#线程的创建与销毁" class="headerlink" title="线程的创建与销毁"></a>线程的创建与销毁</h3><p>基本大小(Core Poll Size)是线程池的目标大小，即在没有任务执行时线程池的大小，并且只有在工作队列满了的情况下才会创建超过这个数量的线程。</p>
+<p>线程池的最大大小(maximumPoolSize)表示可同时活动的线程数量的上限。如果某个线程的空闲事件超过了存活时间，那么将标记为可回收，并且当线程池的当前大小超过了基本大小时，这个线程将被终止。</p>
+<h3 id="管理队列任务"><a href="#管理队列任务" class="headerlink" title="管理队列任务"></a>管理队列任务</h3><p> ThreadPoolExecutor允许提供一个BlockingQueue来保存等待执行的任务。基本的任务排队方法有3种：无界队列、有界队列和同步移交(Synchronous Handoff)。</p>
+<blockquote>
+<p>对于Executor,newCachedThreadPool工厂方法时一种很好的默认选择，他能提供比固定大小的线程更好的排队性能.当需要限制当前任务的数量以满足资源管理需求时，那么可以选择固定大小的线程池，就像在接受网络客户请求的服务器应用程序中，如果不进行限制，那么很容易发生过载问题。</p>
+</blockquote>
+<h3 id="8-3-3-饱和策略"><a href="#8-3-3-饱和策略" class="headerlink" title="8.3.3 饱和策略"></a>8.3.3 饱和策略</h3><p>每种RejectedExecutionHandler的实现包含有不用的饱和策略：</p>
+<ul>
+<li>Abort策略：默认策略，新任务提交时直接抛出未检查的异常RejectedExecutionException，该异常可由调用者捕获。</li>
+<li>CallerRunPolicy 为调节机制，既不抛弃任务也不抛出异常，而是将某些任务回退到调用者。不会在线程池的线程中执行新的任务，而是在调用exector的线程中运行新的任务。</li>
+<li>Discard策略：新提交的任务被抛弃。<br>DiscardOldest策略：队列的是“队头”的任务，然后尝试提交新的任务。（不适合工作队列为优先队列场景）。</li>
+</ul>
+<h3 id="8-3-4-线程工厂"><a href="#8-3-4-线程工厂" class="headerlink" title="8.3.4 线程工厂"></a>8.3.4 线程工厂</h3><h2 id="8-4-扩展ThreadPoolExecutor"><a href="#8-4-扩展ThreadPoolExecutor" class="headerlink" title="8.4 扩展ThreadPoolExecutor"></a>8.4 扩展ThreadPoolExecutor</h2><p>实例：给线程池添加统计信息</p>
+<h2 id="8-5-递归算法的并行化"><a href="#8-5-递归算法的并行化" class="headerlink" title="8.5 递归算法的并行化"></a>8.5 递归算法的并行化</h2><p>实例：谜题框架</p>
+<blockquote>
+<p>对于并发执行的任务，EXecutor框架是一种强大且灵活的框架。它提供了大量可调节的选项，例如创建线程和关闭线程的策略，处理队列任务的策略，处理过多任务的策略，并且提供了几个钩子方法来扩展它的行为。然而，与大多数功能强大的框架一样，其中有些设置参数并不能很好地工作，某些类型的任务需要特定的执行策略，而一些参数组合则可能产生奇怪的结果。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2020/08/22/《Java并发编程实战》-7/" data-id="ckjtrgp5t001rn8virlcdb1ef" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-7" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-《Java并发编程实战》-6" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/《Java并发编程实战》-6/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.411Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/22/《Java并发编程实战》-6/">《Java并发编程实战》-6</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="取消与关闭"><a href="#取消与关闭" class="headerlink" title="取消与关闭"></a>取消与关闭</h1><hr>
+<p>行为良好的软件能够完善地处理失败,关闭和取消等过程。</p>
+<h2 id="7-1任务取消"><a href="#7-1任务取消" class="headerlink" title="7.1任务取消"></a>7.1任务取消</h2><p>取消某个操作的原因:</p>
+<ul>
+<li>用户请求取消</li>
+<li>有时间限制的操作</li>
+<li>应用程序时间</li>
+<li>错误</li>
+<li>关闭</li>
+</ul>
+<h3 id="7-1-1-中断"><a href="#7-1-1-中断" class="headerlink" title="7.1.1 中断"></a>7.1.1 中断</h3><p>在Java的API或语言规范中，并没有将中断与任何取消语言关联起来，但实际是激昂，如果在取消之外的其他操作中使用中断，那么都是不合适的，并且很难支撑起更大的应用。</p>
+<pre><code class="java">public class Thread {
+    // 中断目标线程
+    public void  interupt() { ... }
+    // 返回目标线程的中断状态
+    public boolean isInterrupted() { ...}
+    // 静态， 将清楚当前线程的中断状态，并返回它之前的值，这也是清楚中断状态的唯一方法
+    public static boolean interrupted() { ... }
+}
+</code></pre>
+<p>非阻塞状态下中断时，它的中断状态将被设置，中断操作将变得“有粘性” – 如果不触发InterruptedEXception，那么中断状态将一直保持，直到明确地清除中断状态。</p>
+<blockquote>
+<p>调用interrupt并不意味着立刻停止目标线程正在进行的工作，而只是传递了请求中断的消息。中断操作并不会真正地中断一个正在运行的线程，而只是发出中断请求，然后由线程在下一个合适的时刻中断自己（这些时刻也被称为取消点）。</p>
+</blockquote>
+<p>通常，中断是实现取消的最合理方式。</p>
+<p>通过中断来取消。</p>
+<pre><code class="java">class PrimeProducer extends Thread {
+    private final BlockingQueue&lt;BigInteger&gt; queue;
+
+    PrimeProducer(BlockingQueue&lt;BigInteger&gt; queue) {
+        this.queue = queue;
+    }
+
+    public void run() {
+        BigInteger p = BigInteger.ONE;
+        while (!Thread.currentThread().isInterrupted()) {
+            queue.put( p = p.nextProbablePrime());
+        } catch (InterruptedException consumed) {
+            /* 允许线程推出 */
+        }
+    }
+
+    public void cancel() { interrupt(); }
+
+}
+</code></pre>
+<h3 id="7-1-2-响应中断"><a href="#7-1-2-响应中断" class="headerlink" title="7.1.2 响应中断"></a>7.1.2 响应中断</h3><p>两种实用策略可以用于处理InterruptedException</p>
+<ul>
+<li>传递异常 (可能在执行某个特定于任务的清除操作之后)，从而使你的方法也可以成为可中断的阻塞方法。</li>
+<li>恢复中断状态，从而使调用栈中的上层代码能够对其进行处理。</li>
+</ul>
+<blockquote>
+<p>只有实现了线程中断策略的代码才可以屏蔽中断请求，在常规的任务和库代码中都不应该屏蔽中断请求。</p>
+</blockquote>
+<p>不可取消的任务在推出前恢复中断</p>
+<pre><code class="java">public Task getNextTask(BlockingQueue&lt;Task&gt; queue) {
+    boolean interrupted = false;
+    try {
+        try {
+            return queue.take();
+        } catch (InterruptedException e) {
+            interrupted = ture;
+        }
+    } finally {
+        if (interrupted) 
+            Thread.currentThread().interrupt();
+    }
+}
+</code></pre>
+<h3 id="7-1-4-示例：计时器运行"><a href="#7-1-4-示例：计时器运行" class="headerlink" title="7.1.4 示例：计时器运行"></a>7.1.4 示例：计时器运行</h3><h3 id="7-1-5-通过Future来实现取消"><a href="#7-1-5-通过Future来实现取消" class="headerlink" title="7.1.5 通过Future来实现取消"></a>7.1.5 通过Future来实现取消</h3><blockquote>
+<p>当Future.get()抛出InterruptedException或TimeoutException时，如果你知道不再需要结果，那么就可以调用Future.cancel来取消任务。</p>
+</blockquote>
+<h3 id="7-1-6-处理不可中断的阻塞"><a href="#7-1-6-处理不可中断的阻塞" class="headerlink" title="7.1.6 处理不可中断的阻塞"></a>7.1.6 处理不可中断的阻塞</h3><ul>
+<li>Java.io包中的同步Socket I/O。</li>
+<li>java.io包的同步I/O。</li>
+<li>Selector的异步I/O。</li>
+<li>获取某个锁。</li>
+</ul>
+<h3 id="7-1-7-采用newTaskFor来封装非标准的取消"><a href="#7-1-7-采用newTaskFor来封装非标准的取消" class="headerlink" title="7.1.7 采用newTaskFor来封装非标准的取消"></a>7.1.7 采用newTaskFor来封装非标准的取消</h3><h2 id="7-2-停止基于线程的服务"><a href="#7-2-停止基于线程的服务" class="headerlink" title="7.2 停止基于线程的服务"></a>7.2 停止基于线程的服务</h2><blockquote>
+<p>对于持有线程的服务，只要服务的存在时间大于创建线程的方法的存在时间，那么就应该提供生命周期的方法。</p>
+</blockquote>
+<h3 id="7-2-1-示例：日志服务"><a href="#7-2-1-示例：日志服务" class="headerlink" title="7.2.1 示例：日志服务"></a>7.2.1 示例：日志服务</h3><h3 id="7-2-2-关闭ExecutorService"><a href="#7-2-2-关闭ExecutorService" class="headerlink" title="7.2.2 关闭ExecutorService"></a>7.2.2 关闭ExecutorService</h3><h3 id="7-2-3-“毒丸”对象"><a href="#7-2-3-“毒丸”对象" class="headerlink" title="7.2.3 “毒丸”对象"></a>7.2.3 “毒丸”对象</h3><h3 id="7-2-4-示例：只执行一次的服务"><a href="#7-2-4-示例：只执行一次的服务" class="headerlink" title="7.2.4 示例：只执行一次的服务"></a>7.2.4 示例：只执行一次的服务</h3><h3 id="7-2-5-shutdownNow的局限性"><a href="#7-2-5-shutdownNow的局限性" class="headerlink" title="7.2.5 shutdownNow的局限性"></a>7.2.5 shutdownNow的局限性</h3><h2 id="7-3-处理非正常的线程终止"><a href="#7-3-处理非正常的线程终止" class="headerlink" title="7.3 处理非正常的线程终止"></a>7.3 处理非正常的线程终止</h2><h3 id="未捕获异常的处理"><a href="#未捕获异常的处理" class="headerlink" title="未捕获异常的处理"></a>未捕获异常的处理</h3><p>将异常写入日志的UncaughtExceptionHandler</p>
+<pre><code class="java">public class UEHLogger implements THread.UncaughtExceptionHandler {
+    public void uncaughtException(Thread t, Throwable e) {
+        Logger logger = Logger.getAnonymousLogger();
+        logger.log(Level.SEVERE, 
+        &quot;Thread terminated with exception: &quot; + t.getName(), e);
+    }
+}
+</code></pre>
+<blockquote>
+<p>在运行时间较长的应用程序中，通常会为所有线程的未捕获异常指定同一个异常处理器，并且该处理器至少会将异常信息记录到日志中。</p>
+</blockquote>
+<h2 id="7-4-JVM关闭"><a href="#7-4-JVM关闭" class="headerlink" title="7.4 JVM关闭"></a>7.4 JVM关闭</h2><h3 id="7-4-1-关闭钩子"><a href="#7-4-1-关闭钩子" class="headerlink" title="7.4.1 关闭钩子"></a>7.4.1 关闭钩子</h3><h3 id="7-4-2-守护线程"><a href="#7-4-2-守护线程" class="headerlink" title="7.4.2 守护线程"></a>7.4.2 守护线程</h3><blockquote>
+<p>此外，守护线程通常不能用来代替应用程序管理中各个服务的生命周期。</p>
+</blockquote>
+<h3 id="7-4-3-终结器"><a href="#7-4-3-终结器" class="headerlink" title="7.4.3 终结器"></a>7.4.3 终结器</h3><blockquote>
+<p>避免使用终结器。</p>
+</blockquote>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>在任务、线程、服务以及应用程序等模块中的生命周期结束问题，可能会增加它们在设计和实现时的负责性。Java并没有提供某种抢占式的机制来取消操作或者终结线程。相反，它提供了一种协作式的中断机制来实现取消操作，但这要依赖于如何构建取消操作的协议，以及能否始终遵循这些协议。通过使用FutureTask和Executor框架，可以帮助我们构建可取消的任务和服务。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2020/08/22/《Java并发编程实战》-6/" data-id="ckjtrgp5w0020n8vit12vrrnk" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-6" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/23/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/25/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/23/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/25/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -397,19 +460,19 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
           </li>
         
           <li>
-            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
-          </li>
-        
-          <li>
             <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
           </li>
         
           <li>
             <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/通讯组件学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/背包系统学习笔记/">背包学习笔记</a>
           </li>
         
       </ul>
@@ -421,7 +484,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">33</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -430,7 +493,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
     </div>
   </div>
 
@@ -455,7 +518,8 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
-    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
+    <a href="https://beian.miit.gov.cn" target="_blank">粤ICP备17094722号-1</a> 
+    <br>
 
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
       .

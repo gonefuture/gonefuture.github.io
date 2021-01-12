@@ -83,384 +83,6 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-学习笔记/SrpingAOP源码分析-SpringMVC" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2020/08/22/学习笔记/SrpingAOP源码分析-SpringMVC/" class="article-date">
-  <time datetime="2020-08-22T08:41:59.599Z" itemprop="datePublished">2020-08-22</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="SrpingAOP源码分析-Spring-MVC"><a href="#SrpingAOP源码分析-Spring-MVC" class="headerlink" title="SrpingAOP源码分析-Spring MVC"></a>SrpingAOP源码分析-Spring MVC</h1><h2 id="Srping-MVC工作流程图"><a href="#Srping-MVC工作流程图" class="headerlink" title="Srping MVC工作流程图"></a>Srping MVC工作流程图</h2><h2 id="Spring工作流程秒描述"><a href="#Spring工作流程秒描述" class="headerlink" title="Spring工作流程秒描述"></a>Spring工作流程秒描述</h2><ol>
-<li>用户向服务器发送请求，请求被Spring前端控制<code>Servelt DispatcherServlet</code>捕获；</li>
-<li><code>DispatcherServlet</code>对请求URL进行解析，得到请求资源标识符（URI）。然后根据该URI，调用<code>HandlerMapping</code>获得该Handler配置的所有相关的对象（包括Handler对象以及Handler对象对应的拦截器），最后以<code>HandlerExecutionChain</code>对象的形式返回；</li>
-<li><code>DispatcherServlet</code>根据获得的Handler，选择一个合适的<code>HandlerAdapter</code>。（附注：如果成功获得<code>HandlerAdapter</code>后，此时将开始执行拦截器的<code>preHandler(...)</code>方法）</li>
-<li>提取Request中的模型数据，填充Handler入参，开始执行Handler（Controller)。 在填充Handler的入参过程中，根据你的配置，Spring将帮你做一些额外的工作：<ul>
-<li><code>HttpMessageConveter</code>： 将请求消息（如Json、xml等数据）转换成一个对象，将对象转换为指定的响应信息</li>
-<li>数据转换：对请求消息进行数据转换。如String转换成Integer、Double等</li>
-<li>数据格式化：对请求消息进行数据格式化。 如将字符串转换成格式化数字或格式化日期等</li>
-<li>数据验证： 验证数据的有效性（长度、格式等），验证结果存储到<code>BindingResult</code>或<code>Error</code>中</li>
-</ul>
-</li>
-<li>Handler执行完成后，向<code>DispatcherServlet</code>返回一个<code>ModelAndView</code>对象；</li>
-<li>根据返回的<code>ModelAndView</code>，选择一个适合的<code>ViewResolver</code>（必须是已经注册到Spring容器中的<code>ViewResolver</code>)返回给<code>DispatcherServlet</code>；</li>
-<li><code>ViewResolver</code>结合Model和View，来渲染视图</li>
-<li>将渲染结果返回给客户端。</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2020/08/22/学习笔记/SrpingAOP源码分析-SpringMVC/" data-id="ckjtrgp8n004ln8vik54yk6xg" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="学习笔记/SrpingAOP源码分析-SpringMVC" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-学习笔记/Spring源码组件学习-IOC" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2020/08/22/学习笔记/Spring源码组件学习-IOC/" class="article-date">
-  <time datetime="2020-08-22T08:41:59.594Z" itemprop="datePublished">2020-08-22</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="SpringIOC源码分析"><a href="#SpringIOC源码分析" class="headerlink" title="SpringIOC源码分析"></a>SpringIOC源码分析</h1><h2 id="IOC初始化"><a href="#IOC初始化" class="headerlink" title="IOC初始化"></a>IOC初始化</h2><ol>
-<li>XmlBeanFactory的整个流程</li>
-<li>FileSystemXmlApplicationContext的IOC容器流程。</li>
-<li>AbstractApplicationContext子类的refresh函数载入Bean定义过程</li>
-<li>AbstractApplicationContext子类的refrshBeanFactory()方法</li>
-<li>AbstractRefreshableApplicationContext子类的loadBeandefinitions方法</li>
-<li>AbstractBeanDefinitionReader读取Bean定义资源</li>
-<li>资源加载器获取要读入的资源</li>
-<li>XmlBeanDefinitionReader加载Bean定义资源</li>
-<li>DecumentLoader将Bean定义资源转换为Decument对象</li>
-<li>XmlBeanDefinitionReader加载Bean定义资源文件</li>
-<li>DefaultBeanDefinitionDocumentReader对定Bean定义的Decument对象解析</li>
-<li>BeanDefinitionParserDelegate解析Bean定义资源文件中的<code>&lt;Bean&gt;</code>元素。</li>
-<li>BeanDefinitionParserDelegate解析<code>&lt;property&gt;</code>元素。</li>
-<li>解析<code>&lt;property&gt;</code>元素的子元素</li>
-<li>解析<code>&lt;list&gt;</code>子元素</li>
-<li>解析过后的BeanDefinition在IoC容器中注册：</li>
-<li>DefaultListableBeanFactory向Ioc容器注册解析后的BeanDefinition</li>
-</ol>
-<hr>
-<h2 id="IOC体系"><a href="#IOC体系" class="headerlink" title="IOC体系"></a>IOC体系</h2><pre><code>Spring Bean的创建是典型的工厂模式，这一系列的Bean工厂，也即IOC容器为开发者管理对象间的依赖关系提供了很多便利和基础服务，在Spring中有许多次的IOC容器的实现供用户选择和使用，其相互关系如下：
-</code></pre><h3 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h3><pre><code>SpringFactory定义了IOC容器的最基本形式，并提供了IOC容器应遵守的最基本的接口，也就是Spring代码中，BeanFactory只是个接口，并不是IOC容器的具体实现，但是Spring容器给出了很多种实现，如DefaultListableBeanFactory、XmlBeanFactory、ApplicationContext等，都是附加了某种功能的实现。
-</code></pre><p><img src="https://javadoop.com/blogimages/spring-context/2.png" alt="BeanFactory"></p>
-<h3 id="ApplicationContext"><a href="#ApplicationContext" class="headerlink" title="ApplicationContext"></a>ApplicationContext</h3><p><img src="https://javadoop.com/blogimages/spring-context/2.png" alt="Application">)</p>
-<ol>
-<li><code>ApplicationContext</code>继承了<code>ListableBeanFactory</code>，这个 <code>Listable</code>的意思就是，通过这个接口，可以获取多个<code>Bean</code>，最顶层 <code>BeanFactory</code>接口的方法都是获取单个Bean的。</li>
-<li><code>ApplicationContext</code>继承了 HierarchicalBeanFactory，Hierarchical 单词本身已经能说明问题了，也就是说我们可以在应用中起多个 BeanFactory，然后可以将各个 BeanFactory 设置为父子关系。<br>AutowireCapableBeanFactory 这个名字中的 Autowire 大家都非常熟悉，它就是用来自动装配 Bean 用的，但是仔细看上图，ApplicationContext 并没有继承它，不过不用担心，不使用继承，不代表不可以使用组合，如果你看到 ApplicationContext 接口定义中的最后一个方法 getAutowireCapableBeanFactory() 就知道了。<br>ConfigurableListableBeanFactory 也是一个特殊的接口，看图，特殊之处在于它继承了第二层所有的三个接口，而 ApplicationContext 没有。这点之后会用到。<br>请先不用花时间在其他的接口和类上，先理解我说的这几点就可以了。</li>
-</ol>
-<p>FileSystemXmlApplicationContext 的构造函数需要一个 xml 配置文件在系统中的路径，其他和 ClassPathXmlApplicationContext 基本上一样。</p>
-<p>AnnotationConfigApplicationContext 是基于注解来使用的，它不需要配置文件，采用 java 配置类和各种注解来配置，是比较简单的方式，也是大势所趋吧。</p>
-<pre><code class="java">public interface BeanFactory {
-    // 转义符&quot;&amp;&quot;用来获取FactoryBean本身
-    String FACTORY_BEAN_PREFIX = &quot;&amp;&quot;;
-    // 根据bean的名字进行获取bean的实例，这是IOC最大的最大抽象方法
-    Object getBean() throws BeansException;
-    // 根据bean的名字和Class类型进行获取Bean实例，和上面方法不同的是，bean名字和Bean的类型无关时会抛出异常
-    &lt;T&gt; T getBean(String name, Class&lt;T&gt; requiredType) throws BasesException;
-    &lt;T&gt; T getBean(Class&lt;T&gt; requiredType) thows BeansException;
-    object getBean(Stirng name, Object... args) throws BeansException;
-    // 检测整个IOC容器种是否含有整个Bean
-    boolean containsBean(String name);
-    // 判断这个Bean是不是单例
-    boolean isSingleton(String name) throws NoSuchBeanDefinitionException;
-    // 查询指定的bean的名字和Class类型是不是指定的Class类型
-    boolean isTypeMatch(String name, Class targetType) throws NoSuchBeanDefinitionException;
-    // 这里得到bean的别名，如果根据别名检索，那么其原名也会被检索出来
-    String[] getAliases(String name);
-}
-</code></pre>
-<h3 id="BeanDefinition"><a href="#BeanDefinition" class="headerlink" title="BeanDefinition"></a>BeanDefinition</h3><p>这个接口，可以理解为xml bean元素的数据载体。通过对比xml bean标签的属性列表和BeanDefinition的属性列表一看便知。</p>
-<p>解析XML的过程，就是Xml<code>&lt;bean&gt;</code>元素内容转换为BeanDefinition对象的过程。而且这个接口，支持层级，对应对象的继承。</p>
-<p>BeanDefinitionHolder: BeanDefinitionHolder根据名称或者别名持有beanDefiniton，他承载了name和BeanDefinition的映射信息。<br>BeanWarpper: 提供对标准javaBean的分析和操作方法：单个或者批量获取和设置属性值，获取属性描述符，查询属性的可读性和可写性等。支持属性的嵌套设置，深度没有限制。</p>
-<p>AbstractRefreshableApplicationContext的refreshBeanFactory()这个方法</p>
-<pre><code class="java">
-protected final void refreshBeanFactory() throws BeansException {
-
-    if (hasBeanFactory()) {
-        destroyBeans();
-
-        closeBeanFactory();
-    }
-
-    try {
-        // 创建IOC容器
-        DefaultListableBeanFactory beanFactory = createBeanFactory();
-
-        beanFactory.setSerializationId(getId());
-
-        customizeBeanFactory(beanFactory);
-        //载入loadBeanDefinitions
-        loadBeanDefinitions(beanFactory);
-
-        synchronized (this.beanFactoryMonitor) {
-
-        this.beanFactory = beanFactory;
-        }
-
-    } catch (IOException ex) {
-        throw new ApplicationContextException(&quot;I/O error parsing bean definition source for &quot; + getDisplayName(), ex);
-    }
-}
-
-public abstract class AbstractXmlApplicationContext extends AbstractRefreshableConfigApplicationContext {  
-
-/**
- * Loads the bean definitions via an XmlBeanDefinitionReader.
- */
-
-@Override
-protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
-
-    // Create a new XmlBeanDefinitionReader for the given BeanFactory.
-
-    XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
-
-    // Configure the bean definition reader with this context&#39;s
-
-    // resource loading environment.
-
-    beanDefinitionReader.setResourceLoader(this);
-
-    beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
-
-    // Allow a subclass to provide custom initialization of the reader,
-
-    // then proceed with actually loading the bean definitions.
-    initBeanDefinitionReader(beanDefinitionReader);
-
-    loadBeanDefinitions(beanDefinitionReader);
-}
-
-// 先调用本类里面的loadBeanDefinitions
-protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
-
-    Resource[] configResources = getConfigResources();
-
-    if (configResources != null) {
-        reader.loadBeanDefinitions(configResources);
-    }
-
-    String[] configLocations = getConfigLocations();
-
-    if (configLocations != null) {
-        reader.loadBeanDefinitions(configLocations);
-    }
-}
-
-// 委托给reader.loadBeanDefinitions(configLocation);    XmlBeanDefinitionReader
-// 通过XmlBeanDefinitionReader来读取。下面看一下XmlBeanDefinitionReader这个方法，但其实并不在这个类实现这个方法，而是在它的基类里面AbstractBeanDefinitionReader
-public int loadBeanDefinitions(String... locations) throws BeanDefinitionStoreException {
-
-    Assert.notNull(locations, &quot;Location array must not be null&quot;);
-
-    int counter = 0;
-    for (String location : locations) {
-    counter += loadBeanDefinitions(location);
-    }
-    return counter;
-}
-
-//进入到loadBeanDefinitions
-public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefinitionStoreException {
-    Assert.notNull(encodedResource, &quot;EncodedResource must not be null&quot;);
-    if (logger.isInfoEnabled()) {
-    logger.info(&quot;Loading XML bean definitions from &quot; + encodedResource.getResource());  
-    }
-
-    Set&lt;EncodedResource&gt; currentResources = this.resourcesCurrentlyBeingLoaded.get();
-    if (currentResources == null) {
-        currentResources = new HashSet&lt;EncodedResource&gt;(4);
-        this.resourcesCurrentlyBeingLoaded.set(currentResources);
-    }
-
-    if (!currentResources.add(encodedResource)) {
-        throw new BeanDefinitionStoreException(
-        &quot;Detected cyclic loading of &quot; + encodedResource + &quot; - check your import definitions!&quot;);
-    }
-    try {
-            //获取IO
-            InputStream inputStream = encodedResource.getResource().getInputStream();
-        try {
-            InputSource inputSource = new InputSource(inputStream);
-            if (encodedResource.getEncoding() != null) {
-                inputSource.setEncoding(encodedResource.getEncoding());
-            }
-            //这个方法从流中读取
-        return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
-        } finally {
-            inputStream.close();
-        }
-    } catch (IOException ex) {
-        throw new BeanDefinitionStoreException(&quot;IOException parsing XML document from &quot; + encodedResource.getResource(), ex);
-    } finally {
-        currentResources.remove(encodedResource);
-        if (currentResources.isEmpty()) {
-        this.resourcesCurrentlyBeingLoaded.remove();
-        }
-    }
-}
-
-// 进入到doLoadBeanDefinitions  Resource IO封装
-protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource) throws BeanDefinitionStoreException {
-    try {
-        int validationMode = getValidationModeForResource(resource);
-        Document doc = this.documentLoader.loadDocument(
-        inputSource, getEntityResolver(), this.errorHandler, validationMode, isNamespaceAware());
-        return registerBeanDefinitions(doc, resource); //解析XML
-    } catch (BeanDefinitionStoreException ex) {
-    throw ex;
-    } catch (SAXParseException ex) {
-    throw new XmlBeanDefinitionStoreException(resource.getDescription(),
-    &quot;Line &quot; + ex.getLineNumber() + &quot; in XML document from &quot; + resource + &quot; is invalid&quot;, ex);
-    } catch (SAXException ex) {
-    throw new XmlBeanDefinitionStoreException(resource.getDescription(),&quot;XML document from &quot; + resource + &quot; is invalid&quot;, ex);
-    } catch (ParserConfigurationException ex) {
-    throw new BeanDefinitionStoreException(resource.getDescription(),&quot;Parser configuration exception parsing XML from &quot; + resource, ex);
-    } catch (IOException ex) {
-        throw new BeanDefinitionStoreException(resource.getDescription(),&quot;IOException parsing XML document from &quot; + resource, ex);
-    } catch (Throwable ex) {
-        throw new BeanDefinitionStoreException(resource.getDescription(),&quot;Unexpected exception parsing XML document from &quot; + resource, ex);
-    }
-}
-// 进入到registerBeanDefinitions
-public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
-    // Read document based on new BeanDefinitionDocumentReader SPI.
-    BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
-    int countBefore = getRegistry().getBeanDefinitionCount();
-    documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
-    return getRegistry().getBeanDefinitionCount() - countBefore;
-}
-//documentReader.registerBeanDefinitionsXML解析
-public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
-    this.readerContext = readerContext;
-    logger.debug(&quot;Loading bean definitions&quot;);
-    Element root = doc.getDocumentElement();
-    BeanDefinitionParserDelegate delegate = createHelper(readerContext, root);
-    preProcessXml(root);
-    parseBeanDefinitions(root, delegate);
-    postProcessXml(root);
-}
-
-//-----遍历节点
-protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
-    if (delegate.isDefaultNamespace(root)) {
-        NodeList nl = root.getChildNodes();
-            for (int i = 0; i &lt; nl.getLength(); i++) {
-                Node node = nl.item(i);
-                if (node instanceof Element) {
-                    Element ele = (Element) node;
-                    if (delegate.isDefaultNamespace(ele)) {
-                    parseDefaultElement(ele, delegate); //默认解析
-                } else {
-                    delegate.parseCustomElement(ele);
-                }
-            }
-        }
-    } else {
-        delegate.parseCustomElement(root);
-    }
-}
-
-// ---判断解析类
-private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
-    if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
-    // import类型
-    importBeanDefinitionResource(ele);
-    } else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
-        // 别名方式
-        processAliasRegistration(ele);
-    } else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
-        // bean解析方式
-        processBeanDefinition(ele, delegate);
-    }
-}
-</code></pre>
-<hr>
-<h2 id="Bean生命周期分析"><a href="#Bean生命周期分析" class="headerlink" title="Bean生命周期分析"></a>Bean生命周期分析</h2><ol>
-<li>Spring对Bean进行实例化(相当于程序中的new Xx())</li>
-<li>Spring将值和Bean的引用注入Bean对应的属性中</li>
-<li>如果Bean实现了<code>BaenNameAware</code>接口，Spring将Bean的ID传递给setBeanName()方法（实现<code>BeanNameAware</code>接口主要是为了通过Bean的引用来获取Bean得ID，一般业务中是很少有用到Bean的ID的）</li>
-<li>如果Bean实现了<code>BeanfactoryAware</code>接口，Spring将调用setBeanFactory(BeanFactory bf)方法并把BeanFactory容器实例作为参数传入。（实现<code>BeanFactoryAware</code>主要目的是为了获取Spring容器，如Bean通过Spring容器发布时间等）</li>
-<li>如果Bean实现了<code>ApplicationContextAware</code>接口，Spring容器将调用<code>setApplicationContext()</code>方法，把bean所在的应用上下文的引用传入。（作用与<code>BeanFactory</code>类似都是为了获取Spring容器，不同的是Spring容器在调用<code>setApplicationContext</code>方法时会把它自己作为<code>setApplicationContext</code>的参数传入，而Spring容器在调用<code>setBeanFactory</code>前需要程序员自己指定（注入）<code>setBeanFactory</code>里的参数<code>BeanFactory</code>）</li>
-<li>如果Bean实现了<code>BeanPostProcess</code>接口，Spring将调用它们的<code>postProcessBeforeInitialization</code>（预初始化）方法<br>（作用是在Bean实例创建成功后对进行增强处理，如对Bean进行修改，增加某个功能）</li>
-<li>如果Bean实现了<code>InitializingBean</code>接口，Spring将调用它们的<code>afterPropertiesSet</code>方法，作用与在配置文件中对Bean使用init-method声明初始化的作用一样，都是在Bean的全部属性设置成功后执行的初始化方法。</li>
-<li>如果Bean实现了<code>BeanPostProcess</code>接口，Spring将调用它们的<code>postProcessAfterInitialization</code>（后初始化）方法（作用与6的一样，只不过<code>postProcessBeforeInitialization</code>是在Bean初始化前执行的，而这个是在Bean初始化后执行的，时机不同)</li>
-<li>此时，bean已经准备就绪，可以被程序使用了，Bean将一直驻留在应用上下文中给应用使用，直到应用上下文被销毁</li>
-<li>如果Bean实现了DispostbleBean接口，Spring将调用它的destory方法，作用与在配置文件中对Bean使用destory-method属性的作用一样，都是在Bean实例销毁前执行的方法。</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2020/08/22/学习笔记/Spring源码组件学习-IOC/" data-id="ckjtrgp8q004on8viztqp0t4l" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="学习笔记/Spring源码组件学习-IOC" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
     <article id="post-学习笔记/Spring源码组件学习-BeanPostProcessor" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <h3 href="/2020/08/22/学习笔记/Spring源码组件学习-BeanPostProcessor/" class="article-date">
@@ -628,9 +250,154 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
+    <article id="post-学习笔记/Spring源码组件学习-BeanDefinitionParser" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/学习笔记/Spring源码组件学习-BeanDefinitionParser/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.582Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="Spring源码组件学习-BeanDefinitionParser"><a href="#Spring源码组件学习-BeanDefinitionParser" class="headerlink" title="Spring源码组件学习-BeanDefinitionParser"></a>Spring源码组件学习-BeanDefinitionParser</h1><h2 id="Spring自定义xml配置元素，读取xml配置加载bean的过程"><a href="#Spring自定义xml配置元素，读取xml配置加载bean的过程" class="headerlink" title="Spring自定义xml配置元素，读取xml配置加载bean的过程"></a>Spring自定义xml配置元素，读取xml配置加载bean的过程</h2><p>xml扩展大概有以下几个步骤：</p>
+<ol>
+<li>编写自定义类</li>
+<li>编写xml schema来描述自定义元素</li>
+<li>编写<code>NamespaceHandler</code>实现类编写</li>
+<li>编写<code>BeanDefinitionParser</code>实现类</li>
+<li>把以上组建注册到Spring</li>
+</ol>
+<h2 id="xml的schema约束："><a href="#xml的schema约束：" class="headerlink" title="xml的schema约束："></a>xml的schema约束：</h2><p>schema约束定义了xml文档的结构、内容和语法，包括元素和属性、关系的结构以及数据类型等等。</p>
+<ol>
+<li>所有的标签和属性都需要Schema来定义（schema本身w3c来定义）。</li>
+<li>所有的schema文件都需要一个id，即<code>namespace</code>，其值为一个url,通常是这个xml的xsd文件地址。</li>
+<li><code>namespace</code>值由<code>targetNameSpace</code>属性来指定。</li>
+<li>引入一个<code>schema</code>约束，使用属性xmls,属性值即为对应schema文件的命名空间<code>nameSpace</code></li>
+<li>如果引入的<code>schema</code>非W3c组织定义的，必须指定<code>schema</code>文件的位置，<code>schema</code>文件的位置由<code>schemaLocation</code>来指定。</li>
+<li>引入多个<code>schema</code>文件需要使用别名。别名形式如下：xmlns:alias。</li>
+</ol>
+<p>对于上述配置文件的详细解读</p>
+<h2 id="NamespaceHandler"><a href="#NamespaceHandler" class="headerlink" title="NamespaceHandler"></a>NamespaceHandler</h2><p>用于解析自定义命名空间下的所有元素。</p>
+<p>Spring提供了默认实现类<code>NamespaceHandlerSupport</code>，只需要重写<code>init()</code>方法注册每个元素的解析器。</p>
+<h2 id="注册handler和schema（将组件串联起来）"><a href="#注册handler和schema（将组件串联起来）" class="headerlink" title="注册handler和schema（将组件串联起来）"></a>注册<code>handler</code>和<code>schema</code>（将组件串联起来）</h2><p>为了让Spring在解析xml的时候能够感知到自定义的元素，需要将<code>handlers</code>格式和<code>schemas</code>格式的文件放入classPath下的<code>META-INF/</code>目录中。</p>
+<ol>
+<li><p><code>srping.handlers</code>文件包含了<code>xml schema url</code>和handler类的映射关系，比如：</p>
+<pre><code class="handlers"> http\://www.windforce.com/common/event=com.windforce.event.config.EvenrNamespaceHandler
+</code></pre>
+<p> 上面的冒号表示转义，key部分必须和xsd文件的中的<code>targetNamespace</code>值保持一致。</p>
+</li>
+<li><p>spring.schemas文件包含<code>xml schema url</code>和xsd文件位置的映射关系。</p>
+<pre><code class="schemas"> http\://www.windforce.com/common/event/event-1.0.xsd=com/windfore/common/event/config/event-1.0.xsd
+</code></pre>
+</li>
+</ol>
+<h2 id="BeanDefinitionParser"><a href="#BeanDefinitionParser" class="headerlink" title="BeanDefinitionParser"></a>BeanDefinitionParser</h2><p>当解析xml配置文件时遇到在<code>NamespaceHandler</code>中指定的元素，Spring就会将元素交由相应的的<code>BeanDefinitionParser</code>来解析。</p>
+<p><code>BeanDefinitionParser</code>是一个接口，只有一个方法<code>BeanDefinition parse(Element element, ParseContext parseContext)</code>，返回<code>BeanDefinition</code>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2020/08/22/学习笔记/Spring源码组件学习-BeanDefinitionParser/" data-id="ckjtrgp8m004jn8vi76d53osf" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="学习笔记/Spring源码组件学习-BeanDefinitionParser" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-学习笔记/Spring源码组件学习-BeanDefinition" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/学习笔记/Spring源码组件学习-BeanDefinition/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.573Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="Spring源码组件学习-BeanDefinition"><a href="#Spring源码组件学习-BeanDefinition" class="headerlink" title="Spring源码组件学习-BeanDefinition"></a>Spring源码组件学习-BeanDefinition</h1><h2 id="BeanDefinition"><a href="#BeanDefinition" class="headerlink" title="BeanDefinition"></a>BeanDefinition</h2><h3 id="BeanDefinition的作用"><a href="#BeanDefinition的作用" class="headerlink" title="BeanDefinition的作用"></a><code>BeanDefinition</code>的作用</h3><p>bean的定义、包装是java bean的基础，在Spring中，<code>BeanDefinition</code>就是Bean的定义。<br>一个<code>BeanDefinition</code>描述了一个bean的实例，包括属性值、构造方法参数值和继承自它的类的更多信息。<code>BeanDefinition</code>仅仅是一个最简单的接口，主要功能是允许<code>BeanFactoryPostProcessor</code>例如<code>PropertyPlaceHolderConfigure</code>能够检索并修改属性值和别的bean的元数据。</p>
+<p>一个<code>BeanDefinition</code>里拥有类名、scope、属性、构造函数参数列表、依赖的bean、是否是单例类、是否是懒加载等，其实就是将Bean的定义信息储存到这个<code>BeanDefiniton</code>相应中的属性中，后面对Bean的操作就直接对<code>BeanDefinition</code>进行，例如拿到这个<code>BeanDefinition</code>后，可以根据里面的类名、构造函数、构造函数参数、使用反射进行对象创建。</p>
+<h3 id="BeanDefinition的继承关系"><a href="#BeanDefinition的继承关系" class="headerlink" title="BeanDefinition的继承关系"></a><code>BeanDefinition</code>的继承关系</h3><p>父接口：<br><code>AttributeAccessor</code>, <code>BeanMetadataElement</code><br>子接口：<br><code>AnnotatedBeanDefinition</code><br>子类:<br><code>AbstractBeanDefinition</code>, <code>AnnotatedGenericBeanDefinition</code>, <code>ChildBeanDefinition</code>, <code>GenericBeanDefinition</code>, <code>RootBeanDefinition</code>, <code>ScannedGenericBeanDefinition</code></p>
+<p>其中，<code>AttaibuteAccessor</code>接口定义了最基本的对任意对象的元数据的修改或者获取，主要方法有：</p>
+<pre><code class="java">String[] attributeName();
+Object getAttribute(String name)
+boolean hasAttribute(String name)
+Object removeAttribute(String name)
+void setAttribute(String name, Object value)
+</code></pre>
+<p><code>BeanMetadataElement</code>接口提供了一个getResource()方法，用来传输一个可配置的源对象。</p>
+<h3 id="BeanDefinition的抽象类AbstractBeanDefinition"><a href="#BeanDefinition的抽象类AbstractBeanDefinition" class="headerlink" title="BeanDefinition的抽象类AbstractBeanDefinition"></a><code>BeanDefinition</code>的抽象类<code>AbstractBeanDefinition</code></h3><pre><code class="java">public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccessor implements BeanDefinition, Cloneable {
+
+}
+</code></pre>
+<h3 id="RootBeanDefinition"><a href="#RootBeanDefinition" class="headerlink" title="RootBeanDefinition"></a><code>RootBeanDefinition</code></h3><p>一个<code>RootBeanDefinition</code>定义表明它是一个可合并的bean definiton:即在Spring beanFactory运行期间，可以返回一个特定的bean。<code>RootBeanDefinition</code>可以作为一个重要的通用的bean definition视图。</p>
+<p>## </p>
+<h2 id="BeanDefinitionProProcessor"><a href="#BeanDefinitionProProcessor" class="headerlink" title="BeanDefinitionProProcessor"></a>BeanDefinitionProProcessor</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2020/08/22/学习笔记/Spring源码组件学习-BeanDefinition/" data-id="ckjtrgp8p004nn8vioje6kbhq" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="学习笔记/Spring源码组件学习-BeanDefinition" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -648,19 +415,19 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
           </li>
         
           <li>
-            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
-          </li>
-        
-          <li>
             <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
           </li>
         
           <li>
             <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/通讯组件学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/背包系统学习笔记/">背包学习笔记</a>
           </li>
         
       </ul>
@@ -672,7 +439,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">33</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -681,7 +448,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
     </div>
   </div>
 
@@ -706,7 +473,8 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
-    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
+    <a href="https://beian.miit.gov.cn" target="_blank">粤ICP备17094722号-1</a> 
+    <br>
 
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
       .
