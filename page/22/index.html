@@ -83,14 +83,14 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-《Java并发编程实战》-13" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-游戏开发-基于netty的文字冒险游戏-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/24/《Java并发编程实战》-13/" class="article-date">
-  <time datetime="2018-08-24T08:01:46.303Z" itemprop="datePublished">2018-08-24</time>
+    <h3 href="/2020/08/22/游戏开发-基于netty的文字冒险游戏-1/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.464Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+    <a class="article-category-link" href="/categories/游戏开发/">游戏开发</a>
   </div>
 
   </div>
@@ -103,7 +103,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/24/《Java并发编程实战》-13/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
+      <a class="article-title" href="/2020/08/22/游戏开发-基于netty的文字冒险游戏-1/">游戏开发-基于netty的冒险游戏-1</a>
     </h1>
   
 
@@ -112,72 +112,39 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="第14章-构建自定义的同步工具"><a href="#第14章-构建自定义的同步工具" class="headerlink" title="第14章 构建自定义的同步工具"></a>第14章 构建自定义的同步工具</h1><hr>
-<h2 id="14-1-状态依赖性的管理"><a href="#14-1-状态依赖性的管理" class="headerlink" title="14.1 状态依赖性的管理"></a>14.1 状态依赖性的管理</h2><p>依赖状态的操作可以一直阻塞直到可以继续执行，这比使它们先失败再实现起来要更为方便且更不容易出错。内置的条件队列可以使线程一直阻塞，直到对象进入某个进程可以继续执行的状态，并且当被阻塞的线程可以执行时再唤醒它们。</p>
-<h3 id="14-1-1-实例：将前提条件的失败传递给调用者"><a href="#14-1-1-实例：将前提条件的失败传递给调用者" class="headerlink" title="14.1.1 实例：将前提条件的失败传递给调用者"></a>14.1.1 实例：将前提条件的失败传递给调用者</h3><h3 id="14-1-2-实列：通过轮询与休眠来实现简单的阻塞"><a href="#14-1-2-实列：通过轮询与休眠来实现简单的阻塞" class="headerlink" title="14.1.2 实列：通过轮询与休眠来实现简单的阻塞"></a>14.1.2 实列：通过轮询与休眠来实现简单的阻塞</h3><h3 id="14-1-3-条件队列"><a href="#14-1-3-条件队列" class="headerlink" title="14.1.3 条件队列"></a>14.1.3 条件队列</h3><p>条件队列使得一组线程(称之为<strong>**等待线程集合</strong>)能够通过某种方式来等待特定得条件变成真。</p>
-<p>正如每个Java对象对可以作为一个锁，每个对象同样可以作为一个条件队列，并且Object中的wait、notify和notifyAll方法就构成了内部条件队列的API。对象的内置锁与其内部条件队列是互相关联的。</p>
-<p>Object.wait会自动释放锁，并请求操作系统挂起当前线程，从而使其他线程能够获得这个锁并修改对象的状态。</p>
-<h2 id="14-2-使用条件队列"><a href="#14-2-使用条件队列" class="headerlink" title="14.2 使用条件队列"></a>14.2 使用条件队列</h2><h3 id="14-2-1-条件谓词"><a href="#14-2-1-条件谓词" class="headerlink" title="14.2.1 条件谓词"></a>14.2.1 条件谓词</h3><blockquote>
-<p>将与条件队列相关联的条件谓词以及在这些谓词上等待的操作都写入文档。</p>
-</blockquote>
-<p>每一次wait调用都会隐式地与特定的条件谓词关联起来。当调用某个特定条件谓词的wait时，调用者必须已经持有与条件队列相关的锁，并且这个锁必须保护着构成条件谓词的状态变量。</p>
-<h3 id="14-2-2-过早唤醒"><a href="#14-2-2-过早唤醒" class="headerlink" title="14.2.2 过早唤醒"></a>14.2.2 过早唤醒</h3><p>当使用条件等待时(例如Object.wait或Condition.await)</p>
-<ul>
-<li>通常都有一个条件谓词–包括一些对象状态的测试，线程在执行前必须首先通过这些测试。</li>
-<li>在调用wait之前测试条件谓词，并且从wait中返回时再次进行测试。</li>
-<li>在一个循环中调用wait</li>
-<li>确保使用与条件队列相关的锁来保护构成条件谓词的各个状态变量。</li>
-<li>当调用wait,notify或notifyAll等方法时，一定要持有与条件队列相关的锁。</li>
-<li>在检查条件谓语之后以及开始执行相应的操作之前，不要释放锁。</li>
-</ul>
-<h3 id="14-2-4-通知"><a href="#14-2-4-通知" class="headerlink" title="14.2.4 通知"></a>14.2.4 通知</h3><blockquote>
-<p>每当在等待一个条件时，一定要确保在条件谓词变为真时通过某种方式发出通知。</p>
-</blockquote>
-<p>只有同时满足以下两个条件时，才能用单一的notify而不是notifyAll:</p>
-<ul>
-<li><strong>所有等待线程的类型都相同</strong>。 只有一个条件谓语与条件队列相关，并且每个线程在从wait返回后将执行相同的操作。</li>
-<li><strong>单进单出</strong>。 在条件变量上的每次通知，最多只能唤醒一个线程来执行。</li>
-</ul>
-<h3 id="14-2-5-示例：阀门类"><a href="#14-2-5-示例：阀门类" class="headerlink" title="14.2.5 示例：阀门类"></a>14.2.5 示例：阀门类</h3><h3 id="14-2-6-子类的安全性问题"><a href="#14-2-6-子类的安全性问题" class="headerlink" title="14.2.6 子类的安全性问题"></a>14.2.6 子类的安全性问题</h3><h3 id="封装条件队列"><a href="#封装条件队列" class="headerlink" title="封装条件队列"></a>封装条件队列</h3><h3 id="14-2-8-入口协议与出口协议"><a href="#14-2-8-入口协议与出口协议" class="headerlink" title="14.2.8 入口协议与出口协议"></a>14.2.8 入口协议与出口协议</h3><h2 id="14-3-显式的Condition对象"><a href="#14-3-显式的Condition对象" class="headerlink" title="14.3 显式的Condition对象"></a>14.3 显式的Condition对象</h2><p>特别注意：在Condition对象中，与wait、notify和notifyAll方法对应的分别时await、signal和aignalAll。但是，Condition对Object进行了扩展，因而它也包含wait和notify方法，一定要确保使用正确的版本–await和signal。</p>
-<h2 id="14-4-Synchronizer剖析"><a href="#14-4-Synchronizer剖析" class="headerlink" title="14.4 Synchronizer剖析"></a>14.4 Synchronizer剖析</h2><p>AQS是一个用于构建锁和同步器的框架，许多同步器都可以通过AQS很容易并且高效地构造出来。不仅<code>ReentrantLock</code>和<code>Semaphore</code>是基于AQS构建的，还包括<code>CountDownLatch</code>、<code>ReentrantReadWriteLock</code>、<code>SynchronousQueue</code>和<code>FutureTask</code>。</p>
-<h2 id="14-5-AbstractQueuedSynchronizer"><a href="#14-5-AbstractQueuedSynchronizer" class="headerlink" title="14.5 AbstractQueuedSynchronizer"></a>14.5 AbstractQueuedSynchronizer</h2><p>在基于AQS构建的同步器类中，最基本的操作包括各种形式的获取操作和释放操作。</p>
-<p>一个简单的闭锁 使用AbstractQueueSynchronizer实现的二元闭锁</p>
-<pre><code class="java">@ThreadSafe
-public class OneShotLatch {
-    private final Sync sync = new Sync();
-    public void signal() {  sync.releaseShared(0) }
-    public void await() throws InterruptedException {
-        sync.acquireSharedInterruptibly(0);
-    }
-    private class Sync extends AbstractQueueSynchronizer {
-        protected int tryAcquireShared(int ignored) {
-            // 如果闭锁式开的(state == 1),那么这个操作操作将成功，否则将失败
-            return (getState() == 1) ? 1 : -1;
-        }
+        <h1 id="游戏开发-基于netty的文字冒险游戏-1"><a href="#游戏开发-基于netty的文字冒险游戏-1" class="headerlink" title="游戏开发-基于netty的文字冒险游戏-1"></a>游戏开发-基于netty的文字冒险游戏-1</h1><hr>
+<h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>现在要设计一个多人在线迷宫移动游戏，多个人可以同时在迷宫中冒险、交流、触发剧情。</p>
+<h3 id="登陆系统"><a href="#登陆系统" class="headerlink" title="登陆系统"></a>登陆系统</h3><p>待开发</p>
+<h3 id="角色信息系统"><a href="#角色信息系统" class="headerlink" title="角色信息系统"></a>角色信息系统</h3><p>待开发</p>
+<h3 id="场景及角色移动系统"><a href="#场景及角色移动系统" class="headerlink" title="场景及角色移动系统"></a>场景及角色移动系统</h3><p>玩家可以前后左右移动，移动时遇到迷宫边界或者障碍则进行提示。<br>遇到其他玩家，这提示相同的双方的身份。<br>实时刷新迷宫中角色、障碍物、NPC、怪物、建筑的位置。</p>
+<h2 id="战斗系统"><a href="#战斗系统" class="headerlink" title="战斗系统"></a>战斗系统</h2><p>待开发</p>
+<hr>
+<h2 id="总体设计"><a href="#总体设计" class="headerlink" title="总体设计"></a>总体设计</h2><h3 id="数据库设计"><a href="#数据库设计" class="headerlink" title="数据库设计"></a>数据库设计</h3><h3 id="数据库设计-1"><a href="#数据库设计-1" class="headerlink" title="数据库设计"></a>数据库设计</h3><table>
+<thead>
+<tr>
+<th>表名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="模块设计"><a href="#模块设计" class="headerlink" title="模块设计"></a>模块设计</h2><h3 id="场景及角色移动"><a href="#场景及角色移动" class="headerlink" title="场景及角色移动"></a>场景及角色移动</h3><p>用枚举数组来模拟游戏地图，每个枚举对象代表游戏地图的一个点的状态，如道路、山岭、河流、旅馆。</p>
+<h2 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h2><h2 id="客户端代码"><a href="#客户端代码" class="headerlink" title="客户端代码"></a>客户端代码</h2><pre><code class="java">
 
-        protected boolean tryReleaseShared(int ignored) {
-            setState(1);    // 现在打开闭锁
-            retrun true;    // 现在其他的线程可以获取该闭锁
-        }
-    }
-}
 </code></pre>
-<p>在OneShotLatch中，AQS状态用来表示闭锁状态–关闭(0)或者打开(1)。<br>acquireSharedInterruptibly方法在处理失败的方式，是把这个线程放入等待线程队列中。</p>
-<h2 id="14-6-java-util-concurrent同步器类中的AQS"><a href="#14-6-java-util-concurrent同步器类中的AQS" class="headerlink" title="14.6 java.util.concurrent同步器类中的AQS"></a>14.6 java.util.concurrent同步器类中的AQS</h2><h3 id="14-6-1-ReentrantLock"><a href="#14-6-1-ReentrantLock" class="headerlink" title="14.6.1 ReentrantLock"></a>14.6.1 ReentrantLock</h3><p>Lock.newCondition将返回一个新的ConditionObject实例，这是AQS的一个内部类。</p>
-<h3 id="14-6-2-Semaphore与CountDownLatch"><a href="#14-6-2-Semaphore与CountDownLatch" class="headerlink" title="14.6.2 Semaphore与CountDownLatch"></a>14.6.2 Semaphore与CountDownLatch</h3><p>Semaphore将AQS的同步状态用于保存当前可用许可的数量。<br>CountdownLatch使用AQS的方式与Semaphore很相似:在同步状态中保存的是当前的计数值。</p>
-<h3 id="14-6-3-FutureTask"><a href="#14-6-3-FutureTask" class="headerlink" title="14.6.3 FutureTask"></a>14.6.3 FutureTask</h3><p>在FutureTask中，AQS同步状态被用来保存任务的状态，例如，正在运行、已经完成或已取消。</p>
-<h3 id="14-6-4-ReentrantReadWriteLock"><a href="#14-6-4-ReentrantReadWriteLock" class="headerlink" title="14.6.4 ReentrantReadWriteLock"></a>14.6.4 ReentrantReadWriteLock</h3><p>ReentrantReadwriteLock使用了一个16位的状态来表示写入锁的计数，并且使用了另一个16位的状态来表示读取锁的技术。在读取锁的操作将使用共享的获取方法与释放方法，在写入锁上的操作将使用独占的获取方法与释放方法。</p>
-<p>AQS在内部维护一个等待线程队列，其中记录了某个线程请求的是独占访问还是共享访问。</p>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>要实现一个依赖状态的类 —- 如果没有满足依赖状态的前提，那么这个类的方法必须阻塞，那么最好的方式是基于现有的库类来构建，例如Semaphore.BlockingQueue或CountDownLatch。然而，有时候现有的库类不能提供足够的功能，在这种情况下，可以使用内置的条件队列、显示的Condition对象或者AbstractQueueSynchronizer来构建自己的同步器。</p>
-
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2>
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/netty/">netty</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏开发/">游戏开发</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/24/《Java并发编程实战》-13/" data-id="ck8gr4zcm00121ovtqnp0vs32" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/游戏开发-基于netty的文字冒险游戏-1/" data-id="ckjtrgp65002jn8vihqpq340x" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -185,7 +152,7 @@ public class OneShotLatch {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-13" ></div> 
+<div id="SOHUCS" sid="游戏开发-基于netty的文字冒险游戏-1" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -203,14 +170,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-12" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-大数据开发知识点-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/23/《Java并发编程实战》-12/" class="article-date">
-  <time datetime="2018-08-23T03:53:32.166Z" itemprop="datePublished">2018-08-23</time>
+    <h3 href="/2020/08/22/大数据开发知识点-1/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.458Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+    <a class="article-category-link" href="/categories/大数据/">大数据</a>
   </div>
 
   </div>
@@ -223,7 +190,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/23/《Java并发编程实战》-12/">《Java并发编程实战》-12   第13章 显式锁</a>
+      <a class="article-title" href="/2020/08/22/大数据开发知识点-1/">大数据开发知识点-1</a>
     </h1>
   
 
@@ -232,55 +199,151 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="第13章-显式锁"><a href="#第13章-显式锁" class="headerlink" title="第13章 显式锁"></a>第13章 显式锁</h1><hr>
-<h2 id="13-1-Lock-与-ReentrantLock"><a href="#13-1-Lock-与-ReentrantLock" class="headerlink" title="13.1 Lock 与 ReentrantLock"></a>13.1 Lock 与 ReentrantLock</h2><p>使用ReentrantLock来保护对象状态</p>
-<pre><code class="java">Lock lock = new ReentrantLock();
-...
-lcok.lock()
-try{
-    // 更新对象状态
-    // 捕捉异常，并在必要时恢复不变性条件
-} finally {
-    lock.unlock();
-}
-</code></pre>
-<h2 id="13-1-1-轮询锁与定时锁"><a href="#13-1-1-轮询锁与定时锁" class="headerlink" title="13.1.1 轮询锁与定时锁"></a>13.1.1 轮询锁与定时锁</h2><pre><code class="java">
-if (!lock.tryLock(nanosToLock, NANOSECONDS)) 
-    return false;
-try {
-    return sendOnShareLine(message)
-} finally {
-    lock.unlock()
-}
-</code></pre>
-<h3 id="13-1-2-可中断的锁获取操作"><a href="#13-1-2-可中断的锁获取操作" class="headerlink" title="13.1.2 可中断的锁获取操作"></a>13.1.2 可中断的锁获取操作</h3><p>正如定时的锁获取操作能在带有事件限制的操作中使用独占锁，可中断的锁获取操作同样能在可取消的操作中使用加锁。</p>
-<h3 id="13-1-3-非块结构的加锁"><a href="#13-1-3-非块结构的加锁" class="headerlink" title="13.1.3 非块结构的加锁"></a>13.1.3 非块结构的加锁</h3><p>锁分段技术在基于散列的容器中实现了不同的散列链，以便使用不同的锁。</p>
-<h2 id="13-2-性能考虑因素"><a href="#13-2-性能考虑因素" class="headerlink" title="13.2 性能考虑因素"></a>13.2 性能考虑因素</h2><blockquote>
-<p>性能时一个不断变化的指标，内置锁和ReentrantLock在各个JDK版本都不一样。</p>
-</blockquote>
-<h2 id="13-3-公平锁"><a href="#13-3-公平锁" class="headerlink" title="13.3 公平锁"></a>13.3 公平锁</h2><p>在公平锁上，线程将按照它们发出请求的顺序来获得锁，但在非公平锁上，则允许“插队”:当一个线程请求非公平锁的时，如果在发出请求的同时该锁的状态变为可用，那么这个线程将跳过队列中所有的等待线程并获得这个锁。(在Semaphore中同样可以选择采用公平或非公平的获取顺序。)</p>
-<p>在大多数情况下，非公平锁的性能要高于公平锁的性能。</p>
-<h2 id="13-4-在synchronied和ReentrantLock之间进行选择"><a href="#13-4-在synchronied和ReentrantLock之间进行选择" class="headerlink" title="13.4 在synchronied和ReentrantLock之间进行选择"></a>13.4 在synchronied和ReentrantLock之间进行选择</h2><blockquote>
-<p>在一些内置锁无法满足需求的情况下，<code>ReentrantLock</code>可以作为一种高级工具。当需要一些高级功能时才应该使用<code>ReentrantLock</code>，这些功能包括：可定时的、可轮询的与可中断的锁获取操作，公平队列，以及非块结构的锁。否则，还是应该优先使用<code>synchronized</code>。</p>
-</blockquote>
-<h2 id="读-写锁"><a href="#读-写锁" class="headerlink" title="读-写锁"></a>读-写锁</h2><p>ReadWriteLock中的一些可选实现包括：</p>
-<ul>
-<li><strong>释放优先</strong>。当一个写入操作释放写入锁时，并且队伍中同时存在读线程和写线程，那么应该优先选择读线程，写线程，还是最先发出请求的线程？</li>
-<li><strong>读线程插队</strong>。如果锁是由读线程持有，但有写线程正在等待，那么新到达的读线程能否立即获得访问权，还是应该在写线程后面等待？如果允许线程插队到写线程之前，那么将提高并发性，但却可能造成写线程饥饿问题。</li>
-<li><strong>重入性</strong>。读取锁和写入锁是否是可重入的。</li>
-<li><strong>降级</strong>。如果一个线程持有写入锁，那么它能否在不释放该锁的情况下获得读取锁？这可能会使得写入锁被“降级”为读取锁，同时不允许其他写线程修改被保护的资源。</li>
-<li><strong>升级</strong>。读取锁能否优于其他正在等待的读线程和写线程而升级为一个写入锁？在大多数的读-写锁实现中并不支持升级，因为如果没有显式的升级操作，那么很容易造成死锁。（如果两个读线程试图同时升级为写入锁，那么二者都不会释放读取锁。）</li>
+        <h1 id="大数据开发知识点-1"><a href="#大数据开发知识点-1" class="headerlink" title="大数据开发知识点-1"></a>大数据开发知识点-1</h1><h2 id="数据倾斜"><a href="#数据倾斜" class="headerlink" title="数据倾斜"></a>数据倾斜</h2><h3 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h3><p>数据倾斜在MapReduce编程模型中十分常见,用最通俗易懂的话来说,数据倾斜无非就是大量的相同key被partition分配到一个分区里,造成了’一个人累死,其他人闲死’的情况,这种情况是我们不能接受的,这也违背了并行计算的初衷,首先一个节点要承受着巨大的压力,而其他节点计算完毕后要一直等待这个忙碌的节点,也拖累了整体的计算时间,可以说效率是十分低下的。</p>
+<h3 id="原理以及现象分析："><a href="#原理以及现象分析：" class="headerlink" title="原理以及现象分析："></a>原理以及现象分析：</h3><p>出现数据倾斜的原因，基本只可能是因为发生了shuffle操作，在shuffle的过程中，出现了数据倾斜的问题。因为某个，或者某些key对应的数据，远远的高于其他的key。你在自己的程序里面找找，哪些地方用了会产生shuffle的算子，groupByKey、countByKey、reduceByKey、join。看log一般会报是在你的哪一行代码，导致了OOM异常；或者呢，看log，看看是执行到了第几个stage！！！</p>
+<p>###解决思路：</p>
+<ol>
+<li>对包含少数几个数据量过大的key的那个RDD，通过sample算子采样出一份样本来，然后统计一下每个key的数量，计算出来数据量最大的是哪几个key。</li>
+<li>然后将这几个key对应的数据从原来的RDD中拆分出来，形成一个单独的RDD，并给每个key都打上n以内的随机数作为前缀，而不会导致倾斜的大部分key形成另外一个RDD。</li>
+</ol>
+<p>接着将需要join的另一个RDD，也过滤出来那几个倾斜key对应的数据并形成一个单独的RDD，将每条数据膨胀成n条数据，这n条数据都按顺序附加一个0~n的前缀，不会导致倾斜的大部分key也形成另外一个RDD。<br>再将附加了随机前缀的独立RDD与另一个膨胀n倍的独立RDD进行join，此时就可以将原先相同的key打散成n份，分散到多个task中去进行join了。<br>而另外两个普通的RDD就照常join即可。<br>最后将两次join的结果使用union算子合并起来即可，就是最终的join结果。</p>
+<hr>
+<h2 id="Hbase实现快速查询的原因"><a href="#Hbase实现快速查询的原因" class="headerlink" title="Hbase实现快速查询的原因"></a>Hbase实现快速查询的原因</h2><h3 id="快速查询"><a href="#快速查询" class="headerlink" title="快速查询:"></a>快速查询:</h3><ol>
+<li>分区储存<br>HBase将每个表划分为多个region，每个region用rowkey来划分，数据的查询也是通过rowkey来查询<br>查询过程：client向HBase依赖的zookeeper获取metaregion的位置，然后通过metaregion中的记录获取到所要查询的rowkey<br>对应的region，这样就确定到一个region范围</li>
+<li>HFile的索引<br>HFile是HBase最底层数据文件的存储格式，一个region下包含着多个HFile，每个HFile的最后有末尾固定的长度来存储索引，这样可以快速确认你所查询的数据是否在这个HFile中 </li>
+<li>BloomFilter<br>BloomFilter是针对HFile的，每一条存储的数据，BloomFilter将记录hash进固定的数组中，这样在查询时对应Hash数组，如果对应位置被改变了，那么所要查的记录可能在这个文件里。如果没有被改变，那么肯定不在，这样可以大幅提高查询的效率 </li>
+</ol>
+<h3 id="实时查询："><a href="#实时查询：" class="headerlink" title="实时查询："></a>实时查询：</h3><p>实时查询，可以认为是从内存中查询，一般响应时间在1秒内。HBase的机制是数据先写入到内存中，当数据量达到一定的量（如128M）， 再写入磁盘中， 在内存中，是不进行数据的<strong>更新</strong>或<strong>合并</strong>操作的，只增加数据，这使得用户的写操作只要进入内存中就可以立即返回，保证了HBase I/O的 高性能。</p>
+<p>实时查询，即反应根据当前时间的数据，可以认为这些数据始终是在内存的，保证了数据的实时响应。</p>
+<p>像RDBMS这让的关系型数据库，按行存储，通过严格的ACID事务来进行同步，这造成了系统的可用性和伸缩性方面的大大折扣<br>HBase，Casandra是NOSQL的数据库或者说no relation，按列存储，是最终一致性的系统，他们为了高的可用性牺牲了一部分的一致性，向HBase就不支持事务特性。</p>
+<p>不同点：</p>
+<ol>
+<li>存储模式：HBase是基于列存储的，每个列族都有几个HFile保存，不同列族的文件是分离的，关系型数据库则是基于表格结构和行模式保存的</li>
+<li>数据操作：HBase只有最简单的CRUD操作，表与表之间是相互分离的，没有关系型数据库中的那些连接操作 </li>
+<li>数据类型：HBase只有简单的字符类型，所有的类型都是交由用户自己处理，他只保存字符串。而关系性数据库则有丰富的类型和存储方式</li>
+<li>数据维护：HBase是基于HDFS的，所以真实的更新操作是通过新增新纪录外加时间戳来实现的 </li>
+<li>可伸缩性：HBase这类分布式数据库就是为了这个目的开发出来的，他可以轻松的增加或减少硬件的数量，对错误的兼容性比较高</li>
+</ol>
+<hr>
+<h2 id="Zookeeper的实现原理"><a href="#Zookeeper的实现原理" class="headerlink" title="Zookeeper的实现原理"></a>Zookeeper的实现原理</h2><p>ZooKeeper 是一个开源的分布式协调服务，分布式应用程序可以基于 ZooKeeper 实现诸如数据发布/订阅、负载均衡、命名服务、分布式协调/通知、集群管理、Master 选举、分布式锁和分布式队列等功能。</p>
+<h3 id="集群角色"><a href="#集群角色" class="headerlink" title="集群角色"></a>集群角色</h3><ul>
+<li>Leader 负责进行投票的发起和决议，更新系统状态</li>
+<li>Follower 追随者用于接受客户端请求并向客户端返回结果，在选主过程中参与投票</li>
+<li>Observer 可以接受客户端连接，将写请求转发给leader，但observer不参加投票过程，只同步leader的状态，observer的目的是为了扩展系统，提高读取速度</li>
+<li>client，请求发起</li>
 </ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>与内置锁相比，显式的Lock提供了一些宽展功能，在处理锁的不可用性方面有着更高的灵活性，并且对队列行有着更好的控制。但ReentrantLock不能完全替代<code>synchronized</code>，只有在<code>synchronized</code>无法满足需求时，才应该使用它。<br>读-写允许多个读线程并发地访问被保护的对象，当访问以读取操作为主的数据结构时，他能提高程序的可伸缩性。</p>
+<p>一个ZooKeeper集群同一时刻只会有一个Leader，其他都是Follower或Observer。Zookeeper的核心是原子广播，这个机制保证了各个Server之间的同步。实现这个机制的协议叫做Zab协议。Zab协议有两种模式，它们分别是恢复模式（选主）和广播模式（同步）。当服务启动或者在领导者崩溃后，Zab就进入了恢复模式，当领导者被选举出来，且大多数Server完成了和leader的状态同步以后，恢复模式就结束了。状态同步保证了leader和Server具有相同的系统状态。</p>
+<p>为了保证事务的顺序一致性，zookeeper采用了递增的事务id号（zxid）来标识事务。所有的提议（proposal）都在被提出的时候加上了zxid。实现中zxid是一个64位的数字，它高32位是epoch用来标识leader关系是否改变，每次一个leader被选出来，它都会有一个的epoch，标识当前属于那个leader的统治时期。低32位用于递增计数。</p>
+<p>每个Server在工作过程中有三种状态：</p>
+<ul>
+<li>LOOKING：当前Server不知道leader是谁，正在搜寻</li>
+<li>LEADING：当前Server即为选举出来的leader</li>
+<li>FOLLOWING：leader已经选举出来，当前Server与之同步</li>
+</ul>
+<h3 id="重要概念"><a href="#重要概念" class="headerlink" title="重要概念"></a>重要概念</h3><h4 id="会话-Session"><a href="#会话-Session" class="headerlink" title="会话(Session)"></a>会话(Session)</h4><p>Session 是指客户端会话，在讲解客户端会话之前，我们先来了解下客户端连接。在 ZooKeeper 中，一个客户端连接是指客户端和 ZooKeeper 服务器之间的TCP长连接。</p>
+<h4 id="数据节点-ZNode"><a href="#数据节点-ZNode" class="headerlink" title="数据节点(ZNode)"></a>数据节点(ZNode)</h4><p>谈到分布式的时候，一般『节点』指的是组成集群的每一台机器。而ZooKeeper 中的数据节点是指数据模型中的数据单元，称为 ZNode。ZooKeeper 将所有数据存储在内存中，数据模型是一棵树（ZNode Tree），由斜杠（/）进行分割的路径，就是一个ZNode，如 /hbase/master，其中 hbase 和 master 都是 ZNode。每个 ZNode 上都会保存自己的数据内容，同时会保存一系列属性信息。</p>
+<p>在 ZooKeeper 中，ZNode 可以分为持久节点和临时节点两类。</p>
+<ul>
+<li>持久节点</li>
+</ul>
+<p>所谓持久节点是指一旦这个 ZNode 被创建了，除非主动进行 ZNode 的移除操作，否则这个 ZNode 将一直保存在 ZooKeeper 上。</p>
+<ul>
+<li>临时节点</li>
+</ul>
+<p>临时节点的生命周期跟客户端会话绑定，一旦客户端会话失效，那么这个客户端创建的所有临时节点都会被移除。</p>
+<p>另外，ZooKeeper 还允许用户为每个节点添加一个特殊的属性：SEQUENTIAL。一旦节点被标记上这个属性，那么在这个节点被创建的时候，ZooKeeper 就会自动在其节点后面追加上一个整型数字，这个整型数字是一个由父节点维护的自增数字。</p>
+<h3 id="Zookeeper-的读写机制"><a href="#Zookeeper-的读写机制" class="headerlink" title="Zookeeper 的读写机制"></a>Zookeeper 的读写机制</h3><ul>
+<li>Zookeeper是一个由多个server组成的集群</li>
+<li>一个leader，多个follower</li>
+<li>每个server保存一份数据副本</li>
+<li>全局数据一致</li>
+<li>分布式读写</li>
+<li>更新请求转发，由leader实施</li>
+</ul>
+<h3 id="Zookeeper-的保证"><a href="#Zookeeper-的保证" class="headerlink" title="Zookeeper 的保证"></a>Zookeeper 的保证</h3><ul>
+<li>更新请求顺序进行，来自同一个client的更新请求按其发送顺序依次执行</li>
+<li>数据更新原子性，一次数据更新要么成功，要么失败</li>
+<li>全局唯一数据视图，client无论连接到哪个server，数据视图都是一致的</li>
+<li>实时性，在一定事件范围内，client能读到最新数据</li>
+</ul>
+<hr>
+<h2 id="数据一致性算法-–-Paxos"><a href="#数据一致性算法-–-Paxos" class="headerlink" title="数据一致性算法 – Paxos"></a>数据一致性算法 – Paxos</h2><h3 id="节点角色"><a href="#节点角色" class="headerlink" title="节点角色"></a>节点角色</h3><p>Paxos 协议中，有三类节点:</p>
+<ul>
+<li>Proposer:提案者</li>
+</ul>
+<p>Proposer 可以有多个，Proposer 提出议案(value)。所谓 value，在工程中可以是任何操作，例如“修改某个变量的值为某个值”、“设置当前 primary 为某个节点”等等。Paxos 协议中统一将这些操作抽象为 value。<br>不同的 Proposer 可以提出不同的甚至矛盾的 value，例如某个 Proposer 提议“将变量 X 设置为 1”，另一个 Proposer 提议“将变量 X 设置为 2”，但对同一轮 Paxos 过程，最多只有一个 value 被批准。</p>
+<ul>
+<li>Acceptor:批准者</li>
+</ul>
+<p>Acceptor 有 N 个，Proposer 提出的 value 必须获得超过半数(N/2+1)的<br>Acceptor 批准后才能通过。Acceptor 之间完全对等独立。</p>
+<ul>
+<li>Learner:学习者</li>
+</ul>
+<p>Learner 学习被批准的 value。所谓学习就是通过读取各个 Proposer 对 value 的选择结果，如果某个 value 被超过半数 Proposer 通过，则 Learner 学习到了这个 value。</p>
+<p>这里类似 Quorum 议会机制，某个 value 需要获得 W=N/2 + 1 的 Acceptor 批准，Learner 需要至少读取 N/2+1 个 Accpetor，至多读取 N 个 Acceptor 的结果后，能学习到一个通过的 value。</p>
+<h3 id="约束条件"><a href="#约束条件" class="headerlink" title="约束条件"></a>约束条件</h3><p>上述三类角色只是逻辑上的划分，实践中一个节点可以同时充当这三类角色。有些文章会添加一个Client角色，作为产生议题者，实际不参与选举过程。</p>
+<p>Paxos中 proposer 和 acceptor 是算法的核心角色，paxos 描述的就是在一个由多个 proposer 和多个 acceptor 构成的系统中，如何让多个 acceptor 针对 proposer 提出的多种提案达成一致的过程，而 learner 只是“学习”最终被批准的提案。</p>
+<p>Paxos协议流程还需要满足几个约束条件：</p>
+<ul>
+<li>Acceptor必须接受它收到的第一个提案；</li>
+<li>如果一个提案的v值被大多数Acceptor接受过，那后续的所有被接受的提案中也必须包含v值（v值可以理解为提案的内容，提案由一个或多个v和提案编号组成）；</li>
+<li>如果某一轮 Paxos 协议批准了某个 value，则以后各轮 Paxos 只能批准这个value；</li>
+</ul>
+<hr>
+<h2 id="倒序排序"><a href="#倒序排序" class="headerlink" title="倒序排序"></a>倒序排序</h2><p>倒排索引（英语：Inverted index），也常被称为反向索引、置入档案或反向档案，是一种索引方法，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。通过倒排索引，可以根据单词快速获取包含这个单词的文档列表。倒排索引主要由两个部分组成：“单词词典”和“倒排文件”。</p>
+<p>倒排索引有两种不同的反向索引形式：</p>
+<ul>
+<li>一条记录的水平反向索引（或者反向档案索引）包含每个引用单词的文档的列表。</li>
+<li>一个单词的水平反向索引（或者完全反向索引）又包含每个单词在一个文档中的位置。</li>
+</ul>
+<p>后者的形式提供了更多的兼容性（比如短语搜索），但是需要更多的时间和空间来创建。</p>
+<p>通过上面的定义可以知道，一个倒排索引包含一个单词词典和一个倒排文件。其中单词词典包含了所有粒度的拆分词；倒排文件则保存了该词对应的所有相关信息。</p>
+<p><img src="https://img-blog.csdn.net/20180820195726253?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="倒序排序例子"></p>
+<hr>
+<h2 id="Bitmap大数据去重"><a href="#Bitmap大数据去重" class="headerlink" title="Bitmap大数据去重"></a>Bitmap大数据去重</h2><p>BitMap 基于位的映射。</p>
+<h3 id="bitmap算法思想"><a href="#bitmap算法思想" class="headerlink" title="bitmap算法思想"></a>bitmap算法思想</h3><p>32位机器上，一个整形，比如int a; 在内存中占32bit位，可以用对应的32bit位对应十进制的0-31个数，bitmap算法利用这种思想处理大量数据的排序与查询。</p>
+<p>优点：</p>
+<ol>
+<li>运算效率高，不许进行比较和移位；</li>
+<li>占用内存少，比如N=10000000；只需占用内存为N/8=1250000Byte=1.25M。</li>
+</ol>
+<p>缺点：</p>
+<p>所有的数据不能重复。即不可对重复的数据进行排序和查找。</p>
+<p>所谓的Bit-map就是用一个bit位来标记某个元素对应的Value， 而Key即是该元素。由于采用了Bit为单位来存储数据，因此在存储空间方面，可以大大节省。</p>
+<pre><code class="java">public static void main(String[] args) {
+        int [] array = new int [] {1,2,3,22,0,3};
+        BitSet bitSet  = new BitSet(6);
+        //将数组内容组bitmap
+        for(int i=0;i&lt;array.length;i++)
+        {
+            bitSet.set(array[i], true);
+        }
+       System.out.println(bitSet.size());
+        System.out.println(bitSet.get(3));
+    }
+</code></pre>
+<hr>
+<h2 id="布隆过滤器"><a href="#布隆过滤器" class="headerlink" title="布隆过滤器"></a>布隆过滤器</h2><p>Bloom Filter是一种空间效率很高的随机数据结构，Bloom Filter可以看做是对bit-map的扩展。</p>
+<h3 id="原理如下："><a href="#原理如下：" class="headerlink" title="原理如下："></a>原理如下：</h3><p>当一个元素被加入集合时，通过K个Hash函数将这个元素映射成一个位阵列(Bit Array)中的K个点，把它们置为1，检索时我们只要看看这些点是不是都是1就(大约)知道集合中有没有它了。</p>
+<ol>
+<li><p>如果这些点有任何一个0，那么被检索元素一定不存在；</p>
+</li>
+<li><p>如果都是1，那么被检索元素可能存在；</p>
+</li>
+</ol>
+<p><img src="https://img-blog.csdn.net/20180823181654817?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="布隆过滤器"></p>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>主要使用场景:用来检测某个元素是否是巨量数据集合中的成员，但识别结果存在误差；</p>
+<p>识别场景：某个元素实际不存在，但是由于前面元素在进行多个Hash时，刚好对应位为1，那么会误认为其存在，但实际不存在。</p>
+<p>如果某个成员确实属于集合，那么Bloom Filter一定能够给出正确的判断。</p>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/23/《Java并发编程实战》-12/" data-id="ck8gr4zcp00141ovtsve18dmt" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/大数据开发知识点-1/" data-id="ckjtrgp68002qn8vi24tmieko" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -288,7 +351,7 @@ try {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-12" ></div> 
+<div id="SOHUCS" sid="大数据开发知识点-1" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -306,10 +369,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-11" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《网络游戏核心技术与实战》笔记-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/22/《Java并发编程实战》-11/" class="article-date">
-  <time datetime="2018-08-22T10:30:28.961Z" itemprop="datePublished">2018-08-22</time>
+    <h3 href="/2020/08/22/《网络游戏核心技术与实战》笔记-1/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.451Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   <div class="article-category">
@@ -326,7 +389,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
+      <a class="article-title" href="/2020/08/22/《网络游戏核心技术与实战》笔记-1/">《网络游戏核心技术与实战》笔记-1</a>
     </h1>
   
 
@@ -335,53 +398,146 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="第12章-并发程序的测试"><a href="#第12章-并发程序的测试" class="headerlink" title="第12章 并发程序的测试"></a>第12章 并发程序的测试</h1><hr>
-<p>吞吐量:指一组并发任务中已完成任务所栈的比例。<br>响应性：指请求从发出到完成之间的时间（也成为延迟）。</p>
-<h2 id="12-1-正确性测试"><a href="#12-1-正确性测试" class="headerlink" title="12.1 正确性测试"></a>12.1 正确性测试</h2><p>在为某个并发类设计单元测试时，首先需要执行与测试串行类时相同的分析—找出需要检查的不变性条件和后验条件。</p>
-<h3 id="12-1-1-基本的单元测试"><a href="#12-1-1-基本的单元测试" class="headerlink" title="12.1.1 基本的单元测试"></a>12.1.1 基本的单元测试</h3><p>在测试集中包含一组串行测试通常是有帮助的，因为它们有助于在开始分析数据竞争之前找出与并发无关性的问题。</p>
-<h3 id="12-1-2-对阻塞操作的测试"><a href="#12-1-2-对阻塞操作的测试" class="headerlink" title="12.1.2 对阻塞操作的测试"></a>12.1.2 对阻塞操作的测试</h3><p>在测试并发的基本属性时，需要引入多个线程。</p>
-<p>Thread.getState的返回结果不能用于并发控制，它能限制测试的有效性—其主要作用还是作为调试信息的来源。</p>
-<h3 id="12-1-3-安全性测试"><a href="#12-1-3-安全性测试" class="headerlink" title="12.1.3 安全性测试"></a>12.1.3 安全性测试</h3><blockquote>
-<p>在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情况是，在测试属性中不需要任何同步机制。</p>
+        <h1 id="《网络游戏核心技术与实战》笔记-1"><a href="#《网络游戏核心技术与实战》笔记-1" class="headerlink" title="《网络游戏核心技术与实战》笔记-1"></a>《网络游戏核心技术与实战》笔记-1</h1><h2 id="网络和游戏编程的技术基础"><a href="#网络和游戏编程的技术基础" class="headerlink" title="网络和游戏编程的技术基础"></a>网络和游戏编程的技术基础</h2><h3 id="网络分层结构"><a href="#网络分层结构" class="headerlink" title="网络分层结构"></a>网络分层结构</h3><p>游戏开发的传输层大多使用TCP协议，不需要直接操纵网络层一下的分层。</p>
+<p>应用层需要在游戏中予以实现。</p>
+<blockquote>
+<p>高性能，高功能服务器的特性 —- 网络游戏所需具备的要素</p>
 </blockquote>
-<h3 id="12-1-4-资源管理的测试"><a href="#12-1-4-资源管理的测试" class="headerlink" title="12.1.4 资源管理的测试"></a>12.1.4 资源管理的测试</h3><h3 id="12-1-5-使用回调"><a href="#12-1-5-使用回调" class="headerlink" title="12.1.5 使用回调"></a>12.1.5 使用回调</h3><p>回调函数的执行通常是在对象生命周期的一些已知位置上，并且在这些位置上非常适合判断不变性是否被破坏。</p>
-<h3 id="12-1-6-产生跟多的交替操作"><a href="#12-1-6-产生跟多的交替操作" class="headerlink" title="12.1.6 产生跟多的交替操作"></a>12.1.6 产生跟多的交替操作</h3><p>在访问共享状态的操作中，使用Thread.yield将产生更多的上下文切换（这项技术是平台相关的）。</p>
-<h2 id="12-2-性能测试"><a href="#12-2-性能测试" class="headerlink" title="12.2 性能测试"></a>12.2 性能测试</h2><h3 id="12-2-1-在PutTakeTest中增加计时功能"><a href="#12-2-1-在PutTakeTest中增加计时功能" class="headerlink" title="12.2.1 在PutTakeTest中增加计时功能"></a>12.2.1 在PutTakeTest中增加计时功能</h3><h3 id="12-2-2-多种算法的比较"><a href="#12-2-2-多种算法的比较" class="headerlink" title="12.2.2 多种算法的比较"></a>12.2.2 多种算法的比较</h3><h3 id="响应性衡量"><a href="#响应性衡量" class="headerlink" title="响应性衡量"></a>响应性衡量</h3><p>如果能获取更小的服务时间变动性，那么更长的平均时间是有意义的，“可预测需性”同样是一个非常有价值的性能特征。<br>除非线程由于密集的同步需求而被持续地阻塞，否则非公平的信号量通常能实现更好的吞吐量。</p>
-<h2 id="12-3-避免性能测试的陷阱"><a href="#12-3-避免性能测试的陷阱" class="headerlink" title="12.3 避免性能测试的陷阱"></a>12.3 避免性能测试的陷阱</h2><h3 id="12-3-1-垃圾回收"><a href="#12-3-1-垃圾回收" class="headerlink" title="12.3.1 垃圾回收"></a>12.3.1 垃圾回收</h3><p>垃圾回收的执行时序是无法预测的，因此在执行测试时，垃圾回收器可能在任何时刻运行。</p>
-<h3 id="12-3-2-动态编译"><a href="#12-3-2-动态编译" class="headerlink" title="12.3.2 动态编译"></a>12.3.2 动态编译</h3><p>当某个类第一次被加载时，JVM会通过解释字节码的方式执行它。在某个时刻，如果一个方法运行的次数足够多，那么动态编译器会将它编译为机器代码，当编译完成后，代码的执行方式将从解释执行变成直接执行。</p>
-<h3 id="12-3-3-对代码路径的不真实采集"><a href="#12-3-3-对代码路径的不真实采集" class="headerlink" title="12.3.3 对代码路径的不真实采集"></a>12.3.3 对代码路径的不真实采集</h3><p>运行时编译器根据收集到的信息对已编译的代码进行优化。JVM可以与执行过程特定的信息来生成更优的代码，这个意味着在编译某个程序的方法M时生成的代码，将可能与编译另一个不同程序中的方法M时生成的代码不同。</p>
-<h3 id="12-3-4-不真实的竞争程度"><a href="#12-3-4-不真实的竞争程度" class="headerlink" title="12.3.4 不真实的竞争程度"></a>12.3.4 不真实的竞争程度</h3><p>并发的应用程序可以交替执行两种不同的类型的工作：访问共享数据（例如从共享工作队列中取出下一个任务）以及执行线程本地的计算（例如，执行任务，并假设任务本身不会访问共享数据）。</p>
-<h3 id="12-3-5-无用代码的消除"><a href="#12-3-5-无用代码的消除" class="headerlink" title="12.3.5 无用代码的消除"></a>12.3.5 无用代码的消除</h3><blockquote>
-<p>要编写有效的性能测试程序，那就需要告诉优化器不要将基准测试当作无用代码而优化掉。这就要求在程序中对每个计算结果都要通过某种方式来使用，这种方式不需要同步或者大量的计算。</p>
-</blockquote>
-<h2 id="12-4-其他的测试方法"><a href="#12-4-其他的测试方法" class="headerlink" title="12.4 其他的测试方法"></a>12.4 其他的测试方法</h2><p>测试的目标不是更多地发现错误，而是提高代码按照预期方式工作的可信度。</p>
-<h3 id="12-4-1-代码审查"><a href="#12-4-1-代码审查" class="headerlink" title="12.4.1 代码审查"></a>12.4.1 代码审查</h3><p>多人参与的代码审查通常是不可替代的（另一方面，代码审查也不能取代测试）。</p>
-<h3 id="12-4-2-静态分析工具"><a href="#12-4-2-静态分析工具" class="headerlink" title="12.4.2 静态分析工具"></a>12.4.2 静态分析工具</h3><p>静态分析工具能生成一个警告列表，其中包含的警告信息必须通过手工方式进行检查，从而确定这些警告是否表示真正的错误。</p>
-<p>FindBUgs包含的检测器：</p>
+<ol>
+<li>小带宽</li>
+<li>极高的连接数</li>
+<li>低延迟</li>
+<li>稳定</li>
+</ol>
+<h3 id="套接字"><a href="#套接字" class="headerlink" title="套接字"></a>套接字</h3><p>TPC通信链路的状态迁移和套接字API</p>
 <ul>
-<li>调用Thread.run()</li>
-<li>未被释放的锁<br>  标准的做法是在一个人finally块中释放显式锁，否则，当发生Exception事件时，锁仍然处于未被释放的状态。</li>
-<li>空的同步块</li>
-<li>双重检查加锁<br>  双重检查加锁时一种错误的习惯用法，其初衷是为了降低延迟初始化过程中的同步开销，该用法在读取一个共享的可变域时缺少正确的同步。</li>
-<li>在构造函数中启动一个线程。<br>  如果在构造函数中启动一个线程，那么将可能带来子类化问题，同时还会导致this引用从构造函数中逸出。</li>
-<li>通知错误<br>  如果一个同步块中调用了notify或notifyAll，但没有修改任何状态，那么就可能出错。</li>
-<li>条件等待中的错误<br>  如果在调用Object.wait和Condition.await方法时没有持有锁，或者不在某个循环中，或者没有检查某些状态谓词，那么通常是一个错误。</li>
-<li>对Lock和Condition的误用</li>
-<li>在休眠或者等待的同时持有一个锁。</li>
-<li>自旋循环。<br>  当等待某个状态转换发生时，闭锁或条件等待通常比在代码中自旋是一种更好的技术。</li>
+<li>socket()</li>
+<li>connect()</li>
+<li>bind()</li>
+<li>listen()</li>
+<li>accept()</li>
+<li>read()/write()</li>
 </ul>
-<h3 id="12-4-3-面向方面的测试技术"><a href="#12-4-3-面向方面的测试技术" class="headerlink" title="12.4.3 面向方面的测试技术"></a>12.4.3 面向方面的测试技术</h3><p>AOP可以用来确保不变性条件不被破坏，或者与同步策略的某些方面保持一直。</p>
-<h3 id="12-4-4-分析与监测工具"><a href="#12-4-4-分析与监测工具" class="headerlink" title="12.4.4 分析与监测工具"></a>12.4.4 分析与监测工具</h3><p>分析工具通常为能给出程序内部的详细信息，为每个线程提供一个事件线显示，并且用颜色区分不同的线程状态（可运行，由于等待某个锁为阻塞，由于等待I/O操作而阻塞等等）。</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>要测试并发程序的正确性可能非常困难，因为并发程序的许多故障模式哦都是一些低概率事件，它们对于执行时序、负载情况以及其他难以出现的条件都非常敏感。</p>
+<h3 id="处理并发连接的方法"><a href="#处理并发连接的方法" class="headerlink" title="处理并发连接的方法"></a>处理并发连接的方法</h3><ul>
+<li>每次连接时启动一个进程</li>
+<li>实行异步的多重输入输出（多重I/O）</li>
+<li><p>使用线程并行进行同步处理</p>
+<p>网络游戏输入输出的特定 —-  单线程、非阻塞、事件驱动</p>
+</li>
+</ul>
+<p>libevent的特点</p>
+<ul>
+<li>使用套接字出与某个自定状态时（可以writ、也可以read、可以accept），调用实现指定的函数。</li>
+<li>libevent库会自动选择各个OS中最高效的方法（比如，在Linux中套接字数量很多时，选择epoll函数等）来轮询当前状态。</li>
+<li>应用程序用事先设置的函数调用（成为回调函数）来获取这一结果，在回调函数中十级执行read,accept等本来应该在等待的函数。</li>
+</ul>
+<h3 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h3><p>自动生成RPC存根代码的RPC工具</p>
+<p>网络游戏和二级制数据交换格式/库</p>
+<h3 id="网络游戏及其基本结构"><a href="#网络游戏及其基本结构" class="headerlink" title="网络游戏及其基本结构"></a>网络游戏及其基本结构</h3><p>游戏的基础 —— 认知、判断、操作的重复</p>
+<p>网络游戏与测试</p>
+<ul>
+<li>封闭测试（CBT）</li>
+<li>公开测试（OBT）</li>
+</ul>
+<p>不断更新 —— 网络游戏的运营和更新</p>
+<ul>
+<li>定期的补丁</li>
+<li>大型补丁（拓展包、追加包）</li>
+<li>紧急维护</li>
+</ul>
+<h3 id="游戏空间划分"><a href="#游戏空间划分" class="headerlink" title="游戏空间划分"></a>游戏空间划分</h3><ul>
+<li>空间分割（地图分隔）</li>
+<li>平行世界（多服务器/区）</li>
+<li>实例化（副本）</li>
+</ul>
+<h3 id="服务器功能性划分"><a href="#服务器功能性划分" class="headerlink" title="服务器功能性划分"></a>服务器功能性划分</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>缩略语</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>客户端</td>
+<td>gmsv</td>
+<td>运行在用户客户端上</td>
+</tr>
+<tr>
+<td>登陆服务器</td>
+<td>loginsv</td>
+<td>用于广利游戏数据的逻辑</td>
+</tr>
+<tr>
+<td>数据库服务器</td>
+<td>loginsv</td>
+<td>登陆，负责服务整体使用情况的管理、解压缩以及解密等处理，减轻游戏服务器的负荷</td>
+</tr>
+<tr>
+<td>反向代理服务器</td>
+<td>proxy</td>
+<td>接受连接，负责进行TCP会话本身的管理、解压缩以及解密等处理，减轻游戏服务器的负荷</td>
+</tr>
+<tr>
+<td>消息服务器</td>
+<td>msgsv</td>
+<td>用于使网上聊天、即时消息、公会等社交活动能够跨越平行世界和空间分割来进行消息交换。</td>
+</tr>
+<tr>
+<td>世界服务器</td>
+<td>worksv</td>
+<td>使用空间分割的情况下，属于该世界的所有gmsv连接至这个服务器进程，负责</td>
+</tr>
+<tr>
+<td></td>
+</tr>
+<tr>
+<td>通用数据库服务器（整体通用的数据库服务器）</td>
+<td>commondbsv</td>
+<td>用于实现所有世界都需要的内存处理，实时统计处理和等级排名等处理</td>
+</tr>
+</tbody>
+</table>
+<h3 id="服务器硬件规格"><a href="#服务器硬件规格" class="headerlink" title="服务器硬件规格"></a>服务器硬件规格</h3><ul>
+<li>以CPU为中心的服务器：CPU较快，内核较多，内存一般，容错性低。一次性的。</li>
+<li>以储存为中心的服务器：CPU一般，内核一般，内存高，储存量大，容错性高。使用期长。</li>
+</ul>
+<h3 id="一般游戏需要持久化的信息"><a href="#一般游戏需要持久化的信息" class="headerlink" title="一般游戏需要持久化的信息"></a>一般游戏需要持久化的信息</h3><ul>
+<li>用户（id、密码、计费方式等）</li>
+<li>角色（体力、经验、金钱、当前位置，名字等）</li>
+<li>技能</li>
+<li>任务日志 （正在进行、已完成）</li>
+<li>拍卖</li>
+<li>好友列表</li>
+<li>邮件</li>
+<li>公会</li>
+<li>日志</li>
+</ul>
+<h3 id="路径搜索和实际的移动处理"><a href="#路径搜索和实际的移动处理" class="headerlink" title="路径搜索和实际的移动处理"></a>路径搜索和实际的移动处理</h3><ul>
+<li><p>阶段1：玩家自己进行移动路径的计算，实际的移动也在客户端进行，服务器无法限制地接受</p>
+</li>
+<li><p>阶段2：与阶段1相同，但是在服务端加入一项限制：限制移动请求的接受频率</p>
+</li>
+<li><p>阶段3：与阶段1相同，但是在服务端加入一项限制：限制移动请求的接受频率</p>
+</li>
+<li><p>阶段3： 与阶段2相同，但是在move函数中加入客户端的发送时间，一起发送给服务器</p>
+</li>
+<li><p>阶段4：服务端进行路径搜索和移动处理</p>
+</li>
+<li><p>阶段5：在客户端中只进行路径搜索中的搜索处理</p>
+</li>
+</ul>
+<p>移动路径的发送方式 —- 优先发送最终结果</p>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏开发/">游戏开发</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/22/《Java并发编程实战》-11/" data-id="ck8gr4zcb000w1ovt92j644z1" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/《网络游戏核心技术与实战》笔记-1/" data-id="ckjtrgp67002mn8vimi5eafoh" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -389,7 +545,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-11" ></div> 
+<div id="SOHUCS" sid="《网络游戏核心技术与实战》笔记-1" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -409,7 +565,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/21/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/23/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/21/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/23/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -423,23 +579,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2020/03/25/游戏框架笔记/技能系统设计/">技能系统设计</a>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/24/游戏框架笔记/跨服系统设计/">跨服系统的设计</a>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
           </li>
         
           <li>
-            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
           </li>
         
           <li>
-            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
           </li>
         
       </ul>
@@ -451,7 +607,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -460,7 +616,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
     </div>
   </div>
 
@@ -481,11 +637,11 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2020 WeiJian Qian
+      &copy; 2021 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
-    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
 
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
       .

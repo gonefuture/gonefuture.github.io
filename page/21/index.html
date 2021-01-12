@@ -83,10 +83,10 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-零碎的知识点-5" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-零碎的知识点-3" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/28/零碎的知识点-5/" class="article-date">
-  <time datetime="2018-08-28T09:41:44.741Z" itemprop="datePublished">2018-08-28</time>
+    <h3 href="/2020/08/22/零碎的知识点-3/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.476Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   <div class="article-category">
@@ -103,7 +103,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/28/零碎的知识点-5/">零碎的知识点-5</a>
+      <a class="article-title" href="/2020/08/22/零碎的知识点-3/">零碎的知识点-3</a>
     </h1>
   
 
@@ -112,339 +112,204 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="零碎的知识点-5"><a href="#零碎的知识点-5" class="headerlink" title="零碎的知识点-5"></a>零碎的知识点-5</h1><hr>
-<h2 id="AOP的实现方式"><a href="#AOP的实现方式" class="headerlink" title="AOP的实现方式"></a>AOP的实现方式</h2><p>AOP是Aspect Oriented Programming的缩写，意思是面向方面编程。</p>
-<p>Java可以通过三个层面来实现AOP：</p>
+        <h1 id="零碎的知识点-3"><a href="#零碎的知识点-3" class="headerlink" title="零碎的知识点-3"></a>零碎的知识点-3</h1><hr>
+<h2 id="TCP拥塞控制-慢启动、拥塞避免、快重传、快启动"><a href="#TCP拥塞控制-慢启动、拥塞避免、快重传、快启动" class="headerlink" title="TCP拥塞控制-慢启动、拥塞避免、快重传、快启动"></a>TCP拥塞控制-慢启动、拥塞避免、快重传、快启动</h2><p>一般原理：发生拥塞控制的原因：资源(带宽、交换节点的缓存、处理机)的需求&gt;可用资源。</p>
+<p>作用：拥塞控制就是为了防止过多的数据注入到网络中，这样可以使网络中的路由器或者链路不至于过载。拥塞控制要做的都有一个前提：就是网络能够承受现有的网络负荷。</p>
+<p>对比流量控制：拥塞控制是一个全局的过程，涉及到所有的主机、路由器、以及降低网络相关的所有因素。流量控制往往指点对点通信量的控制。是端对端的问题。</p>
+<p><strong>拥塞窗口</strong>：发送方为一个动态变化的窗口叫做拥塞窗口，拥塞窗口的大小取决于网络的拥塞程度。发送方让自己的发送窗口等于拥塞窗口，但是发送窗口不是一直等于拥塞窗口的，在网络情况好的时候，拥塞窗口不断的增加，发送方的窗口自然也随着增加，但是接受方的接受能力有限，在发送方的窗口达到某个大小时就不在发生变化了。</p>
+<p>发送方如果知道网络拥塞了呢？发送方发送一些报文段时，如果发送方没有在时间间隔内收到接收方的确认报文段，则就可以人为网络出现了拥塞。</p>
+<p><strong>慢启动算法的思路</strong>：主机开发发送数据报时，如果立即将大量的数据注入到网络中，可能会出现网络的拥塞。慢启动算法就是在主机刚开始发送数据报的时候先探测一下网络的状况，如果网络状况良好，发送方每发送一次文段都能正确的接受确认报文段。那么就从小到大的增加拥塞窗口的大小，即增加发送窗口的大小。</p>
+<p><img src="https://img-blog.csdn.net/20180808175025408?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="慢开始和拥塞避免算法的实现举例"></p>
+<p><strong>拥塞避免</strong>：为了防止cwnd增加过快而导致网络拥塞，所以需要设置一个<strong>慢开始门限</strong>ssthresh状态变量（拥塞控制的标识）,它的用法：</p>
+<pre><code>               1. 当cwnd &lt; ssthresh,使用慢启动算法，
+
+               2. 当cwnd &gt; ssthresh,使用拥塞控制算法，停用慢启动算法。
+
+               3. 当cwnd = ssthresh，这两个算法都可以。
+</code></pre><p>拥塞避免的思路：是让cwnd缓慢的增加而不是加倍的增长，每经历过一次往返时间就使cwnd增加1，而不是加倍，这样使cwnd缓慢的增长，比慢启动要慢的多。</p>
+<p>无论是慢启动算法还是拥塞避免算法，只要判断网络出现拥塞，就要把慢启动开始门限(ssthresh)设置为设置为发送窗口的一半（&gt;=2），cwnd(拥塞窗口)设置为1，然后在使用慢启动算法，这样做的目的能迅速的减少主机向网络中传输数据，使发生拥塞的路由器能够把队列中堆积的分组处理完毕。拥塞窗口是按照线性的规律增长，比慢启动算法拥塞窗口增长块的多。</p>
+<p><strong>快重传</strong>：快重传算法要求首先接收方收到一个失序的报文段后就立刻发出重复确认，而不要等待自己发送数据时才进行捎带确认。接收方成功的接受了发送方发送来的M1、M2并且分别给发送了ACK，现在接收方没有收到M3，而接收到了M4，显然接收方不能确认M4，因为M4是失序的报文段。如果根据可靠性传输原理接收方什么都不做，但是按照快速重传算法，在收到M4、M5等报文段的时候，不断重复的向发送方发送M2的ACK,如果接收方一连收到三个重复的ACK,那么发送方不必等待重传计时器到期，由于发送方尽早重传未被确认的报文段。</p>
+<p><img src="https://img-blog.csdn.net/20180808175132761?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="快重传示意图"></p>
+<p><strong>快恢复</strong>：</p>
 <ol>
-<li>在编译期修改源代码</li>
-<li>在运行期字节码加载前修改字节码 0</li>
-<li>在运行期字节码加载后动态创建代理类的字节码</li>
+<li>当发送发连续接收到三个确认时，就执行乘法减小算法，把慢启动开始门限（ssthresh）减半，但是接下来并不执行慢开始算法。</li>
+<li>此时不执行慢启动算法，而是把cwnd设置为ssthresh的一半， 然后执行拥塞避免算法，使拥塞窗口缓慢增大。</li>
 </ol>
-<h3 id="各种实现机制的比较："><a href="#各种实现机制的比较：" class="headerlink" title="各种实现机制的比较："></a>各种实现机制的比较：</h3><table>
+<p><img src="https://img-blog.csdn.net/20180808175548267?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="快恢复"></p>
+<hr>
+<h2 id="TCP报头"><a href="#TCP报头" class="headerlink" title="TCP报头"></a>TCP报头</h2><p>TCP/IP协议栈主要分为四层:应用层、传输层、网络层、数据链路层,每层都有相应的协议，如下图</p>
+<p><img src="https://img-blog.csdn.net/20180809093940441?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP/IP协议体系"></p>
+<p>TCP数据报头格式：<br><img src="https://img-blog.csdn.net/20180809101737547?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP数据报头格式"></p>
+<ul>
+<li>端口号：32位，16位源端口+16位目的端口， 最大端口为65536</li>
+<li>位序号：32位，也称顺序号，简写位SEQ。</li>
+<li><strong>确认序号</strong>：32位，简写为ACK，在握手阶段，确认序号将发送方的序号加1作为回答。</li>
+<li>数据偏移：规定了整个报头的长度。</li>
+<li>6位标志字段：<ul>
+<li>ACK 置1时表示确认号（为合法，为0的时候表示数据段不包含确认信息，确认号被忽略。</li>
+<li>RST 置1时重建连接。如果接收到RST位时候，通常发生了某些错误。</li>
+<li>SYN 置1时用来发起一个连接。</li>
+<li>FIN 置1时表示发端完成发送任务。用来释放连接，表明发送方已经没有数据发送了。</li>
+<li>URG 紧急指针，告诉接收TCP模块紧要指针域指着紧要数据。注：一般不使用。</li>
+<li>PSH 置1时请求的数据段在接收方得到后就可直接送到应用程序，而不必等到缓冲区满时才传送。注：一般不使用。</li>
+</ul>
+</li>
+<li><strong>检验和</strong>：16位，检验和覆盖了整个的TCP报文段： TCP首部和TCP数据。这是一个强制性的字段，一定是由发端计算和存储，并由收端进行验证。</li>
+<li>紧急指针：16位，一般不用。</li>
+<li>可选与变长选项：通常为空，可根据首部长度推算。用于发送方与接收方协商最大报文段长度（MSS，1460是以太网默认的大小），或在高速网络环境下作窗口调节因子时使用。首部字段还定义了一个时间戳选项。</li>
+</ul>
+<hr>
+<h2 id="UDP报头"><a href="#UDP报头" class="headerlink" title="UDP报头"></a>UDP报头</h2><p>UDP协议也是传输层协议，它是无连接，不保证可靠的传输层协议。<br><img src="https://img-blog.csdn.net/20180809100821202?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="UDP报头"></p>
+<ul>
+<li>源端口：16位，源端口是一个大于1023的16位数字，由基于UDP应用程序的用户进程随机选择。</li>
+<li>目的端口：16位，</li>
+<li>数据包长度：16位，指明了包括首部在内的UDP报文段长度。UDP长字段的值是UDP报文头的长度(8字节)与UDP所携带数据长度的总和。</li>
+<li>校验和：16位，是指整个UDP报文头和UDP所带的数据的校验和（也包括伪报文头）。伪报文头不包括在真正的UDP报文头中，但是它可以保证UDP数据被正确的主机收到了。因在校验和中加入了伪头标，故ICMP除能防止单纯数据差错之外，对IP分组也具有保护作用。</li>
+</ul>
+<hr>
+<h2 id="DNS解析过程"><a href="#DNS解析过程" class="headerlink" title="DNS解析过程"></a>DNS解析过程</h2><p>DNS（Domain Name System，域名系统），DNS协议运行在<strong>UDP协议</strong>之上，使用端口号53。</p>
+<p>主机解析域名的顺序</p>
+<ol>
+<li>浏览器缓存：浏览器会按照一定的频率缓存DNS记录。</li>
+<li>操作系统缓存：如果浏览器缓存中找不到需要的DNS记录，那就去操作系统中找（如/etc/hosts文件）。</li>
+<li>路由缓存：路由器也有DNS缓存。</li>
+<li>ISP的DNS服务器：ISP是互联网服务提供商(Internet Service Provider)的简称，ISP有专门的DNS服务器应对DNS查询请求。</li>
+<li>根服务器：ISP的DNS服务器还找不到的话，它就会向根服务器发出请求，进行递归查询（DNS服务器先问根域名服务器.com域名服务器的IP地址，然后再问.com域名服务器，依次类推）。（root -&gt; com -&gt; baidu.com）</li>
+</ol>
+<hr>
+<h2 id="get和post请求的区别"><a href="#get和post请求的区别" class="headerlink" title="get和post请求的区别"></a>get和post请求的区别</h2><p>GET的语义是请求获取指定的资源。GET方法是安全、<strong>幂等</strong>、可缓存的（除非有 Cache-ControlHeader的约束）,GET方法的报文主体没有任何语义。</p>
+<p>POST的语义是根据请求负荷（报文主体）对指定的资源做出处理，具体的处理方式视资源类型而不同。POST不安全，<strong>不幂等</strong>，（大部分实现）不可缓存。</p>
+<ul>
+<li>GET后退按钮/刷新无害，POST数据会被重新提交（浏览器应该告知用户数据会被重新提交）。</li>
+<li>GET书签可收藏，POST为书签不可收藏。</li>
+<li>GET能被缓存，POST不能缓存 。</li>
+<li>GET编码类型application/x-www-form-url，POST编码类型encodedapplication/x-www-form-urlencoded 或 multipart/form-data。为二进制数据使用多重编码。</li>
+<li>GET历史参数保留在浏览器历史中。POST参数不会保存在浏览器历史中。</li>
+<li>GET对数据长度有限制，当发送数据时，GET 方法向 URL 添加数据；URL 的长度是受限制的（URL 的最大长度是 2048 个字符）。POST无限制。</li>
+<li>GET只允许 ASCII 字符。POST没有限制。也允许二进制数据。与 POST 相比，GET 的安全性较差，因为所发送的数据是 URL 的一部分。在发送密码或其他敏感信息时绝不要使用 GET ！</li>
+</ul>
+<hr>
+<h2 id="http和https区别，https在请求时额外的过程，https是如何保证数据安全的"><a href="#http和https区别，https在请求时额外的过程，https是如何保证数据安全的" class="headerlink" title="http和https区别，https在请求时额外的过程，https是如何保证数据安全的"></a>http和https区别，https在请求时额外的过程，https是如何保证数据安全的</h2><p>http是应用层协议，它会将要传输的数据以明文的方式给传输层，这样显然不安全。https则是在应用层与传输层之间又加了一层，该层遵守SSL/TLS协议。</p>
+<p>加密的方式有两种，</p>
+<ul>
+<li>对称加密：对称加密速度快，但是加密和解密的钥匙是相同的。</li>
+<li>非对称加密，算法更加复杂，速度慢，加密和解密钥匙不相同。</li>
+</ul>
+<p>在https中，加密过程大致如下：<br>首先服务器将公钥给浏览器，浏览器拿到公钥之后，生成一个“会话密钥”，这个会话密钥属于对称加密，然后用公钥加密这个“会话密钥”发送给服务器，最后，在数据传输的过程中，就用这个会话密钥来加密数据。打个比方：我有二把钥匙，我把其中一把钥匙放在信封里，然后把信封交给你。但是这个信封只有你能打开。</p>
+<p>上述的过程是在3次握手中完成，采用明文发送，握手完成以后，客户端和服务端就约定好了“会话密钥”，以后的数据传输，就采用这个会话密钥加密。</p>
+<p>在上述的过程中要注意<br>公钥怎么给客户端？<br>如果公钥A在发送给客户端的过程中，被截取，被黑客替换成了公钥B，以后的事情可想而知，你就会用公钥B加密“会话密钥”，然后。。。你的隐私就被窃取喽。对于这个问题，要引入证书和数据签名的概念。</p>
+<hr>
+<h2 id="Java正则表达式"><a href="#Java正则表达式" class="headerlink" title="Java正则表达式"></a>Java正则表达式</h2><p>java.util.regex 包主要包括以下三个类：</p>
+<ul>
+<li><p>Pattern 类：<br>pattern 对象是一个正则表达式的编译表示。Pattern 类没有公共构造方法。要创建一个 Pattern 对象，你必须首先调用其公共静态编译方法，它返回一个 Pattern 对象。该方法接受一个正则表达式作为它的第一个参数。</p>
+</li>
+<li><p>Matcher 类：<br>Matcher 对象是对输入字符串进行解释和匹配操作的引擎。与Pattern 类一样，Matcher 也没有公共构造方法。你需要调用 Pattern 对象的 matcher 方法来获得一个 Matcher 对象。</p>
+</li>
+</ul>
+<p>PatternSyntaxException：<br>PatternSyntaxException 是一个非强制异常类，它表示一个正则表达式模式中的语法错误。</p>
+<h3 id="捕获组"><a href="#捕获组" class="headerlink" title="捕获组"></a>捕获组</h3><p>捕获组是把多个字符当一个单独单元进行处理的方法，它通过对括号内的字符分组来创建。</p>
+<pre><code class="java">      // 按指定模式在字符串查找
+      String line = &quot;This order was placed for QT3000! OK?&quot;;
+      String pattern = &quot;(\\D*)(\\d+)(.*)&quot;;
+
+      // 创建 Pattern 对象
+      Pattern r = Pattern.compile(pattern);
+
+      // 现在创建 matcher 对象
+      Matcher m = r.matcher(line);
+      if (m.find( )) {
+         System.out.println(&quot;Found value: &quot; + m.group(0) );
+         System.out.println(&quot;Found value: &quot; + m.group(1) );
+         System.out.println(&quot;Found value: &quot; + m.group(2) );
+         System.out.println(&quot;Found value: &quot; + m.group(3) ); 
+      } else {
+         System.out.println(&quot;NO MATCH&quot;);
+      }
+</code></pre>
+<p><strong>切记，要先调用find( )方法才能调用group()方法</strong></p>
+<hr>
+<h2 id="初步理解AQS"><a href="#初步理解AQS" class="headerlink" title="初步理解AQS"></a>初步理解AQS</h2><p>AQS全称AbstractQueuedSynchronizer，它是concurrent包中最重要的基础设施类之一，负责作为模板类向业务层提供对临界区的管理。AQS定义了一套多线程访问共享资源的同步器框架，许多同步类实现都依赖于它，如常用的ReentrantLock/Semaphore/CountDownLatch/FutureTask。</p>
+<p>它维护了一个volatile int state（代表共享资源）和一个FIFO线程等待队列（多线程争用资源被阻塞时会进入此队列）。这里volatile是核心关键词，具体volatile的语义，</p>
+<p>AQS定义两种资源共享方式：Exclusive（独占，只有一个线程能执行，如ReentrantLock）和Share（共享，多个线程可同时执行，如Semaphore/CountDownLatch）。</p>
+<p>以ReentrantLock为例，state初始化为0，表示未锁定状态。A线程lock()时，会调用tryAcquire()独占该锁并将state+1。此后，其他线程再tryAcquire()时就会失败，直到A线程unlock()到state=0（即释放锁）为止，其它线程才有机会获取该锁。当然，释放锁之前，A线程自己是可以重复获取此锁的（state会累加），这就是可重入的概念。但要注意，获取多少次就要释放多么次，这样才能保证state是能回到零态的。</p>
+<p>再以CountDownLatch以例，任务分为N个子线程去执行，state也初始化为N（注意N要与线程个数一致）。这N个子线程是并行执行的，每个子线程执行完后countDown()一次，state会CAS减1。等到所有子线程都执行完后(即state=0)，会unpark()主调用线程，然后主调用线程就会从await()函数返回，继续后余动作。</p>
+<p>一般来说，自定义同步器要么是独占方法，要么是共享方式，他们也只需实现tryAcquire-tryRelease、tryAcquireShared-tryReleaseShared中的一种即可。但AQS也支持自定义同步器同时实现独占和共享两种方式，如ReentrantReadWriteLock。</p>
+<table>
 <thead>
 <tr>
-<th>类别</th>
-<th>机制</th>
-<th>原理</th>
-<th>优点</th>
-<th>缺点</th>
-<th>实现的代表</th>
+<th>类名</th>
+<th>互斥锁</th>
+<th>资源</th>
+<th>如何访问</th>
+<th>备注</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>静态AOP</td>
-<td>静态织入</td>
-<td>在编译期，切面直接以字节码的形式编译到目标字节码文件中</td>
-<td>对系统无性能影响</td>
-<td>灵活性不够</td>
-<td>AspectJ</td>
+<td>Mutex</td>
+<td>互斥锁</td>
+<td>1</td>
+<td>仅排他</td>
+<td>出现在AQS类的注释中</td>
 </tr>
 <tr>
-<td>动态AOP</td>
-<td>动态代理</td>
-<td>在运行期，目标类加载后，为接口动态生成代理类，将切面织入到代理类中</td>
-<td>相对于静态AOP更加灵活</td>
-<td>切入的关注点需要实现接口。对系统有一点性能影响</td>
-<td>JDK动态代理，Spring</td>
+<td>Semaphore</td>
+<td>信号量</td>
+<td>可指定（构造参数permits）</td>
+<td>仅共享</td>
 </tr>
 <tr>
-<td>动态字节码生成</td>
-<td>CGLIB</td>
-<td>在运行期，目标类加载后，动态构建字节码文件生成目标类的子类，将切面逻辑加入到子类中    没有接口也可以织入    扩展类的实例方法为final时，则无法进行织入</td>
-<td></td>
-<td>CGLIB,Spring</td>
-</tr>
-<tr>
-<td>自定义类加载器</td>
-<td></td>
-<td>在运行期，目标加载前，将切面逻辑加到目标字节码里</td>
-<td>可以对绝大部分类进行织入</td>
-<td>代码中如果使用了其他类加载器，则这些类将不会被织入</td>
-<td></td>
-</tr>
-<tr>
-<td>字节码转换</td>
-<td></td>
-<td>在运行期，所有类加载器加载字节码前进行拦截</td>
-<td>可以对所有类进行织入</td>
-<td></td>
+<td>ReentrantReadWriteLock</td>
+<td>读写（可重入）锁</td>
+<td>无上限（实际为16位unsigned short）</td>
+<td>读写共享访问，写锁排他访问</td>
+<td>可重入</td>
 </tr>
 </tbody>
 </table>
-<h3 id="AOP里的成员："><a href="#AOP里的成员：" class="headerlink" title="AOP里的成员："></a>AOP里的成员：</h3><ul>
-<li>Joinpoint：拦截点，如某个业务方法</li>
-<li>Pointcut：Joinpoint的表达式，表示拦截哪些方法。一个Pointcut对应多个Joinpoint</li>
-<li>Advice：要切入的逻辑</li>
-<li>Before Advice：在方法前切入</li>
-<li>After Advice：在方法后切入，抛出异常则不会切入</li>
-<li>After Returning Advice：在方法返回后切入，抛出异常则不会切入</li>
-<li>After Throwing Advice：在方法抛出异常时切入</li>
-<li>Around Advice：在方法执行前后切入，可以中断或忽略原有流程的执行</li>
-</ul>
-<h3 id="AOP实现的功能"><a href="#AOP实现的功能" class="headerlink" title="AOP实现的功能"></a>AOP实现的功能</h3><ul>
-<li>性能监控：在方法调用前后记录调用时间，方法执行太长或超时报警</li>
-<li>缓存代理：缓存某方法的返回值，下次执行该方法时，直接从缓存里获取</li>
-<li>软件破解：使用AOP修改软件的验证类的判断逻辑<br>记录日志：在方法执行前后记录系统日志</li>
-<li>工作流系统：工作流系统需要将业务代码和流程引擎代码混合在一起执行，那么我们可以使用AOP将其分离，并动态挂接业务</li>
-<li>权限验证：方法执行前验证是否有权限执行当前方法，没有则抛出没有权限执行异常，由业务代码捕捉</li>
-</ul>
-<h3 id="Spring的AOP"><a href="#Spring的AOP" class="headerlink" title="Spring的AOP"></a>Spring的AOP</h3><p>Spring默认采取动态代理机制实现AOP，当动态代理不可用时（代理类无接口）会使用cglib机制</p>
-<p>但Spring的AOP有一定的缺点：</p>
-<ul>
-<li>第一，只能对方法进行切入，不能对接口、字段、静态代码块进行切入（切入接口的某个方法，则该接口下所有实现类的该方法都将被切入）</li>
-<li>第二，同类中的互相调用方法将不会使用代理类。因为要使用代理类必须从Spring容器中获取Bean</li>
-<li>第三，性能不是最好的。从前面几节得知，我们自定义的类加载器，性能优于动态代理和cglib</li>
-</ul>
+<h3 id="复用AQS"><a href="#复用AQS" class="headerlink" title="复用AQS"></a>复用AQS</h3><p>Step1/3. 定义state。<br>state是一个int，它没有具体语义，但作为AQS的核心成员变量，可根据业务类的需要赋予state具体的语义。</p>
+<p>| 方法 | 简介 |<br>| getState() | 读状态 | setState (int newState) | 写状态 |<br>| compareAndSetState (int expect, int update) | CAS写状态 |</p>
+<p>Step2/3. 新建内部类Sync，继承自AQS并按需实现钩子方法</p>
+<table>
+<thead>
+<tr>
+<th>钩子方法</th>
+<th>简介</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tryAcquire (int arg)</td>
+<td>排他获取(资源数)</td>
+</tr>
+<tr>
+<td>tryRelease(int arg)</td>
+<td>排他释放(资源数)</td>
+</tr>
+<tr>
+<td>tryAcquireShared(int arg)</td>
+<td>共享获取(资源数)</td>
+</tr>
+<tr>
+<td>tryReleaseShared(int arg)</td>
+<td>共享释放(资源数)</td>
+</tr>
+<tr>
+<td>isHeldExclusively()</td>
+<td>是否排他状态</td>
+</tr>
+</tbody>
+</table>
+<p>Step3/3. 业务类把业务方法的实现委托给Sync。Sync可以直接使用继承自AQS的模板方法。</p>
+<h3 id="AQS内部细节"><a href="#AQS内部细节" class="headerlink" title="AQS内部细节"></a>AQS内部细节</h3><h4 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h4><p>AQS实现了一个FIFO队列，用于管理等候在临界区外的线程。队列的每个节点保留了线程信息，因此线程可以安然休眠，待临界区的资源可用时再次唤醒。注意，队列的存在并不保证公平，因为AQS并不确保被唤醒的队首线程能进入临界区，唤醒过程中可能会被其它尚未入队的竞争线程抢占先机。</p>
+<h4 id="线程控制"><a href="#线程控制" class="headerlink" title="线程控制"></a>线程控制</h4><p>线程的休眠和唤醒是通过<strong>LockSupport.park()</strong>和<strong>LockSupport.unpark()</strong>实现的。LockSupport是整个concurrent包最底层的API之一。在AQS的注释中写到，如果你对其排队机制不满，可以重新定义队列的数据结构并通过LockSupport调度。</p>
+<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><p>数据结构：双向链表构成的FIFO队列（链表是其物理结构，队列是其逻辑用途。注释中称其为CLH Lock队列的变种，而CLH Lock常用于实现自旋锁，其确保无饥饿性和公平性）</p>
+<p><img src="https://img-blog.csdn.net/20180814120858456?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="CLH Lock 队列"></p>
 <hr>
-<h2 id="用双向链表实现一个栈"><a href="#用双向链表实现一个栈" class="headerlink" title="用双向链表实现一个栈"></a>用双向链表实现一个栈</h2><p>java里默认的LinkedList很适合包装成栈，因为栈不需要随机访问。</p>
-<pre><code class="java">public class DLStack implements Stack&lt;Integer&gt; {
-
-    private LinkedList&lt;Integer&gt; storage = new LinkedList&lt;&gt;();
-
-
-    /**
-     * 压出元素
-     *
-     * @param v 元素
-     */
-    @Override
-    public void push(Integer v) {
-        storage.addFirst(v);
-    }
-
-    /**
-     * 获取栈顶元素，但并不将其从栈顶移除。
-     *
-     * @return 栈顶元素
-     */
-    @Override
-    public Integer peek() {
-        return storage.getFirst();
-    }
-
-    /**
-     * 移除并返回栈顶元素
-     *
-     * @return 栈顶元素
-     */
-    @Override
-    public Integer pop() {
-        return storage.removeFirst();
-    }
-
-    /**
-     * 判断栈是否为空
-     *
-     * @return 是否为空
-     */
-    @Override
-    public boolean empty() {
-        return storage.isEmpty();
-    }
-
-    /**
-     * 获取栈的大小
-     *
-     * @return 栈的大小
-     */
-    @Override
-    public long size() {
-        return storage.size();
-    }
-
-   public String toString(){
-        return storage.toString();
-    }
-}
-
-</code></pre>
-<hr>
-<h2 id="countdownlatch和cyclicbarrier的作用和区别"><a href="#countdownlatch和cyclicbarrier的作用和区别" class="headerlink" title="countdownlatch和cyclicbarrier的作用和区别"></a>countdownlatch和cyclicbarrier的作用和区别</h2><h3 id="countdownlatch"><a href="#countdownlatch" class="headerlink" title="countdownlatch"></a>countdownlatch</h3><p>CountDownLatch允许一个或多个线程等待其他线程完成操作。</p>
-<p>他是一个同步辅助类，在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。用给定的计数 初始化 CountDownLatch。由于调用了 countDown() 方法，所以在当前计数到达零之前，await 方法会一直受阻塞。之后，会释放所有等待的线程，await 的所有后续调用都将立即返回。这种现象只出现一次——计数无法被重置。 一个线程(或者多个)， 等待另外N个线程完成某个事情之后才能执行</p>
-<h4 id="CountDownLatch的使用场景："><a href="#CountDownLatch的使用场景：" class="headerlink" title="CountDownLatch的使用场景："></a>CountDownLatch的使用场景：</h4><p>在一些应用场合中，需要等待某个条件达到要求后才能做后面的事情；同时当线程都完成后也会触发事件，以便进行后面的操作。 这个时候就可以使用CountDownLatch。CountDownLatch最重要的方法是countDown()和await()，前者主要是倒数一次，后者是等待倒数到0，如果没有到达0，就只有阻塞等待了。</p>
-<blockquote>
-<p>总结：CountDownLatch实质上就是一个AQS计数器，通过AQS来实现线程的等待与唤醒。</p>
-</blockquote>
-<h3 id="CyclicBarrier"><a href="#CyclicBarrier" class="headerlink" title="CyclicBarrier"></a>CyclicBarrier</h3><p>CyclicBarrier，让一组线程到达一个同步点后再一起继续运行，在其中任意一个线程未达到同步点，其他到达的线程均会被阻塞。</p>
-<p>CyclicBarrier 的字面意思是可循环使用（Cyclic）的屏障（Barrier）。它要做的事情是，让一组线程到达一个屏障（也可以叫同步点）时被阻塞，直到最后一个线程到达屏障时，屏障才会开门，所有被屏障拦截的线程才会继续干活。CyclicBarrier默认的构造方法是CyclicBarrier(int parties)，其参数表示屏障拦截的线程数量，每个线程调用await方法告诉CyclicBarrier我已经到达了屏障，然后当前线程被阻塞。</p>
-<h4 id="CyclicBarrier-使用场景："><a href="#CyclicBarrier-使用场景：" class="headerlink" title="CyclicBarrier 使用场景："></a>CyclicBarrier 使用场景：</h4><p>CyclicBarrier可以用于多线程计算数据，最后合并计算结果的应用场景。比如我们用一个Excel保存了用户所有银行流水，每个Sheet保存一个帐户近一年的每笔银行流水，现在需要统计用户的日均银行流水，先用多线程处理每个sheet里的银行流水，都执行完之后，得到每个sheet的日均银行流水，最后，再用barrierAction用这些线程的计算结果，计算出整个Excel的日均银行流水。</p>
-<h3 id="CyclicBarrier和CountDownLatch的区别"><a href="#CyclicBarrier和CountDownLatch的区别" class="headerlink" title="CyclicBarrier和CountDownLatch的区别"></a>CyclicBarrier和CountDownLatch的区别</h3><ol>
-<li>对于CountDownLatch来说，重点是“一个线程（多个线程）等待”，而其他的N个线程在完成“某件事情”之后，可以终止，也可以等待。而对于CyclicBarrier，重点是多个线程，在任意一个线程没有完成，所有的线程都必须等待。</li>
-<li>CountDownLatch是计数器，线程完成一个记录一个，只不过计数不是递增而是递减，而CyclicBarrier更像是一个阀门，需要所有线程都到达，阀门才能打开，然后继续执行。</li>
-<li>CountDownLatch的计数器只能使用一次。而CyclicBarrier的计数器可以使用reset() 方法重置。所以CyclicBarrier能处理更为复杂的业务场景，比如如果计算发生错误，可以重置计数器，并让线程们重新执行一次。<br>4, CyclicBarrier还提供其他有用的方法，比如getNumberWaiting方法可以获得CyclicBarrier阻塞的线程数量。isBroken方法用来知道阻塞的线程是否被中断。如果被中断返回true，否则返回false。</li>
-</ol>
-<hr>
-<h2 id="Spring-IOC循环依赖解决方案"><a href="#Spring-IOC循环依赖解决方案" class="headerlink" title="Spring IOC循环依赖解决方案"></a>Spring IOC循环依赖解决方案</h2><blockquote>
-<p>循环依赖就是N个类中循环嵌套引用，也就是两个或者两个以上的bean互相持有对方，最终形成闭环。如果在日常开发中我们用new 对象的方式发生这种循环依赖的话程序会在运行时一直循环调用，直至内存溢出报错。下面说一下Spring是如果解决循环依赖的。</p>
-</blockquote>
-<p>Spring为了解决单例的循环依赖问题，使用了三级缓存。</p>
-<ul>
-<li>singletonFactories ： 单例对象工厂的cache </li>
-<li>earlySingletonObjects ：提前暴光的单例对象的Cache </li>
-<li>singletonObjects：单例对象的cache</li>
-</ul>
-<pre><code class="java">/** Cache of singleton objects: bean name --&gt; bean instance */
-private final Map&lt;String, Object&gt; singletonObjects = new ConcurrentHashMap&lt;String, Object&gt;(256);
-
-/** Cache of singleton factories: bean name --&gt; ObjectFactory */
-private final Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories = new HashMap&lt;String, ObjectFactory&lt;?&gt;&gt;(16);
-
-/** Cache of early singleton objects: bean name --&gt; bean instance */
-private final Map&lt;String, Object&gt; earlySingletonObjects = new HashMap&lt;String, Object&gt;(16);
-</code></pre>
-<p>所以，Spring容器循环依赖包括： 构造器循环依赖和setter循环依赖。</p>
-<h3 id="构造器参数循环依赖"><a href="#构造器参数循环依赖" class="headerlink" title="构造器参数循环依赖"></a>构造器参数循环依赖</h3><p>通过构造器注入构成的循环依赖，此依赖是无法解决的，只能抛出BeanCurrentlyInCreationException异常表示循环依赖 </p>
-<p>原理：Spring容器将每一个正在创建的bean标识符放在一个“当前创建bean池”中，bean标识符创建过程中将一直保持在这个池中，因为如果在创建bean过程中发现自己已经在“当前创建bean池”中时，将会抛出<code>BeanCurrentlyInCreationException</code>异常表示循环依赖；而对于创建完毕的bean将从“当前创建bean池”中清除掉。</p>
-<h3 id="setter方式单例，默认方式"><a href="#setter方式单例，默认方式" class="headerlink" title="setter方式单例，默认方式"></a>setter方式单例，默认方式</h3><p>Spring的单例对象的初始化主要分为三步： </p>
-<pre><code class="flow">st=&gt;operation: createBeanInstance实例化
-op1=&gt;operation: populateBean填充属性
-op2=&gt;operation: InitializeBean初始化
-st-&gt;op1-&gt;op2
-</code></pre>
-<ol>
-<li>createBeanInstance：实例化，其实也就是调用对象的构造方法实例化对象</li>
-<li>populateBean：填充属性，这一步主要是多bean的依赖属性进行填充</li>
-<li>initializeBean：调用spring xml等配置文件中的init 方法。</li>
-</ol>
-<p><strong>Spring是先将Bean对象实例化之后再设置对象属性的</strong></p>
-<p>原理：对于setter注入造成的依赖是通过Spring容器提前暴露刚完成构造器注入但未完成其他步骤（比如setter注入）的bean来完成的，而且只能解决单例作用域的bean循环依赖。</p>
-<p>通过提前暴露一个单例工厂方法，从而使其他bean能引用到该<code>bean addSingletonFactory()</code>方法。Spring先是用构造实例化Bean对象 ，此时Spring会将这个实例化结束的对象放到一个Map中，并且Spring提供了获取这个未设置属性的实例化对象引用的方法。   结合我们的实例来看，，当Spring实例化了StudentA、StudentB、StudentC后，紧接着会去设置对象的属性，此时StudentA依赖StudentB，就会去Map中取出存在里面的单例StudentB对象，以此类推，不会出来循环的问题喽、</p>
-<h3 id="setter方式原型，prototype"><a href="#setter方式原型，prototype" class="headerlink" title="setter方式原型，prototype"></a>setter方式原型，prototype</h3><ol>
-<li><p>对于scope为<code>prototype</code>范围的bean，Spring容器无法完成依赖注入，因为Spring容器不进行缓存<code>prototype</code>作用域的bean，因此无法提前暴露一个创建中的bean，所以检测到循环依赖会直接抛出<code>BeanCurrentlyInCreationException</code>异常</p>
-</li>
-<li><p>对于单例作用域的bean，可以通过<code>setAllowCircularReferences(false)</code>来禁用循环引用，这样如果存在循环引用就会抛出异常来通知用户。</p>
-</li>
-</ol>
-<hr>
-<h2 id="利用classloader实现热部署"><a href="#利用classloader实现热部署" class="headerlink" title="利用classloader实现热部署"></a>利用classloader实现热部署</h2><p>对于Java应用程序来说，热部署就是在运行时更新Java类文件。</p>
-<p>为了实现热部署，可以自定义类加载器，并重写ClassLoader的findClass方法。想要实现热部署可以分以下三个步骤：<br>1、销毁该自定义ClassLoader<br>2、更新class类文件<br>3、创建新的ClassLoader去加载更新后的class类文件。</p>
-<hr>
-<h2 id="热部署与热加载"><a href="#热部署与热加载" class="headerlink" title="热部署与热加载"></a>热部署与热加载</h2><h3 id="Java热部署与热加载的联系"><a href="#Java热部署与热加载的联系" class="headerlink" title="Java热部署与热加载的联系:"></a>Java热部署与热加载的联系:</h3><ol>
-<li>不重启服务器编译/部署项目</li>
-<li>基于Java的类加载器实现</li>
-</ol>
-<h3 id="Java热部署与热加载的区别"><a href="#Java热部署与热加载的区别" class="headerlink" title="Java热部署与热加载的区别:"></a>Java热部署与热加载的区别:</h3><p>部署方式:</p>
-<ul>
-<li>热部署在服务器运行时重新部署项目</li>
-<li>热加载在运行时重新加载class</li>
-</ul>
-<p>实现原理 ：</p>
-<ul>
-<li>热部署直接重新加载整个应用</li>
-<li>热加载在运行时重新加载class</li>
-</ul>
-<p>使用场景:</p>
-<ul>
-<li>热部署更多的是在生产环境使用</li>
-<li>热加载则更多的实在开发环境使用</li>
-</ul>
-<hr>
-<p>##Tomcat热部署机制</p>
-<p>Tomcat的容器实现热部署使用了两种机制：</p>
-<ol>
-<li>Classloader重写，通过自定义classloader加载相应的jsp编译后的class到JVM中。 通过动态修改内存中的字节码，将修改过的class再次装载到JVM中。</li>
-</ol>
-<p>Tomcat通过<code>org.apache.jasper.servlet.JasperLoader</code>实现了对jsp的加载。</p>
-<ol start="2">
-<li>通过代理修改内存中class的字节码</li>
-</ol>
-<p>Tomcat中的class文件是通过<code>org.apache.catalina.loader. WebappClassLoader</code>装载的。在热部署的情况下，对于被该classloader 加载的class文件，它的classloader始终是同一个WebappClassLoader，除非容器重启了。</p>
-<h2 id="HashMap的一些知识点："><a href="#HashMap的一些知识点：" class="headerlink" title="HashMap的一些知识点："></a>HashMap的一些知识点：</h2><h3 id="如何处理null"><a href="#如何处理null" class="headerlink" title="如何处理null"></a>如何处理null</h3><p>当key为null时，HashMap执行<code>putForNullKey()</code>方法。在方法里有个for循环，是在talbe[0]链表中查找key为null的元素，如果找到，则将value重新赋值给这个元素的value，并返回原来的value。<br>如果上面for循环没找到则将这个元素添加到<strong><code>talbe[0]</code></strong>链表的表头。</p>
-<h3 id="HashMap在JDK1-7与JDK1-8的区别"><a href="#HashMap在JDK1-7与JDK1-8的区别" class="headerlink" title="HashMap在JDK1.7与JDK1.8的区别"></a>HashMap在JDK1.7与JDK1.8的区别</h3><h4 id="JDK1-7中"><a href="#JDK1-7中" class="headerlink" title="JDK1.7中"></a>JDK1.7中</h4><p>使用一个Entry数组来存储数据，用key的hashcode取模来决定key会被放到数组里的位置，如果hashcode相同，或者hashcode取模后的结果相同（hash collision），那么这些key会被定位到Entry数组的同一个桶里，这些key会形成一个链表。</p>
-<p>在hashcode特别差的情况下，比方说所有key的hashcode都相同，这个链表可能会很长，那么put/get操作都可能需要遍历这个链表，也就是说时间复杂度在最差情况下会退化到O(n)</p>
-<h4 id="DK1-8中"><a href="#DK1-8中" class="headerlink" title="DK1.8中"></a>DK1.8中</h4><p>使用一个Node数组来存储数据，但这个Node可能是链表结构，也可能是红黑树结构。如果插入的key的hashcode相同，那么这些key也会被定位到Node数组的同一个桶里。如果同一个桶里的key不超过<strong>8</strong>个，使用链表结构存储。如果超过了<strong>8</strong>个，那么会调用treeifyBin函数，将链表转换为红黑树。那么即使hashcode完全相同，由于红黑树的特点，查找某个特定元素，也只需要O(log n)的开销，也就是说put/get的操作的时间复杂度最差只有O(log n)。</p>
-<p> 但是真正想要利用JDK1.8的好处，有一个限制：key的对象，必须正确的实现了Compare接口。如果没有实现Compare接口，或者实现得不正确（比方说所有Compare方法都返回0），那JDK1.8的HashMap其实还是慢于JDK1.7的。</p>
-<h3 id="解决hash冲突的办法"><a href="#解决hash冲突的办法" class="headerlink" title="解决hash冲突的办法"></a>解决hash冲突的办法</h3><ol>
-<li>开放定址法（线性探测再散列，二次探测再散列，伪随机探测再散列）</li>
-<li>再哈希法</li>
-<li>链地址法</li>
-<li>建立一个公共溢出区</li>
-</ol>
-<p>Java中hashmap的解决办法就是采用的链地址法。</p>
-<hr>
-<h2 id="B树与B-树简要区别"><a href="#B树与B-树简要区别" class="headerlink" title="B树与B+树简要区别"></a>B树与B+树简要区别</h2><h3 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h3><p>每个节点都储存key和data，所有节点组成这棵树，并且叶子节点指针为null。</p>
-<h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><p>只有叶子节点存储data，叶子节点包含这棵树的所有键值，字节节点不储存指针。<br>  后来，在B+树上增加了顺序访问指针，也就是每个叶子节点增加一个指向相邻叶子节点的指针，这样一棵树成了数据库系统实现索引的首选数据结构。 </p>
-<p>因为B+树内节点不存储data，这样一个节点就可以存储更多的key，更适合做数据库的索引。</p>
-<h3 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h3><p>  data存的是数据地址。索引是索引，数据是数据。</p>
-<p>InnoDB</p>
-<p>  data存的是数据本身。索引也是数据。</p>
-<hr>
-<h2 id="MyISAM和InnoDB的主要区别和应用场景"><a href="#MyISAM和InnoDB的主要区别和应用场景" class="headerlink" title="MyISAM和InnoDB的主要区别和应用场景"></a>MyISAM和InnoDB的主要区别和应用场景</h2><p>主要区别：</p>
-<ol>
-<li>MyISAM是非事务安全型的，而InnoDB是<strong>事务安全型</strong>的。</li>
-<li>MyISAM锁的粒度是表级，而InnoDB支持<strong>行级</strong>锁定。</li>
-<li>MyISAM支持全文类型索引，而InnoDB不支持全文索引。(MySQL 5.7开始支持全文索引)</li>
-<li>MyISAM相对简单，所以在效率上要优于InnoDB，小型应用可以考虑使用MyISAM。</li>
-<li>MyISAM表是保存成文件的形式，在跨平台的数据转移中使用MyISAM存储会省去不少的麻烦。</li>
-<li>InnoDB表比MyISAM表更安全，可以在保证数据不会丢失的情况下，切换非事务表到事务表（alter table tablename type=innodb）。</li>
-</ol>
-<p>应用场景：</p>
-<ol>
-<li>MyISAM管理非事务表。它提供高速存储和检索，以及全文搜索能力。如果应用中需要执行大量的SELECT查询，那么MyISAM是更好的选择。</li>
-<li>InnoDB用于事务处理应用程序，具有众多特性，包括ACID事务支持。如果应用中需要执行大量的INSERT或UPDATE操作，则应该使用InnoDB，这样可以提高多用户并发操作的性能。</li>
-</ol>
-<hr>
-<h2 id="拦截器和过滤器的区别"><a href="#拦截器和过滤器的区别" class="headerlink" title="拦截器和过滤器的区别"></a>拦截器和过滤器的区别</h2><h3 id="过滤器："><a href="#过滤器：" class="headerlink" title="过滤器："></a>过滤器：</h3><p>依赖于servlet容器。在实现上基于函数回调，可以对几乎所有请求进行过滤，但是缺点是一个过滤器实例只能在容器初始化时调用一次。使用过滤器的目的是用来做一些过滤操作，获取我们想要获取的数据，比如：在过滤器中修改字符编码；在过滤器中修改HttpServletRequest的一些参数，包括：过滤低俗文字、危险字符等。</p>
-<h3 id="拦截器："><a href="#拦截器：" class="headerlink" title="拦截器："></a>拦截器：</h3><p>依赖于web框架，在SpringMVC中就是依赖于SpringMVC框架。在实现上基于Java的反射机制，属于面向切面编程（AOP）的一种运用。由于拦截器是基于web框架的调用，因此可以使用Spring的依赖注入（DI）进行一些业务操作，同时一个拦截器实例在一个controller生命周期之内可以多次调用。但是缺点是只能对controller请求进行拦截，对其他的一些比如直接访问静态资源的请求则没办法进行拦截处理</p>
-<h3 id="主要区别："><a href="#主要区别：" class="headerlink" title="主要区别："></a>主要区别：</h3><ol>
-<li>拦截器<code>interceptor</code>是基于Java的<strong>反射机制</strong>的，而过滤器Filter是基于函数回调,实现的filter接口中doFilter方法就是回调函数。</li>
-<li>拦截器interceptor不依赖与servlet容器，过滤器Filter依赖与servlet容器,没有servlet容器就无法来回调<code>doFilter</code>方法。</li>
-<li>拦截器interceptor只能对action请求起作用，而过滤器Filter则可以对几乎所有的请求起作用,Filter的过滤范围比Interceptor大,Filter除了过滤请求外通过通配符可以保护页面，图片，文件等等。</li>
-<li>拦截器interceptor可以访问action上下文、值栈里的对象，而过滤器Filter不能访问。</li>
-<li>在action的生命周期中，拦截器interceptor可以多次被调用，而过滤器Filter只能在容器初始化时被调用一次。</li>
-<li>拦截器interceptor可以获取IOC容器中的各个bean，而过滤器Filter就不行，这点很重要，在拦截器里注入一个service，可以调用业务逻辑。</li>
-</ol>
-<hr>
-<h2 id="CMS收集器和G1收集器优缺点与区别"><a href="#CMS收集器和G1收集器优缺点与区别" class="headerlink" title="CMS收集器和G1收集器优缺点与区别"></a>CMS收集器和G1收集器优缺点与区别</h2><h3 id="CMS收集器"><a href="#CMS收集器" class="headerlink" title="CMS收集器"></a>CMS收集器</h3><p>CMS收集器是一种以获取最短回收停顿时间为目标的收集器，CMS收集器是基于“”标记–清理”算法实现的，整个过程分为四个步骤： </p>
-<ol>
-<li>初始标记 </li>
-<li>并发标记 </li>
-<li>重新标记  </li>
-<li>并发清理 </li>
-</ol>
-<p>优点：并发收集，低停顿 </p>
-<p>缺点： </p>
-<ol>
-<li>CMS收集器对CPU资源非常敏感 <ol start="2">
-<li>CMS处理器无法处理浮动垃圾(即标记过程产生的垃圾) </li>
-<li>CMS是基于“标记–清除”算法实现的，所以在收集结束的时候会有大量的空间碎片产生。</li>
-</ol>
-</li>
-</ol>
-<h3 id="G1收集器"><a href="#G1收集器" class="headerlink" title="G1收集器"></a>G1收集器</h3><p>Java8之后广泛使用，G1 将整个对区域划分为若干个<strong>Region</strong>，每个Region的大小是2的倍数（1M,2M,4M,8M,16M,32M，通过设置堆的大小和Region数量计算得出。<br>Region区域划分与其他收集类似，不同的是单独将大对象分配到了单独的region中，会分配一组连续的Region区域（Humongous start 和 humonous Contoinue 组成），所以一共有四类Region（Eden，Survior，<strong>Humongous</strong>和Old），<br>G1 作用于整个堆内存区域，设计的目的就是减少Full GC的产生。在Full GC过程中由于G1 是单线程进行，会产生较长时间的停顿。<br>G1的OldGc标记过程可以和yongGc并行执行，但是OldGc一定在YongGc之后执行，即MixedGc在yongGC之后执行。</p>
-<p>名词解释(JDK1.8)：</p>
-<ul>
-<li>MetaSpace<br>  在Java8之后取代永久代方法区的内存部分，NativeMemory</li>
-<li>Mixed GC Event<br>  所有Young Region和一部分Old Region的混合GC时间。</li>
-<li>Reclaimable<br>  G1 为了能够回收，创建了一系列专门用于对象回收的Region，存放在链表中，只包含存活率小于-XX:G1MixedGCLIveThresholdPercent(默认是85%)的region, region的值除以整个Java堆区，如果大于-XX:G1HeapWastePercent(默认5%)，则启动回收机制</li>
-<li>Minor GC<br>年轻代GC</li>
-<li>Major GC(Full GC)<br>发生在老年代的GC</li>
-</ul>
-<p>G1是一款面向服务端应用的垃圾收集器。G1具备如下特点：</p>
-<ol>
-<li>并行于并发</li>
-<li>分代收集</li>
-<li>空间整合（，G1从整体来看是基于“标记整理”算法实现的收集器，从局部上来看是基于“复制”算法实现的。）</li>
-<li>可预测的停顿</li>
-</ol>
-<p>G1运行步骤：</p>
-<ol>
-<li>初始标记</li>
-<li>并发标记</li>
-<li>最终标记</li>
-<li>筛选回收</li>
-</ol>
-<p>G1相对于CMS的主要区别在：</p>
-<ol>
-<li>G1在压缩空间方面有优势</li>
-<li>G1通过将内存空间分成区域（Region）的方式避免内存碎片问题</li>
-<li>Eden, Survivor, Old区<strong>不再固定</strong>、在内存使用效率上来说更灵活</li>
-<li>G1可以通过设置预期停顿时间（Pause Time）来控制垃圾收集时间避免应用雪崩现象</li>
-<li>G1在回收内存后会马上同时做合并空闲内存的工作、而CMS默认是在STW（stop the world）的时候做</li>
-<li>G1会在Young GC中使用、而CMS只能在O区使用</li>
-</ol>
-<hr>
+<h2 id="LockSupport的park和unpark的基本使用-以及对线程中断的响应性"><a href="#LockSupport的park和unpark的基本使用-以及对线程中断的响应性" class="headerlink" title="LockSupport的park和unpark的基本使用,以及对线程中断的响应性"></a>LockSupport的park和unpark的基本使用,以及对线程中断的响应性</h2><p>  LockSupport是JDK中比较底层的类，用来创建锁和其他同步工具类的基本线程阻塞原语。java锁和同步器框架的核心AQS:AbstractQueuedSynchronizer，就是通过调用LockSupport.park()和LockSupport.unpark()实现线程的阻塞和唤醒的。LockSupport很类似于二元信号量(只有1个许可证可供使用)，如果这个许可还没有被占用，当前线程获取许可并继续执行；如果许可已经被占用，当前线程阻塞，等待获取许可。</p>
+<p>许可默认是被占用的。</p>
+<p>LockSupport是不可重入。</p>
+<p>线程如果因为调用park而阻塞的话，能够响应中断请求(中断状态被设置成true)，但是不会抛出InterruptedException。</p>
 
       
     </div>
@@ -453,7 +318,7 @@ st-&gt;op1-&gt;op2
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/28/零碎的知识点-5/" data-id="ck8gr4zhw003h1ovt2o046wbz" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/零碎的知识点-3/" data-id="ckjtrgp6d0031n8vigoeatvix" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -461,7 +326,7 @@ st-&gt;op1-&gt;op2
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="零碎的知识点-5" ></div> 
+<div id="SOHUCS" sid="零碎的知识点-3" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -479,14 +344,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-15" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-零碎的知识点-2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/28/《Java并发编程实战》-15/" class="article-date">
-  <time datetime="2018-08-28T02:22:25.890Z" itemprop="datePublished">2018-08-28</time>
+    <h3 href="/2020/08/22/零碎的知识点-2/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.472Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+    <a class="article-category-link" href="/categories/零碎的知识点/">零碎的知识点</a>
   </div>
 
   </div>
@@ -499,7 +364,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/28/《Java并发编程实战》-15/">《Java并发编程实战》-15   第16章 Java内存模型</a>
+      <a class="article-title" href="/2020/08/22/零碎的知识点-2/">零碎的知识点-2</a>
     </h1>
   
 
@@ -508,83 +373,244 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="第16章-Java内存模型"><a href="#第16章-Java内存模型" class="headerlink" title="第16章 Java内存模型"></a>第16章 Java内存模型</h1><hr>
-<h2 id="16-1-什么内存模型，为什么需要它"><a href="#16-1-什么内存模型，为什么需要它" class="headerlink" title="16.1 什么内存模型，为什么需要它"></a>16.1 什么内存模型，为什么需要它</h2><p>JMM规定了JVM必须遵循一组最小保证，这组保证规定了对变量的写入操作在何时将对于其他线程可见。</p>
-<h2 id="16-1-1-平台的内存模型"><a href="#16-1-1-平台的内存模型" class="headerlink" title="16.1.1 平台的内存模型"></a>16.1.1 平台的内存模型</h2><p>在共享内存的多处理器体系架构中，每个处理器都拥有自己的缓存，并且定期地与主内存进行协调。</p>
-<p>Java程序不需要指定内存栅栏的位置，而只需通过正确地使用同步来找出何时访问共享状态。</p>
-<h2 id="16-1-2-重排序"><a href="#16-1-2-重排序" class="headerlink" title="16.1.2 重排序"></a>16.1.2 重排序</h2><p>各种使操作延迟或者看似乱序执行的不同原因，都可以归为重排序。</p>
-<h2 id="Java内存模型简介"><a href="#Java内存模型简介" class="headerlink" title="Java内存模型简介"></a>Java内存模型简介</h2><p>Java内存模型是通过各种操作来定义的，包括对变量的读/写操作，监视器的加锁和释放操作，以及线程的启动和合并操作。JMM为程序中所有操作定义了一个偏序关系，称之为Happens-Before关系，那么JVM可以对它们任意地重排序。如果两个操作之间缺乏Happens-Before关系，那么JVM可以对它们任意地重排序。</p>
-<p>Happens-Before的规则包括：</p>
-<ul>
-<li><strong>程序顺序规则</strong>。 如果程序中操作A在操作B之前，那么在线程中A操作将在B操作之前执行。</li>
-<li><strong>监视器锁定规则</strong>。 在监视器锁上的解锁操作必须在同一个监视器锁上的加锁操作之前执行。</li>
-<li><strong>volatile变量规则</strong>。 对volatile变量的写入操作必须在对该变量的读操作之前执行。</li>
-<li><strong>线程启动规则</strong>。 子线程上对Thread.Start的调用必须在该线程中执行任何操作之前执行。</li>
-<li><strong>线程结束规则</strong>。 线程中的任何操作都必须在其他线程测到该线程已经结束之前执行，或者从Thread.join中成功返回，或者在调用Thread.isAlive时返回false。</li>
-<li><strong>中断规则</strong>。 当一个线程在另一个线程上调用interrupt时，必须在被中断线程检测到interrup调用之前执行（通过抛出InterruptedException，或者调用isInterrupted和interrupted）。</li>
-<li><strong>终结器规则</strong>。 对象的构造函数必须在启动该对象的终结器之前执行完成。</li>
-<li><strong>传递性</strong> 如果操作A在操作B之前执行，并且操作B在操作C之前执行，那么操作A必须在操作C之前执行。</li>
+        <h1 id="零碎的知识点-2"><a href="#零碎的知识点-2" class="headerlink" title="零碎的知识点-2"></a>零碎的知识点-2</h1><h2 id="死锁及其解决方案（避免、预防、检测）"><a href="#死锁及其解决方案（避免、预防、检测）" class="headerlink" title="死锁及其解决方案（避免、预防、检测）"></a>死锁及其解决方案（避免、预防、检测）</h2><h3 id="死锁产生的原因"><a href="#死锁产生的原因" class="headerlink" title="死锁产生的原因"></a>死锁产生的原因</h3><p>因竞争资源发生死锁 现象：系统中供多个进程共享的资源的数目不足以满足全部进程的需要时，就会引起对诸资源的竞争而发生死锁现象。</p>
+<h3 id="死锁的四个必要条件："><a href="#死锁的四个必要条件：" class="headerlink" title="死锁的四个必要条件："></a>死锁的四个必要条件：</h3><ul>
+<li><p><strong>互斥条件</strong>：进程对所分配到的资源不允许其他进程进行访问，若其他进程访问该资源，只能等待，直至占有该资源的进程使用完成后释放该资源</p>
+</li>
+<li><p><strong>请求和保持条件</strong>：进程获得一定的资源之后，又对其他资源发出请求，但是该资源可能被其他进程占有，此事请求阻塞，但又对自己获得的资源保持不放</p>
+</li>
+<li><p><strong>不可剥夺条件</strong>：是指进程已获得的资源，在未完成使用之前，不可被剥夺，只能在使用完后自己释放</p>
+</li>
+<li><p><strong>环路等待条件</strong>：是指进程发生死锁后，必然存在一个进程–资源之间的环形链</p>
+</li>
 </ul>
-<h2 id="16-1-4-借助同步"><a href="#16-1-4-借助同步" class="headerlink" title="16.1.4 借助同步"></a>16.1.4 借助同步</h2><p>由于Happens-Before，因此有时候可以“借助(Piggyback)”现有同步机制的可见性属性。这需要将Happens-Before的程序顺序规则与其他某个顺序规则（通常是监视器锁规则或者volatile变量规则）结合起来，从而对某个未被锁保护的变量的访问操作进行排序。</p>
-<p>在类库中提供的其他Happens-Before排序包括：</p>
-<ul>
-<li>将一个元素放入一个线程安全容器的操作将在另一个线程从该容器中获得这个元素的操作之前执行。</li>
-<li>在CountDownLatch上的倒数操作将在线程从闭锁的await方法中返回之前执行。</li>
-<li>释放Semaphore许可的操作将在从该Semaphore上获得一个许可之前执行。</li>
-<li>Future表示的任务的所有操作将在从Future.get中返回之前执行。</li>
-<li>向Executor提交一个Runnable或Callable的操作将在任务开始之前执行。</li>
-<li>一个线程到达CyclicBarrier或Exchanger的操作将在其他到达该栅栏或交换点的线程被释放之前执行。如果CyclicBarrier使用一个栅栏操作，那么到达栅栏的操作将在栅栏操作之前执行，而栅栏操作又会在线程从栅栏中释放之前执行。</li>
+<h3 id="处理死锁的基本方法"><a href="#处理死锁的基本方法" class="headerlink" title="处理死锁的基本方法"></a>处理死锁的基本方法</h3><h4 id="预防死锁（破坏四个必要条件）"><a href="#预防死锁（破坏四个必要条件）" class="headerlink" title="预防死锁（破坏四个必要条件）"></a>预防死锁（破坏四个必要条件）</h4><ul>
+<li><strong>资源一次性分配</strong>：（破坏请求和保持条件）</li>
+<li><p><strong>可剥夺资源</strong>：即当某进程新的资源未满足时，释放已占有的资源（破坏不可剥夺条件）</p>
+</li>
+<li><p><strong>资源有序分配法</strong>：系统给每类资源赋予一个编号，每一个进程按编号递增的顺序请求资源，释放则相反（破坏环路等待条件）</p>
+</li>
 </ul>
-<h2 id="16-2-发布"><a href="#16-2-发布" class="headerlink" title="16.2 发布"></a>16.2 发布</h2><h3 id="16-2-1-不安全的发布"><a href="#16-2-1-不安全的发布" class="headerlink" title="16.2.1 不安全的发布"></a>16.2.1 不安全的发布</h3><blockquote>
-<p>除了不可变对象以外，使用被另一个线程初始化的对象通常都是被安全的，除非对象的发布操作是在使用该对象的线程开始使用之前执行。</p>
-</blockquote>
-<h3 id="16-2-2-安全的发布"><a href="#16-2-2-安全的发布" class="headerlink" title="16.2.2 安全的发布"></a>16.2.2 安全的发布</h3><p>事实上，Happens-Before比安全发布提供了提供了更加可见性与顺序保证。</p>
-<h3 id="16-2-3-安全初始化模式"><a href="#16-2-3-安全初始化模式" class="headerlink" title="16.2.3 安全初始化模式"></a>16.2.3 安全初始化模式</h3><p>程序安全的延迟初始化</p>
-<pre><code class="java">@ThreadSafe
-public calss SafeLazyInitialization {
-    private static Resource resource;
-    public synchronized static Resource getInstance() {
-        if (resource == null )
-            resource = new Resource();
-        return resource;
-    }
-}
-
-</code></pre>
-<p>由于JVM将在初始化期间获得一个锁，并且每个线程都至少获取一次这个锁已确保这个类已经加载，因此在静态初始化期间，内存写入操作将自动对所有线程可见。</p>
-<pre><code class="java">@ThreadSafe
-public calss ResourceFactory {
-    private static Resource = new Resource();
-    public static Resource getResource{
-        return ResourceHolder.resource;
-    }
-}
-</code></pre>
-<h3 id="16-2-4-双重检查加锁"><a href="#16-2-4-双重检查加锁" class="headerlink" title="16.2.4 双重检查加锁"></a>16.2.4 双重检查加锁</h3><p>DDL（双重检查加锁）已经被广泛地废弃了。</p>
-<h2 id="16-3-初始化过程中的安全性"><a href="#16-3-初始化过程中的安全性" class="headerlink" title="16.3 初始化过程中的安全性"></a>16.3 初始化过程中的安全性</h2><blockquote>
-<p>初始化安全性将确保，对于被正确构造的对象，所有线程都能看到由构造函数为对象给各个final域设置的正确性，而不管采用何种方式来发布对象。而且，对于可以通过被正确构造对象中某个final域到达的任意变量（例如某个final数组中的元素，或者由一个final域引用的HashMap的内容）将同样对于其他线程是可见的。</p>
-</blockquote>
-<pre><code class="java">@ThreadSafe
-public class SafeStates {
-    private final Map&lt;String, String&gt; states;
-
-    public SafeStates() {
-        states = new HashMap&lt;String, String&gt;();
-        states.put(&quot;a&quot;,1)
-        ...
-        states.put(&quot;b&quot;,2)
-        states.put(&quot;c&quot;,3)
-    }
-    public String getAbbreviation(String s) {
-        return states.get(s);
-    }
-}
-
-</code></pre>
+<h3 id="避免死锁-银行家算法"><a href="#避免死锁-银行家算法" class="headerlink" title="避免死锁(银行家算法)"></a><strong>避免</strong>死锁(银行家算法)</h3><p>上面的预防算法会严重地损害系统性能。而避免死锁算法是让系统在进行资源分配之前预先计算资源分配的安全性。</p>
+<h3 id="检测死锁"><a href="#检测死锁" class="headerlink" title="检测死锁"></a>检测死锁</h3><p>首先为每个进程和每个资源指定一个唯一的号码；</p>
+<p>然后建立资源分配表和进程等待表。</p>
+<h3 id="解除死锁"><a href="#解除死锁" class="headerlink" title="解除死锁"></a>解除死锁</h3><p>当发现有进程死锁后，便应立即把它从死锁状态中解脱出来，常采用的方法有：</p>
+<h4 id="剥夺资源"><a href="#剥夺资源" class="headerlink" title="剥夺资源"></a>剥夺资源</h4><p>从其它进程剥夺足够数量的资源给死锁进程，以解除死锁状态；</p>
+<h4 id="撤消进程"><a href="#撤消进程" class="headerlink" title="撤消进程"></a>撤消进程</h4><p>可以直接撤消死锁进程或撤消代价最小的进程，直至有足够的资源可用，死锁状态.消除为止；所谓代价是指优先级、运行代价、进程的重要性和价值等。</p>
+<h2 id="Linux-命令-amp-和-amp-amp-的区别"><a href="#Linux-命令-amp-和-amp-amp-的区别" class="headerlink" title="Linux 命令&amp;和&amp;&amp;的区别"></a>Linux 命令&amp;和&amp;&amp;的区别</h2><p>在Linux控制台命令的执行过程中，</p>
+<h3 id="amp-表示该命令后台执行。"><a href="#amp-表示该命令后台执行。" class="headerlink" title="&amp;表示该命令后台执行。"></a>&amp;表示该命令后台执行。</h3><p>例如执行：ping 192.168.1.*  &amp;</p>
+<p>表示后台不停的执行ping命令，即便你强制中断掉该线程，它仍然会不停的输出结果。除非你将该线程kill掉。</p>
+<h3 id="amp-amp-表示并行执行前后命令。"><a href="#amp-amp-表示并行执行前后命令。" class="headerlink" title="&amp;&amp;表示并行执行前后命令。"></a>&amp;&amp;表示并行执行前后命令。</h3><h2 id="Linux—shell中-、-、-与-的区别"><a href="#Linux—shell中-、-、-与-的区别" class="headerlink" title="Linux—shell中$(( ))、$( )、$与${ }的区别"></a>Linux—shell中<code>$</code>(( ))、<code>$</code>( )、<code>$</code>与<code>$</code>{ }的区别</h2><p>在bash中，<code>$</code>( )与<code></code>（反引号）都是用来作命令替换的。<br>命令替换与变量替换差不多，都是用来重组命令行的，先完成引号里的命令行，然后将其结果替换出来，再重组成新的命令行。</p>
+<h2 id="redis的持久化方式RDB和AOF的区别"><a href="#redis的持久化方式RDB和AOF的区别" class="headerlink" title="redis的持久化方式RDB和AOF的区别"></a>redis的持久化方式RDB和AOF的区别</h2><p>redis提供两种方式进行持久化，一种是RDB持久化（原理是将Reids在内存中的数据库记录定时dump到磁盘上的RDB持久化），另外一种是AOF持久化（原理是将Reids的操作日志以追加的方式写入文件）。</p>
+<p>二者却别：</p>
+<ul>
+<li><p>RDB持久化是指在指定的时间间隔内将内存中的数据集快照写入磁盘，实际操作过程是fork一个子进程，先将数据集写入临时文件，写入成功后，再替换之前的文件，用二进制压缩存储。</p>
+</li>
+<li><p>AOF持久化以日志的形式记录服务器所处理的每一个写、删除操作，查询操作不会记录，以文本的方式记录，可以打开文件看到详细的操作记录。</p>
+</li>
+</ul>
+<h2 id="MYSQL-innodb中MVCC的一些理解"><a href="#MYSQL-innodb中MVCC的一些理解" class="headerlink" title="MYSQL innodb中MVCC的一些理解"></a>MYSQL innodb中MVCC的一些理解</h2><h3 id="MVCC简介"><a href="#MVCC简介" class="headerlink" title="MVCC简介"></a>MVCC简介</h3><p>MVCC (Multiversion Concurrency Control)，即多版本并发控制技术,它使得大部分支持行锁的事务引擎，不再单纯的使用行锁来进行数据库的并发控制，取而代之的是把数据库的行锁与行的多个版本结合起来，只需要很小的开销,就可以实现非锁定读，从而大大提高数据库系统的并发性能</p>
+<ul>
+<li><p><strong>读锁</strong>：也叫共享锁、S锁，若事务T对数据对象A加上S锁，则事务T可以读A但不能修改A，其他事务只能再对A加S锁，而不能加X锁，直到T释放A上的S 锁。这保证了其他事务可以读A，但在T释放A上的S锁之前不能对A做任何修改。</p>
+</li>
+<li><p><strong>写锁</strong>：又称排他锁、X锁。若事务T对数据对象A加上X锁，事务T可以读A也可以修改A，其他事务不能再对A加任何锁，直到T释放A上的锁。这保证了其他事务在T释放A上的锁之前不能再读取和修改A。</p>
+</li>
+<li><p><strong>表锁</strong>：操作对象是数据表。Mysql大多数锁策略都支持(常见mysql innodb)，是系统开销最低但并发性最低的一个锁策略。事务t对整个表加读锁，则其他事务可读不可写，若加写锁，则其他事务增删改都不行。</p>
+</li>
+<li><p><strong>行级锁</strong>：操作对象是数据表中的一行。是MVCC技术用的比较多的，但在MYISAM用不了，行级锁用mysql的储存引擎实现而不是mysql服务器。但行级锁对系统开销较大，处理高并发较好。</p>
+</li>
+</ul>
+<p>MVCC有下面几个特点：</p>
+<ul>
+<li>每行数据都存在一个版本，每次数据更新时都更新该版本</li>
+<li>修改时Copy出当前版本随意修改，各个事务之间无干扰</li>
+<li>保存时比较版本号，如果成功（commit），则覆盖原记录；失败则放弃copy（rollback）</li>
+</ul>
 <blockquote>
-<p>初始化安全性只能保证通过final域可达的值从构造过程完成时开始的可见性。对于通过非final域可达的值，或者在构成过程完成后可能改变的值，必须采用同步来确保可见性。</p>
+<p>一句话讲，MVCC就是用 同一份数据临时保留多版本的方式 的方式，实现并发控制。</p>
 </blockquote>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>Java内存模型说明了某个线程的内存操作在哪些情况下对于其他线程是可见的。其中包括确保这些操作是按照一种Happens-Before的偏序关系进行排序，而这种关系是基于内存操作和同步操作级别来定义的。</p>
+<h2 id="TCP三次握手和四次挥手"><a href="#TCP三次握手和四次挥手" class="headerlink" title="TCP三次握手和四次挥手"></a>TCP三次握手和四次挥手</h2><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p>第一次握手：建立连接时，客户端发送syn包（syn=j）到服务器，并进入SYN_SENT状态，等待服务器确认；SYN：同步序列编号（Synchronize Sequence Numbers）。</p>
+<p>第二次握手：服务器收到syn包，必须确认客户的SYN（ack=j+1），同时自己也发送一个SYN包（syn=k），即SYN+ACK包，此时服务器进入SYN_RECV状态；</p>
+<p>第三次握手：客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ack=k+1），此包发送完毕，客户端和服务器进入ESTABLISHED（TCP连接成功）状态，完成三次握手。</p>
+<p>完成三次握手，客户端与服务器开始传送数据，在上述过程中，还有一些重要的概念：</p>
+<p>未连接队列</p>
+<p>在三次握手协议中，服务器维护一个未连接队列，该队列为每个客户端的SYN包（syn=j）开设一个条目，该条目表明服务器已收到SYN包，并向客户发出确认，正在等待客户的确认包。这些条目所标识的连接在服务器处于SYN_RECV状态，当服务器收到客户的确认包时，删除该条目，服务器进入ESTABLISHED状态。</p>
+<p><img src="https://img-blog.csdn.net/20180803161201776?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP握手"></p>
+<h3 id="TCP挥手"><a href="#TCP挥手" class="headerlink" title="TCP挥手"></a>TCP挥手</h3><p><img src="https://img-blog.csdn.net/20180803161352694?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="TCP挥手"></p>
+<p>为什么TCP协议终止链接要四次？</p>
+<ol>
+<li>当主机A确认发送完数据且知道B已经接受完了，想要关闭发送数据口（当然确认信号还是可以发），就会发FIN给主机B。</li>
+<li>主机B收到A发送的FIN，表示收到了，就会发送ACK回复。</li>
+<li>但这是B可能还在发送数据，没有想要关闭数据口的意思，所以FIN与ACK不是同时发送的，而是等到B数据发送完了，才会发送FIN给主机A。</li>
+<li>A收到B发来的FIN，知道B的数据也发送完了，回复ACK， A等待2MSL以后，没有收到B传来的任何消息，知道B已经收到自己的ACK了，A就关闭链接，B也关闭链接了。</li>
+</ol>
+<p>TCP挥手时，为什么等待2MSL，从TIME_WAIT到CLOSE？</p>
+<p> 在Client发送出最后的ACK回复，但该ACK可能丢失。Server如果没有收到ACK，将不断重复发送FIN片段。所以Client不能立即关闭，它必须确认Server接收到了该ACK。Client会在发送出ACK之后进入到TIME_WAIT状态。Client会设置一个计时器，等待2MSL的时间。如果在该时间内再次收到FIN，那么Client会重发ACK并再次等待2MSL。所谓的2MSL是两倍的MSL(Maximum Segment Lifetime)。MSL指一个片段在网络中最大的存活时间，2MSL就是一个发送和一个回复所需的最大时间。如果直到2MSL，Client都没有再次收到FIN，那么Client推断ACK已经被成功接收，则结束TCP连接。</p>
+<h2 id="C语言文件读写"><a href="#C语言文件读写" class="headerlink" title="C语言文件读写"></a>C语言文件读写</h2><p><img src="https://img-blog.csdn.net/20180803173523226?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="C语言文件读写"></p>
+<h2 id="Redis分布式锁"><a href="#Redis分布式锁" class="headerlink" title="Redis分布式锁"></a>Redis分布式锁</h2><h3 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h3><p>首先，为了确保分布式锁可用，我们至少要确保锁的实现同时满足以下四个条件：</p>
+<ul>
+<li><strong>互斥性</strong> 在任意时刻，只有一个客户端能持有锁。</li>
+<li><strong>不会发生死锁</strong> 即使有一个客户端在持有锁的期间崩溃而没有主动解锁，也能保证后续其他客户端能加锁。</li>
+<li><strong>具有容错性</strong> 只要大部分的Redis节点正常运行，客户端就可以加锁和解锁。</li>
+<li><strong>解铃还须系铃人</strong> 加锁和解锁必须是同一个客户端，客户端自己不能把别人加的锁给解了。</li>
+</ul>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><h4 id="加锁代码"><a href="#加锁代码" class="headerlink" title="加锁代码"></a>加锁代码</h4><pre><code class="java">public class RedisTool {
+
+    private static final String LOCK_SUCCESS = &quot;OK&quot;;
+    private static final String SET_IF_NOT_EXIST = &quot;NX&quot;;
+    private static final String SET_WITH_EXPIRE_TIME = &quot;PX&quot;;
+
+    /**
+     * 尝试获取分布式锁
+     * @param jedis Redis客户端
+     * @param lockKey 锁
+     * @param requestId 请求标识
+     * @param expireTime 超期时间
+     * @return 是否获取成功
+     */
+    public static boolean tryGetDistributedLock(Jedis jedis, String lockKey, String requestId, int expireTime) {
+
+        String result = jedis.set(lockKey, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);
+
+        if (LOCK_SUCCESS.equals(result)) {
+            return true;
+        }
+        return false;
+
+    }
+
+}
+
+</code></pre>
+<h4 id="解锁代码"><a href="#解锁代码" class="headerlink" title="解锁代码"></a>解锁代码</h4><p>···java<br>public class RedisTool {</p>
+<pre><code>private static final Long RELEASE_SUCCESS = 1L;
+
+/**
+ * 释放分布式锁
+ * @param jedis Redis客户端
+ * @param lockKey 锁
+ * @param requestId 请求标识
+ * @return 是否释放成功
+ */
+public static boolean releaseDistributedLock(Jedis jedis, String lockKey, String requestId) {
+
+    String script = &quot;if redis.call(&#39;get&#39;, KEYS[1]) == ARGV[1] then return redis.call(&#39;del&#39;, KEYS[1]) else return 0 end&quot;;
+    Object result = jedis.eval(script, Collections.singletonList(lockKey), Collections.singletonList(requestId));
+
+    if (RELEASE_SUCCESS.equals(result)) {
+        return true;
+    }
+    return false;
+
+}
+</code></pre><p>}<br><code>`</code></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>先拿setnx来争抢锁，抢到之后，再用expire给锁加一个过期时间防止锁忘记了释放。</p>
+<p>如果在setnx之后执行expire之前进程意外crash或者要重启维护了，那会怎么样？</p>
+<p>set指令有非常复杂的参数，这个应该是可以同时把setnx和expire合成一条指令来用的。</p>
+<h2 id="Java类加载机制"><a href="#Java类加载机制" class="headerlink" title="Java类加载机制"></a>Java类加载机制</h2><h3 id="双亲委派加载机制"><a href="#双亲委派加载机制" class="headerlink" title="双亲委派加载机制"></a>双亲委派加载机制</h3><blockquote>
+<p>双亲委派模型的工作流程是：如果一个类加载器收到了类加载的请求，它首先不会自己去尝试加载这个类，而是把请求委托给父加载器去完成，依次向上，因此，所有的类加载请求最终都应该被传递到顶层的启动类加载器中，只有当父加载器在它的搜索范围中没有找到所需的类时，即无法完成该加载，子加载器才会尝试自己去加载该类。</p>
+</blockquote>
+<ol>
+<li>遇见一个类需要加载的类，它会优先让父加载器去加载。层层传递。</li>
+<li>每个类加载器都有自己的加载区域，它也只能在自己的加载区域里面寻找。</li>
+<li>自定义类加载器也必须实现这样一个双亲委派模型。</li>
+<li>双亲委派机制是隔离的关键， 如String.class： <ol>
+<li>一个JVM里面只能有一个String.class。</li>
+<li>用户没法自定义个String.class出来。</li>
+<li>每个Classloader都有自己的加载区域，需要注意部分配置文件的存放地点。</li>
+</ol>
+</li>
+</ol>
+<h3 id="类加载的隔离机制"><a href="#类加载的隔离机制" class="headerlink" title="类加载的隔离机制"></a>类加载的隔离机制</h3><p>类加载的隔离机制<br>通过不同的 完整类名 和 classloader， 可以区分两个类。好处为内存隔离(最常见的就是静态变量)。</p>
+<ul>
+<li>类名不一致一定不是同一个类</li>
+<li>类名一致类加载器不一致也不是同一个类(eaquels false)</li>
+<li>类名一致类加载器一致但是类加载器实例不一致也不是同一个类。</li>
+</ul>
+<blockquote>
+<p>Tomcat提供了一个Child优先的类加载机制：首先由子类去加载， 加载不到再由父类加载。就很好的规避了Tomcat lib里面的包与webapps中用户的包互相冲突。WEB-INF/lib 目录下的类的加载优先级是优于Tomcat lib的。（配置文件在server.xml里面的<loader delegate="false"> default false）上。</loader></p>
+</blockquote>
+<p>针对Tomcat， 做一个加载路径的介绍：</p>
+<ul>
+<li>Tomcat起始于catalina.sh里面的命令 <code>java org.apache.catalina.startup.Bootstrap start</code></li>
+<li>因为显式的指定了java命令，因此 <ul>
+<li>BootstrapClassLoader负责加载<code>${JAVA_HOME}/jre/lib</code>部分jar包</li>
+<li>ExtClassLoader加载<code>${JAVA_HOME}/jre/lib/ext</code>下面的jar包</li>
+<li>AppClassLoader加载<code>bootstrap.jar</code>和<code>tomcat-juli.jar</code>（只显示的指定了这两个jar包）</li>
+<li>之后Tomcat通过初始化了三个URLClassLoader, 并指定加载路径 （见<code>catalina.properties#common.loader</code>配置）</li>
+<li>除了common外， server和shardLoader的加载路径一般都没有显示的指定， 因此这三个Loader实际上都是URLClassLoader。</li>
+<li>同时，它顺便指定了当前线程的contextClassLoader。</li>
+<li>Tomcat对于WEB应用的启动都是依赖于web.xml的， 里面配置的Filter、Listener、Servlet根据Tomcat的定义都是由WebappClassLoaderBase来加载的。</li>
+<li>毕竟<code>Filter</code>、<code>Listener</code>、<code>Servlet</code>等入口都是被WebappClassLoaderBase加载的，而一般开发者不会主动指定ClassLoader。那么除非指定了ClassLoader，所有的webapp都是它加载的（刚好它的加载空间包含了这些类）</li>
+<li>在需要Spring的时候已经由App自身加载得到， 就不会再去寻找Tomcat lib里面的Spring。</li>
+<li>自此，Tomcat的类加载区分完毕。 通过 “子优先” 这个机制，可以保证多个 Tomcat App 之间做到良好的隔离。</li>
+</ul>
+</li>
+</ul>
+<h3 id="类加载的顺序"><a href="#类加载的顺序" class="headerlink" title="类加载的顺序"></a>类加载的顺序</h3><p>当需要用一个类的时候， 必须先加载它。</p>
+<ol>
+<li>装载：查找和导入Class文件；</li>
+<li>链接：把类的二进制数据合并到JRE中； </li>
+<li>校验：检查载入Class文件数据的正确性；</li>
+<li>准备：给类的静态变量分配存储空间；</li>
+<li>解析：将符号引用转成直接引用；</li>
+<li>初始化：对类的静态变量，静态代码块执行初始化操作</li>
+</ol>
+<h3 id="类加载的触发点"><a href="#类加载的触发点" class="headerlink" title="类加载的触发点"></a>类加载的触发点</h3><ul>
+<li>遇到new、getstatic、putstatic或invokestatic这4条字节码指令时，如果类没有进行过初始化，则需要先触发其初始化。生成这4条指令的最常见的Java代码场景是：使用new关键字实例化对象的时候，读取或设置一个类的静态字段（被final修饰、已在编译期把结果放入常量池的静态字段除外）的时候，以及调用一个类的静态方法的时候。<ul>
+<li>使用java.lang.reflect包的方法对类进行反射调用的时候，如果类没有进行过初始化，则需要先触发其初始化。</li>
+<li>当初始化一个类的时候，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化。</li>
+</ul>
+</li>
+</ul>
+<h2 id="类的实例化"><a href="#类的实例化" class="headerlink" title="类的实例化"></a>类的实例化</h2><p>类只有在加载进入JVM之后才能被使用， 但是一般情况下还需要把类做实例化操作后来用。 一般区分为显式的实例化和隐式的示例化。</p>
+<p>类的实例化的目的是为了得到一个类的对象。</p>
+<ul>
+<li>new 方法为隐式的实例化。方便可用性高。</li>
+<li>newInstance()为显式的实例化。必须要一个无参构造器。</li>
+<li>两种实例化方式都需要ClassLoader的参与。显式的实例化往往指定，隐式的实例化则默认是调用的这个类的类加载器。</li>
+<li>实例化的目的都是为了得到类的对象。而类在实例化之前已经初始化完毕。</li>
+<li>实例化的时候会为域变量赋值，并执行代码块的方法。</li>
+</ul>
+<p>为什么静态元素和静态代码块在一个虚拟机里面只会执行一次 ？</p>
+<ol>
+<li>默认习惯都是不会指定ClassLoader的，所属类也就只有一次初始化过程。 </li>
+<li>赋值静态域，或者执行静态代码块，是在类加载的流程中执行的。而这样的操作只会有一次。 </li>
+<li>赋值域，或者执行代码块，是在类实例化的流程中执行的，这样的操作根据程序需求可能有多次。</li>
+</ol>
+<h2 id="JVM的符号引用和直接引用"><a href="#JVM的符号引用和直接引用" class="headerlink" title="JVM的符号引用和直接引用"></a>JVM的符号引用和直接引用</h2><blockquote>
+<p>在JVM中类加载过程中，在解析阶段，Java虚拟机会把类的二级制数据中的符号引用替换为直接引用。</p>
+</blockquote>
+<ol>
+<li><p>符号引用（Symbolic References）：　符号引用以一组符号来描述所引用的目标，符号可以是任何形式的字面量，只要使用时能够无歧义的定位到目标即可。Java中，一个java类将会编译成一个class文件。在编译时，java类并不知道所引用的类的实际地址，因此只能使用符号引用来代替。</p>
+</li>
+<li><p>直接引用：<br>直接引用可以是<br>（1）直接指向目标的指针（比如，指向“类型”【Class对象】、类变量、类方法的直接引用可能是指向方法区的指针）<br>（2）相对偏移量（比如，指向实例变量、实例方法的直接引用都是偏移量）<br>（3）一个能间接定位到目标的句柄</p>
+</li>
+</ol>
+<p>直接引用是和虚拟机的布局相关的，同一个符号引用在不同的虚拟机实例上翻译出来的直接引用一般不会相同。如果有了直接引用，那引用的目标必定已经被加载入内存中了。</p>
+<h2 id="MySQL主从复制、半同步复制和主主复制概述"><a href="#MySQL主从复制、半同步复制和主主复制概述" class="headerlink" title="MySQL主从复制、半同步复制和主主复制概述"></a>MySQL主从复制、半同步复制和主主复制概述</h2><p>MySQL数据库支持同步复制、单向、异步复制，在复制的过程中一个服务器充当主服务，而一个或多个服务器充当从服务器。主服务器将更新写入二进制日志文件，并维护文件的一个索引以跟踪日志循环。这些日志可以记录发送到从服务器的更新。当一个从服务器连接主服务器时，它通知主服务器从服务器在日志中读取的最后一次成功更新的位置。从服务器接收从那时起发生的任何更新，然后封锁并等待主服务器通知新的更新。</p>
+<h3 id="主从复制的原理："><a href="#主从复制的原理：" class="headerlink" title="主从复制的原理："></a>主从复制的原理：</h3><ol>
+<li>数据库有个bin-log二进制文件，记录了所有sql语句。</li>
+<li>我们的目标就是把主数据库的bin-log文件的sql语句复制过来。</li>
+<li>让其在从数据的relay-log重做日志文件中再执行一次这些sql语句即可。</li>
+<li>下面的主从配置就是围绕这个原理配置</li>
+</ol>
+<p><img src="http://images2017.cnblogs.com/blog/1228077/201712/1228077-20171222172525053-1730746112.png" alt="主从复制"></p>
+<p><img src="http://images2017.cnblogs.com/blog/1228077/201712/1228077-20171222172533787-134255588.png" alt="原理"></p>
+<ol start="5">
+<li><p>具体需要三个线程来操作：</p>
+<ol>
+<li><p>binlog输出线程:每当有从库连接到主库的时候，主库都会创建一个线程然后发送binlog内容到从库。</p>
+<p>在从库里，当复制开始的时候，从库就会创建两个线程进行处理：</p>
+</li>
+<li><p>从库I/O线程:当START SLAVE语句在从库开始执行之后，从库创建一个I/O线程，该线程连接到主库并请求主库发送binlog里面的更新记录到从库上。从库I/O线程读取主库的binlog输出线程发送的更新并拷贝这些更新到本地文件，其中包括relay log文件。</p>
+</li>
+<li><p>从库的SQL线程:从库创建一个SQL线程，这个线程读取从库I/O线程写到relay log的更新事件并执行。</p>
+</li>
+</ol>
+</li>
+</ol>
+<p>可以知道，对于每一个主从复制的连接，都有三个线程。拥有多个从库的主库为每一个连接到主库的从库创建一个binlog输出线程，每一个从库都有它自己的I/O线程和SQL线程。</p>
 
       
     </div>
@@ -593,7 +619,7 @@ public class SafeStates {
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/28/《Java并发编程实战》-15/" data-id="ck8gr4zd1001a1ovtqyxcnchq" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/零碎的知识点-2/" data-id="ckjtrgp69002tn8vijsuyxazh" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -601,7 +627,7 @@ public class SafeStates {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-15" ></div> 
+<div id="SOHUCS" sid="零碎的知识点-2" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -619,14 +645,14 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-14" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-零碎的知识点-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/27/《Java并发编程实战》-14/" class="article-date">
-  <time datetime="2018-08-27T02:47:15.099Z" itemprop="datePublished">2018-08-27</time>
+    <h3 href="/2020/08/22/零碎的知识点-1/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.468Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+    <a class="article-category-link" href="/categories/零碎的知识点/">零碎的知识点</a>
   </div>
 
   </div>
@@ -639,7 +665,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/27/《Java并发编程实战》-14/">《Java并发编程实战》-14   第14章 构建自定义的同步工具</a>
+      <a class="article-title" href="/2020/08/22/零碎的知识点-1/">零碎的知识点-1</a>
     </h1>
   
 
@@ -648,44 +674,103 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="第15章-原子变量与非阻塞同步机制"><a href="#第15章-原子变量与非阻塞同步机制" class="headerlink" title="第15章 原子变量与非阻塞同步机制"></a>第15章 原子变量与非阻塞同步机制</h1><hr>
-<h2 id="15-1-锁得劣势"><a href="#15-1-锁得劣势" class="headerlink" title="15.1 锁得劣势"></a>15.1 锁得劣势</h2><p>如果在基于锁的类中包含有细粒度的操作（例如同步容器类，在其他大多数方法中只包含了少量操作），那么当在锁上存在着激烈的竞争时，调度开销与工作开销的比值会非常高。</p>
-<p>与锁相比，volatile变量是一种更轻量级的同步机制，因为在使用这些变量时不会发生上下文切换或线程调度等操作。</p>
-<p>锁定还存在其他以下缺点。当一个线程正在等待锁时，它不能做任何其他事情。</p>
-<h2 id="15-2-硬件对并发的支持"><a href="#15-2-硬件对并发的支持" class="headerlink" title="15.2 硬件对并发的支持"></a>15.2 硬件对并发的支持</h2><p>现在几乎所有的现代处理器中都包含了某种形式的原子读-改-写指令，例如比较并交换(Compare-and-Swap)或者关联加载/条件储存(Load-Linked/Store-Conditional)。操作系统和JVM使用这些指令来实现锁和并发的数据结构。</p>
-<h3 id="15-2-1-比较并交换"><a href="#15-2-1-比较并交换" class="headerlink" title="15.2.1 比较并交换"></a>15.2.1 比较并交换</h3><p>CAS是一项乐观的技术，它希望能成功地执行更新操作，并且如果有另一个线程在最近一次检测后更新了该值，那么CAS能检测到这个错误。</p>
-<p>当多个线程尝试使用CAS同时更新一个变量时，只有其中一个线程能更新变量的值，而其他线程都将失败。然而，失败的线程并不会被挂起(这与获取锁的情况不同：当获取锁失败时，线程将被挂起来)，而是被告知在这次竞争中失败。</p>
-<p>CAS的典型使用模式是：首先从V中读取值A，并根据A计算新值B，然后再通过CAS以原子方式将V中的值由A变成B（只要在这期间没有任何其他线程将V的值修改为其他值）。</p>
-<h3 id="15-2-2-非阻塞的计算器"><a href="#15-2-2-非阻塞的计算器" class="headerlink" title="15.2.2 非阻塞的计算器"></a>15.2.2 非阻塞的计算器</h3><p>一个很管用的经验法则是 ：在大多数处理器上，在无竞争的锁获取和释放的“快速代码路径”上的开销，大约是CAS开销的两倍。</p>
-<h3 id="15-2-3-JVM对CAS的支持"><a href="#15-2-3-JVM对CAS的支持" class="headerlink" title="15.2.3 JVM对CAS的支持"></a>15.2.3 JVM对CAS的支持</h3><p>在原子变量类（例如<code>java.util.cocurrent.atomic中的AtomicXxx</code>）中使用了底层的JVM支持为数字类型和引用类型提供一种高效的CAS操作，而在<code>java.util.concurrent</code>中大多数类在实现时则直接或间接地使用了这些原子变量类。</p>
-<h2 id="15-3-原子变量类"><a href="#15-3-原子变量类" class="headerlink" title="15.3 原子变量类"></a>15.3 原子变量类</h2><p>原子变量比锁的粒度更细，量级更轻，并且对于多处理器系统上实现高性能的并发代码来说时非常关键的。</p>
-<p>java中共有12个原子变量类，可分为4组：</p>
-<ul>
-<li>标量类(Scalar)<br>  AtomicInteger、 AtomicLOng、 AtomicBoolean以及AtomicReference。这些类都支持CAS,但是它们不宜用作基于散列的容器中的键值。</li>
-<li>更新器类</li>
-<li>数组类<br>  原子数组类（只支持Integer、Long和Reference版本）中的元素可以实现原子更新。</li>
-<li>复合变量。</li>
-</ul>
-<h3 id="15-3。1-原子变量是一种”更好的volatile”"><a href="#15-3。1-原子变量是一种”更好的volatile”" class="headerlink" title="15.3。1 原子变量是一种”更好的volatile”"></a>15.3。1 原子变量是一种”更好的volatile”</h3><p>原子变量相比<code>volatile</code>修饰的变量更有原子安全性。</p>
-<h3 id="性能比较：锁与原子变量"><a href="#性能比较：锁与原子变量" class="headerlink" title="性能比较：锁与原子变量"></a>性能比较：锁与原子变量</h3><p>在中低难度的竞争下，原子变量能提供更高的可伸缩性，而在高清度的竞争下，锁能够更有效地避免竞争。</p>
-<h3 id="15-4-1-非阻塞的栈"><a href="#15-4-1-非阻塞的栈" class="headerlink" title="15.4.1 非阻塞的栈"></a>15.4.1 非阻塞的栈</h3><p>栈是通过compareAndSet来修改的，因此将采用原子操作来更新top的引用，或者在发现存在其他线程干扰的情况下，修改操作将失败。</p>
-<h3 id="15-4-2-非阻塞的链表"><a href="#15-4-2-非阻塞的链表" class="headerlink" title="15.4.2 非阻塞的链表"></a>15.4.2 非阻塞的链表</h3><h3 id="15-4-2-原子的域更新器"><a href="#15-4-2-原子的域更新器" class="headerlink" title="15.4.2 原子的域更新器"></a>15.4.2 原子的域更新器</h3><p>原子的域更新类表示现有volatile域的一种基于反射的“视图”，从而能够在已有的volatile域上使用CAS。在更新器类中没有构造函数，要创建一个更新器对象，可以调用newUpdater工厂方法，并制定类和域的名字。</p>
-<p>在ConcurrentLinkedQueue中使用原子的域更新器</p>
-<pre><code class="java">private class Node&lt;E&gt; {
-    private final E item;
-    private volatile Node&lt;E&gt; next;
-    public Node(E item) {
-        this.item = item;
-    }
-}
-private static AtomicReferencePieldUpdater&lt;Node, Node&gt; nextUpdater
-    = AtomicReferenceFiledUpdater(Node.class, Node.class, &quot;next&quot;);
+        <h1 id="零碎的知识点-1"><a href="#零碎的知识点-1" class="headerlink" title="零碎的知识点-1"></a>零碎的知识点-1</h1><hr>
+<h2 id="二叉排序树"><a href="#二叉排序树" class="headerlink" title="二叉排序树"></a>二叉排序树</h2><p>二叉排序树或者是一棵空树，或者是具有下列性质的二叉树：<br>（1）若左子树不空，则左子树上所有结点的值均小于 它的根结点的值；<br>（2）若右子树不空，则右子树上所有结点的值均大于或等于 它的根结点的值；<br>（3）左、右子树也分别为二叉排序树；<br>（4）没有键值相等的节点。</p>
+<blockquote>
+<p>中序遍历可以得到二叉排序树的有序序列</p>
+</blockquote>
+<pre><code class="html">    40
+    / \
+   30 50
 </code></pre>
-<p>几乎在所有情况下，普通原子变量的性能都很不错，只有在很少的情况下才需要使用原子的域更新器.（如果在执行原子更新的同时还需要维持现有类的串行化形式，那么原子的域更新器将非常有用。）</p>
-<h3 id="15-4-4-ABA问题"><a href="#15-4-4-ABA问题" class="headerlink" title="15.4.4 ABA问题"></a>15.4.4 ABA问题</h3><p>ABA问题是一种异常现象：如果在算法中的接地点可以被循环使用，那么在使用“比较并交换”指令时就可能出现这种问题（主要在没有垃圾回收机制的环境中）。</p>
-<p>AtomicStampedReference（以及AtomicMarkableReference）支持在两个变量上执行原子的条件更新。</p>
-<p>AtomicStampedReference将更新一个“对象-引用”二元组，通过在引用上加上“版本号”，从而避免ABA问题。<br>类似地，AtomicMarkableReference将更新一个“对象引用-布尔值”二元组，在某些算法中将通过这种二元组使节点保存在链表中同时又将其标记为“已删除的节点”。</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>非阻塞算法通过底层的并发原语（例如比较并交换而不是锁）来维持线程的安全性。这些底层的原语通过原子变量类向外公开，这些类也用做一种“更好的volatile变量”，从而为整数和对象引用提供原子的更新操作。</p>
+<h2 id="视图与基本表的对比"><a href="#视图与基本表的对比" class="headerlink" title="视图与基本表的对比"></a>视图与基本表的对比</h2><p>视图可以定义在多张表上，因此定义功能比表强。<br>视图中数据更新受到诸多限制，例如不能有聚集函数，不能是定义在多张表上等，因此操作功能弱于表。<br>视图的数据控制功能和表的数据控制功能相当，都有GRANT、REVOKE。</p>
+<p>视图和表的区别和联系：</p>
+<ul>
+<li>区别：</li>
+</ul>
+<ol>
+<li>视图是已经编译好的sql语句。而表不是  </li>
+<li>视图没有实际的物理记录。而表有。</li>
+<li>表是内容，视图是窗口</li>
+<li>表只用物理空间而视图不占用物理空间，视图只是逻辑概念的存在，表可以及时对它进行修改，但视图只能有创建的语句来修改</li>
+<li>表是内模式，视图是外模式</li>
+<li>视图是查看数据表的一种方法，可以查询数据表中某些字段构成的数据，只是一些SQL语句的集合。从安全的角度说，视图可以不给用户接触数据表，从而不知道表结构。</li>
+<li>表属于全局模式中的表，是实表；视图属于局部模式的表，是虚表。</li>
+<li>视图的建立和删除只影响视图本身，不影响对应的基本表。</li>
+</ol>
+<ul>
+<li>联系：</li>
+</ul>
+<p>视图（view）是在基本表之上建立的表，它的结构（即所定义的列）和内容（即所有数据行）都来自基本表，它依据基本表存在而存在。一个视图可以对应一个基本表，也可以对应多个基本表。视图是基本表的抽象和在逻辑意义上建立的新关系。</p>
+<h2 id="Linux-bash-特殊变量："><a href="#Linux-bash-特殊变量：" class="headerlink" title="Linux bash 特殊变量："></a>Linux bash 特殊变量：</h2><p>特殊变量列表<br>| 变量 | 含义 |<br>| – | – |<br>| $0 | 当前脚本的文件名 |<br>| $n | 传递给脚本或函数的参数。n 是一个数字，表示第几个参数。例如，第一个参数是<code>$1</code>，第二个参数是<code>$2</code>。|<br>| $# | 传递给脚本或函数的参数个数。|<br>| $<em> | 传递给脚本或函数的所有参数。|<br>| $@ | 传递给脚本或函数的所有参数。被双引号(“ “)包含时，与 $</em> 稍有不同，下面将会讲到。|<br>| $? | 上个命令的退出状态，或函数的返回值。|<br>| $$ | 当前Shell进程ID。对于 Shell 脚本，就是这些脚本所在的进程ID。|</p>
+<h2 id="bash中变量的定义和赋值"><a href="#bash中变量的定义和赋值" class="headerlink" title="bash中变量的定义和赋值"></a>bash中变量的定义和赋值</h2><p>bash中有两个内置的命令declare 和 typeset 可用于创建变量。除了使用内置命令来创建和设置变量外，还可以直接赋值，格式为：变量名=变量值<br>注意：变量名前面不应加美元“$”符号。（和PHP不同）</p>
+<pre><code>     等号“=”前后不可以有空格。
+
+     Shell中不需要显式的语法来声明变量。
+
+     变量名不可以直接和其他字符相连，如果想相连，必须用括号：    echo “this is $(he)llo!”
+</code></pre><h2 id="umask命令"><a href="#umask命令" class="headerlink" title="umask命令"></a>umask命令</h2><p>umask<br>功能说明：指定在建立文件时预设的权限掩码。<br>语　　法：umask [-S][权限掩码]<br>补充说明：umask可用来设定[权限掩码]。[权限掩码]是由3个八进制的数字所组成，将现有的存取权限减掉权限掩码后，即可产生建立文件时预设的权限。</p>
+<p>在Linux中 umask:目前用户在新建文件或者目录时候的默认权限值<br>在Linux中r，w，x的值分别是 ： 4 2 1</p>
+<h2 id="链接分硬链接和符号链接。"><a href="#链接分硬链接和符号链接。" class="headerlink" title="链接分硬链接和符号链接。"></a>链接分硬链接和符号链接。</h2><p>符号链接可以建立对于文件和目录的链接。符号链接可以跨文件系统，即可以跨磁盘分区。符号链接的文件类型位是l，链接文件具有新的i节点。</p>
+<p>硬链接不可以跨文件系统。它只能建立对文件的链接，硬链接的文件类型位是－，且硬链接文件的i节点同被链接文件的i节点相同。</p>
+<p>软链接产生的是一个新的文件(类似快捷方式)，但这个文件的作用就是专门指向某个文件的，删了这个软连接文件，那就等于不需要这个连接，和原来的存在的实体原文件没有任何关系，但删除原来的文件，则相应的软连接不可用（cat那个软链接文件，则提示“没有该文件或目录“）。</p>
+<p>硬链接实际上是为文件建一个<strong>别名</strong>，链接文件和原文件实际上是同一个文件。可以通过ls -i来查看一下，这两个文件的inode号是同一个，说明它们是同一个文件。</p>
+<h2 id="聚集索引"><a href="#聚集索引" class="headerlink" title="聚集索引"></a>聚集索引</h2><p>聚集索引是一种索引，该索引中键值的逻辑顺序决定了表中相应行的<strong>物理顺序</strong>。</p>
+<p>聚集索引确定表中数据的物理顺序。聚集索引类似于电话簿，按姓氏排列数据。由于聚集索引规定数据在表中的物理存储顺序，因此一个表只能包含一个聚集索引。但该索引可以包含多个列（组合索引），就像电话簿按姓氏和名字进行组织一样。</p>
+<p>聚集索引对于那些经常要搜索范围值的列特别有效。使用聚集索引找到包含第一个值的行后，便可以确保包含后续索引值的行在物理相邻。例如，如果应用程序执行的一个查询经常检索某一日期范围内的记录，则使用聚集索引可以迅速找到包含开始日期的行，然后检索表中所有相邻的行，直到到达结束日期。这样有助于提高此类查询的性能。同样，如果对从表中检索的数据进行排序时经常要用到某一列，则可以将该表在该列上聚集（物理排序），避免每次查询该列时都进行排序，从而节省成本。<br>当索引值唯一时，使用聚集索引查找特定的行也很有效率。例如，使用唯一雇员 ID 列 emp_id 查找特定雇员的最快速的方法，是在 emp_id 列上创建聚集索引或 PRIMARY KEY 约束。</p>
+<h2 id="块级元素与行内元素的区别"><a href="#块级元素与行内元素的区别" class="headerlink" title="块级元素与行内元素的区别"></a>块级元素与行内元素的区别</h2><ol>
+<li>块级元素会独占一行，其宽度自动填满其父元素宽度。行内元素不会独占一行，相邻的行内元素会排列在<strong>同一行</strong>，直至一行排不下才会换行，其宽度随元素的内容而变化。</li>
+<li>块级元素可以包含行内元素和块级元素；行内元素不能包含块级元素。</li>
+<li>行内元素设置width、height、margin-top、margin-bottom、padding-top、padding-bottom无效。</li>
+</ol>
+<p>块级元素与行内元素的转换:</p>
+<p>display:inline-block;<br>display:inline;<br>display:block;</p>
+<h2 id="Cookie-Session机制"><a href="#Cookie-Session机制" class="headerlink" title="Cookie/Session机制"></a>Cookie/Session机制</h2><p>会话（Session）跟踪是Web程序中常用的技术，用来跟踪用户的整个会话。常用的会话跟踪技术是Cookie与Session。Cookie通过在客户端记录信息确定用户身份，Session通过在服务器端记录信息确定用户身份。</p>
+<p>###Cookie<br>Cookie实际上是一小段的文本信息。客户端请求服务器，如果服务器需要记录该用户状态，就使用response向客户端浏览器颁发一个Cookie。客户端浏览器会把Cookie保存起来。当浏览器再请求该网站时，浏览器把请求的网址<strong>连同该Cookie一同提交</strong>给服务器。服务器检查该Cookie，以此来辨认用户状态。服务器还可以根据需要修改Cookie的内容。</p>
+<p>Cookie的原理<br><img src="http://hi.csdn.net/attachment/201111/9/0_13208318702UfF.gif" alt="Cookie的原理"></p>
+<p>子域名可以访问根域名的cookie，反之则不可以。cookie，对于不同的浏览器有不同的大小限制。</p>
+<h3 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h3><p>Session是另一种记录客户状态的机制，不同的是Cookie保存在客户端浏览器中，而Session保存在服务器上。客户端浏览器访问服务器的时候，服务器把客户端信息以某种形式记录在服务器上。这就是Session。</p>
+<p>Session对象是在客户端第一次请求服务器的时候创建的。Session也是一种key-value的属性对，通过getAttribute(Stringkey)和setAttribute(String key，Objectvalue)方法读写客户状态信息。</p>
+<p>Session保存在服务器端。为了获得更高的存取速度，服务器一般把Session放在内存里。每个用户都会有一个独立的Session。如果Session内容过于复杂，当大量客户访问服务器时可能会导致内存溢出。因此，Session里的信息应该尽量精简。</p>
+<p>Session生成后，只要用户继续访问，服务器就会更新Session的最后访问时间，并维护该Session。用户每访问服务器一次，无论是否读写Session，服务器都认为该用户的Session“活跃（active）”了一次。</p>
+<h2 id="CPU调度算法"><a href="#CPU调度算法" class="headerlink" title="CPU调度算法"></a>CPU调度算法</h2><h3 id="FCFS-先到先服务"><a href="#FCFS-先到先服务" class="headerlink" title="FCFS 先到先服务"></a>FCFS 先到先服务</h3><p>一旦选定进程，那么在结束之前就不能再切换到另一个进程。</p>
+<h3 id="SJF-最短优先-精确的讲是最短下一个CPU区间的算法-（可能导致饥饿）"><a href="#SJF-最短优先-精确的讲是最短下一个CPU区间的算法-（可能导致饥饿）" class="headerlink" title="SJF 最短优先  精确的讲是最短下一个CPU区间的算法 （可能导致饥饿）"></a>SJF 最短优先  精确的讲是最短下一个CPU区间的算法 （可能导致饥饿）</h3><p>前面提到，一个进程是由CPU区间和I/O区间交替组成的。而SJF是看哪个进程的CPU区间最短。</p>
+<ul>
+<li>SRTF抢占式：又称最短剩余优先，当新进来的进程的CPU区间比当前执行的进程所剩的CPU区间短，则抢占。</li>
+<li>非抢占：称为下一个最短优先，因为在就绪队列中选择最短CPU区间的进程放在队头。</li>
+</ul>
+<h3 id="优先级调度算法-pintos的优先级是0-63-0为最低优先级，63为最高优先级"><a href="#优先级调度算法-pintos的优先级是0-63-0为最低优先级，63为最高优先级" class="headerlink" title="优先级调度算法  pintos的优先级是0-63  0为最低优先级，63为最高优先级"></a>优先级调度算法  pintos的优先级是0-63  0为最低优先级，63为最高优先级</h3><p>SJF是特殊的优先级调度算法，以CPU区间长度的倒数为优先级。</p>
+<ul>
+<li>内部优先级：通过内部数据比如内存要求等。</li>
+<li>外部优先级：用户自己设定。set_priority</li>
+</ul>
+<p>分为抢占式和非抢占式，前者为如果进来的进程优先级高于运行的进程，则替换；后者只是在就绪队列中按优先级排队。</p>
+<p>缺点：无线阻塞或饥饿。前者为一个优先级高且运行时间长的进程一直阻塞，后者为优先级低的进程永远都得不到执行。</p>
+<p>解决饥饿的方法是老化。通过每个时间间隔后将等待的进程优先级降低。</p>
+<h3 id="转轮法-RR算法-抢占式"><a href="#转轮法-RR算法-抢占式" class="headerlink" title="转轮法 RR算法 抢占式"></a>转轮法 RR算法 抢占式</h3><p>用于分时系统。每个进程都占用一个时间片的时间。就绪队列为FIFO循环队列。如果一个进程的CPU区间长度小于时间片，则继续下面的进程；如果大于时间片，则中断切换到下一个进程执行。通常时间片长度为10ms-100ms，由此需要确定时间片大小使得上下文切换次数适当少。</p>
+<h3 id="多级队列调度"><a href="#多级队列调度" class="headerlink" title="多级队列调度"></a>多级队列调度</h3><p>根据某种性质将一个就绪队列分成不同的独立队列，如系统进程，交互进程（前台进程），交互编辑进程，批处理进程，学生进程。</p>
+<p>每个队列都有不同的调度算法。</p>
+<p>每个队列都有优先级，比如前台队列就比后台队列要有绝对的优先级，因此队列间的分配方法：</p>
+<p>（1）只有优先级高的队列为空，才能执行低优先级队列。</p>
+<p>（2）为队列分配不同权重的CPU时间，优先级高的分配时间多。</p>
+<h3 id="多级反馈队列-抢占式"><a href="#多级反馈队列-抢占式" class="headerlink" title="多级反馈队列   抢占式"></a>多级反馈队列   抢占式</h3><p>&emsp;&emsp;动态调整进程，进程在不同队列之间移动，虽然在队列间移动需要耗费资源，但是更合理。按照CPU区间的大小分队列。进程之间的划分是按照所花CPU时间划分，比如队列0是就绪队列，且规定一个时间上界，如果一个进程没能规定时间完成，则被放入队列1中。CPU区间越大的进程就被放入低优先中。每个进程一开始都进入就绪队列。</p>
+<p><img src="https://img-blog.csdn.net/20180802180851937?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="CPU调度算法"></p>
+<h2 id="页替换算法与缺页率"><a href="#页替换算法与缺页率" class="headerlink" title="页替换算法与缺页率"></a>页替换算法与缺页率</h2><h3 id="缺页中断"><a href="#缺页中断" class="headerlink" title="缺页中断"></a>缺页中断</h3><p>&emsp;&emsp;在请求分页系统中，可以通过查询页表中的状态位来确定所要访问的页面是否存在于内存中。每当所要访问的页面不在内存时，会产生一次缺页中断，此时操作系统会根据页表中的外存地址在外存中找到所缺的一页，将其调入内存。 </p>
+<p>缺页本身是一种中断，与一般的中断一样，需要经过4个处理步骤：<br>　　1. 保护CPU现场<br>　　2. 分析中断原因<br>　　3. 转入缺页中断处理程序进行处理<br>　　4. 恢复CPU现场，继续执行<br>　　但是缺页中断时由于所要访问的页面不存在于内存时，有硬件所产生的一种特殊的中断，因此，与一般的中断存区别：<br>　　 1. 在指令执行期间产生和处理缺页中断信号<br>　　 2. 一条指令在执行期间，可能产生多次缺页中断<br>　　 3. 缺页中断返回时，执行产生中断的那一条指令，而一般的中断返回时，执行下一条指令</p>
+<h3 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h3><p>&emsp;&emsp;进程运行过程中，如果发生缺页中断，而此时内存中有没有空闲的物理块是，为了能够把所缺的页面装入内存，系统必须从内存中选择一页调出到磁盘的对换区。但此时应该把那个页面换出，则需要根据一定的页面置换算法（Page Replacement Algorithm)来确定。</p>
+<h4 id="最佳置换（Optimal，-OPT"><a href="#最佳置换（Optimal，-OPT" class="headerlink" title="最佳置换（Optimal， OPT)"></a>最佳置换（Optimal， OPT)</h4><p>&emsp;&emsp;置换以后不再被访问，或者在将来最迟才回被访问的页面，缺页中断率最低。但是该算法需要依据以后各业的使用情况，而当一个进程还未运行完成时，很难估计哪一个页面是以后不再使用或在最长时间以后才会用到的页面。所以该算法是不能实现的。但该算法仍然有意义，作为衡量其他算法优劣的一个标准。</p>
+<h4 id="先进先出置换算法（First-In-First-Out-FIFO"><a href="#先进先出置换算法（First-In-First-Out-FIFO" class="headerlink" title="先进先出置换算法（First In First Out, FIFO)"></a>先进先出置换算法（First In First Out, FIFO)</h4><p>　置换最先调入内存的页面，即置换在内存中驻留时间最久的页面。按照进入内存的先后次序排列成队列，从队尾进入，从队首删除。但是该算法会淘汰经常访问的页面，不适应进程实际运行的规律，目前已经<strong>很少使用</strong>。</p>
+<h4 id="最近最久未使用置换算法（Least-Recently-Used，-LRU）"><a href="#最近最久未使用置换算法（Least-Recently-Used，-LRU）" class="headerlink" title="最近最久未使用置换算法（Least Recently Used， LRU）"></a>最近最久未使用置换算法（Least Recently Used， LRU）</h4><p>　　置换最近一段时间以来最长时间未访问过的页面。根据程序局部性原理，刚被访问的页面，可能马上又要被访问；而较长时间内没有被访问的页面，可能最近不会被访问。<br>　　LRU算法普偏地适用于各种类型的程序，但是系统要时时刻刻对各页的访问历史情况加以记录和更新，开销太大，因此LRU算法必须要有硬件的支持。</p>
+<h4 id="缺页率"><a href="#缺页率" class="headerlink" title="缺页率"></a>缺页率</h4><p>缺页中断率： FIFO &gt; LRU &gt; OPT<br> &emsp;&emsp;所以OPT的算法效果最好，然后时LRU，最后是FIFO</p>
+<h2 id="Linux-设备与驱动"><a href="#Linux-设备与驱动" class="headerlink" title="Linux 设备与驱动"></a>Linux 设备与驱动</h2><ol>
+<li>独享设备：在一个用户作业未完成或退出之前，此设备不能分配给其他作业用。所有字符设备都是独享设备。如输入机、磁带机、打印机等。——很明显：需要装驱动。</li>
+<li>共享设备：多个用户作业或多个进程可以“同时”从这些设备上存取信息。软硬盘、光盘等块设备都是共享设备。——无需驱动。</li>
+<li>虚拟设备：通过软件技术将独享设备改造成共享设备。例如：通过SPOOLing技术将一台打印机虚拟成多台打印机。——实质还是独享设备，需要驱动。</li>
+<li>系统设备，需要驱动。</li>
+</ol>
+<h2 id="linux定时任务cron"><a href="#linux定时任务cron" class="headerlink" title="linux定时任务cron"></a>linux定时任务cron</h2><p><img src="https://img-blog.csdn.net/20180802201420822?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>　　<em>   </em>　 <em>　 </em>　 <em>　　command<br>　　分钟(0-59)　小时(0-23)　日期(1-31)　月份(1-12)　星期(0-6,0代表星期天)　 命令<br>　　<br>　　第1列表示分钟1～59 每分钟用</em>或者 */1表示<br>　　第2列表示小时1～23（0表示0点）<br>　　第3列表示日期1～31<br>　　第4列表示月份1～12<br>　　第5列标识号星期0～6（0表示星期天）</p>
+<p>在以上任何值中，星号（<em>）可以用来代表所有有效的值。譬如，月份值中的星号意味着在满足其它制约条件后每月都执行该命令。<br>　　整数间的短线（-）指定一个整数范围。譬如，1-4 意味着整数 1、2、3、4。<br>　　用逗号（,）隔开的一系列值指定一个列表。譬如，3, 4, 6, 8 标明这四个指定的整数。<br>　　正斜线（/）可以用来指定间隔频率。在范围后加上 /<integer> 意味着在范围内可以跳过 integer。譬如，0-59/2 可以用来在分钟字段定义每两分钟。间隔频率值还可以和星号一起使用。例如，</integer></em>/3 的值可以用在月份字段中表示每三个月运行一次任务。<br>　　开头为井号（#）的行是注释，不会被处理</p>
 
       
     </div>
@@ -694,7 +779,7 @@ private static AtomicReferencePieldUpdater&lt;Node, Node&gt; nextUpdater
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/27/《Java并发编程实战》-14/" data-id="ck8gr4zcs00181ovt3lamvvl3" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/零碎的知识点-1/" data-id="ckjtrgp6b002yn8vi6i1p6d3h" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -702,7 +787,7 @@ private static AtomicReferencePieldUpdater&lt;Node, Node&gt; nextUpdater
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-14" ></div> 
+<div id="SOHUCS" sid="零碎的知识点-1" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -722,7 +807,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/20/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/22/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/20/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/22/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -736,23 +821,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2020/03/25/游戏框架笔记/技能系统设计/">技能系统设计</a>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/24/游戏框架笔记/跨服系统设计/">跨服系统的设计</a>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
           </li>
         
           <li>
-            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
           </li>
         
           <li>
-            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
           </li>
         
       </ul>
@@ -764,7 +849,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -773,7 +858,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
     </div>
   </div>
 
@@ -794,11 +879,11 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2020 WeiJian Qian
+      &copy; 2021 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
-    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
 
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
       .

@@ -1,0 +1,1389 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="属性系统学习笔记概述持有属性物品抽象生物属性管理器 public class CreatureGameStats implements IStatRoot  {     protected static Logger logger = LoggerFactoty.getLogger(CreatureGameStats.class);     /**     *   总属性     */     p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gonefuture">
+<meta property="og:url" content="http://gonefuture.top/2020/08/22/项目笔记/属性系统学习笔记/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="属性系统学习笔记概述持有属性物品抽象生物属性管理器 public class CreatureGameStats implements IStatRoot  {     protected static Logger logger = LoggerFactoty.getLogger(CreatureGameStats.class);     /**     *   总属性     */     p">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-01-17T09:55:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gonefuture">
+<meta name="twitter:description" content="属性系统学习笔记概述持有属性物品抽象生物属性管理器 public class CreatureGameStats implements IStatRoot  {     protected static Logger logger = LoggerFactoty.getLogger(CreatureGameStats.class);     /**     *   总属性     */     p">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-项目笔记/属性系统学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/项目笔记/属性系统学习笔记/" class="article-date">
+  <time datetime="2020-08-22T08:42:00.569Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="属性系统学习笔记"><a href="#属性系统学习笔记" class="headerlink" title="属性系统学习笔记"></a>属性系统学习笔记</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h2 id="持有属性物品抽象"><a href="#持有属性物品抽象" class="headerlink" title="持有属性物品抽象"></a>持有属性物品抽象</h2><p>生物属性管理器</p>
+<pre><code class="java">public class CreatureGameStats implements IStatRoot  {
+    protected static Logger logger = LoggerFactoty.getLogger(CreatureGameStats.class);
+    /**
+    *   总属性
+    */
+    protected Map&lt;StatEnum, StatValue&gt; stats;
+    /**
+    *  属性根节点
+    */
+    protected StatNode statRoot;
+
+    protected AbstractCreature owner;
+    protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+    // 属性拥有者
+    public CreatureGameStats(AbstractCreature owner) {
+        this.owner = owner;
+        this.stats = new ConcurrentHashMap&lt;&gt;();
+        this.statRoot = StatNode.crateRoot(this);
+    }
+
+    @Override
+    public void changeStats() {
+        Map&lt;StatEnum, Long&gt; diffMap = StatUtils.diffWithNewMap(oldStats, bewStats);
+        if(diffMap.isEmpty()) {
+            return;
+        }
+        Map&lt;StatEnum, Long&gt; changeMap = new HashMap&lt;&gt;(diffMap.size());
+        lock.writeLock().lock();
+        try {
+            // 添加
+            change(childNode, diffMap, changeMap)
+        } finally {
+            lock.writeLock().unlock();
+        }
+        if(Start.debug) {
+            // 抽烟检查
+            checkException(childNode);
+        }
+        // 通知属性变化
+        notifyChange(childNode, changeMap);
+    }
+
+    // 该属性，溜子类执行空间，但是注意这个方法在锁中
+    protected void change(StatNode childNode, Map&lt;StatEnum, Long&gt; diffMap, Map&lt;StatEnum, Long&gt; changeMap) {
+        StatUtils.mergeToMap(stats, childNode.isToBase(), diffMap, changeMap);
+    }
+
+    // 属性变化后的逻辑
+    protected void notifyChange(StatNode childNode, Map&lt;StatEnum, Long&gt; changeStatMap) { 
+        lock.readLock().lock();
+        try {
+            if (changeStatMap.containsKey(StatEnum.MAX_HP)) {
+                // 最大血量变化
+                owner.getLifeStats().changeMaxHp(stats.get(StatEnum.MAX_HP).getTotal());
+            }
+            if (changeStatMap.containsKey(StatEnum.MAX_MP)) {
+                // 最大蓝量变化
+                owner.getLifeStats().changeMaxMp(stats.get(StatEnum.MAX_MP).getTotal());
+            }
+            if (changeStatsMap.containsKey(StatEnum.MAX_ENERGY)) {
+                // 最大内功变化
+                owner.getLifeStats().changeMaxEnergy(stats.get(StatEnum.MAX_ENERGY).getTotal());
+            }
+            if(owner.isSpawned())  {
+                // 已经出生状态下的属性同步
+                syncStat(changeStatsMap);
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    private void syncStat(Map&lt;StatEnum, Long&gt; changeStatsMap) {
+        List&lt;Stat&gt; list = new ArrayList&lt;&gt;(2);
+        if(changeStatsMap.containsKey(StatEnum.ATTACK_SPEED)) {
+            list.add(Stat.valueOf(StateEnum.SPEED, getCurrentStat(StatEnum.SPEED)));
+        }
+        if(changeStatMap.containsKey(StatEnum.ATTACK_SPEED)) {
+            list.add(Stat.valueOf(StatEnum.ATTACK_SPEED, getCurrentStat(StatEnum.ATTACK_SPEED)));
+        }
+        if(!list.isEmpty()) {
+            PacketSendUtility.broadcastPacketImmediately(owner, CreatureStatChangeResp.valueOf(owner.getObjectId(), list), true);
+        }
+    }
+
+    @Override
+    public void removeChild(Serializable key) {
+        throw new RuntimeException(&quot;stat root can not remove!&quot;);
+    }
+
+    @Override
+    public void fillParentKey(List&lt;String&gt; list) {
+
+    }
+
+    // 获取属性树显示信息
+    public String getPrintStatTree() {
+        return JSON.toJSONString(statRoot, JsonUtils.SERIALIZE_CONFIG, StatNodeFilter.INSTANCE, JsonUtils.SERIALIZER_FEATURES);
+    }
+    // 获取属性树显示信息
+    public StatNode getPrintStatTreeStatNode() {
+        return statRoot;
+    }
+    // 属性来源
+    public StatNode getOrCreateStatNode(StatSource statSource) {
+        return statRoot.getOrCreateChild(statSource);
+    }
+    // 获取子节点
+    public StatNode getChildNode(List&lt;String&gt; childKeys) {
+        StatNode node = statRoot;
+        lock.readLock().lock();
+        try {
+            for(String childKey : childKeys) {
+                node = node.getOrCreateChild(childKey);
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+        return node;
+    }
+    // 属性集合
+    public Map&lt;StatEunm, StatValue&gt; getStatTotal() {
+        return stats;
+    }
+    // 所有属性集合
+    public Map&lt;StatEnum, Long&gt; getAllStat() {
+        lock.readLock().lock();
+        try {
+            return StatUtils.toSimpleMap(stats);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    // 清空属性
+    public void clear() {
+        lock.writeLock().lock();
+        try {
+            stats.clear();
+            this.statRoot = StatNode.createRoot(this);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    // 指定类型的属性值
+    public long getCurrentStat(StatEnum stat) {
+        switch(stat) {
+            case HP_CUR:
+                return owener.getLifeStats().getCurrrentHp();
+            case MP_CUR:
+                return owner.getLifeStats().getCurrentMp();
+            case ENERGY_CUR:
+                return owner.getLifeStats().getCurrentEnergy();
+            case HP_CUR_R :
+                return owner.getLifeStats().getHpRct();
+            default : {
+                long value = 0;
+                lock.readLock().lock();
+                try {
+                    if(stats.contiansKey(stat)) {
+                        value = stats.get(stat).getTotal();
+                    }
+                } finally {
+                    lock.readLock().unlock();
+                }
+                // 属性使用时，不能为负数
+                return Math.max(value, 0);
+            }
+        }
+    }
+
+    // 获取万分比属性类型的小数形式，比如储存时是5000，表示概率/比值为0.5,返回值就为0.5
+    public double getCurrentStatWithOdds(StatEnum stat) {
+        double value = getCurrentStat(stat);
+        return value / GameMathUtil.ODDS_BASE;
+    }
+    // 获取属性集合List,包含基础值
+    public List&lt;Stat&gt; getStatList() {
+        lock.readList().lock();
+        try {
+            return StatUtils.toList(stats);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+    // 增强版本，获取属性集合List,包含基础值
+    public List&lt;StatExInfo&gt; getStatExList() {
+        lock.readLock().lock();
+        try {
+            return StatUtils.toStatExList(stats);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    // 获取属性集合Map
+    public Map&lt;StatEnum, Long&gt; getStatMap() {
+        lock.readLock().lock();
+        try {
+            return StatUtils.toSimpleMap(stats);
+        } finally {
+            lock.radLock().unlock();
+        }
+    }
+    // 通过属性列表进行初始化
+    public void initWithStatMap(Map&lt;StatEnum, Long&gt; initStats) {
+        initStats.forEach( (statEnum, value) -&gt; {
+            StatValue statValue = new StarValue();
+            statValue.alter(true, value);
+            stats.put(statEnum, statValue);
+        });
+    }
+    // 检测#{@link #stats} 与 statRoot. # {@link #statRoot::getStatTotal()} 是否一致
+    public void checkException(StatNode childNode) {
+
+    }
+
+    // 创建跨服传输属性数据
+    public StatNode buildStatMoedel() {
+        return statRoot.buildMedel();
+    }
+    // 解析跨服传输的属性数据
+    public void parseStatModel(StatNodeModel model) {
+        StatNode.parseModelOnlyChild(statRoot, model);
+    }
+}
+
+玩家属性管理器
+
+```java
+public class PlayerGameStats extends CreatureGameStats {
+    // 可计算战力的总属性
+    protected Map&lt;StatEnum, StatValue&gt; fightForceStats;
+    // 用于合并玩家属性变化信息
+    private Set&lt;StatEnum&gt; changeStats = new ConcurrentSet();
+    // 记录变化的节点
+    private Map&lt;String, Map&lt;StatEnum, Long&gt;&gt; changeStatsNode = new ConcurrentHashMap&lt;&gt;();
+    // 属性拥有者
+    public PlayerGameStats(AbstractCreature owner) {
+        super(owner);
+        this.fightForceStats = new ConcurrentHashMap&lt;&gt;();
+    }
+    @Override
+    protected void change(StatNode childNode, Map&lt;StatEnum, Long&gt; diffMap, Map&lt;StatEnum, Long&gt; changeStatsMap) {
+        super.change(childNode, diffMap, changeSatsMap);
+        if(childNode.isToFightForce()) {
+            StatUtils.mergeToMap(fightForceStats, childNode.isToBase(), diffMap, null);
+        }
+        FightPlayer fightPlayer = (FightPlayer) this.owner;
+        if(PlayerManager.getInstace().isOnline(this.owner.getObjectId())) {
+            fightPlayer.excPlayer(player -&gt; {
+                // 本服玩家属性变化，尝试抛属性变化事件到跨服
+                PlayerSyncManger.self().trySubmitTransferPlayerEvent(player, G2tStatNodeChangeEvent.valueOf(childNode));
+            }, transferPlayer -&gt; {
+                // 跨服玩家属性变化
+            });
+        }
+        if(fightPlayer.hasRefreshAgingMark(CreatureAgingMark.statsChange) {
+            ArrayList&lt;String&gt; statKeys = new ArrayList&lt;&gt;();
+            childNode.fillParentKey(statKeys);
+            // .......
+        }
+    }
+    @Override
+    protected void notifyChange(StatNode childNode, Map&lt;StatEnum, Long&gt; changeStatsMap) {
+        super.notifyChange(childNode, changeStatsMap);
+        lock.readLock().lock();
+        try {
+            // 记录变化的节点key
+            Map&lt;StatEnum, Long&gt; map = this.changeStatsNode.computeIfAbsent(childNode.getFullKeyString(), s -&gt; ConcurrentHashMap&lt;&gt;());
+            // 记录变化的属性
+            StatUtils.mergeHashMap(map, changeStatMap);
+        } finally {
+            lock.readLock().unlock();
+        }
+        changeStats.addAll(changeStatsMap.keySet());
+        // 如果是玩家，延迟合并通知玩家自身属性变化
+        owner.addSelfMergeDelayTaskWithMills(CreatureUpdateType.UPDATE_STAT, 200, () -&gt; notifyPlayerChange(StatEnum.SPEED, StatEnum.ATTACK_SPEED));
+    }
+
+    // 获取所有可对战力加成的属性
+    public Map&lt;StatEnum, Long&gt; getAllFightForceStat() {
+        lock.readLock().lock();
+        try {
+            return StatUtils.toSimpleMap(fighrForceStats);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    // 获取可加成战斗的属性值
+    public long getFightForceStat(StatEnum statEnum) {
+        lock.readLock().lock();
+        try {
+            StatValue statValue = fightForceStats.get(statEnum);
+            retrun statValue == null ? 0 : statValue.getTotal();
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    // 通知玩家属性变化情况
+    public void notifyPlayerChange(StatEnum... igonre) {
+        if(changeStats.isEmpty()) {
+            return;
+        }
+        Set&lt;StatEnum&gt; ignoreSet = new HashSet&lt;&gt;();
+        if(ignore != null) {
+            ignoreSet.addAll(Arrays.asList(ignore));
+        }
+        lock.readLock().lock();
+        try {
+            // 通知属性变化细信息
+            List&lt;Stat&gt; changeStats = new ArrayList&lt;&gt;(this.changeStats.size());
+            for(StatEnum statEnum : this.changeStats) {
+                if(!igonreSet.contains(statEnum)) {
+                    changeStats.add(Stat.valueOf(statEnum, getCurrentStat(statEnum)));
+                }
+                if(!changeStats.isEmpty()) {
+                    CreatureStatChangeResp resp = CreatureChangeResp.valueOf(owner.getObjectId(), changeStats);
+                    PacketSendUtility.sendPacket(owner, resp);
+                }
+                // 抛出属性变化事件
+                ((FightPlayer) owner).submitEvent(PlayerStatChangeEvent.valueOf(new HashMap&lt;&gt;(this.changeStatsNode)));
+
+                // 清除属性变化事件
+                this.changeStatsNode.clear();
+                this.changeStats.clear();
+            } finally {
+                lock.readLock().unlock();
+            }
+        }
+    }
+
+    @Override
+    public StatNodeModel buildStatModel() {
+        StatNodeModel statNodeModel = statRoot.buildModel();
+        notifyPlayerChange();
+        return statNodeMoedel;
+    }
+}
+</code></pre>
+<h2 id="属性的抽象"><a href="#属性的抽象" class="headerlink" title="属性的抽象"></a>属性的抽象</h2><p>属性值</p>
+<pre><code class="java">public class StatValue {
+    private static final int RATIO_DENOMINATOR = 10000;
+    // 总值
+    private long total;
+    // 基础值
+    private long base;
+    // 额外加成固定值，不算入基础值
+    private long addtional;
+    // 额外加成比例
+    private int ratio;
+
+    // 合并
+    public static StatValue merge(StatValue s1, StatValue s2) {
+        StatValue statValue = new StatValue();
+        statValue.base = s1.base + s2.base;
+        statValue.ratio = s1.ratio + s2.ratiio;
+        statValue.calTotal();
+        return statValue;
+    }
+
+    // 获取总值
+    public long getTotal() {
+        return total;
+    }
+
+    // 除去不算入基础值的总值
+    public long getTotalWithoutAdditional() {
+        return total - additional;
+    }
+    // 重置
+    public void clear() {
+        this.total = base = additional = 0;
+    }
+    // 增减属性
+    public long alter(boolean toBase, long alter) {
+        if(toBase) {
+            this.base += alter;
+        } else {
+            this.addtional += alter;
+        }
+        return calTotal();
+    }
+    // 修改属性加成比例
+    public long aleterRatio(long alterRatio) {
+        ratio += alterRatio;
+        return calTotal();
+    }
+
+    // 计算总值
+    private long calTotal() {
+        totaol = base + addtional + base * ratio / RATIO_DENOMINATOR;
+        return total;
+    }
+
+    // 获取基础值
+    public long getBase() {
+        return base;
+    }
+
+    // 重写Object几个基础方法
+
+}
+
+</code></pre>
+<p>战斗属性定义</p>
+<pre><code class="java">@Desc(&quot;战斗属性定义&quot;)
+public enum StatEnum implements EnumReadable {
+
+    @Desc(&quot;最大气血&quot;)
+    MAX_HP(0,&quot;最大气血&quot;),
+    @Desc(&quot;最大蓝量&quot;)
+    MAX_HP(1,&quot;最大蓝量&quot;),
+
+    @Desc(&quot;内功值加成比例&quot;)
+    ENERGY_R(124,&quot;内功值加成比例&quot;, MAX_ENERGY),
+    @Desc(&quot;精灵速度加成比例&quot;)
+    SPIRIT_SPEED_R(503,&quot;精灵速度加成比例&quot;),
+    @Desc(&quot;血量万分比伤害&quot;)
+    HP_HURT_R(504, &quot;血量万分比伤害&quot;),
+
+    private final int value;
+
+    // 属性名称
+    private final String name;
+
+    // 如果该数组不为null
+    // 表示是按比例加成
+    // 数组内容为加成的基本属性列表
+    private final StatEnum[] ratioBase；
+
+    StatEnum(int value, String name, StatEnum... ratioBase) {
+        this.value = value;
+        this.name = name;
+        this.ratioBase = ratioBase;
+    }
+
+    // ....Object基础方法
+
+
+    public String getName() {
+        return name;
+    }
+
+    // 是否为比例加成类型
+    public boolean isRatio() {
+        return ratioBase != null &amp;&amp;
+        ratioBase.length &gt; 0;
+    }
+
+    // 比例加成基础属性列表
+    public StatEnum[] getRatioBase() {
+        return ratioBase;
+    }
+
+}
+</code></pre>
+<p>属性跟节点接口</p>
+<pre><code class="java">public interface IStatRoot {
+
+    // 属性发生变更
+    void changeStats(StatNode lastNode, StatNode childNode, Map&lt;StatEnum, Long&gt; oldStats, Map&lt;StatEnum, Long&gt; newStats);
+
+    // 移出属性节点，不推荐使用者直接使用该方法移出节点，请使用clear方法
+    void removeChild(Serializable childKey);
+
+    // 移出属性节点，不推荐使用者直接使用该方法移出节点，请使用clear方法
+    void removeChild(Serializable childKey);
+    // 自顶向下
+    void fillParentKey(List&lt;String&gt; list);
+
+}
+
+
+</code></pre>
+<p>属性效果集合</p>
+<pre><code class="java">public class StatNode implements IStatRoot {
+    // 当前属性节点的key
+    @JSONField(serialize = false)
+    private String selfKey;
+
+    // 属性改变接口
+    @JSONField(serialize = false)
+    private IStatRoot statRoot;
+    // 当前节点属性列表
+    @JSONField(serializeUsing = StatEnumMapSerializer.class)
+    private Map&lt;StateEnum, Long&gt; stats;
+    // 属性子节点
+    private final ConcueentHashMap&lt;String, StatNode&gt; childMap = new ConcurrentHashMap&lt;&gt;(0);
+    // 万分比加成节点
+    private final ConcurrnetHashMap&lt;String, RctNode&gt; rctNodeMap = new ConcurrentHashMap&lt;&gt;(0);
+    // 当前节点万分比加成属性列表
+    @JSONField(serialzeUsing = StateEnumMapSerializer.class)
+    private Map&lt;StatEnum, Long&gt; rctStats;
+
+    // 该节点属性是否算入战斗力
+    private boolean toFightForce = true;
+    // 该节点属性是否计入基本值
+    private boolean toBase = true;
+    // 是否已经被移除
+    private boolean remove;
+
+    // 节点锁，同一个父节点都会持有同一把锁
+    @JSONField(serialize = false) 
+    private ReentrantReadWriteLock lock;
+    StatNode() {
+
+    }
+    // 创建属性节点
+    private boolean StatNode createRoot(IStatRoot statRoot) {
+        StatNode vo = new StatNode();
+        vo.selfKey = &quot;root&quot;;
+        vo.statRoot = statRoot;
+        vo.lock = new ReentrantReadWriteLock();
+        return vo;
+    }
+
+    // 构建key值，构建为String类型，是为了方便跨服传输
+    private String buildKey(Object key, boolean check) {
+        if(check) {
+            checkKey() {
+                checkey(key.getClass());
+            }
+            return key.toString();
+        }
+    }
+
+    private void checkKey(Class keyClass) {
+        if(String.class == keyClass) {
+            // 允许为字符串
+            return;
+        }
+        if(Enum.class.isAssignableFrom(keyClass)) {
+            // 允许key为枚举
+            return;
+        }
+        if(ClassUtil.isPrimitiveOrWrapper(keyClass)) {
+            // 允许key值为基础类型或者基本类型的包装类型
+            return;
+        }
+        throw new RuntimeException(&quot;statNode key must be String/Enum/Primitive/PrimitiveWrapper, keyClass is&quot; + keyClass);
+    }
+
+    @Override
+    public void changeStats(StatNode lastNode, StatNode childNode childNode, Map&lt;StatEnum, Long&gt; oldStats, Map&lt;StatEunm, Long&gt;
+    newStats) {
+        if(!childMap.containsKey(lastNode.selfKey)) {
+            throw new RuntimeException(String.format(&quot;lastNode %s remove form %s before&quot;, lastNode, this));
+        }
+        // 基础属性节点改变
+        statRoot.changeStats(this, childNode, oldStats, newStats);
+        // 刷新万分比加成属性
+        refreshRctNode();
+    }
+
+    // 移除属性加成的子节点
+    @Override
+    public void removeChild(Serializable k) {
+        String key = buildKey(k, false);
+        lock.writeLock().lock();
+        try {
+            // 移除该子节点
+            StatNode childNode = childMap.get(key);
+            if(chilfNode == null) {
+                return;
+            }
+            chilfNode.clear();
+            childMap.remove(key);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    @Override
+    public void fillParentKey(List&lt;String&gt; list) {
+        if(statRoot != null) {
+            statRoot.fillParentKey(list);
+        }
+    }
+
+    // 获取包含全路径的key集合
+    public String getFullKeyString() {
+        ArrayList&lt;String&gt; keys = new ArrayList&lt;&gt;();
+        fillParentKey(keys);
+        return keys.toString();
+    }
+
+    // 重置该节点的属性值
+    public void replace(StatEnum statEnum, long value) {
+        Map&lt;StatEnum, Long&gt; stats = new HashMap&lt;&gt;(1);
+        stats.put(statEnum, value);
+        replace(stats);
+    }
+
+    // 重置该节点的属性值
+    public void replace(Map&lt;StatEnum, Long&gt; newStats) {
+        lock.writeLock().lock();
+        try {
+            Map&lt;StatEnum, Long&gt; oldStats = this.stats;
+            if(newStats == null) {
+                this.stats = null;
+            } else {
+                this.stats = StatUtils.cloneStaeMap(newStats);
+            }
+            statRoot.changeStats(this, this, oldStats, this.stats);
+        } finally  {
+            lock.writeLock().unlock();
+        }
+        // 当前节点属性变化后，刷新万分比加成
+        refreshRctNode();
+    }
+    // 清除当前节点的数据
+    public void clear() {
+        lock.writeLock().lock();
+        try {
+            remove = true;
+            Map&lt;StatEnum, Long&gt; oldStats = this.stats;
+            this.stats = null;
+            statRoot.changeStats(this, this, oldStats, null);
+            childMap.clear(); 
+            // 当前节点被清除，清除万分比加成
+            refershRctNode();
+            rctNodeMap.clear();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+    // 获取该节点的总属性加成，包含万分比加成属性，包含不加入战斗力的属性
+    @JSONField(serialize = false)
+    public Map&lt;StatEnum, StatValue&gt; getTotal() {
+        return getTotal(true);
+    }
+
+    // 获取该节点的总属性加成
+    Map&lt;StatEnum, StatValue&gt; getTotal(boolean includeRct) {
+        lock.readLock().lock();
+        try {
+            Map&lt;StatEnum, StatValue&gt; totalMap = StatUtils.toMap(this, includeRct);
+            for (StatNode statNode : childMap.values()) {
+                StatUtils.mergoToMap(totalMap, statNode.getTotal());
+            }
+            return;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    // 重置/创建一个属性节点，如果节点已经存在，则重置该节点的属性，如果该节点不存在，则创建该节点
+    // 默认该节点的所有属性，包括下属节点，算入战斗力
+    public StatNode getOrCreateChild(Serializable k) {
+        return getOrCreateChild(k, true);
+    }
+
+    // 重置/创建一个属性节点，如果节点已存在，则重置该节点的属性，如果该节点不存在，则创建该节点
+    // 如果当前节点已经设置为不计算入战斗力，则创建出的子节点也为不计算战斗力
+    public StatNode getOrCreateChild(Serializable k, boolean toFightForce) {
+        String key = buildKey(k, true);
+        StatNode statNode = childMap.get(key);
+        if(statNode == null) {
+            statNode = childMap.computeIfAbsent( key,o -&gt; {
+                StatNode node = new StatNode();
+                node.selfKey = key;
+                node.toFightForce = toFightForce &amp;&amp; this.toFightForce;
+
+                // 记录父节点
+                node.statRoot = this;
+                // 继承属性锁
+                node.lock = lock;
+                return node;
+            });
+        }
+        return statNode;
+    }
+
+    // 快速设置指定节点的属性
+    public StatNode fastSet(Serializable k, StatEnum statEnum, long value) {
+        Map&lt;StatEnum,Long&gt; stats = new HashMap&lt;&gt;(1);
+        stats.put(statEnum, value);
+        return fastSet(k, stats);
+    }
+
+    // 获取子节点
+    public StatNode getChild(Serializable k) {
+        String key = buildKey(k, false);
+        return childMap.get(key);
+    }
+    // 是否拥有指定节点
+    public boolean hashChild(Serializable k) {
+        String key = buildKey(k, false);
+        return childMap.containsKey(key);
+    }
+
+    // 当前节点的key
+    @JSONField(serialize = false)
+    public String getKey() {
+        return selfKey;
+    }
+
+    // 该节点的所有属性，包括下属节点，是否算入战斗力
+    public boolean isToFightForce() {
+        return toFightForce;
+    }
+    // 获取当前节点属性，安全起见不要暴露给外部调用，避免被直接修改
+    Map&lt;StatEnum, Long&gt; getStats() {
+        return stats;
+    }
+    // 获取当前节点加成的万分比属性，安全弃考吗不要暴露给外部调用，避免被直接修改
+    Map&lt;StatEnum, Long&gt; getRctStats() {
+        return rctStats;
+    }
+    // 只读，获取当前节点加成的万分比属性
+    public Map&lt;StatEnum, Long&gt; getRctStatsOnlyRead() {
+        return rctStats;
+    }
+    // 标记该加成不计入战斗力
+    public void notToFightForce() {
+        this.toFightForce = false;
+    }
+    // 标记该加成不计入基础值
+    public void notToBase() {
+        this.toBase = false;
+    }
+    // 该节点的所有属性，包括下属节点，是否算入基础值
+    public boolean isToBase() {
+        return toBase;
+    }
+    // 是否已经被移除
+    public boolean isRemove() {
+        return remove;
+    }
+
+    @Override
+    public String toString() {
+        return statRoot.toString() + &quot;-&quot; + selfKey + &quot;-&quot;;
+    }
+
+    // 获取或创建一个万分比加成节点
+    public RctNode getOrCreateRctNode(Serializable k) {
+        String key = buildKey(k, true);
+        RctNode rctNode = rctNodeMap.get(key);
+        if(rctNode == null) {
+            rctNode = rctNodeMap.computeIfAbsent(key,o -&gt; RctNode.valueOf(this));
+        }
+        return rctNode;
+    }
+    // 移出万分比加成节点
+    public void removeRctNode(Serializable k) {
+        String key = buildKey(k, false);
+        lock.writeLock().lock();
+        try {
+            // 移出该万分比加成节点
+            RctNode rctNode = rctNodeMap.remove(key);
+            if(rctNode == null) {
+                return;
+            }
+            refreshRctNode();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    // 刷新万分比加成的属性
+    public void refreshRctNode() {
+        if(MapUtils.imEmpty(rctStats) &amp;&amp; rctNodeMap.isEmpty()) {
+            // 历史没有加成，现在也没有加成
+            return;
+        }
+        lock.writeLock().lock();
+        try {
+            Map&lt;StatEnum, StatValue&gt; baseTotal = getToal(false);
+             Map&lt;StatEnum, StatValue&gt; newRctStats = new HashMap&lt;&gt;(baseTotal.size());
+             rctNodeMap.values().forEach(rctNode -&gt; StatUtils.mergeMap(newRctStats, rctNode.calRctAdd(baseTatal)));
+        } finally {
+            lock.writeLcok().unlock();
+        }
+    }
+
+    // 所有子节点，慎用
+    public ConcurrentHashMap&lt;String, StatNdode&gt; getChildMap() {
+        return childMap;
+    }
+
+    // 构建跨服传输数据
+    public StatNodeModel buildModel() {
+        StatNodeModel model = StatNodeModel.valueOf(selfKey, toFightForce, toBase);
+        if(this.rctMap != null) {
+            // 当前节点属性
+            List&lt;Stat&gt; stats = StatUtils.toListWithInt(this.stats);
+            model.setStats(stats);
+        }
+        if(!childMap.isEmpty()) {
+            // 子节点
+            List&lt;StatNode&gt; childList = new ArrayList&lt;&gt;(childMap.size());
+            for(StatNode node : childMap.values()) {
+                childList.add(node.buildModel());
+            }
+            model.setChildNodeList(childList);
+        }
+        if(!rctNodeMap.isEmpty()) {
+            // 万分比节点
+            List&lt;StatRctNodeMedel&gt; rctList = new ArrayList&lt;&gt;(rctNodeMap.size());
+            for(StatNode node : childMap.values()) {
+                childList.add(node.buildModel());
+            }
+            model.setChildNodeList(childList);
+        }
+        if(!rctNodeMap.isEmpty()) {
+            // 万分比节点
+            List&lt;StatRctNodeModel&gt; rctList = new ArrayList&lt;&gt;(rctNodeMap.size());
+            for(RctNode node : rctNodeMap.values()) {
+                rctList.add(node.buildModel());
+            }
+            model.setRctNodeList(rctList);
+        }
+        return model;
+    }
+
+    // 解析跨服传输的属性
+    public static void parseModel(StatNode root, StatNodeModel model ) {
+        StatNode node = root.getOrCreateChild(model.getKey());
+        parseModelOnlyChild(node, model);
+    }
+
+    // 解析跨服传输的属性
+    public static void parseModelOnlyChild() {
+        node.toFightForce = model.isToFightForce();
+        node.toBase = model.isToBae();
+        if(model.getStats() != null) {
+            // 当前节点属性
+            Map&lt;StatEnum, Long&gt; statMap = StatUtil.toMap2(model.getStats());
+            node.replace(statMap);
+        }
+        if(model.getChildNodeList() != null) {
+            // 子节点
+            model.getChildNodeList().forEach(childModel -&gt; parseModel(node, childModel));
+        }
+        if(model.getRctNodeList() != null) {
+            // 万分比节点
+            model.getRctNodeList().forEach(rctModel -&gt; RctNode.parseModel(node, rctModel));
+        }
+    }
+
+}
+</code></pre>
+<p>属性树信息</p>
+<pre><code class="java">public class StatNodeModel() {
+    // 当前属性节点的Key
+    @Protobuf(description = &quot;属性节点key&quot;)
+    private String key;
+    @Protobuf(description = &quot;该节点属性是否算入战斗力&quot;)
+    private boolean toFightForce;
+    @Protobuf(descrption = &quot;该节点属性是否计入基础值&quot;)
+    private boolean toBase;
+
+    @Protobuf(description = &quot;属性&quot;)
+    private List&lt;Stat&gt; stats;
+    @Protobuf(description = &quot;属性子节点&quot;)
+    private List&lt;StatNodeModel&gt; childNodeList;
+    @Protobuf(description = &quot;属性子节点&quot;)
+    private List&lt;StatRctNodeModel&gt; rctNodeList;
+
+    public static StatNodeModel valueOf(String key, boolean toFightForce, boolean toBase) {
+        StatNodeModel model = new StatNodeModel();
+        model.key = key;
+        model.toFightForce = toFightForce;
+        model.toBase = toBase;
+        return model;
+    }
+    // ......
+
+}
+
+</code></pre>
+<p>属性来源</p>
+<pre><code class="java">
+@Desc(&quot;属性来源&quot;)
+public enum StatSource {
+    @Desc(&quot;等级属性&quot;)
+    level(&quot;等级属性&quot;),
+    @Desc(&quot;装备&quot;)
+    equip(&quot;装备&quot;),
+    @Desc(&quot;装备基础属性&quot;)
+    equip_base(&quot;装备基础属性&quot;),
+    ;
+
+    // 节点中文名
+    private String name;
+
+    StatSource(String name) {
+        this.name = nam;
+    }
+
+    public static String replaceSourceName(String statTree) {
+        List&lt;StatSource&gt; statSources = Arrays.asList(StatSource.values());
+        statSources.sort((o1, o2) -&gt; o2.getName().length() - o1.getName().length());
+        for(StatSource value : statSources) {
+            String replaceKey = value.name();
+            statTree = statTree.replace(replaceKey, value.getName());
+        }
+        return statTree;
+    }
+
+}
+
+</code></pre>
+<h2 id="属性处理工具"><a href="#属性处理工具" class="headerlink" title="属性处理工具"></a>属性处理工具</h2><pre><code class="java">public class StatUtils {
+    // 属性比例基数
+    public static final STAT_PATE = 10000;
+
+    // 属性列表取负
+    public static List&lt;Stat&gt; negative(List&lt;Stat&gt; stats) {
+        if(stats == null) {
+            return null;
+        }
+        List&lt;stat&gt; negativeStats = new ArrayList&lt;&gt;(stats.size());
+        stats.forEach(stat -&gt; negativeStats.add(Stat.valueOf(stat.getType(), -stat.getValue())));
+        return negativeStats;
+    }
+
+    // 是否包含该节点的万分比属性
+    public static Map&lt;StatEnum, StatValue&gt; toMap(StatNode staNode, boolean ) {
+        Map&lt;StatEnum, StatValue&gt; map = new HashMap&lt;&gt;();
+        // 基础属性
+        Map&lt;StatEnum, Long&gt; stats = statNode.getStats();
+        if (stats != null) {
+            mergeToMap(map, statNode.isToBase(), stats, null);
+        }
+        if(includeRct) {
+            // 万分比加成属性
+            Map&lt;StatEnum, Long&gt; rctStats = statNode.getRctStats();
+            if(rctStats != null) {
+                mergeToMap(map, statNode.isToBase(), rctStats, null);
+            }
+        }
+        return map;
+    }
+
+    // 属性map -&gt; 属性简单map
+    public static List&lt;Stat&gt; toListWithLong(Map&lt;StatEnum, Long&gt; map) {
+        if(map == null) {
+            return new ArrayList&lt;&gt;(0);
+        }
+        List&lt;Stat&gt; list = new ArrayList&lt;&gt;(0);
+        map.forEach((key, value) -&gt; list.add(Stat.valueOf(key, value)));
+        return list;
+    }
+
+    // 属性map -&gt;属性Stat List
+    public satatic List&lt;Stat&gt; toListWithInt(Map&lt;StatEnum, Long&gt; map) {
+        if(map == null) {
+            return new ArrayList&lt;&gt;(0);
+        }
+        List&lt;Stat&gt; list = new ArrayList&lt;&gt;(map.size());
+        map.forEach((key, value) -&gt; list.add(Stat.valueOf(key, value)));
+        return list;
+    }
+
+    // 属性map -&gt; 属性Stat List
+    public static List&lt;Stat&gt; toList(Map&lt;StatEnum, StatValue&gt; map) {
+        if(map == null) {
+            return new ArrayList&lt;&gt;(0);
+        }
+        List&lt;Stat&gt; list = new ArrayList&lt;&gt;(map.size());
+        map.forEach((key, value) -&gt; list.add(Stat.valueOf(key, value.getToatal())));
+        return list;
+    }
+
+    // 包含基础值
+        public static List&lt;Stat&gt; toStatExList(Map&lt;StatEnum, StatValue&gt; map) {
+        if(map == null) {
+            return new ArrayList&lt;&gt;(0);
+        }
+        List&lt;Stat&gt; list = new ArrayList&lt;&gt;(map.size());
+        map.forEach((key, value) -&gt; list.add(Stat.valueOf(key, value.getToatal(), value.getBase())));
+        return list;
+    }
+
+    // 合并属性List到属性Map中，采用加法
+    public static void mergeToMap(Map&lt;StatEnum, StatValue&gt; map, boolean isToBase, Map&lt;StatEnum, Long&gt; stats, Map&lt;StatEnum, Long&gt; changeMap) {
+        mergeToMap(map, isToBase, stats, 1, changeMap);
+    }
+
+    // 合并属性List到属性Map中，采用减法
+    public static void diffFromMap(Map&lt;StatEnum, StatValue&gt; map, boolean isToBase, Map&lt;StatEnum, Long&gt; stats, Map&lt;StatEnum, Long&gt; changeMap) {
+        mergeToMap(map, isToBase, stats, -1, changeMap);
+    }
+
+    private static void mergeToMap(Map&lt;StatEnum, StatValue&gt; map, boolean isToBase, Map&lt;StatEnum, Long&gt; stats, int sign, Map&lt;StatEnum, Long&gt; changeMap) {
+        if(stats == null) {
+            return;
+        }
+        stats.forEach((statEnum, value) -&gt; {
+            value *= sign;
+            // 数值加成
+            StatValue statValue = getOrCreateStatValue(map, statEnum);
+            long oldValue = statValue.getTotal();
+            long newValue = statValue.alter(isToBase, value);
+            if (changeMap != null) {
+                changeMap.merge(statEnum, newValue - oldValue, Long::sum);
+            }
+            if(statEnum.isRatio()) {
+                // 按比例加成
+                for(StatEnum anEnum : statEnum.getRatioBase()) {
+                    statValue = getOrCreateStatValue(map, anEnum);
+                    oldValue = statValue.getTotal();
+                    newValue = statValue.alterRatio(value);
+                    if(changeMap != null) {
+                        changeMap.merge(anEnum, newValue -oldValue, Long::sum);
+                    }
+                }
+            }
+        });
+    }
+
+    public static StatValue getOrCreateStatValue(Map&lt;StatEnum, StatValue&gt; map, StatEnum type) {
+        StatValue statValue = map.get(type);
+        if(statValue == null) {
+            statValue = new SataValue();
+            map.put(type, statValue);
+        }
+        return statValue;
+    }
+
+    // 合并2个map的值
+    public static void mergeToMap(Map&lt;StatEnum, StatValue&gt; targetMap, Map&lt;StatEnum, StatValue&gt; sourceMap) {
+        sourceMap.forEach((key, value) -&gt; targetMap.merge(key, value, StatValue::merge));
+    }
+
+    // ......
+
+    // 合并属性fromStats到属性map中
+    public static void mergeMap(Map&lt;StatEnum, Long&gt; toStats, List&lt;Stat&gt; formStats) {
+        fromStats.forEach((stat -&gt; toStats.merge(stat.getType(), stat.getValue(), (value, value2) -&gt; value1 + value2)));
+    }
+
+    // ......
+
+    // 便捷的设置属性方法，如果需要设置statSrc1/child2/grandchild2的属性，可以这里写
+    public static StatNode fastSet(AbstractCreature creature, Map&lt;StatEnum, Long&gt; statMap, StatSource statSrc, Serializable... keys) {
+        CreatureGameStats stats = creature.getGameStats();
+        StatNode node = stats.getOrCreateStatNode(statSrc);
+        for(int i=0; i&lt;keys.length; i++) {
+            node = node.getOrCrateChild(keys[i]);
+        }
+        node.replace(statMap);
+        return node;
+    }
+
+    // 设置属性
+    public static StatNode fastSet(AbstractCreature creature, Map&lt;StatEnum&gt; statMap, StatSource statSrc, Serializable... keys) {
+        GametureGameStats stats = creature.getGameStats();
+        StatNode node = stats.getOrCreateStatNode(statSrc);
+        for(int i=0; i&lt; keys.leghth; i++) {
+            node = node.getOrCreateChild(keys[i]);
+        }
+        node.notToFightForce();
+        node.replace(statMap);
+        return node;
+    }
+
+    // 便捷的设置属性方法
+    public static StaNode fastSet(Player player, Map&lt;StatEnum, Long&gt; statMap, StatSource statSrc, Serializable... keys) {
+        return fasrSet(player.getFightPlayer(), statMap, statSrc, keys);
+    }
+
+    public static void setRct(AbstractCreature creature, int baseRct, Serializable rctKey, StatSource statSrc, Serializable... keys) {
+        StatNode statNode = getStatNode(creature, statSrc, keys);  
+        RctNode rctNode = statNode.getOrCreateRctNode(rctKey);
+        rctNode.replaceBaseRct(baseRct);
+    }
+
+    public static void setRct(Player player, int baseRct, Serializable rctKey, StatSource statSrc, Serializable... keys) {
+        setRct(player.getFightPlayer(), baseRct, rctKey, statSrc, keys);
+    }
+
+    // 以指定的基础属性为总值，计算传入的万分比属性增加的属性值
+    public static Map&lt;StatEnum,Long&gt; calRctStat(Map&lt;StatEnum, Long&gt; baseMap, Map&lt;StatEnum, Long&gt; rctMap) {
+        Map&lt;StatEnum, Long&gt; result = new HashMap&lt;&gt;(baseMap.size());
+        Map&lt;StatEnum, Long&gt; rctMerge = new HashMap&lt;&gt;(baseMap.size());
+        rctMap.forEach((statEnum, value) -&gt; {
+            if(statEnum.isRatio()) {
+                // 按比例加成
+                for(StatEnum anEnum : statEnum.getRatioBase()) {
+                    rctMerge.merge(anEnum, value, Long::sum);
+                }
+            } else {
+                result.merge(statEnum, value, Long::sum);
+            }
+        });
+        rctMerge.forEach((statEnum, value) -&gt; {
+            Long total = baseMap.get(statEnum);
+            if(total != null) {
+                result.merge(statEnum, total * value / STAT_RATE, Long::sum);
+            }
+        });
+        return result;
+    }
+
+}
+
+</code></pre>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li><p>游戏中的生物拥有<code>GametureGameStats</code>属性，其中挂载着生物所有具体属性。玩家则是拥有<code>PlayerGameStats</code></p>
+</li>
+<li><p><code>GametureGameStats</code>持有总属性<code>stats</code>和根节点<code>StatRoot</code></p>
+</li>
+<li></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2020/08/22/项目笔记/属性系统学习笔记/" data-id="ckjtrgp90004yn8vic3qaewri" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/属性系统学习笔记" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/08/22/项目笔记/技能系统学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/08/22/项目笔记/定时任务系统学习笔记/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

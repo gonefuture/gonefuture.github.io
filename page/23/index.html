@@ -83,10 +83,10 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-《Java并发编程实战》-10" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Thinking in Java 》读书笔记-17" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/21/《Java并发编程实战》-10/" class="article-date">
-  <time datetime="2018-08-21T07:58:09.447Z" itemprop="datePublished">2018-08-21</time>
+    <h3 href="/2020/08/22/《Thinking in Java 》读书笔记-17/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.443Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   <div class="article-category">
@@ -103,7 +103,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/21/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
+      <a class="article-title" href="/2020/08/22/《Thinking in Java 》读书笔记-17/">《Thinking in Java 》读书笔记-17</a>
     </h1>
   
 
@@ -112,55 +112,50 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="第11章-性能与可伸缩性"><a href="#第11章-性能与可伸缩性" class="headerlink" title="第11章 性能与可伸缩性"></a>第11章 性能与可伸缩性</h1><hr>
-<h2 id="11-1-对性能的思考"><a href="#11-1-对性能的思考" class="headerlink" title="11.1 对性能的思考"></a>11.1 对性能的思考</h2><h3 id="11-1-1-性能与可伸缩性"><a href="#11-1-1-性能与可伸缩性" class="headerlink" title="11.1.1 性能与可伸缩性"></a>11.1.1 性能与可伸缩性</h3><blockquote>
-<p>可伸缩性指的是:当增加计算资源时(例如CPU、内存、存储容量或I/O带宽)，程序的吞吐量或处理能力能相应地增加。</p>
-</blockquote>
-<h3 id="11-1-2-评估各种性能权衡因素"><a href="#11-1-2-评估各种性能权衡因素" class="headerlink" title="11.1.2 评估各种性能权衡因素"></a>11.1.2 评估各种性能权衡因素</h3><blockquote>
-<p>避免不成熟的优化。首先使程序正确，然后提高运行速度–如果它还运行得不够快。</p>
-</blockquote>
-<p>以测试为基准，不要猜测。</p>
-<h2 id="11-2-Amdahl定律"><a href="#11-2-Amdahl定律" class="headerlink" title="11.2 Amdahl定律"></a>11.2 Amdahl定律</h2><p>Amdahl定律描述的是：在增加计算资源的情况下，程序在理论上能够实现最高加速比，这个值取决于程序中可并行组件和串行组件所占的比重。</p>
-<blockquote>
-<p>在所有并发程序中都包含一些串行部分。如果你认为在你的程序中不存在串行部分，那么可任意在仔细检查一遍。</p>
-</blockquote>
-<h3 id="11-2-1-实列：在各种框架中隐藏的串行部分"><a href="#11-2-1-实列：在各种框架中隐藏的串行部分" class="headerlink" title="11.2.1 实列：在各种框架中隐藏的串行部分"></a>11.2.1 实列：在各种框架中隐藏的串行部分</h3><h3 id="11-2-2-Amdahl定律的应用"><a href="#11-2-2-Amdahl定律的应用" class="headerlink" title="11.2.2 Amdahl定律的应用"></a>11.2.2 Amdahl定律的应用</h3><h2 id="11-3-线程引入的开销"><a href="#11-3-线程引入的开销" class="headerlink" title="11.3 线程引入的开销"></a>11.3 线程引入的开销</h2><h3 id="11-3-1-上下文切换"><a href="#11-3-1-上下文切换" class="headerlink" title="11.3.1 上下文切换"></a>11.3.1 上下文切换</h3><p>切换线程上下文需要一定的开销，而在线程调度过程中需要访问由操作系统和JVM共享的数据结构。应用程序、操作系统以及JVM都使用一组相同的CPU。</p>
-<h3 id="11-3-2-内存同步"><a href="#11-3-2-内存同步" class="headerlink" title="11.3.2 内存同步"></a>11.3.2 内存同步</h3><p>同步操作的性能开销包括多个方面。在<code>synchronized</code>和<code>volatile</code>提供的可见性保证中可能会使用一些特殊指令，即内存栅栏(Memory Barrier)。内存栅栏可以刷新缓存，使缓存无效，刷新硬件的写缓冲，以及停止执行管道。</p>
-<blockquote>
-<p>不要过度担心非竞争同步带来的开销。这个基本的机制已经非常快了，并且JVM还能进行额外的优化以及进一步降低或消除开销。因此，我们应该将优化重点放在那些发生锁竞争的地方。</p>
-</blockquote>
-<h3 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h3><p>当线程无法获取某个锁或者由于某个条件等待或在I/O操作上阻塞时，需要被挂起，在这个过程中将包含两次额外的上下文切换，以及所有必要的操作系统操作和缓存操作：被阻塞的线程在其执行时间片还未用完之前就被就被交换换出去，而在随后当要获取的锁或者其他资源可用时，又再次被切换回来。（由于锁竞争而导致阻塞时，线程在持有锁时将存在一定的开销：当它释放锁时，必须告诉操作系统恢复运行阻塞的线程）。</p>
-<h2 id="11-4-减少锁的竞争"><a href="#11-4-减少锁的竞争" class="headerlink" title="11.4 减少锁的竞争"></a>11.4 减少锁的竞争</h2><blockquote>
-<p>在并发程序中，对可伸缩性的最主要威胁就是独占方式的资源锁。</p>
-</blockquote>
-<p>由3种方式可以降低锁的竞争程度：</p>
-<ul>
-<li>减少锁的持有时间。</li>
-<li>降低锁的请求频率。</li>
-<li>使用带有协调机制的独占锁，这些机制允许更高的并发性。</li>
+        <h1 id="《Thinking-in-Java-》读书笔记-17"><a href="#《Thinking-in-Java-》读书笔记-17" class="headerlink" title="《Thinking in Java 》读书笔记-17"></a>《Thinking in Java 》读书笔记-17</h1><h2 id="17-1-完整的容器分类法"><a href="#17-1-完整的容器分类法" class="headerlink" title="17.1 完整的容器分类法"></a>17.1 完整的容器分类法</h2><p><img src="https://img-blog.csdn.net/20180801173227921?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h2 id="17-2-填充容器"><a href="#17-2-填充容器" class="headerlink" title="17.2 填充容器"></a>17.2 填充容器</h2><p>Collections.nCopies()和Collection.fill()都可以用单个对象的引用来填充Collection，并且所有引用都被设置为指向相同的的对象。<br>fill()方法的用处更为有限，它只能替换已经在List中存在的元素，而不能添加新的元素。</p>
+<h3 id="17-2-1-一种Generator解决方案"><a href="#17-2-1-一种Generator解决方案" class="headerlink" title="17.2.1 一种Generator解决方案"></a>17.2.1 一种Generator解决方案</h3><p>所有的Collection子类型都有一个接受另一个Collection对象的构造器。</p>
+<h3 id="17-2-2-Map生成器"><a href="#17-2-2-Map生成器" class="headerlink" title="17.2.2 Map生成器"></a>17.2.2 Map生成器</h3><h3 id="未获支持的操作"><a href="#未获支持的操作" class="headerlink" title="未获支持的操作"></a>未获支持的操作</h3><h3 id="17-2-3-使用Abstract类"><a href="#17-2-3-使用Abstract类" class="headerlink" title="17.2.3 使用Abstract类"></a>17.2.3 使用Abstract类</h3><h2 id="17-3-Collection的功能方法"><a href="#17-3-Collection的功能方法" class="headerlink" title="17.3 Collection的功能方法"></a>17.3 Collection的功能方法</h2><h2 id="17-4-可选操作"><a href="#17-4-可选操作" class="headerlink" title="17.4 可选操作"></a>17.4 可选操作</h2><p>执行各种不同的添加和移除的方法在Collection接口中都是可选操作。<br>使用Arrays.asList()生成的List,基于一个固定大小的数组，仅支持那些不会改变数组大小的操作。</p>
+<h2 id="17-5-List的功能方法"><a href="#17-5-List的功能方法" class="headerlink" title="17.5 List的功能方法"></a>17.5 List的功能方法</h2><h2 id="17-6-Set和存储顺序"><a href="#17-6-Set和存储顺序" class="headerlink" title="17.6 Set和存储顺序"></a>17.6 Set和存储顺序</h2><table>
+<thead>
+<tr>
+<th>接口</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Set</td>
+<td>存入Set的每一个元素都必须是唯一的，因为Set不保存重复元素．加入Set的元素必须定义equals()方法以确保对象的唯一性. Set和Collection有完全一样的接口.Set接口不保证维护元素的次序.</td>
+</tr>
+<tr>
+<td>HashSet *</td>
+<td>为快速查找而设计的Set.存入HashSet的元素必须定义HashCode()方法.</td>
+</tr>
+<tr>
+<td>TreeSet</td>
+<td>保持次序的Set,底层为树结构.使用它可以从Set中提取有序的序列.元素必须实现Comparable接口</td>
+</tr>
+<tr>
+<td>LinkedHashSet</td>
+<td>具有HashSet的查询速度,且内部使用链表维护元素的顺序.于是在使用迭代器遍历Set时,结果会按元素插入的次序显示.元素也必须定义hashCode()方法.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="17-7-队列"><a href="#17-7-队列" class="headerlink" title="17.7 队列"></a>17.7 队列</h2><h3 id="17-7-1-优先级队列"><a href="#17-7-1-优先级队列" class="headerlink" title="17.7.1 优先级队列"></a>17.7.1 优先级队列</h3><h2 id="17-8-理解Map"><a href="#17-8-理解Map" class="headerlink" title="17.8 理解Map"></a>17.8 理解Map</h2><h2 id="17-9-散列与散列码"><a href="#17-9-散列与散列码" class="headerlink" title="17.9 散列与散列码"></a>17.9 散列与散列码</h2><p>散列的价值在于速度。我们使用数组来保存键的信息，这个信息并不是键本身，而是通过键对象生成一个数字(散列码)，作为数组下标。由于数组的容量是固定的，而散列容器的大小是可变的，所以不同的键可以产生相同的数组下标(散列码)。也就是说，可能会有冲突(当然也有特例，比如EnumMap和EnumSet)。所以，数组的值存放着一个保存所有相同散列码的值的list(引用)。然后对list中的值使用equals进行线性查询。如果散列函数设计的比较好的话，数组的每个位置只有较少的值，并且浪费空间也小。于是，查询过程就是首先计算键的散列码得到数组下标，然后内存寻址(时间复杂度为O(1)，赋值)找到数组的值，再遍历list(时间复杂度为O(n)，线性查询)即可。即hashCode和equals共同确定了对象的唯一性。</p>
+<p>所有类都继承于Object。Object的hashCode方法生成的散列码，实际上是默认使用对象的地址计算散列码；而Object的equals方法实际上就是地址比较(==)。显然，当我们在使用散列容器(如HashMap的Key，HashSet等)时，我们自定义的类中还继承Object的hashCode和equals是不行的。必须重写hashCode和equals方法。好的hashCode()应该产生分布均匀的散列码。</p>
+<h2 id="17-10-选择接口的不同实现"><a href="#17-10-选择接口的不同实现" class="headerlink" title="17.10 选择接口的不同实现"></a>17.10 选择接口的不同实现</h2><h2 id="17-11-实用方法"><a href="#17-11-实用方法" class="headerlink" title="17.11 实用方法"></a>17.11 实用方法</h2><h2 id="17-12-持有引用"><a href="#17-12-持有引用" class="headerlink" title="17.12 持有引用"></a>17.12 持有引用</h2><ul>
+<li>SoftRefernce </li>
+<li>WeakRefernce </li>
+<li>PhantomRefernce </li>
 </ul>
-<h3 id="11-4-1-缩小锁的范围（”快进快出”）"><a href="#11-4-1-缩小锁的范围（”快进快出”）" class="headerlink" title="11.4.1 缩小锁的范围（”快进快出”）"></a>11.4.1 缩小锁的范围（”快进快出”）</h3><p>降低发生竞争可能性的一种有效方式就是尽可能缩短锁的持有时间。例如，而可以将一些与锁无关的代码移出同步代码块，尤其是那些开销较大的操作，以及可能被阻塞的操作，例如I/O操作。</p>
-<h3 id="11-4-2-减小锁的粒度"><a href="#11-4-2-减小锁的粒度" class="headerlink" title="11.4.2 减小锁的粒度"></a>11.4.2 减小锁的粒度</h3><p>通过锁分段和锁分解等降低线程请求锁的频率（从而减小竞争的可能性）的技术可以减小锁的持有时间，在这些技术中将采用多个互相独立的锁来保护独立的状态变量，从而改变这些变量之前由单个锁保护的情况。</p>
-<h3 id="11-4-3-锁分段"><a href="#11-4-3-锁分段" class="headerlink" title="11.4.3 锁分段"></a>11.4.3 锁分段</h3><p>锁分段的一个劣势在于:与采用单个锁来实现独占访问相比，要获取多个锁来实现独占访问将更加困难并且开销更高。</p>
-<h3 id="11-4-4-避免热点域"><a href="#11-4-4-避免热点域" class="headerlink" title="11.4.4 避免热点域"></a>11.4.4 避免热点域</h3><h3 id="11-4-5-一些替代独占锁的方法"><a href="#11-4-5-一些替代独占锁的方法" class="headerlink" title="11.4.5 一些替代独占锁的方法"></a>11.4.5 一些替代独占锁的方法</h3><p>放弃使用独占锁来管理共享状态:</p>
-<ul>
-<li>使用并发容器</li>
-<li>读-写锁</li>
-<li>不可变对象</li>
-<li>原子对象</li>
-</ul>
-<h3 id="11-4-6-监测CPU的利用率"><a href="#11-4-6-监测CPU的利用率" class="headerlink" title="11.4.6 监测CPU的利用率"></a>11.4.6 监测CPU的利用率</h3><p>如果CPU没有得到充分利用，那么需要找到其中的原因。通常有一下几种原因:</p>
-<ul>
-<li>负载不充足。</li>
-<li>I/O密集。</li>
-<li>外部限制。</li>
-<li>锁竞争。</li>
-</ul>
-<h2 id="11-4-7-向对象池说“不”"><a href="#11-4-7-向对象池说“不”" class="headerlink" title="11.4.7 向对象池说“不”"></a>11.4.7 向对象池说“不”</h2><blockquote>
-<p>通常，对象分配操作的开销比同步的开销更低。</p>
-</blockquote>
-<h2 id="11-5-实例：比较Map的性能"><a href="#11-5-实例：比较Map的性能" class="headerlink" title="11.5 实例：比较Map的性能"></a>11.5 实例：比较Map的性能</h2><h2 id="11-6-减少上下文切换的开销"><a href="#11-6-减少上下文切换的开销" class="headerlink" title="11.6 减少上下文切换的开销"></a>11.6 减少上下文切换的开销</h2><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>由于使用线程常常是为了充分利用多个处理器的计算能力，因此并发程序性能的讨论中，童话参观更多地将侧重点放在吞吐量和可伸缩性上，而不是服务时间。Amdahl定律告诉我们，程序的可伸缩性取决于在所有代码中必须被串行执行的代码比例。因为Java程序中串行执行的主要来源是独占凡是的资源锁，因此通常可以通过以下方式来提升可伸缩性：减少锁的持有时间，降低锁的粒度，意见采用非独占锁或非阻塞锁来代替独占锁。</p>
-
+<h2 id="17-13-Java-1-0-1-1的容器"><a href="#17-13-Java-1-0-1-1的容器" class="headerlink" title="17.13 Java 1.0/1.1的容器"></a>17.13 Java 1.0/1.1的容器</h2><ol>
+<li>不要在新代码里使用Vector、Enumeration。</li>
+<li>用LinkedLsit或基于LinlkedList的子类代替旧版的Stack。</li>
+<li>如果拥有一个可以命名的固定的标志集合，那么EnumSet与BitSet相比是更好的选择。</li>
+<li>只有在运行时才知道需要多少个标志，对标志命名不合理，需要BitSet中的某种特性操作。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
       
     </div>
     <footer class="article-footer">
@@ -168,7 +163,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/21/《Java并发编程实战》-10/" data-id="ck8gr4zce00101ovt2eyygl9r" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/《Thinking in Java 》读书笔记-17/" data-id="ckjtrgp64002gn8viuifm7dtl" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -176,7 +171,7 @@
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-10" ></div> 
+<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-17" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -194,10 +189,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-9" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Thinking in Java 》读书笔记-11" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/20/《Java并发编程实战》-9/" class="article-date">
-  <time datetime="2018-08-20T06:29:15.250Z" itemprop="datePublished">2018-08-20</time>
+    <h3 href="/2020/08/22/《Thinking in Java 》读书笔记-11/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.436Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   <div class="article-category">
@@ -214,7 +209,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/20/《Java并发编程实战》-9/">《Java并发编程实战》-9</a>
+      <a class="article-title" href="/2020/08/22/《Thinking in Java 》读书笔记-11/">《Thinking in Java 》读书笔记-11</a>
     </h1>
   
 
@@ -223,33 +218,69 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="第10章-避免活跃性危险"><a href="#第10章-避免活跃性危险" class="headerlink" title="第10章 避免活跃性危险"></a>第10章 避免活跃性危险</h1><hr>
-<h2 id="10-1-死锁"><a href="#10-1-死锁" class="headerlink" title="10.1 死锁"></a>10.1 死锁</h2><p>哲学家问题</p>
-<h3 id="10-1-1-锁顺序死锁"><a href="#10-1-1-锁顺序死锁" class="headerlink" title="10.1.1 锁顺序死锁"></a>10.1.1 锁顺序死锁</h3><blockquote>
-<p>如果所有线程以固定的顺序来获得锁，那么在线程中就不会出现锁顺序死锁问题。</p>
-</blockquote>
-<h3 id="10-1-2-动态的顺序死锁"><a href="#10-1-2-动态的顺序死锁" class="headerlink" title="10.1.2 动态的顺序死锁"></a>10.1.2 动态的顺序死锁</h3><p>通过锁顺序来避免死锁</p>
-<h3 id="10-1-3-在协助对象之间发生的死锁"><a href="#10-1-3-在协助对象之间发生的死锁" class="headerlink" title="10.1.3 在协助对象之间发生的死锁"></a>10.1.3 在协助对象之间发生的死锁</h3><p>如果在持有锁时调用某个外部方法，那么将出现活跃性问题。在这个外部方法中可能会获取其他锁(这可能会产生死锁)，或者阻塞时间过长，导致其他线程无法及时获得当前被持有的锁。</p>
-<h3 id="10-1-4-开放调用"><a href="#10-1-4-开放调用" class="headerlink" title="10.1.4 开放调用"></a>10.1.4 开放调用</h3><p>如果在调用某个方法时不需要持有锁，那么这种调用被称为开放调用(Open Call)。</p>
-<blockquote>
-<p>在程序中应尽量使用开发调用。与那些在持有锁时调用外部方法的程序相比，更易于对依赖于开放调用的程序进行死锁分析。</p>
-</blockquote>
-<h3 id="10-1-5-资源死锁"><a href="#10-1-5-资源死锁" class="headerlink" title="10.1.5 资源死锁"></a>10.1.5 资源死锁</h3><p>当多个线程早相同的资源集合上等待时，也会发生死锁。</p>
-<h2 id="10-2-死锁的避免与诊断"><a href="#10-2-死锁的避免与诊断" class="headerlink" title="10.2 死锁的避免与诊断"></a>10.2 死锁的避免与诊断</h2><h3 id="10-2-1-支持定时的锁"><a href="#10-2-1-支持定时的锁" class="headerlink" title="10.2.1 支持定时的锁"></a>10.2.1 支持定时的锁</h3><p>显式使用Lock类中定时tryLock功能代替内置锁机制可以检测死锁和从死锁中恢复过来。</p>
-<h3 id="10-2-2-通过线程转储信息来分析死锁"><a href="#10-2-2-通过线程转储信息来分析死锁" class="headerlink" title="10.2.2 通过线程转储信息来分析死锁"></a>10.2.2 通过线程转储信息来分析死锁</h3><p>虽然防止死锁的主要责任在于你自己，但JVM仍然通过线程转储(Thread Dump)来帮助识别死锁的发生。线程转储包括各个运行中的线程的栈追踪信息，这类似发生异常时的栈追踪信息。</p>
-<h2 id="10-3-其他活跃性危险"><a href="#10-3-其他活跃性危险" class="headerlink" title="10.3 其他活跃性危险"></a>10.3 其他活跃性危险</h2><p>活跃性危险：</p>
-<ul>
-<li>死锁</li>
-<li>饥饿</li>
-<li>丢失信号</li>
-<li>活锁</li>
+        <h1 id="第11章-持有对象"><a href="#第11章-持有对象" class="headerlink" title="第11章 持有对象"></a>第11章 持有对象</h1><hr>
+<h2 id="11-1-泛型和类型安全的容器"><a href="#11-1-泛型和类型安全的容器" class="headerlink" title="11.1 泛型和类型安全的容器"></a>11.1 泛型和类型安全的容器</h2><h2 id="1-2-基本概念"><a href="#1-2-基本概念" class="headerlink" title="1.2 基本概念"></a>1.2 基本概念</h2><ul>
+<li>Collection</li>
+<li>Map</li>
+<li>List</li>
 </ul>
-<h3 id="10-3-1-饥饿"><a href="#10-3-1-饥饿" class="headerlink" title="10.3.1 饥饿"></a>10.3.1 饥饿</h3><p>当线程由于无法访问它所需要的资源而无法继续执行时，就发生了“饥饿”,引发饥饿的最常见资源就是CPU时钟周期。</p>
-<blockquote>
-<p>要避免使用线程优先级，因为这会增加平台依赖性，并可能导致活跃性问题。在大多数并发应用程序中，都可以使用默认的线程优先级。</p>
-</blockquote>
-<h3 id="10-3-2-糟糕的响应性"><a href="#10-3-2-糟糕的响应性" class="headerlink" title="10.3.2 糟糕的响应性"></a>10.3.2 糟糕的响应性</h3><h3 id="10-3-3-活锁"><a href="#10-3-3-活锁" class="headerlink" title="10.3.3 活锁"></a>10.3.3 活锁</h3><p>活锁是另一种形式的活跃性问题，该问题尽管不会阻塞线程，但也不能继续执行，因为线程将不断重复地执行相同的操作，并且总会失败。活锁通常发生在处理事务消息的应用程序中：如果蹦年成功处理某个消息，那么消息处理机制将回滚整个事务，并且将它重新发到队列的开头。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>活跃性故障时一个非常严重的问题，因为当出现活跃性故障时，除了终止应用程序之外没有其他任何机制可以邦帮助从这些故障中恢复过来。最常见的活跃性故障就是所顺序死锁。在设计时应该避免产生锁顺序死锁：确保线程在获取多个锁时采用一致的顺序。最好的解决方法是在程序中始终使用开放调用。这种大大减少需要同时持有多个锁的地方，也更容易发现这些地方。</p>
+<h2 id="1-3添加一组元素"><a href="#1-3添加一组元素" class="headerlink" title="1.3添加一组元素"></a>1.3添加一组元素</h2><p>构建一个不包含元素的Collection，然后调用Collection.addAll()这种方式，运行速度快，也比较方便，是首先方式。</p>
+<p>使用Array.asList()可以使用<strong>显式类型参数</strong>说明产生的List的实际的目标类型。</p>
+<h2 id="1-4-容器的打印"><a href="#1-4-容器的打印" class="headerlink" title="1.4 容器的打印"></a>1.4 容器的打印</h2><p>使用Arrays.toString()来产生数组的可打印表示。</p>
+<h2 id="11-5-List"><a href="#11-5-List" class="headerlink" title="11.5 List"></a>11.5 List</h2><ul>
+<li><p>基本的ArrayList，它长于随机访问元素，但是在List的中间插入移动元素时较慢。</p>
+</li>
+<li><p>LinkedList,它通过代价较低的在List中间进行的插入和删除操作，提供了优化的顺序访问。LinkedList在随机访问方面相对比较慢，但它的特性较ArrayList更大。</p>
+</li>
+</ul>
+<h2 id="11-6-迭代器"><a href="#11-6-迭代器" class="headerlink" title="11.6 迭代器"></a>11.6 迭代器</h2><p>Java的iterator()要求容器返回一个Iterator。Iterator将准备好返回序列的第一个元素。</p>
+<ol>
+<li>使用方法iterator()要求容器返回一个Iterator.Iterator将准备好返回序列的第一个元素。</li>
+<li>使用next()获得序列中的下一个元素。</li>
+<li>使用hashNext()检查序列中是否还有元素。</li>
+<li>使用remove()将迭代器新近返回的元素删除。</li>
+</ol>
+<p>Iterator可以移除由next()产生的最后一个元素，这意味着在调用remove()之前必须先调用next()。</p>
+<h2 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h2><p>LinkedList具有能够直接实现栈的所有功能的方法，因此可以直接将LinkedList作为栈使用。</p>
+<p>peek()方法提供栈顶元素，但是并不将其从栈顶移除，而pop()将移除并返回栈顶元素。</p>
+<h2 id="11-9-Set"><a href="#11-9-Set" class="headerlink" title="11.9 Set"></a>11.9 Set</h2><p>Set不保存重复的元素。</p>
+<p>TreeSet将元素储存在红-黑树数据结构中，有序。</p>
+<p>HashSet使用的是散列函数，无序。</p>
+<p>LinkedHashList因为查询速度的原因使用散列，但是也使用了链表来维护元素的插入顺序。</p>
+<h2 id="11-10-Map"><a href="#11-10-Map" class="headerlink" title="11.10 Map"></a>11.10 Map</h2><p>Map可以用keySet()返回它的键的Set，用valueSet()它的值的Collection。</p>
+<ul>
+<li><p>HashMap</p>
+</li>
+<li><p>TreeMap</p>
+</li>
+<li><p>LinkedHashMap</p>
+</li>
+</ul>
+<h2 id="11-111-Queue"><a href="#11-111-Queue" class="headerlink" title="11.111 Queue"></a>11.111 Queue</h2><p>  队列是一个典型的先进先出的容器。</p>
+<h3 id="11-11-1-PriorityQueue"><a href="#11-11-1-PriorityQueue" class="headerlink" title="11.11.1 PriorityQueue"></a>11.11.1 PriorityQueue</h3><p>优先队列声明下一个弹出元素是最需要的元素（具有最高的优先级）。</p>
+<h2 id="Collection和Iterator"><a href="#Collection和Iterator" class="headerlink" title="Collection和Iterator"></a>Collection和Iterator</h2><p>Collection是描述所有序列容器的共性的跟接口，它可能被认为是一个“附属接口”，即因为要表示其他若干个接口的共性而出现的接口。</p>
+<p>实现Collection就意味着需要提供iterator()方法。</p>
+<p>Collection可以生成Iterator，而List可以生成ListIterator。</p>
+<h2 id="11-13-Foreach与迭代器"><a href="#11-13-Foreach与迭代器" class="headerlink" title="11.13 Foreach与迭代器"></a>11.13 Foreach与迭代器</h2><p>foreach语法主要用于数组和实现了Iterable接口的对象。</p>
+<h3 id="11-13-1-适配器方法惯用法"><a href="#11-13-1-适配器方法惯用法" class="headerlink" title="11.13.1 适配器方法惯用法"></a>11.13.1 适配器方法惯用法</h3><p>由Arrays.asList()产生的List对象会使用底层数组作为其物理实现。只要你执行的操作会修改这个List，并且你不想原来的数组被修改，那么你应该在另一个容器中创建一个副本。</p>
+<h2 id="11-14-总结"><a href="#11-14-总结" class="headerlink" title="11.14 总结"></a>11.14 总结</h2><ol>
+<li><p>数组将数字与对象联系起来。它保存类型明确的对象，查询对象时，不需要对结果做类型转换。他可以是多维的，可以保存基本类型的数组。但是，数组一旦生成，其容量就不能改变。</p>
+</li>
+<li><p>Collection保存单一的元素，而Map保存相关的键值对。有了Java的泛型，你就可可以指定容器中存放的对象类型，因此你就不会将错误类型的对象放置到容器中，并且自从容器中获取元素时，不必进行类型转换。各种Collection和各种Map都可以在你向其中添加更多的元素时，紫红调整其尺寸。容器不能持有基本类型，但是自动包装机制会仔细地执行基本类型到容器中所持有的包装其类型之间的双向转换。</p>
+</li>
+<li><p>像数组一样，List也建立数字索引与对象的关联，因此，数组和List都是排好序的容器。List能够自动扩充容量。</p>
+</li>
+<li><p>如果要进行大量的随机访问，就使用ArrayList；如果要经常从表中插入或删除元素，则应该使用LinkedList。</p>
+</li>
+<li><p>各种Queue以及栈的行为，由LinkedList提供支持。</p>
+</li>
+<li><p>Map是一种将对象（而非数字）与对象相关联的设计。HashMap设计用来快速访问；而TreeMap保持“键”始终处于排序状态，所以没有HashMap快。LinkedHashMap保持元素插入的顺序，但是也通过散列提供快速访问能力。</p>
+</li>
+<li><p>Set不接受重复元素。HashSet提供组块的查询速度，而TreeSet保持元素处于排序状态，LinkedHashSet以插入顺序保存元素。</p>
+</li>
+<li><p>新程序中不应该使用过时的Vector、Hashtable和Stack。</p>
+</li>
+</ol>
 
       
     </div>
@@ -258,7 +289,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/20/《Java并发编程实战》-9/" data-id="ck8gr4zec001z1ovtuvtmxcw7" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/《Thinking in Java 》读书笔记-11/" data-id="ckjtrgp61002cn8vicfg8753y" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -266,7 +297,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-9" ></div> 
+<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-11" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -284,10 +315,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Java并发编程实战》-8" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Thinking in Java 》读书笔记-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/16/《Java并发编程实战》-8/" class="article-date">
-  <time datetime="2018-08-16T12:44:39.282Z" itemprop="datePublished">2018-08-16</time>
+    <h3 href="/2020/08/22/《Thinking in Java 》读书笔记-1/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.428Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   <div class="article-category">
@@ -304,7 +335,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/16/《Java并发编程实战》-8/">《Java并发编程实战》-8</a>
+      <a class="article-title" href="/2020/08/22/《Thinking in Java 》读书笔记-1/">《Thinking in Java 》读书笔记-1</a>
     </h1>
   
 
@@ -313,27 +344,17 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="图形用户界面应用程序"><a href="#图形用户界面应用程序" class="headerlink" title="图形用户界面应用程序"></a>图形用户界面应用程序</h1><hr>
-<h2 id="9-1-为什么GUI是单线程的"><a href="#9-1-为什么GUI是单线程的" class="headerlink" title="9.1 为什么GUI是单线程的"></a>9.1 为什么GUI是单线程的</h2><h3 id="9-1-1-串行时间处理"><a href="#9-1-1-串行时间处理" class="headerlink" title="9.1.1 串行时间处理"></a>9.1.1 串行时间处理</h3><h3 id="9-1。2-Swing中的单线程封闭机制"><a href="#9-1。2-Swing中的单线程封闭机制" class="headerlink" title="9.1。2 Swing中的单线程封闭机制"></a>9.1。2 Swing中的单线程封闭机制</h3><blockquote>
-<p>Swing的单线程规则是：Swing中的组件以及模型只能在这个事件分发线程中进行创建、修改以及查询。</p>
-</blockquote>
-<h3 id="9-2-短时间的GUI任务"><a href="#9-2-短时间的GUI任务" class="headerlink" title="9.2 短时间的GUI任务"></a>9.2 短时间的GUI任务</h3><p>模型对象与视图对象的控制流</p>
-<pre><code class="flow">st=&gt;start: EDT
-op1=&gt;operation: 鼠标点击
-op2=&gt;operation: 动作事件
-op3=&gt;operation: 动作监听者
-op4=&gt;operation: 更新表格模型
-op5=&gt;operation: 表格修改事件
-op6=&gt;operation: 表格监听者
-op7=&gt;operation: 更新表格视图
-
-st-&gt;op1-&gt;op2-&gt;op3-&gt;op4-&gt;op5-&gt;op6-&gt;op7
-
-</code></pre>
-<h2 id="9-3-长时间的GUI任务"><a href="#9-3-长时间的GUI任务" class="headerlink" title="9.3 长时间的GUI任务"></a>9.3 长时间的GUI任务</h2><h3 id="9-3-1-取消"><a href="#9-3-1-取消" class="headerlink" title="9.3.1 取消"></a>9.3.1 取消</h3><h3 id="9-3-2-进度标识和完成标识"><a href="#9-3-2-进度标识和完成标识" class="headerlink" title="9.3.2 进度标识和完成标识"></a>9.3.2 进度标识和完成标识</h3><h3 id="9-3-3-SwingWorker"><a href="#9-3-3-SwingWorker" class="headerlink" title="9.3.3 SwingWorker"></a>9.3.3 SwingWorker</h3><h2 id="9-4-共享数据模型"><a href="#9-4-共享数据模型" class="headerlink" title="9.4 共享数据模型"></a>9.4 共享数据模型</h2><h3 id="9-4-1-线程安全的数据模型"><a href="#9-4-1-线程安全的数据模型" class="headerlink" title="9.4.1 线程安全的数据模型"></a>9.4.1 线程安全的数据模型</h3><h3 id="9-4-2-分解数据模型"><a href="#9-4-2-分解数据模型" class="headerlink" title="9.4.2 分解数据模型"></a>9.4.2 分解数据模型</h3><blockquote>
-<p>如果体格数据模型必须被多个线程共享，而且由于阻塞，一致性或复杂度等原因而无法实现一个线程安全的模型时，可以考虑使用分解模型设计。</p>
-</blockquote>
-<h2 id="9-5-其他形式的单线程子系统"><a href="#9-5-其他形式的单线程子系统" class="headerlink" title="9.5 其他形式的单线程子系统"></a>9.5 其他形式的单线程子系统</h2><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>所有GUI框架基本上都实现为单线程的子系统，其中所有与表现相关的代码都作为任务在事件线程中运行。由于只有一个事件线程，因此运行时间较长的任务会降低GUI程序的影响性，所以应该放在后台线程中运行。在一些辅助类(例如SwingWorkrt以及在本章中构建的BackgroundTask)中提供了对取消、进度指示以及完成指示的支持，因此对于执行时间较长的任务来说，无论在任务中包含了GUI组件还是非GUI组件，在开发时可以得到简化。</p>
+        <h1 id="第一章-对象导论"><a href="#第一章-对象导论" class="headerlink" title="第一章 对象导论"></a>第一章 对象导论</h1><h2 id="1-1-抽象过程"><a href="#1-1-抽象过程" class="headerlink" title="1.1 抽象过程"></a>1.1 抽象过程</h2><ul>
+<li>万物皆对象。</li>
+<li>程序是对象的集合，它们通过发送消息来告知彼此索要做的。</li>
+<li>每个对象都有自己的由其他对象所构成的储存。</li>
+<li>每个对象都拥有其类型。</li>
+<li>某个特定类型的所有对象都可以接受同样的消息。</li>
+</ul>
+<h2 id="1-2-每个对象都要有一个接口"><a href="#1-2-每个对象都要有一个接口" class="headerlink" title="1.2 每个对象都要有一个接口"></a>1.2 每个对象都要有一个接口</h2><h2 id="1-3-每个对象都提供服务"><a href="#1-3-每个对象都提供服务" class="headerlink" title="1.3 每个对象都提供服务"></a>1.3 每个对象都提供服务</h2><h2 id="1-4-被隐藏的具体实现"><a href="#1-4-被隐藏的具体实现" class="headerlink" title="1.4 被隐藏的具体实现"></a>1.4 被隐藏的具体实现</h2><h2 id="1-5-复用具体实现"><a href="#1-5-复用具体实现" class="headerlink" title="1.5 复用具体实现"></a>1.5 复用具体实现</h2><h2 id="1-6-继承"><a href="#1-6-继承" class="headerlink" title="1.6 继承"></a>1.6 继承</h2><h3 id="1-6-1-“is-a”和”like-a”"><a href="#1-6-1-“is-a”和”like-a”" class="headerlink" title="1.6.1 “is-a”和”like-a”"></a>1.6.1 “is-a”和”like-a”</h3><h2 id="1-7-伴随多态的可互换对象"><a href="#1-7-伴随多态的可互换对象" class="headerlink" title="1.7 伴随多态的可互换对象"></a>1.7 伴随多态的可互换对象</h2><h2 id="1-8-单根继承结构"><a href="#1-8-单根继承结构" class="headerlink" title="1.8 单根继承结构"></a>1.8 单根继承结构</h2><h2 id="1-9-容器"><a href="#1-9-容器" class="headerlink" title="1.9 容器"></a>1.9 容器</h2><h2 id="1-10-对象的创建和生命期"><a href="#1-10-对象的创建和生命期" class="headerlink" title="1.10 对象的创建和生命期"></a>1.10 对象的创建和生命期</h2><h2 id="1-11-异常处理：处理错误"><a href="#1-11-异常处理：处理错误" class="headerlink" title="1.11 异常处理：处理错误"></a>1.11 异常处理：处理错误</h2><h2 id="1-12-并发编程"><a href="#1-12-并发编程" class="headerlink" title="1.12 并发编程"></a>1.12 并发编程</h2><h2 id="1-13-Java与Internet"><a href="#1-13-Java与Internet" class="headerlink" title="1.13 Java与Internet"></a>1.13 Java与Internet</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>过程式编程：<br>  &emsp;数据定义和函数调用</li>
+<li>面向对象编程：<br>  &emsp;用来表示问题空间概念的对象（而不是有关计算机表示方式的相关内容），以及发送给这些对象的用来表示在此空间内的行为的消息。</li>
+</ul>
 
       
     </div>
@@ -342,7 +363,7 @@ st-&gt;op1-&gt;op2-&gt;op3-&gt;op4-&gt;op5-&gt;op6-&gt;op7
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/16/《Java并发编程实战》-8/" data-id="ck8gr4ze4001w1ovt9u82wj6l" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/《Thinking in Java 》读书笔记-1/" data-id="ckjtrgp5z0026n8vi3328v6el" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -350,7 +371,7 @@ st-&gt;op1-&gt;op2-&gt;op3-&gt;op4-&gt;op5-&gt;op6-&gt;op7
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Java并发编程实战》-8" ></div> 
+<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-1" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -370,7 +391,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/22/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/24/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/22/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/24/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -384,23 +405,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2020/03/25/游戏框架笔记/技能系统设计/">技能系统设计</a>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/24/游戏框架笔记/跨服系统设计/">跨服系统的设计</a>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
           </li>
         
           <li>
-            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
           </li>
         
           <li>
-            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
           </li>
         
       </ul>
@@ -412,7 +433,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -421,7 +442,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
     </div>
   </div>
 
@@ -442,11 +463,11 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2020 WeiJian Qian
+      &copy; 2021 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
-    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
 
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
       .

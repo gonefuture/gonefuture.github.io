@@ -83,58 +83,63 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-学习笔记/Netty源码学习-总" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-项目笔记/服务开发原则" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/08/26/学习笔记/Netty源码学习-总/" class="article-date">
-  <time datetime="2019-08-26T02:15:50.814Z" itemprop="datePublished">2019-08-26</time>
+    <h3 href="/2020/08/22/项目笔记/服务开发原则/" class="article-date">
+  <time datetime="2020-08-22T08:42:00.594Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/源码笔记/">源码笔记</a>
-  </div>
-
   </div>
   <div class="article-inner">
   <div class="curve-down">
   <div class="fill-content">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/26/学习笔记/Netty源码学习-总/">Netty源码阅读（整体介绍）</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h2 id="Netty的作用"><a href="#Netty的作用" class="headerlink" title="Netty的作用"></a>Netty的作用</h2><ol>
-<li><p>Netty实现对Java NIO的封装，提供了更方便使用的接口；</p>
+        <h1 id="服务开发原则"><a href="#服务开发原则" class="headerlink" title="服务开发原则"></a>服务开发原则</h1><ol>
+<li>通信<code>pack</code>、<code>event</code>事件、<code>corn</code>定时任务必须在facade层作为开始。</li>
+<li><code>service</code>层不允许作为被其他模块调用。只能被自己模块的facade调用。<code>manager</code>层允许其他业务模块调用。如果涉及到多线程<code>manager</code>自己考虑自身的线程安全。</li>
+<li>可以把用用的（其他模块也会用到的，确定只有自己会用到的条件没必要做抽象了，避免代码不直观）条件设计成<code>condition</code>。根据策划接收程度考虑用json配置或者<code>conditionResource</code>配置</li>
+<li>跨模块资源消耗、策划需要统一配置的资源必须抽象出<code>Consumes</code>去消耗。</li>
+<li>跨模块资源发放、策划需要统一配置的资源发送不允许直接修改领域对象。必须走<code>reward</code>方便管理和记录日志。</li>
+<li><code>chooser</code>作为条件选择器。可以抽象出一些统一的筛选规则。比如条件筛选、概率筛选。</li>
+<li>不允许在代码中拼接文本内容。</li>
+<li>玩家自身的任务采用的是玩家的<code>account</code>的<code>hashcode</code>来作为任务分发。公共模块例如交易、公会等业务需要模块自身维护加锁。使用到锁的模块必须与项目主程沟通协商。`AtomicXX.compareAndSet()解决不了代码块的问题，如果觉得可以用和主程讨论以后再决定。</li>
+<li>实践证明，程序参与配置表配置然后策划改修数值比直接掉给策划一张空表开发效率会高很多。</li>
+<li>每一张Resource配置表。必须要包含一个sheet配置说明，并且不断维护更新。这个说明的起草通常由服务端开发人员发起。然后各方维护。</li>
+<li>配置表映射的Resource类中为了防止配置表对象被无意中修改。应当不包含<code>set*</code>方法。</li>
+<li>每一模块，开发完成后以后，必须用findbugs和阿里编程规范插件扫面。高级别的错误必须修正。</li>
+<li>设计一个活动系统的时候。无论策划文档是否有明确指出，都应该将是否热更新考虑进去。</li>
+<li>项目中不允许出现<code>System.out.println()</code>,统一使用<code>SystemOut.println()</code>代替。</li>
+<li>服务端开发应视为客户端已经被破解。所以设计到安全和收益相关的逻辑，必须做好严格的验证。不得依赖客户端的消息。</li>
+<li>所有开发中的常量都必须使用配置的方式实现，不允许将常量定义在代码中，可以配置在ConfigValue.xml中。</li>
+<li>所有代码中需要被处理的错误，都应该用<code>Logger.error</code>记录下来，及时查看error日志并解决。</li>
+<li><p>代码中的<code>return</code>,仔细思考为什么需要中断业务，不应该什么都不做直接return。<br>协议处理时需要<code>return</code>的地方，应该选择以下三种方式<br>a 客户端没法预判断，需要服务器来判断的，提示对应错误信息</p>
+<pre><code>`throw ManagedException.valueOf(result.getCode())`
+</code></pre><p>b 客户端可以预检验的情况下发过来的 没有被检测的请求 统一返回请求非法就行</p>
+<pre><code>`throw ManagedException.valueOf(MessageCode.ERROR_MSG)`
+</code></pre><p>c 其他不属于上面，只能直接return的，用Logger.error记录日志</p>
 </li>
-<li><p>Netty利用责任链模式实现了ChannelPipeline这一概念，基于CHannelPipeline,我们可以优雅的实现网络消息的处理（可插拔，解耦）；</p>
+<li><p>必须安装提交日志的插件，提交日志需要遵循规定的格式，插件中的类型、标题、说明为必填项</p>
 </li>
-<li><p>Netty的Reactor线程模型，利用无锁化提高了系统的性能；</p>
-</li>
-<li><p>Netty实现了ByteBuf用于对字节进行缓存和操作,相比JDK的ByteBuffer,他更容易用，同时还提供了Buffer池的功能，对于UnpooledDirectByteBuf和PooledByteBuf,Netty还对其内存使用进行了跟踪，发现内存泄漏时会给出报警。</p>
-</li>
+<li>提交代码时必须勾选以下选项</li>
 </ol>
-<h2 id="Netty对JDK-NIO的封装"><a href="#Netty对JDK-NIO的封装" class="headerlink" title="Netty对JDK NIO的封装"></a>Netty对JDK NIO的封装</h2><p>JDK NIO有ServerSocketChannel、SocketChannel、Selector、Selection几个核心概念。</p>
-<p>Netty提供了一个Channel接口统一了对网络的IO操作，其底层的IO是交给Unsafe接口实现，而Channel主要负责更高层次的read、write、flush和ChannelPipeline、Eventloop等组件的交互，以及一些状态的展示；做到了职责的清晰划分，对使用者是很友好的，规避了JDK NIO中一些比较繁琐负责的概念和流程。</p>
-<p>Channel、Unsafe继承UML图</p>
-<p>Channel和Unsafe是分多级别是实现的</p>
-<h2 id="ChannelPipeline责任链模式"><a href="#ChannelPipeline责任链模式" class="headerlink" title="ChannelPipeline责任链模式"></a>ChannelPipeline责任链模式</h2>
+<ul>
+<li>Alibaba Code idelines</li>
+<li>Reformat code</li>
+<li>Optimize import</li>
+<li>Perform code annlysis</li>
+<li>Check TODO</li>
+</ul>
+
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/源码/">源码</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2019/08/26/学习笔记/Netty源码学习-总/" data-id="ck8gr4zo600471ovt40vl0jap" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/项目笔记/服务开发原则/" data-id="ckjtrgp910050n8viumihzudn" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -142,7 +147,7 @@
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="学习笔记/Netty源码学习-总" ></div> 
+<div id="SOHUCS" sid="项目笔记/服务开发原则" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -160,10 +165,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-项目笔记/权重工具类学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-项目笔记/有时效的标记" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/08/20/项目笔记/权重工具类学习笔记/" class="article-date">
-  <time datetime="2019-08-20T06:48:26.923Z" itemprop="datePublished">2019-08-20</time>
+    <h3 href="/2020/08/22/项目笔记/有时效的标记/" class="article-date">
+  <time datetime="2020-08-22T08:42:00.591Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   </div>
@@ -175,143 +180,162 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="权重工具学习笔记"><a href="#权重工具学习笔记" class="headerlink" title="权重工具学习笔记"></a>权重工具学习笔记</h1><h2 id="工具类"><a href="#工具类" class="headerlink" title="工具类"></a>工具类</h2><p>游戏涉及概率场景配置经常需要用到权重。一个通用的权重工具可以减少编程难度和重复代码。</p>
-<pre><code class="java">
-public class RatioUtils {
-    /*
-    *   权重随机接口
-    */
-    public interface IRatio {
+        <h1 id="有失效的标记"><a href="#有失效的标记" class="headerlink" title="有失效的标记"></a>有失效的标记</h1><pre><code class="java">public class AgingMark&lt;K&gt; {
+    //标记map
+    private final ConcurrentHashMap&lt;K,Long&gt; markMap = new ConcurrentHashMap(1);
 
-        // 权重值
-        int weight();
+    // 刷新标记事件
+    public void refreshMark(K k, int time, TimeUnit timeUnit) {
+        markMap.put(k, System.currentTimeMillis() + timeUnit.toMillis(time));
     }
-
-    // 全额随机，必然命中一个
-    public static &lt;T extends IRatio&gt; T random(List&lt;T&gt; radios) {
-        return random(ratios,getTototalWeight(ratios));
+    // 移出标记
+    public boolean reomveMark(K k) {
+        return markMap.remove(k) != null;
     }
-
-    /**
-    *   根据传入的总权重随机：
-    *    1.当ratios的所有权重之和小于传入的总权重，则可能出现为命中
-    *    2.当ratios的所有权重之和大于传入的总权重，则可能出现ratios尾部元素无法命中
-    */
-    public static &lt;T extends IRatio&gt; T random(List&lt;T&gt; ratios, int totalWeight) {
-        return baseRandomOne(ratios, totalWeight);
-    }
-
-    /*
-    *   随机指定数量的元素，所有元素可重复命中
-    *
-    */
-    public static &lt;T extends IRatio&gt; List&lt;T&gt;  randomList(List&lt;T&gt; ratios, int count) {
-        return baseRandomList(ratios, count, false);
-    }
-
-    // 随机指定数量的元素，所有元素最多命中一次
-    public static &lt;T extends IRatio&gt; List&lt;T&gt; randomListNoRepeat(List&lt;T&gt; ratios, int count) {
-        if(ratios.size() &lt;= count&gt;) {
-            // 随机列表数量少于需求数量时，直接返回随机列表所有元素
-            return new ArrayList&lt;&gt;(ratios);
+    // 检测使用拥有指定标记
+    public boolean hasMark(K k) {
+        Long time = markMap.get(k);
+        if(time == null) {
+            return false;
         }
-        return baseRandomList();
     }
-
-    // 基础随机一个
-    public static &lt;T extends IRatio&gt; T baseRandomOne(List&lt;T&gt; ratios, int totalWeight) {
-        if(ratios.isEmpty()) {
-            return null;
-        }
-        if(totalWeight &lt;= 0&gt;) {
-            throw new IllegalArgumentException(&quot;totalWeight is&quot;+0);
-        }
-        int hit = RandomUtils
+    // 是否没有任何标记
+    public boolean isEmpty() {
+        return markMap.isEmpty();
     }
-
-    // 基础随机多个
-    private static &lt;T extends IRatio&gt; List&lt;T&gt; baseRandomList(List&lt;T&gt; all, int count, booleam noRepaeat) {
-        if(noRepeat) {
-            all = new LinkedList&lt;&gt;(all);
+    // 是否没有任何标记
+    public void tryRemoveExpire(Consumer&lt;K&gt; consumer) {
+        if(markMap.isEmpty()) {
+            return;
         }
-        List&lt;T&gt; hitList = new ArrayList&lt;&gt;(count);
-        int totalWeight = getTotalWeight(all);
-        for(int i=0; i&lt;count; i++) {
-            T t = baseRandomOne(all,totalWeight);
-            if(t == null) {
-                coninue;
+        long now = System.currentTimeMillis();
+        markMap.entrySet().removeIf(k -&gt; {
+            // 注意，这里是先执行回调后后移出
+            if(k.getValue() &lt; now) {
+                if(consumer != null) {
+                    consumer.accept(k.getKey())
+                }
+                return ture;
+            } else {
+                return false;
             }
-            hitList.add(t);
-            if(noRepeat) {
-                all.remove(t);
-                totalWeight -= t.wegight();
-            }
-        }
-        return hitList;
+        });
     }
 
-    // 获取随机列表的总权重
-    public static &lt;T extends IRatio&gt; int getTotalWeight(List&lt;T&gt; ratios) {
-        int totalWeight = 0;
-        for(T t : ratios) {
-            int weight = t.weight();
-            if(weight &lt;= 0) {
-                throw new IllegalArgumentException(String.format(&quot;wegiht %d is &lt;= 0&quot;, weight));
-            }
+    // 获取指定key的过期时间
+    public long getExpireTime(K k) {
+        Long time = markMap.get(k);
+        if(time == null) {
+            return 0;
         }
-        return totalWeight;
+        long expire = time - System.currentTimeMillis();
+        if(expire &lt;= 0) {
+            markMap.remove(k);
+            return 0;
+        }
     }
 
-    // 权重随机，一维数组配置方式： id,权重，id,权重，id，权重
-    public static int random(int[]  rewards) {
-        int total = 0;
-        for(int i=0; i&lt;rewards.length; i+=2) {
-            total +=rewards[i+1];
-        }
-        int hit = RandomUtils.nextInt(total);
-        for(int i=0; i&lt;rewards.lenght; i+=2) {
-            int ratio = rewards[i+1];
-            if(hit &lt; ratio&gt;) {
-                return rewards[i];
-            }
-            hit -= ratio;
-        }
-        throw new RuntimeException(&quot;error random hit! total&quot;+ total + &quot;，hit&quot;+ hit);
+    // 当前拥有的所有key
+    public Set&lt;K&gt; returnKeysAndClear() {
+        Set&lt;K&gt; keys = new HashSet&lt;&gt;(markMap.keySet());
+        markMap.clear();
+        return keys;
+    }
+    // 清除所有标记
+    public void clear() {
+         markMap.clear();
     }
 
-    // 剔除权重为0的元素
-    public static &lt;T extends IRatio&gt; List&lt;T&gt; filterWightNot0(List&lt;T&gt; ratios) {
-        if(ratios.isRmpty()) {
-            return Collections.empty();
-        }
-        List&lt;T&gt; all = new ArrayList&lt;&gt;(ratios.size());
-        for(T ratio : ratios) {
-            if(ratio.weight() &gt; 0 ) {
-                all.add(ratio);
-            }
-        }
-        return all;
+    // 遍历所有未过期的标记
+    public void walkAll(BiConsumer&lt;K,Long&gt; walker) {
+          markMap.keySet().foreach(
+              k -&gt;  {
+                  long expire = getExpireTime(k);
+                  if(expire &gt; 0) {
+                      walker.accept(k, expire);
+                  }
+              }
+          );
+    }
+
+    // 注意，该接口返回的数量，只是当前标记集合数据的数量，不代表当前还未过去的标记数量
+    public int size() {
+        return markMap.size();
+    }
+
+}
+</code></pre>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2020/08/22/项目笔记/有时效的标记/" data-id="ckjtrgp8y004wn8vifqebvkkt" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/有时效的标记" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-项目笔记/新的事件处理机制" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/项目笔记/新的事件处理机制/" class="article-date">
+  <time datetime="2020-08-22T08:42:00.587Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="新的事件处理机制"><a href="#新的事件处理机制" class="headerlink" title="新的事件处理机制"></a>新的事件处理机制</h1><h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>监视生物的行为状态（例如：生物开始移动(<code>onCreatureStartMove</code>),生物死亡(ICreatureDead)，在不同的状态下产生相应的事件并通知感兴趣的对象做出相应的处理。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="1-在-object-observer下定义事件接口（如果没有合适的事件）"><a href="#1-在-object-observer下定义事件接口（如果没有合适的事件）" class="headerlink" title="1. 在/object/observer下定义事件接口（如果没有合适的事件）"></a>1. 在/object/observer下定义事件接口（如果没有合适的事件）</h3><pre><code class="java">public interface ICreatureXxx {
+    // 这个事件机制基于apache.commons.lang3.evnet.EventListenerSupport,EventListenerSupport基于接口的动态代理实现，因此一个接口可以有多个方法
+    void onCreatureXxx(...);
+}
+</code></pre>
+<h3 id="2-事件触发"><a href="#2-事件触发" class="headerlink" title="2. 事件触发"></a>2. 事件触发</h3><pre><code class="java">abstractCreature.getObserveController().fire(ICreatureUseXxx.class).onCreatureXxx(...);
+</code></pre>
+<h3 id="3-在对事件感兴趣的类上实现相应的接口"><a href="#3-在对事件感兴趣的类上实现相应的接口" class="headerlink" title="3. 在对事件感兴趣的类上实现相应的接口"></a>3. 在对事件感兴趣的类上实现相应的接口</h3><pre><code class="java">public class Xxx implements ICreatureXxx {
+    @Override
+    void onCreatureXxx(...) {
+
     }
 }
 
 </code></pre>
-<h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><ol>
-<li><p>使用时先让需要权重随机的实体实现<code>IRatio</code>接口，重写<code>weight()</code>方法。例如需要根据权重随机选取配置类时：</p>
-<pre><code class="java"> public XXxResource implements RatioUtils.IRatio {
+<h3 id="4-把观察者添加到对应abstractCreature上"><a href="#4-把观察者添加到对应abstractCreature上" class="headerlink" title="4.把观察者添加到对应abstractCreature上"></a>4.把观察者添加到对应abstractCreature上</h3><pre><code class="java">// xxx：观察者对象
+absrtactCreature.getObserveController().attach(ICreatureXxx,xxx)
 
-     // ......
-
-     @Override
-     public int weight() {
-         return weight;
-     }
- }
 </code></pre>
-</li>
-<li><p>在需要权重随机的地方</p>
-<pre><code class="java"> RatioUtils.random(xxxxResourceList)
-</code></pre>
-</li>
+<p>##不使用EventBus事件系统的原因</p>
+<ol>
+<li>EventBus是全局性质的事件机制，这里的事件机制是全生物状态的观察监听机制，也就是说，如果使用EventBus应当用submit（或者同步的synSubmit）发布事件时，所有的@ReceiverAnno注解的方法都会被触发，但是这里的事件机制只有attach到对应相应生物上的接口实现类的方法被触发。</li>
+<li>EventBus不具备移除观测者的功能。这里可以使用<code>abstractCreature.getObserveController().removeObserver(ICreatureXxx,Xxx)</code>移除迷人<code>abstractCreature</code>身上的特定观察者。</li>
 </ol>
 
       
@@ -319,7 +343,7 @@ public class RatioUtils {
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/08/20/项目笔记/权重工具类学习笔记/" data-id="ck8gr4zrk00581ovt0net5x89" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/项目笔记/新的事件处理机制/" data-id="ckjtrgp91004zn8vihayjirll" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -327,70 +351,7 @@ public class RatioUtils {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/权重工具类学习笔记" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-学习笔记/SrpingAOP源码分析-SpringMVC" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2019/08/15/学习笔记/SrpingAOP源码分析-SpringMVC/" class="article-date">
-  <time datetime="2019-08-15T03:54:06.487Z" itemprop="datePublished">2019-08-15</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="SrpingAOP源码分析-Spring-MVC"><a href="#SrpingAOP源码分析-Spring-MVC" class="headerlink" title="SrpingAOP源码分析-Spring MVC"></a>SrpingAOP源码分析-Spring MVC</h1><h2 id="Srping-MVC工作流程图"><a href="#Srping-MVC工作流程图" class="headerlink" title="Srping MVC工作流程图"></a>Srping MVC工作流程图</h2><h2 id="Spring工作流程秒描述"><a href="#Spring工作流程秒描述" class="headerlink" title="Spring工作流程秒描述"></a>Spring工作流程秒描述</h2><ol>
-<li>用户向服务器发送请求，请求被Spring前端控制<code>Servelt DispatcherServlet</code>捕获；</li>
-<li><code>DispatcherServlet</code>对请求URL进行解析，得到请求资源标识符（URI）。然后根据该URI，调用<code>HandlerMapping</code>获得该Handler配置的所有相关的对象（包括Handler对象以及Handler对象对应的拦截器），最后以<code>HandlerExecutionChain</code>对象的形式返回；</li>
-<li><code>DispatcherServlet</code>根据获得的Handler，选择一个合适的<code>HandlerAdapter</code>。（附注：如果成功获得<code>HandlerAdapter</code>后，此时将开始执行拦截器的<code>preHandler(...)</code>方法）</li>
-<li>提取Request中的模型数据，填充Handler入参，开始执行Handler（Controller)。 在填充Handler的入参过程中，根据你的配置，Spring将帮你做一些额外的工作：<ul>
-<li><code>HttpMessageConveter</code>： 将请求消息（如Json、xml等数据）转换成一个对象，将对象转换为指定的响应信息</li>
-<li>数据转换：对请求消息进行数据转换。如String转换成Integer、Double等</li>
-<li>数据格式化：对请求消息进行数据格式化。 如将字符串转换成格式化数字或格式化日期等</li>
-<li>数据验证： 验证数据的有效性（长度、格式等），验证结果存储到<code>BindingResult</code>或<code>Error</code>中</li>
-</ul>
-</li>
-<li>Handler执行完成后，向<code>DispatcherServlet</code>返回一个<code>ModelAndView</code>对象；</li>
-<li>根据返回的<code>ModelAndView</code>，选择一个适合的<code>ViewResolver</code>（必须是已经注册到Spring容器中的<code>ViewResolver</code>)返回给<code>DispatcherServlet</code>；</li>
-<li><code>ViewResolver</code>结合Model和View，来渲染视图</li>
-<li>将渲染结果返回给客户端。</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2019/08/15/学习笔记/SrpingAOP源码分析-SpringMVC/" data-id="ck8gr4zow004j1ovtnn82uuk7" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="学习笔记/SrpingAOP源码分析-SpringMVC" ></div> 
+<div id="SOHUCS" sid="项目笔记/新的事件处理机制" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -410,7 +371,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -424,23 +385,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2020/03/25/游戏框架笔记/技能系统设计/">技能系统设计</a>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/24/游戏框架笔记/跨服系统设计/">跨服系统的设计</a>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
           </li>
         
           <li>
-            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
           </li>
         
           <li>
-            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
           </li>
         
       </ul>
@@ -452,7 +413,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -461,7 +422,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
     </div>
   </div>
 
@@ -482,11 +443,11 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2020 WeiJian Qian
+      &copy; 2021 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
-    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
 
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
       .

@@ -83,10 +83,91 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-学习笔记/Spring源码组件学习-BeanDefinitionParser" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/学习笔记/Spring源码组件学习-BeanDefinitionParser/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.582Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="Spring源码组件学习-BeanDefinitionParser"><a href="#Spring源码组件学习-BeanDefinitionParser" class="headerlink" title="Spring源码组件学习-BeanDefinitionParser"></a>Spring源码组件学习-BeanDefinitionParser</h1><h2 id="Spring自定义xml配置元素，读取xml配置加载bean的过程"><a href="#Spring自定义xml配置元素，读取xml配置加载bean的过程" class="headerlink" title="Spring自定义xml配置元素，读取xml配置加载bean的过程"></a>Spring自定义xml配置元素，读取xml配置加载bean的过程</h2><p>xml扩展大概有以下几个步骤：</p>
+<ol>
+<li>编写自定义类</li>
+<li>编写xml schema来描述自定义元素</li>
+<li>编写<code>NamespaceHandler</code>实现类编写</li>
+<li>编写<code>BeanDefinitionParser</code>实现类</li>
+<li>把以上组建注册到Spring</li>
+</ol>
+<h2 id="xml的schema约束："><a href="#xml的schema约束：" class="headerlink" title="xml的schema约束："></a>xml的schema约束：</h2><p>schema约束定义了xml文档的结构、内容和语法，包括元素和属性、关系的结构以及数据类型等等。</p>
+<ol>
+<li>所有的标签和属性都需要Schema来定义（schema本身w3c来定义）。</li>
+<li>所有的schema文件都需要一个id，即<code>namespace</code>，其值为一个url,通常是这个xml的xsd文件地址。</li>
+<li><code>namespace</code>值由<code>targetNameSpace</code>属性来指定。</li>
+<li>引入一个<code>schema</code>约束，使用属性xmls,属性值即为对应schema文件的命名空间<code>nameSpace</code></li>
+<li>如果引入的<code>schema</code>非W3c组织定义的，必须指定<code>schema</code>文件的位置，<code>schema</code>文件的位置由<code>schemaLocation</code>来指定。</li>
+<li>引入多个<code>schema</code>文件需要使用别名。别名形式如下：xmlns:alias。</li>
+</ol>
+<p>对于上述配置文件的详细解读</p>
+<h2 id="NamespaceHandler"><a href="#NamespaceHandler" class="headerlink" title="NamespaceHandler"></a>NamespaceHandler</h2><p>用于解析自定义命名空间下的所有元素。</p>
+<p>Spring提供了默认实现类<code>NamespaceHandlerSupport</code>，只需要重写<code>init()</code>方法注册每个元素的解析器。</p>
+<h2 id="注册handler和schema（将组件串联起来）"><a href="#注册handler和schema（将组件串联起来）" class="headerlink" title="注册handler和schema（将组件串联起来）"></a>注册<code>handler</code>和<code>schema</code>（将组件串联起来）</h2><p>为了让Spring在解析xml的时候能够感知到自定义的元素，需要将<code>handlers</code>格式和<code>schemas</code>格式的文件放入classPath下的<code>META-INF/</code>目录中。</p>
+<ol>
+<li><p><code>srping.handlers</code>文件包含了<code>xml schema url</code>和handler类的映射关系，比如：</p>
+<pre><code class="handlers"> http\://www.windforce.com/common/event=com.windforce.event.config.EvenrNamespaceHandler
+</code></pre>
+<p> 上面的冒号表示转义，key部分必须和xsd文件的中的<code>targetNamespace</code>值保持一致。</p>
+</li>
+<li><p>spring.schemas文件包含<code>xml schema url</code>和xsd文件位置的映射关系。</p>
+<pre><code class="schemas"> http\://www.windforce.com/common/event/event-1.0.xsd=com/windfore/common/event/config/event-1.0.xsd
+</code></pre>
+</li>
+</ol>
+<h2 id="BeanDefinitionParser"><a href="#BeanDefinitionParser" class="headerlink" title="BeanDefinitionParser"></a>BeanDefinitionParser</h2><p>当解析xml配置文件时遇到在<code>NamespaceHandler</code>中指定的元素，Spring就会将元素交由相应的的<code>BeanDefinitionParser</code>来解析。</p>
+<p><code>BeanDefinitionParser</code>是一个接口，只有一个方法<code>BeanDefinition parse(Element element, ParseContext parseContext)</code>，返回<code>BeanDefinition</code>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2020/08/22/学习笔记/Spring源码组件学习-BeanDefinitionParser/" data-id="ckjtrgp8m004jn8vi76d53osf" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="学习笔记/Spring源码组件学习-BeanDefinitionParser" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
     <article id="post-学习笔记/Spring源码组件学习-BeanDefinition" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/08/01/学习笔记/Spring源码组件学习-BeanDefinition/" class="article-date">
-  <time datetime="2019-08-01T01:54:06.749Z" itemprop="datePublished">2019-08-01</time>
+    <h3 href="/2020/08/22/学习笔记/Spring源码组件学习-BeanDefinition/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.573Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   </div>
@@ -121,7 +202,7 @@ void setAttribute(String name, Object value)
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/08/01/学习笔记/Spring源码组件学习-BeanDefinition/" data-id="ck8gr4zog004c1ovtil73v99n" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/学习笔记/Spring源码组件学习-BeanDefinition/" data-id="ckjtrgp8p004nn8vioje6kbhq" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -147,10 +228,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-学习笔记/Dubbo在跨服中的应用" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/Spring源码组件学习-AOP" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/08/01/学习笔记/Dubbo在跨服中的应用/" class="article-date">
-  <time datetime="2019-08-01T01:54:06.736Z" itemprop="datePublished">2019-08-01</time>
+    <h3 href="/2020/08/22/学习笔记/Spring源码组件学习-AOP/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.570Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   </div>
@@ -162,227 +243,34 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="Dubbo在跨服中的使用"><a href="#Dubbo在跨服中的使用" class="headerlink" title="Dubbo在跨服中的使用"></a>Dubbo在跨服中的使用</h1><h2 id="为什么进行拆分"><a href="#为什么进行拆分" class="headerlink" title="为什么进行拆分"></a>为什么进行拆分</h2><ol>
-<li>系统体量</li>
-<li>维护代价</li>
-<li>开发效率</li>
-<li>单机性能瓶颈</li>
-<li>系统容错性</li>
-</ol>
-<h2 id="rpc框架"><a href="#rpc框架" class="headerlink" title="rpc框架"></a>rpc框架</h2><h2 id="拆分带来的问题"><a href="#拆分带来的问题" class="headerlink" title="拆分带来的问题"></a>拆分带来的问题</h2><ol>
-<li>复杂度的上升</li>
-</ol>
-<h2 id="注册中心Zookeeoper"><a href="#注册中心Zookeeoper" class="headerlink" title="注册中心Zookeeoper"></a>注册中心Zookeeoper</h2><ol>
-<li>服务的注册与发现</li>
-<li>动态配置的</li>
-</ol>
-<h2 id="duboo工作原理"><a href="#duboo工作原理" class="headerlink" title="duboo工作原理"></a>duboo工作原理</h2><ol>
-<li>Directory</li>
-<li>Router</li>
-<li>Cluster</li>
-<li>LoadBalance</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2019/08/01/学习笔记/Dubbo在跨服中的应用/" data-id="ck8gr4zni00441ovtovkk6bj6" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="学习笔记/Dubbo在跨服中的应用" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-《网络游戏核心技术与实战》笔记-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2019/02/16/《网络游戏核心技术与实战》笔记-1/" class="article-date">
-  <time datetime="2019-02-16T08:25:05.498Z" itemprop="datePublished">2019-02-16</time>
-</h3>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/16/《网络游戏核心技术与实战》笔记-1/">《网络游戏核心技术与实战》笔记-1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="《网络游戏核心技术与实战》笔记-1"><a href="#《网络游戏核心技术与实战》笔记-1" class="headerlink" title="《网络游戏核心技术与实战》笔记-1"></a>《网络游戏核心技术与实战》笔记-1</h1><h2 id="网络和游戏编程的技术基础"><a href="#网络和游戏编程的技术基础" class="headerlink" title="网络和游戏编程的技术基础"></a>网络和游戏编程的技术基础</h2><h3 id="网络分层结构"><a href="#网络分层结构" class="headerlink" title="网络分层结构"></a>网络分层结构</h3><p>游戏开发的传输层大多使用TCP协议，不需要直接操纵网络层一下的分层。</p>
-<p>应用层需要在游戏中予以实现。</p>
-<blockquote>
-<p>高性能，高功能服务器的特性 —- 网络游戏所需具备的要素</p>
-</blockquote>
+        <h1 id="SrpingAOP源码分析-AOP"><a href="#SrpingAOP源码分析-AOP" class="headerlink" title="SrpingAOP源码分析-AOP"></a>SrpingAOP源码分析-AOP</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>切面（Aspect） ：官方的抽象定义为“一个关注点的模块化，这个关注点可能会横切多个对象”。<br>连接点（Joinpoint） ：程序执行过程中的某一行为。<br>通知（Advice） ：“切面”对于某个“连接点”所产生的动作。<br>切入点（Pointcut） ：匹配连接点的断言，在AOP中通知和一个切入点表达式关联。<br>目标对象（Target Object） ：被一个或者多个切面所通知的对象。<br>AOP代理（AOP Proxy） 在Spring AOP中有两种代理方式，JDK动态代理和CGLIB代理。</p>
+<p>通知（Advice）类型： </p>
+<p>前置通知（Before advice）：在某连接点（JoinPoint）之前执行的通知，但这个通知不能阻止连接点前的执行。ApplicationContext中在<code>&lt;aop:aspect&gt;</code>里面使用<code>&lt;aop:before&gt;</code>元素进行声明。<br>后直通知（After advice） ：当某连接点退出的时候执行的通知（不论是正常返回还是异常退出）。ApplicationContext中在<code>&lt;aop:aspect&gt;</code>里面使用<code>&lt;aop:after&gt;</code>元素进行声明。<br>返回后通知（After return advice） ：在某连接点正常完成后执行的通知，不包括抛出异常的情况。ApplicationContext中在<code>&lt;aop:aspect&gt;</code>里面使用<code>&lt;after-returning&gt;</code>元素进行声明。<br>环绕通知（Around advice） ：包围一个连接点的通知，类似Web中Servlet规范中的Filter的doFilter方法。可以在方法的调用前后完成自定义的行为，也可以选择不执行。ApplicationContext中在<code>&lt;aop:aspect&gt;</code>里面使用<code>&lt;aop:around&gt;</code>元素进行声明。</p>
+<h2 id="抛出异常后通知（After-throwing-advice）-：-在方法抛出异常退出时执行的通知。-ApplicationContext中在-lt-aop-aspect-gt-里面使用-lt-aop-after-throwing-gt-元素进行声明。"><a href="#抛出异常后通知（After-throwing-advice）-：-在方法抛出异常退出时执行的通知。-ApplicationContext中在-lt-aop-aspect-gt-里面使用-lt-aop-after-throwing-gt-元素进行声明。" class="headerlink" title="抛出异常后通知（After throwing advice） ： 在方法抛出异常退出时执行的通知。 ApplicationContext中在&lt;aop:aspect&gt;里面使用&lt;aop:after-throwing&gt;元素进行声明。"></a>抛出异常后通知（After throwing advice） ： 在方法抛出异常退出时执行的通知。 ApplicationContext中在<code>&lt;aop:aspect&gt;</code>里面使用<code>&lt;aop:after-throwing&gt;</code>元素进行声明。</h2><p>切入点表达式：如 <code>executution(* com.spring.service.*.*(...))</code></p>
+<p>特点</p>
+<pre><code>1. 降低模块之间的耦合度
+2. 使系统容易扩展
+3. 更好的代码复用
+</code></pre><p>流程说明</p>
 <ol>
-<li>小带宽</li>
-<li>极高的连接数</li>
-<li>低延迟</li>
-<li>稳定</li>
+<li>AOP标签的定义解析切点肯定也是从<code>NamespaceHandlerSupport</code>的实现类开始解析的，这个实现类就是<code>AopNamespaceHandler</code>。</li>
+<li>要启用AOP，我们一般会在Spring里面配置<code>&lt;aop:aspectj-autoproxy/&gt;</code>，所以在配置文件中在遇到<code>aspectj-autoproxy</code>标签的时候我们会采用<code>AspectJAutoProxyBeanDefinitionParser</code>解析器</li>
+<li>进入<code>AspectJAutoProxyBeanDefinitionParser</code>解析器后，调用<code>AspectJAutoProxyBeanDefinitionParser</code>已覆盖<code>BeanDefinitionParser</code>的parser方法，然后parser方法把请求转交给了<code>AopNamespaceUtils</code>的<code>registerAspectJAnnotationAutoProxyCreatorIfNecessary</code>去处理</li>
+<li>进入<code>AopNamespaceUtils</code>的<code>registerAspectJAnnotationAutoProxyCreatorIfNecessary</code>方法后，先调用<code>AopConfigUtils</code>的<code>registerAspectJAnnotationAutoProxyCreatorIfNecessary</code>方法，里面在转发调用给<code>registerOrEscalateApcAsRequired</code>，注册或者升级<code>AnnotationAwareAspectJAutoProxyCreator</code>类。对于AOP的实现，基本是靠<code>AnnotationAwareAspectJAutoProxyCreator</code>去完成的，它可以根据<code>@point</code>注解定义的切点来代理相匹配的bean。</li>
+<li><code>AopConfigUtils</code>的<code>registerAspectJAnnotationAutoProxyCreatorIfNecessary</code>方法处理完成之后，接下来会调用<code>useClassProxyingIfNecessary()</code> 处理<code>proxy-target-class</code>以及<code>expose-proxy</code>属性。如果将<code>proxy-target-class</code>设置为true的话，那么会强制使用CGLIB代理，否则使用jdk动态代理，<code>expose-proxy</code>属性是为了解决有时候目标对象内部的自我调用无法实现切面增强。</li>
+<li>最后的调用<code>registerComponentIfNecessary</code>方法，注册组建并且通知便于监听器做进一步处理。</li>
 </ol>
-<h3 id="套接字"><a href="#套接字" class="headerlink" title="套接字"></a>套接字</h3><p>TPC通信链路的状态迁移和套接字API</p>
-<ul>
-<li>socket()</li>
-<li>connect()</li>
-<li>bind()</li>
-<li>listen()</li>
-<li>accept()</li>
-<li>read()/write()</li>
-</ul>
-<h3 id="处理并发连接的方法"><a href="#处理并发连接的方法" class="headerlink" title="处理并发连接的方法"></a>处理并发连接的方法</h3><ul>
-<li>每次连接时启动一个进程</li>
-<li>实行异步的多重输入输出（多重I/O）</li>
-<li><p>使用线程并行进行同步处理</p>
-<p>网络游戏输入输出的特定 —-  单线程、非阻塞、事件驱动</p>
-</li>
-</ul>
-<p>libevent的特点</p>
-<ul>
-<li>使用套接字出与某个自定状态时（可以writ、也可以read、可以accept），调用实现指定的函数。</li>
-<li>libevent库会自动选择各个OS中最高效的方法（比如，在Linux中套接字数量很多时，选择epoll函数等）来轮询当前状态。</li>
-<li>应用程序用事先设置的函数调用（成为回调函数）来获取这一结果，在回调函数中十级执行read,accept等本来应该在等待的函数。</li>
-</ul>
-<h3 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h3><p>自动生成RPC存根代码的RPC工具</p>
-<p>网络游戏和二级制数据交换格式/库</p>
-<h3 id="网络游戏及其基本结构"><a href="#网络游戏及其基本结构" class="headerlink" title="网络游戏及其基本结构"></a>网络游戏及其基本结构</h3><p>游戏的基础 —— 认知、判断、操作的重复</p>
-<p>网络游戏与测试</p>
-<ul>
-<li>封闭测试（CBT）</li>
-<li>公开测试（OBT）</li>
-</ul>
-<p>不断更新 —— 网络游戏的运营和更新</p>
-<ul>
-<li>定期的补丁</li>
-<li>大型补丁（拓展包、追加包）</li>
-<li>紧急维护</li>
-</ul>
-<h3 id="游戏空间划分"><a href="#游戏空间划分" class="headerlink" title="游戏空间划分"></a>游戏空间划分</h3><ul>
-<li>空间分割（地图分隔）</li>
-<li>平行世界（多服务器/区）</li>
-<li>实例化（副本）</li>
-</ul>
-<h3 id="服务器功能性划分"><a href="#服务器功能性划分" class="headerlink" title="服务器功能性划分"></a>服务器功能性划分</h3><table>
-<thead>
-<tr>
-<th>名称</th>
-<th>缩略语</th>
-<th>用途</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>客户端</td>
-<td>gmsv</td>
-<td>运行在用户客户端上</td>
-</tr>
-<tr>
-<td>登陆服务器</td>
-<td>loginsv</td>
-<td>用于广利游戏数据的逻辑</td>
-</tr>
-<tr>
-<td>数据库服务器</td>
-<td>loginsv</td>
-<td>登陆，负责服务整体使用情况的管理、解压缩以及解密等处理，减轻游戏服务器的负荷</td>
-</tr>
-<tr>
-<td>反向代理服务器</td>
-<td>proxy</td>
-<td>接受连接，负责进行TCP会话本身的管理、解压缩以及解密等处理，减轻游戏服务器的负荷</td>
-</tr>
-<tr>
-<td>消息服务器</td>
-<td>msgsv</td>
-<td>用于使网上聊天、即时消息、公会等社交活动能够跨越平行世界和空间分割来进行消息交换。</td>
-</tr>
-<tr>
-<td>世界服务器</td>
-<td>worksv</td>
-<td>使用空间分割的情况下，属于该世界的所有gmsv连接至这个服务器进程，负责</td>
-</tr>
-<tr>
-<td></td>
-</tr>
-<tr>
-<td>通用数据库服务器（整体通用的数据库服务器）</td>
-<td>commondbsv</td>
-<td>用于实现所有世界都需要的内存处理，实时统计处理和等级排名等处理</td>
-</tr>
-</tbody>
-</table>
-<h3 id="服务器硬件规格"><a href="#服务器硬件规格" class="headerlink" title="服务器硬件规格"></a>服务器硬件规格</h3><ul>
-<li>以CPU为中心的服务器：CPU较快，内核较多，内存一般，容错性低。一次性的。</li>
-<li>以储存为中心的服务器：CPU一般，内核一般，内存高，储存量大，容错性高。使用期长。</li>
-</ul>
-<h3 id="一般游戏需要持久化的信息"><a href="#一般游戏需要持久化的信息" class="headerlink" title="一般游戏需要持久化的信息"></a>一般游戏需要持久化的信息</h3><ul>
-<li>用户（id、密码、计费方式等）</li>
-<li>角色（体力、经验、金钱、当前位置，名字等）</li>
-<li>技能</li>
-<li>任务日志 （正在进行、已完成）</li>
-<li>拍卖</li>
-<li>好友列表</li>
-<li>邮件</li>
-<li>公会</li>
-<li>日志</li>
-</ul>
-<h3 id="路径搜索和实际的移动处理"><a href="#路径搜索和实际的移动处理" class="headerlink" title="路径搜索和实际的移动处理"></a>路径搜索和实际的移动处理</h3><ul>
-<li><p>阶段1：玩家自己进行移动路径的计算，实际的移动也在客户端进行，服务器无法限制地接受</p>
-</li>
-<li><p>阶段2：与阶段1相同，但是在服务端加入一项限制：限制移动请求的接受频率</p>
-</li>
-<li><p>阶段3：与阶段1相同，但是在服务端加入一项限制：限制移动请求的接受频率</p>
-</li>
-<li><p>阶段3： 与阶段2相同，但是在move函数中加入客户端的发送时间，一起发送给服务器</p>
-</li>
-<li><p>阶段4：服务端进行路径搜索和移动处理</p>
-</li>
-<li><p>阶段5：在客户端中只进行路径搜索中的搜索处理</p>
-</li>
-</ul>
-<p>移动路径的发送方式 —- 优先发送最终结果</p>
+<p>创建AOP代理<br>AOP的核心逻辑是在<code>AnnotationAwareAspectJAutoProxyCreator</code>类的<code>postProcessAfterInitialization()</code>这个方法，然后接下来是调用<code>wrapIfNecessary</code>方法。</p>
+<pre><code class="java">
+</code></pre>
+<p>##</p>
 
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏开发/">游戏开发</a></li></ul>
-
-        <a data-url="http://gonefuture.top/2019/02/16/《网络游戏核心技术与实战》笔记-1/" data-id="ck8gr4zgg002t1ovttj7grs0l" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/学习笔记/Spring源码组件学习-AOP/" data-id="ckjtrgp8k004hn8vierhhkjvj" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -390,7 +278,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《网络游戏核心技术与实战》笔记-1" ></div> 
+<div id="SOHUCS" sid="学习笔记/Spring源码组件学习-AOP" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -410,7 +298,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/19/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/19/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -424,23 +312,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2020/03/25/游戏框架笔记/技能系统设计/">技能系统设计</a>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/24/游戏框架笔记/跨服系统设计/">跨服系统的设计</a>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
           </li>
         
           <li>
-            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
           </li>
         
           <li>
-            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
           </li>
         
       </ul>
@@ -452,7 +340,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -461,7 +349,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
     </div>
   </div>
 
@@ -482,11 +370,11 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2020 WeiJian Qian
+      &copy; 2021 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
-    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
 
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
       .

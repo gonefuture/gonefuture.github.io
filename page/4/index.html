@@ -83,10 +83,10 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-项目笔记/游戏线程模型学习" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-项目笔记/玩家实体的抽象" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/10/14/项目笔记/游戏线程模型学习/" class="article-date">
-  <time datetime="2019-10-14T08:45:32.291Z" itemprop="datePublished">2019-10-14</time>
+    <h3 href="/2020/08/22/项目笔记/玩家实体的抽象/" class="article-date">
+  <time datetime="2020-08-22T08:42:00.644Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   </div>
@@ -98,371 +98,46 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="游戏线程模型学习"><a href="#游戏线程模型学习" class="headerlink" title="游戏线程模型学习"></a>游戏线程模型学习</h1><h2 id="任务调度器"><a href="#任务调度器" class="headerlink" title="任务调度器"></a>任务调度器</h2><pre><code class="java">public class dentityEventExectorGroup {
+        <h1 id="玩家实体的抽象"><a href="#玩家实体的抽象" class="headerlink" title="玩家实体的抽象"></a>玩家实体的抽象</h1><h2 id="IPlayer-本地玩家接口"><a href="#IPlayer-本地玩家接口" class="headerlink" title="IPlayer    本地玩家接口"></a><code>IPlayer</code>    本地玩家接口</h2><pre><code class="java">public interface IPlayer {
+    // 获取玩家id
+    long getPlayerI();
 
-    private static fanal String EXECUTOR_NAME_PREFIX = &quot;Identity-dispatcher&quot;;
-
-    static private EventExecutor[] childrens;
-    static private Profile threadProfile = new Profile();
-    static private Profile taskProfile = new Prfile;
-
-    // 初始化, nThreads 线程数量
-    synchronized public static void init() {
-        if(childrens == null) {
-            childrens = new EventExecutor[nThreads];
-            ThreadFactory threadFactory = new DefaultThreadFactory(EXECUTOR_NAME_PREFIX);
-            for(int i=0; i&lt; nThreaeds; i++) {
-                EventExecutor eventExecutors = new EventExecutor(i+1, null, threadDactory, true);
-                childrebs[i] = eventEventors;
-            }
-        }
-    }
-
-    public static void shutdown() {
-        for(EventExcutor c : childrens) {
-            c.shutdownGracefully();
-        }
-    }
-
-    private static EventExcutor takeExecutor(int dispatcherHashCode) {
-        return childrens[Math.abs(dispatcherHashCode % childrens.length)];
-    }
-
-    // 添加同步任务
-    public static Future&lt;?&gt; addTask(AbstractDispatcherHashCodeRunnable dispatcherHashCodRunnable) {
-        checkName(dispatcherHashCodRunnable.name());
-        EventExecutor eventExecutor = takeExecutor(dispatcherHashCodRunnable.getDispatcherHashCode());
-        dispathcherHashCodeRunnable.submit(eventExecutor.getIndex(),false);
-        return eventExecutor.addTask(dispatcherHashCodeRunnable);
-    }
-
-    // 添加同步任务
-    public static Future&lt;?&gt; addTask(int dispatcherCode,String name, Runnable runnable) {
-        checkName(name);
-        return addTask(new AbstractDispatcherHashCodeRunnable() {
-            @Override
-            public String name() {
-                return name;
-            }
-            @Ovveride
-            public int getDispatcherHashCode() {
-                return dispatcherCode();
-            }
-            @Override
-            public void doRun() {
-                runnable.ru();
-            }
-        });
-    }
-
-    // 添加延迟任务
-    public static ScheduleFuture&lt;?&gt; addScheduleTask(AbstractDispatcherHashCodeRunnable dispatcherHashCodRunnable, long delay, TimeUtil unit) {
-         checkName(dispatcherHashCodRunnable.name());
-        EventExecutor eventExecutor = takeExecutor(dispatcherHashCodRunnable.getDispatcherHashCode());
-        dispathcherHashCodeRunnable.submit(eventExecutor.getIndex(),false);
-        return eventExecutor.addScheduleTask(dispatcherHashCodeRunnable);
-    }
-
-    public static ScheduledFuture&lt;?&gt; addScheduleTask(int dispatcherHashCode, String name,  String name, long delay, TimeUtil unit, Runnable runnable) {
-        checkName(name);
-        return addScheduleTask(new AbstractDispatcherHashCodeRunnable() {
-            @Override
-            public int getDispatcherHashCode() {
-                return dispatcherHashCode;
-            }
-            @Override
-            public String name() {
-                return name;
-            }
-            @Override
-            public void doRun() {
-                runnable.run();
-            }
-        }, delay, unit);
-    }
-
-    // 添加定时器任务
-    // 该任务按照周期执行
-    public static addScheduleAtFixedRate(AbstractDispatcherHashCodeRunnable dispatcherHashCodeRunnable,
-    long initialDeley, long period, TimeUnit unit) {
-        checkName(dispatcherHashCodeRunnable.name());
-        EventExecutor eventExecutor = taskExecutor(dispatcherHashCodeRunnable.getDisatcherHashCode());
-        // 延迟任务等待耗时统计无意义
-        dispatcherHashCodeRunnable.submit(eventExecutor.getIndex(), true);
-        return eventExecutor.addScheduleAtFixedRate(dispatcherHashCodeRunnable, initialDelay, period, unit);
-    }
-
-    // 添加定时器任务
-    // 该任务按照周期执行
-    public static ScheduledFuture&lt;?&gt; addScheduleAtFixedRate(int dispatcherHashCode, String name,  String name, long initialDelay, long  period, TimeUtil unit, Runnable runnable ) {
-         return addScheduleAtFixedRate(new AbstractDispatcherHashCodeRunnable() {
-            @Override
-            public int getDispatcherHashCode() {
-                return dispatcherHashCode;
-            }
-            @Override
-            public String name() {
-                return name;
-            }
-            @Override
-            public void doRun() {
-                runnable.run();
-            }
-        }, initialDelay,period, unit);
-    }
-
-    // 添加定时器任务
-    // 该任务按延迟时间执行
-    public static addScheduleAtFixedRate(AbstractDispatcherHashCodeRunnable dispatcherHashCodeRunnable,
-    long initialDeley, long period, TimeUnit unit) {
-        checkName(dispatcherHashCodeRunnable.name());
-        EventExecutor eventExecutor = taskExecutor(dispatcherHashCodeRunnable.getDisatcherHashCode());
-        // 延迟任务等待耗时统计无意义
-        dispatcherHashCodeRunnable.submit(eventExecutor.getIndex(), true);
-        return eventExecutor.addScheduleAtFixedDelay(dispatcherHashCodeRunnable, initialDelay, period, unit);
-    }
-
-    // 添加定时器任务
-    // 该任务按照延迟时间执行
-    public static ScheduledFuture&lt;?&gt; addScheduleAtFixedRate(int dispatcherHashCode, String name,  String name, long initialDelay, long  period, TimeUtil unit, Runnable runnable ) {
-         return addScheduleAtFixedDelay(new AbstractDispatcherHashCodeRunnable() {
-            @Override
-            public int getDispatcherHashCode() {
-                return dispatcherHashCode;
-            }
-            @Override
-            public String name() {
-                return name;
-            }
-            @Override
-            public void doRun() {
-                runnable.run();
-            }
-        }, initialDelay,period, unit);
-    }
-
-    // 获取线程池线程数量
-
-    public static getThreadNum() {
-        return childrens.length;
-    }
-
-    // 等待线程池前面提交的任务全部执行完成
-    public static void blockWaitRunOver() {
-        int threadNum = getThreadNum();
-        AtomicInteger ready = new AtomicInteger(threadNum);
-        // 注意，这里是要原子变量的任务塞满任务队列
-        for(int i =0; i&lt; threadNum; i++&gt;) {
-            addTask(i, &quot;checkReady&quot;, ready::decrementAndGet);
-        }
-        // 直到所有加入任务队列的原子减一任务执行完毕，ready的值变为0，才会结束while循环,结束函数结束阻塞
-        while(ready.get() &gt; 0) {
-                try{
-                    TimeUnit.MillLISECONDS.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-        }
-    }
-
-    private static void checkName(String name) {
-        if(StringUtils.isEmpty(name)) {
-            throw new NullPointerException(&quot;name is null!&quot;);
-        }
-    }
-} 
-
-</code></pre>
-<p>事件执行器</p>
-<pre><code class="java">class EventExecutor extends SingleTreadEventExecutor {
-
-    private int index;
-
-    protected EventExecutor(int index, EventExecutorGroup parent, ThreadFacotry threadFactory, boolean addTaskWakeUp{   super(parent, threadFactory, addTaskWakesUp);
-        this.index = index;
-    }
-
-    @Override
-    protected void run() {
-        do {
-            Runnable task = takeTask();
-            if(task != null) {
-                task.run();
-                updateLastExecutionTime();
-            }
-        } while (!confirmShutdown());
-    }
-
-    public ScheduleFuture&lt;?&gt; addScheduleTask(AbstractDispatcherHashCodeRunnable task, long delay, TimeUnit unit) {
-        return schedule(task, deley, unit);
-    }
-
-    // ... 接下来一堆定时器方法
-
-
-    public Future&lt;?&gt; addTask() {
-        return submit(task);
-    }
-
-    public int getIndex() {
-        return index;
-    }
-}
-
-</code></pre>
-<p>任务分发标记器</p>
-<pre><code class="java">public abstract class AbstractDispatcherHashCodeRunnable implements Runnable {
-
-    private Consumer&lt;AbstractDispatcherHashCodeRunnable&gt; runBefore;
-    private Consumer&lt;AbstractDispatcherHashCodeRunnable&gt; runAfter;
-
-    // 是否为定时任务
-    private boolean scheduleTask;
-    private int threadIndex;
-    private long submitTime;
-
-    // 执行的任务
-    abstract public void doRun();
-
-    // 用于分发的编号
-    public abstract int getDispatcherHashCode();
-
-    // 任务类型，同一种类型任务添加一种任务即可
-    public abstract String name();
-
-    // 该任务纳秒时间
-    protected long timeoutNanoTime() {
-        return TimeUnit.MILLISECONDS.toNanos(1);
-    }
-
-    public void submit(int threadIndex, boolean scheduleTask) {
-        this.threadIndex = threadIndex;
-        this.scheduleTask = scheduleTask;
-        this.submitTime = System.nanoTime();
-        IdentityEventExecutorGroup.recordSubmit(name());
-    }
-
-    @Override
-    final public void run() {
-        long start = System.nanoTime();
-        try {
-            if(runBefore != null) {
-                runBefore.accept(this);
-            }
-            doRun();
-            if(runAfter != null) {
-                runAfter.accept(this);
-            }
-        } catch(Throwable e) {
-            IdentityEventExecutorGroup.recordException(name());
-        } finally {
-            long now = System.nanoTime();
-            long useNanoTime = now - start;
-            long waitNanoTime = start - submitTime;
-            IdentityEventExcutorGroup.recordExc(name(), threadIndex, scheduleTask, useNanoTime, waitNanoTime);
-            this.submitTime = now;
-        }
-    }
-
-    // 任务前后函数的get/set方法 ...
+    // 获取playerId的包装类型，用户优化性能
+    Long getPlayerPackage();
 
 }
 
-</code></pre>
-<h2 id="io线程池"><a href="#io线程池" class="headerlink" title="io线程池"></a>io线程池</h2><p>Io线程池是一种特殊的存在，用来处理有IO操作的业务。</p>
-<pre><code class="java">public class IoThreadPool {
+## IPlayerBridge
 
-    // 统计任务名前缀
-    private static final String IO_WORK_PREFIX = &quot;IO-WORK-&quot;;
-    // 线程名前缀
-    private static final String THREAD_NAME_PREFIX = &quot;io-thread-pool&quot;;
-    // 线程池线程保持存货x分钟
-    private staitc final int KEEP_ALIVE_MIN = 1;
-    // 队伍中允许的最大容量
-    private static final QUEUE_CAPACITY = 5000;
-
-    private static final LinkedBlockingDeque&lt;Runnable&gt; workQueue = new LinkedBlockDeque&lt;&gt;();
-
-    private static ExecutorService executorService;
-
-    // 队列满再提交失败次数
-    private static AtomicInteger submitFailCounter = new AtomicInteger(0);
-    // 队列长读最大值
-    private static AtomicInteger queueMax = new AtomicInteger(0);
-    // 拒绝服务数量峰值
-    private static int maxSubmitFail;
-    private staitc Profile profile = new Profile();
-
-    // 初始化id线程池
-    public static void init(int nThread) {
-        executorService = new ThreadPoolExecutor(
-            nThread / 2 ,
-            nThread,
-            KEEP_ALIVE_MIN,
-            TimeUnit.MINUTES,
-            workQueue,
-            new DefaultThreadFactory(THREAD_NAME_PREFIX),
-            (r, executor) -&gt; {
-                // 业务被拒绝，队列已满，线程已全部被占用，直接在当前线程执行业务代码
-                r.run();
-                // 提交失败次数+1
-                submitFailCounter.incrementAndGet();
-            }
-        );
+```java
+public interface IPlayerBridge {
+    // 默认发包方式，会执行合包操作
+    default ChannelFuture sendPacket(Object packet) {
+        return sendPacket(packet,false);
     }
 
-    // 添加io业务
-    public static void execute(String name, Runnable runnable) {
-        if(StringUtils.isEmpty(name)) {
-            throw new NullPointerException(&quot;name is null&quot;);
-        }
-        executorService.submit(IoWork.valueOf(name, runnable));
-        queueMax.accumulateAndGet(workQueue.size(), Math::max);
-    }
+    // 精细发包方式，可自定义是否精细合包
+    ChannelFuture sendPacket(Object packet, boolean flushNow);
 
-    // 关闭io线程池，最多等待15s
-    public statac void shutdown() throws InterruptedException {
-        executorService.awaitTermination(15, TimeUnit.SECONDS);
-    }
+    // 跨服玩家时间
+    // 1. 战斗服抛出该事件，知道在战斗服执行
+    // 2. 游戏服抛出，传输到战斗服后执行
+    // 异步抛出玩家事件，该方法内部会自动填入
+    void sumbitEvent(BaseTransferPlayerEvent playerEvent);
 
-    // 获取提交失败峰值
-    public static int getMaxSubmitFail() {
-        return mexSubmitFail;
-    }
-    // 获取队列最大长度
-    public static int getQueueMax() {
-        return queueMax.get();
-    }
 
-    // 性能统计信息
-    private static class IoWork implements Runnable {
-        String name;
-        Runnable runnable;
-        ProInfo proInfo;
-        long submitTime;
+    // 从战斗服抛出该事件到游戏服
+    // 1. 游戏服抛出该事件，直接在游戏服执行
+    // 2. 战斗服抛出，传输到游戏后执行
+    void submitEvent(BasePlayerEvent playerEvent);
 
-        privte static IoWork valueOf(String name, Runnable runnable) {
-            IoWork vo = new IoWork();
-            vo.name = IO_WORK_PREFIX + name;
-            vo.runnable = runnable;
-            vo.proInfo = profile.getOrCreateProInfo(name);
-            vo.proInfo.recordSubmit();
-            vo.subimitTime = System.nanoTime();
-            return vo;
-        }
+    // 1. 游戏服抛出该事件，直接在游戏服执行
+    // 2. 战斗服抛出，该方法内部会自动填入Player对象
+    void sumbitSyncEvent(BasePlayer)
 
-        @Override
-        public voisd run() {
-            long start = System.nanoTime();
-            try {
-                runnable.run();
-            } catch(Exception e) {
-                proInfo.recordException();
-            }
-            proInfo.recordExc(System.nanoTime() - start, 0);
-        }
-    }
+
 }
+
 
 </code></pre>
 
@@ -471,7 +146,7 @@
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/10/14/项目笔记/游戏线程模型学习/" data-id="ck8gr4zsd005f1ovt7x682kae" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/项目笔记/玩家实体的抽象/" data-id="ckjtrgp9g005cn8vizbt7iop7" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -479,7 +154,54 @@
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/游戏线程模型学习" ></div> 
+<div id="SOHUCS" sid="项目笔记/玩家实体的抽象" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-项目笔记/热更系统学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/项目笔记/热更系统学习/" class="article-date">
+  <time datetime="2020-08-22T08:42:00.640Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="热更系统"><a href="#热更系统" class="headerlink" title="热更系统"></a>热更系统</h1><h2 id="ManagementFactory"><a href="#ManagementFactory" class="headerlink" title="ManagementFactory"></a>ManagementFactory</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2020/08/22/项目笔记/热更系统学习/" data-id="ckjtrgp9e005an8vi6yal0t8o" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/热更系统学习" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -499,8 +221,8 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
     <article id="post-项目笔记/游戏跨服开发笔记" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/10/10/项目笔记/游戏跨服开发笔记/" class="article-date">
-  <time datetime="2019-10-10T12:54:00.804Z" itemprop="datePublished">2019-10-10</time>
+    <h3 href="/2020/08/22/项目笔记/游戏跨服开发笔记/" class="article-date">
+  <time datetime="2020-08-22T08:42:00.635Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   </div>
@@ -769,7 +491,7 @@ public class CenterManager {
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/10/10/项目笔记/游戏跨服开发笔记/" data-id="ck8gr4zse005g1ovtngurc2po" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/项目笔记/游戏跨服开发笔记/" data-id="ckjtrgp9c0058n8vio53da0qm" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -795,524 +517,9 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-项目笔记/掉落系统学习" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <h3 href="/2019/09/30/项目笔记/掉落系统学习/" class="article-date">
-  <time datetime="2019-09-30T09:35:41.659Z" itemprop="datePublished">2019-09-30</time>
-</h3>
-    
-  </div>
-  <div class="article-inner">
-  <div class="curve-down">
-  <div class="fill-content">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-        <h1 id="掉落系统学习"><a href="#掉落系统学习" class="headerlink" title="掉落系统学习"></a>掉落系统学习</h1><h2 id="概况"><a href="#概况" class="headerlink" title="概况"></a>概况</h2><p>掉落系统是RPG类游戏的重要组成部分，直接影响玩家的核心游戏体验。掉落配置表繁多，配置参数复杂。如果策划配错数值，服务端必须对整个系统极为了解才能快速找到出错的地方。</p>
-<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>掉落系统拥有基础的五张表，这五张表之间层层相关，一步步决定了最终掉落的物品。</p>
-<p>掉落表关系图：</p>
-<p>ObjectResource: 怪物表dropResourceIds字段配置下面的掉落ID,同一个怪可以有多种掉落方式</p>
-<p>DropResource: <code>gropIds</code>索引到 DropItemGroupResource的Id，确定</p>
-<p>DropGropResource: <code>itemGroupId</code>索引到DropItemGroupResource的Id，确定掉落的掉落组</p>
-<p>DropItemGroupResource: <code>dropItemId</code>索引到DropItemResource的id,确定掉落里面有哪些掉落项 PS:这张表不是配物品ID!是下面表的ID！！！！</p>
-<p>DropItemResource: <code>code</code>索引到物品ID，确定掉落项的各种属性</p>
-<p>当需要给一个怪物配置掉落时，我们需要在怪物<code>ObjectResource</code>的dropResourceIds添加一个掉落id,然后在<code>DropResource</code>决定掉落策略（掉地上或者飞包）、掉落触发条件、掉落归属策略、玩家和怪物的掉落条件，之后在<code>DropGropResource</code>决定掉落次数限制、掉落随机范围、随机方式（是否放回）、各个掉落物组的权重，之后在<code>DropItemGroupResource</code>填写各掉落物的权重，最后在<code>DropItemResourc</code>配置掉落物的物品id、数量、类型、是否绑定、是否专用、记录描述等。</p>
-<p>对象表 -&gt; 掉落方式表 -&gt; 掉落组表 -&gt; 掉落物组表 -&gt; 掉落物表</p>
-<p>额外的相关联表:</p>
-<p>DropGroupLimitResource: 掉落限制表，可以配置个人每人每次限制、全服每日次数限制、个人永久次数限制</p>
-<h2 id="掉落的业务方法"><a href="#掉落的业务方法" class="headerlink" title="掉落的业务方法"></a>掉落的业务方法</h2><p>掉落逻辑处理</p>
-<pre><code class="java">@Component
-public class DropService {
-
-    // 幸运大爆
-    public boolean luckyValueDrop(Player player, int bossId, int x, int y) {
-        // ...
-    }
-
-    // 幸运大爆是否触发
-    public boolean isLuckyDropHit(Player player, PlayerDropEntity playerDropEntity, int bossId) {
-        // ...
-    }
-
-    // 计算出超级幸运大爆物品奖励
-    private Reward getSuperLuckDropReward(Player player) {
-        // ...
-    }
-
-    // 创建掉落物的配置信息
-    public void createDropToGroundItems(Player player, PlayerKillBossDropEvent envet) {
-        // ...
-    }
-
-    // 战斗服游戏服统一执行飞包掉落物的逻辑
-    public void dropToBag(Player player, PlayerDropToBagEvent event) {
-        List&lt;DropItemResource&gt; result = calcuteDropItems(player, event.getBossDropInfo(), event.getDropId());
-        if(result == null || result.isEmpty()) {
-            return;
-        }
-        DropStrategy.dropToBag(event.getBossDropInfo(), player, result);
-    }
-
-
-
-    // 根据掉落ID计算出掉落物的逻辑
-    private List&lt;DropItemResource&gt; calcutrDropItems(Player player, BossDropInfo bossDropInfo, int dropId) {
-        DropResource dropResource = DropManager.getInstance().getDropResource(dropId);
-        MapResource mapResource = MapManger.self().getMapResource(bossDropInfo.getMapId());
-        Map&lt;Object, Object&gt; params = null;
-        if(mapResource.isTransferMap()) {
-            // 如果是跨服地图，则对去开服天数取战区平均天数
-            params = new HashMap&lt;&gt;();
-            params.put(&quot;openDay&quot;, CenterManager.self().getServerGroupOpenDay());
-        }
-        // 检验玩家是否符合掉落条件（DropResource中配置的playerConditionsDefs和开服天数）
-        Result result = dropResource.getPlayerConditions().verify(player, 1, params);
-        if(result.isFali()) {
-            return null;
-        }
-        // 判断是否触发击杀幸运次数掉落
-        boolean isPlayerLuckyHit = dropResource.isPlayerLuckyNumHit(player);
-        if(!isPlayerLuckyHit) {
-            return null;
-        }
-        boolean isServerLuckyHit = dropResource.isServeLuckyNumHit();
-        if(!isServerLuckyHit) {
-            return null;
-        }
-        return DropStrategy.getDropItemAndAddRecord(player, dropResource.getGrouoIds(), params, bossDropInfo);
-    }
-
-
-
-}
-
-</code></pre>
-<p>掉落归属策略</p>
-<pre><code class="java">
-public enum DropBelongStrategy {
-
-    // 无归属
-    EVERYONE(true),
-    // 击杀者归属
-    KILLER(false) {
-        @Override
-        public BelongContext createContext(Npc death, AbstractCreature killer) {
-            FightPlayer fightPlayer = killer.getPlayerMasterOrNull();
-            if(fightPlayer == null) {
-                return BelongContext.valueOf(DropBelongStrategy.EVERYONE);
-            }  
-            BelongContext belongContext = BelongContext.valueOf(this);
-            belongContext.setKillerId(fightPlayer.getObjectId());
-            belongContext.setDropBelongStrategy(this);
-            return belongContext;
-        }
-
-        @Override
-        public IBelongStrategy getBelongStrategy(BelongContext belongContext) {
-            // 若击杀者不是玩家或者玩家的召唤物，则默认所有人拾取
-            return new KillerBelongStrategy(belongContext.getKillerId());
-        }
-
-        @Override
-        public List&lt;FightPlayer&gt; getBelongFightPlayers(Npc death, AbstractCreature killer) {
-            ArrayList&lt;FightPlayer&gt; players = new ArrayList&lt;&gt;(1);
-            if(killer != null) {
-                AbstractCreature master  = killer.getMasterOrSelf();
-                if(master.isPlayer()) {
-                    players.add((FightPlayer) master);
-                }
-            }
-            return players;
-        }
-    }
-
-    // 仇恨最高者归属
-    HATRED(true) {
-        @Override
-        public BelongContext createContext(Npc death,AbstractCreature killer) {
-            AbstractCreature abstractCreature = death.getAggroBelong();
-            FightPlayer fightPlayer = abstractCreature.getPlayerMasterOrNull();
-            if(fightPlayer == null) {
-                return BelongContext.valueOf(DropBelongStrategy.EVERYONE);
-            }
-            BelongContext belongContext = BelongContext.valueOf(this);
-            belongContext.setBelongId(death.getAggroBelong.getOjectId());
-            return belongContext;
-        }
-        @Override
-        public IBelongStrategy(BelongContext belongContext) {
-            return new AggroBelongStrategy(belongContext.getBelongId());
-        }
-        @Override
-        public List&lt;FightPlayer&gt; getBelongFightPlayers(Npc death, AbstractCreature killer){
-            AbstractCreature aggroBeong = death.getAggroBelong();
-            ArrayList&lt;FightPlayer&gt; players = new ArrayList&lt;&gt;(1);
-            if(aggroBelong != null) {
-                FightPlayer master = aggroBelong.getPlayerMasterOrNull();
-                if(master != null) {
-                    players.add(master);
-                }
-                return palyers;
-            }
-        }
-    }
-
-    // 击杀者公会归属
-    KILLER_GUILD(false),
-
-    // 仇恨最高者归者公会归属
-     HATRED_GUILD(true) {
-
-     }
-
-     // 击杀者队伍归属
-     KILLER_TEAM(ture) {
-
-     }
-
-     // 仇恨最高者公会归属，且需工会玩家在仇恨列表
-     HATRED_GUILD_IN_AGGER(ture) {
-
-     }
-
-     // 是否属于玩家
-     private boolean isToBelongPlayer;
-
-     DropBelongStrategy(boolean isToBelongPlayer) {
-         this.isToBelongPlayer = isToBelongPlayer;
-     }
-
-    // 返回掉落拾取策略
-    public IBelongStrategy getBelongStrategy() {
-        retuen new EveryoneBelongStatergy();
-    }
-
-    // 返回掉落归属玩家Id
-    public List&lt;FightPlayer&gt; getBelongFightPlayers(Npc death, AbstractCreautre killer) {
-        return new ArrayList&lt;FightPlayer&gt;;
-    }
-
-    // 创建掉落内容
-    public BelongContext createContext() {
-        return BrlongContext.valueOf(DropBelongStrategy.EVERYONE);
-    }
-
-    public boolean isToBelongPlayer() {
-        return isTobelongPlayer;
-    }
-}
-</code></pre>
-<p>掉落策略</p>
-<pre><code class="java">
-public enum DropStrategy {
-
-    // 掉落到地上
-    DropToGroupStrategy {
-
-        @Override
-        public void doDrop(Npc death, AbstractCreature killer, DropRsource dropResource) {
-            // 确定归属策略影响到的主体，用于决定向谁抛事件
-            FightPlayer fightPlayer = null;
-            if(dropRsource.getBelongStrategy().isToBelongPlayer()) {
-                AbstractCreature aggroBelong = death.getAggroBelong();
-                if(aggroBelong == null) {
-                    return null;
-                }
-                fightPlayer = aggroBelong.getPlayerMasterOrNull();
-            } else {
-                fightPlayer = killer.getPlayerMasterOrNull();
-            }
-            if(fightPlayer == null) {
-                return;
-            }
-            // 向掉落主体抛掉落事件，掉落主体接受事件之后，进行各种玩家掉落条件以及掉落次数的验证
-            fightPlayer.getPlayerBridge().submitEvent(
-                PlayerKillBossDropEvent.valueOf(dropResource.getId(), dropResource.getBelongStrategy().createContext(death,killer),
-                BossDropInfo.valueOf(death));
-            );
-        }
-    },
-
-    // 掉落到玩家背包
-    DropToPlayerBagStrategy {
-        @Override
-        public void doDrop(Npc death, AbstractCreature killer, DropRsource dropResource) {
-            // 确定归属策略
-            List&lt;FightPlayer&gt; players = dropResource.getBelongFightPlayers(death,killer);
-            for(FightPlayer player : players) {
-                player.getPlayerBridge().submitEvent(PlayerDropToBagEvent.valueOf(dropResource.getId(), BossDropInfo.valueOf(death)));
-            }
-        }
-    }
-
-    // ================掉落到仓库，等可后续加类型==============
-
-
-
-    public void doDrop(Npc death, AbstractCreature killer, DropResource dropResource) {
-        // ...
-    }
-
-    // 根据掉落组随机出掉落物信息，根据掉落信息可以转化成掉落到地上的对象，或者掉落到背包的物品
-    public static List&lt;DropItemResource&gt; rollGoods(Player player, List&lt;Integer&gt; groupIds) {
-        return rollGoods(player, groupIds, null);
-    }
-
-    // 随机出掉落物
-    public static List&lt;DropItemResource&gt; rollGoods(Player player, List&lt;Integer&gt; groupIds, Map&lt;Object, Object    &gt;) { 
-        List&lt;DropItemResource&gt; result = new ArrayList&lt;&gt;();
-        for(Integer groupId : groupIds) {
-            // 获取掉落组配置
-            DropGroupResource groupResource = DropManager.getInstance().getDropGroupResource(groupId);
-            if(groupResource == null) {
-                // 配了不存在的掉落组说明随机不到东西
-                if(!groupResource.checkLimit(player)) {
-                    continue;
-                }
-                CHooser chooser = groupResource.getChooser(plyaer,params);
-                List&lt;ChooserItem&gt; itemGroups = ChooserManager.getInstance().chooser(chooser);
-                if(itemGroups.isEmpty()) {
-                    continue;
-                }
-                itemGroups.forEach(itemGroup -&gt; {
-                    int itemGroupId = Integer.valueOf(itemGroup.getResult());
-                    if(itemGroupId != 0) {
-                        // 获取掉落物组配置
-                        DropItemGroupResource itemGroupResource = DropManager.getInstance().getDropItemGroupResource(itemGroupId);
-                        ChooserItem dropItem = ChooaweManager.getInstance().chooseOne(itemGroupResource.getChooser());
-                        if(dropItem != null) {
-                            int dropItemId = Integer.valueOf(dropItem.getResult());
-                            if(dropItemId &gt; 0) {
-                                result.add(DropManager.getInstance().getDropItemResource(dropItemId));
-                            }
-                        }
-                    }
-                });
-
-            }
-        }
-        return result;
-    }
-
-    // 将物品掉落到地图上
-    public static dropToGround0(Grid grid, int dropItemId, IBelongStrategy, WorldMapInstance mapInstance) {
-        if(dropItemId == 0) {
-            return;
-        }
-        Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
-        args.put(&quot;x&quot;,grid.getX());
-        args.put(&quot;y&quot;, grid.getY());
-        args.put(&quot;dropItemId&quot;, dropItemId);
-        args.put(&quot;belongStrategy&quot;, belongStrategy;
-        args.put(&quot;strartClearTask&quot;, true);
-        DropObject dropObject = (DropObject) DropObjectCreator.getCreator(ObjectType.DROPOBJECT).create(null, null, mapInstance,args);
-        World.getInstance().spawn(dropObject);
-    }
-
-    // 掉落到地方的方法
-    public static void dropToGround(int centerX, int centerY, List&lt;DropItemResource&gt; dropItemResources,
-    IBelongStrategy belongStrategy, WorldMapInstance mapInstance) {
-        // ...
-    }
-
-    // 掉落到背包
-    public static List&lt;DropItemReosource&gt; dropToBag(BossDropInfo bossDropInfo, Player player, List&lt;DropItemResource&gt; rsult) {
-        // ...
-    }
-
-    //  生成掉落记录
-    public static BossDropRecord createDropRecord(int mapId, int objectId, long mapInstanceId, String name, int dropItemId) {
-        // ...
-    }
-
-    // 获取掉落物
-    public static List&lt;DropItemResource&gt; getDropItemAndAddRecord(Player player, List&lt;Integer&gt; groupIds, ) {
-        List&lt;DropItemResource&gt; result = new ArrayList&lt;&gt;();
-        if(groupIds.isEmpty()) {
-            return result;
-        }
-        List&lt;DropItemResource&gt; rollGoods = rolGoods(player, groupIds,params);
-        // 检测广播
-        broadcastDropItems(plyaer, rollGoods,bossDropInfo);\
-        // 检测掉落记录
-        checkDropRecord(player, rollGoods, bossDropInfo);
-        return rollGoods;
-    }
-
-    // 检测珍惜掉落广播
-    public static void broadcastItems(Player player, List&lt;DropItemReosurce&gt; rollGoods, BossDropINfo bossDropInfo) {
-
-    }
-
-    // 检测掉落到背包的嗲罗记录是否需要广播到其他游戏服
-    // 掉落到背包是在游戏服进行掉落，获取groupIndex的方式是在游戏服的门票信息里面去获取
-    public static void checkDropRecord(Player palyer, List&lt;DropItemReosurce&gt; rollGoods, BossDropINfo bossDropInfo) {
-        // ...
-    }
-
-}
-</code></pre>
-<h2 id="门面类和掉落的触发"><a href="#门面类和掉落的触发" class="headerlink" title="门面类和掉落的触发"></a>门面类和掉落的触发</h2><p>掉落外观类</p>
-<pre><code class="java">@Component
-@SocketClass
-public class DropFacade {
-
-    // ...
-
-    @ReceiverAnno
-    public void onKillBoss(KillBossEvent event) {
-        onKillBoss(event.getPlayer(), event.getMapId(), event.getBossId(), event.getX(), event.getY());
-    }
-
-    private void onKillBoss(Player player, int mapId, int bossId, int x, int y) {
-        // Vip大爆
-        MapResource mapRsource = MapManager.self().getMapResourceStorage().get(mapId, true);
-        if(mapResource.getType() == MapType.FIELD || mapResource.getType() == MapType.TRANSFER_FIELD) {
-            dropService.vipDrop(player, bossId);
-        }
-        // 幸运大爆
-        if(ModuleOpenManger.getInstance().isOpen(player, ModuleOpenType.LUCKY_DROP)) {
-            dropService.luckyValueDrop(player, bossId, x, y);
-        }
-    }
-
-
-    // 游戏服，玩家接受掉落事件，进行玩家条件检测以及次数判断
-    @ReceiverAnno
-    public void onPlayerKillBossDrop(PlayerKillBossDropEvent event) {
-        dropSerive.createDropToGroundItems(event.getPlayer(), event);
-    }
-
-    // 游戏服，处理掉落物到场景事件
-    @ReceiverAnno
-    public void onDropToGround(DropToGroundEvent event) {
-        dropService.doDropToGround(event.getPlayer().getFightPlayer(), event.getDropItemIds(),
-        event.getBelongContext(), event.getBossDropInfo());
-    }
-
-    // 战斗服，处理掉落物掉到场景事件
-    @ReceiverAnno
-    public void onTransferDropToGround(onTransferDropToGroundEvent event) {
-        dropService.doDropToGround(event.getPlayer().getFightPlayer(), event.getDropItemIds(),
-        event.getBelongContext(), event.getBossDropInfo());
-    }
-
-    // 战斗服，统一处理飞背包掉落物事件
-    @ReceiverAnno
-    public void onDropToBag(PlayerDropToBagEvent event) {
-        dropService.dropToBa(event.getPlayer(), event);
-    }
-
-}
-</code></pre>
-<h2 id="掉落数据的持久化"><a href="#掉落数据的持久化" class="headerlink" title="掉落数据的持久化"></a>掉落数据的持久化</h2><p>玩家掉落数据</p>
-<pre><code class="java">@Entity
-@Cached
-public class PlayerDropEntity extends AbstractEntity&lt;Long&gt; {
-
-    @Id
-    private long playerId;
-
-    // ======= 击杀怪物记录 ========
-    @Lob
-    private String dailyKillMonsterTimesStr;
-    // 与dropId关联的怪物的击杀次数&lt;dropId, times&gt;
-    private transinet ConcurrentHashMap&lt;Integer, Integer&gt; dailyKillMonsterTimes;
-
-    @Lob
-    private String dailyKillMonsterLuckyNumStr;
-    // 当日击杀幸运数&lt;掉落ID, 幸运击杀数组&gt;
-    private transient ConcurrentHashMap&lt;Integer, List&lt;Integer&gt;&gt; dailyKillMonsterLuckyNums;
-
-    // ========= 掉落组掉落记录 ==========
-
-    // 当日掉落物品组次数 &lt;dropGroupId, times&gt;,key为DropGroupLimit的id
-    @Lob
-    private String dailyDropGroupTimesStr;
-    private transient ConcurrentHashMap&lt;Integer, Integer&gt; dailyDropGroupTimes;
-
-    // 永久掉落物品次数 &lt;dropGroupId, times&gt;,key为DropGroupLimit的id
-    @Lob
-    private String dropGroupTimesStr;
-    private transient ConcurrentHashMap&lt;Integer, Integer&gt; dropGroupTimes;
-
-    // ======== 幸运值相关 ============
-
-    // 当前幸运值
-    private int luckyValue;
-    // 今日回收装备数量
-    private transient Map&lt;Intger, Integer&gt; dailyRecycleEquipNum;
-    @Lob
-    private String dailyRecycleEquipNumData;
-    // 今日幸运大爆奖励记录
-    private transient List&lt;LuckyDropRecord&gt; luckyDropRecords;
-    @Lob
-    private String luckyDropRecordsData;
-    // 今日获得幸运值
-    private int dailyAddLuckyValue;
-    // 历史获得幸运值
-    private int totalAddLuckyValue;
-    // 今日幸运大爆次数
-    private int dailyLuckDropTimes;
-    // 历史幸运大爆次数
-    private int totalLuckyDropTimes;
-
-    private transient Map&lt;Integer, QuestLuckyDropData&gt; questLuckyDropDataMap;
-    @Lob
-    private String questLuckyDropDataStr;
-
-    // 每日生成的超级幸运掉落次数列表
-    private transient List&lt;Integer&gt; dailySuperLuckyDropValueList;
-    @Lob
-    private String dailySuperLuckyDropValueDataStr;
-
-    private transient Map&lt;ObjectSubType, BossLuckyTimeData&gt; bossLuckyTimesMap;
-    @Lob
-    private String bossLuckyTimesData;
-
-    // 各种处理属性的方法 。。。
-
-
-}
-
-</code></pre>
-
-      
-    </div>
-    <footer class="article-footer">
-      <div class="article-footer-content">
-        
-        <a data-url="http://gonefuture.top/2019/09/30/项目笔记/掉落系统学习/" data-id="ck8gr4zrj00571ovt43i43v23" class="article-share-link">Share</a>
-        
-      </div>
-    </footer>
-  </div>
-  </div>
-
-<!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="项目笔记/掉落系统学习" ></div> 
-<script type="text/javascript"> 
-(function(){ 
-var appid = 'cytLwvbWT'; 
-var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
-var width = window.innerWidth || document.documentElement.clientWidth; 
-if (width < 960) { 
-window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
-
-  </div>
-  
-</article>
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -1326,23 +533,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2020/03/25/游戏框架笔记/技能系统设计/">技能系统设计</a>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/24/游戏框架笔记/跨服系统设计/">跨服系统的设计</a>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
           </li>
         
           <li>
-            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
           </li>
         
           <li>
-            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
           </li>
         
       </ul>
@@ -1354,7 +561,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -1363,7 +570,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
     </div>
   </div>
 
@@ -1384,11 +591,11 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2020 WeiJian Qian
+      &copy; 2021 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
-    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
 
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
       .

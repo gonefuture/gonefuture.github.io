@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>零碎的知识点-1 | gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="零碎的知识点-1 二叉排序树二叉排序树或者是一棵空树，或者是具有下列性质的二叉树：（1）若左子树不空，则左子树上所有结点的值均小于 它的根结点的值；（2）若右子树不空，则右子树上所有结点的值均大于或等于 它的根结点的值；（3）左、右子树也分别为二叉排序树；（4）没有键值相等的节点。  中序遍历可以得到二叉排序树的有序序列      40     / \    30 50  视图与基本表的对比视图可">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="零碎的知识点-1">
+<meta property="og:url" content="http://gonefuture.top/2020/08/22/零碎的知识点-1/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="零碎的知识点-1 二叉排序树二叉排序树或者是一棵空树，或者是具有下列性质的二叉树：（1）若左子树不空，则左子树上所有结点的值均小于 它的根结点的值；（2）若右子树不空，则右子树上所有结点的值均大于或等于 它的根结点的值；（3）左、右子树也分别为二叉排序树；（4）没有键值相等的节点。  中序遍历可以得到二叉排序树的有序序列      40     / \    30 50  视图与基本表的对比视图可">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://hi.csdn.net/attachment/201111/9/0_13208318702UfF.gif">
+<meta property="og:image" content="https://img-blog.csdn.net/20180802180851937?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180802201420822?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:updated_time" content="2018-08-02T12:57:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="零碎的知识点-1">
+<meta name="twitter:description" content="零碎的知识点-1 二叉排序树二叉排序树或者是一棵空树，或者是具有下列性质的二叉树：（1）若左子树不空，则左子树上所有结点的值均小于 它的根结点的值；（2）若右子树不空，则右子树上所有结点的值均大于或等于 它的根结点的值；（3）左、右子树也分别为二叉排序树；（4）没有键值相等的节点。  中序遍历可以得到二叉排序树的有序序列      40     / \    30 50  视图与基本表的对比视图可">
+<meta name="twitter:image" content="http://hi.csdn.net/attachment/201111/9/0_13208318702UfF.gif">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-零碎的知识点-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/零碎的知识点-1/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.468Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/零碎的知识点/">零碎的知识点</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      零碎的知识点-1
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="零碎的知识点-1"><a href="#零碎的知识点-1" class="headerlink" title="零碎的知识点-1"></a>零碎的知识点-1</h1><hr>
+<h2 id="二叉排序树"><a href="#二叉排序树" class="headerlink" title="二叉排序树"></a>二叉排序树</h2><p>二叉排序树或者是一棵空树，或者是具有下列性质的二叉树：<br>（1）若左子树不空，则左子树上所有结点的值均小于 它的根结点的值；<br>（2）若右子树不空，则右子树上所有结点的值均大于或等于 它的根结点的值；<br>（3）左、右子树也分别为二叉排序树；<br>（4）没有键值相等的节点。</p>
+<blockquote>
+<p>中序遍历可以得到二叉排序树的有序序列</p>
+</blockquote>
+<pre><code class="html">    40
+    / \
+   30 50
+</code></pre>
+<h2 id="视图与基本表的对比"><a href="#视图与基本表的对比" class="headerlink" title="视图与基本表的对比"></a>视图与基本表的对比</h2><p>视图可以定义在多张表上，因此定义功能比表强。<br>视图中数据更新受到诸多限制，例如不能有聚集函数，不能是定义在多张表上等，因此操作功能弱于表。<br>视图的数据控制功能和表的数据控制功能相当，都有GRANT、REVOKE。</p>
+<p>视图和表的区别和联系：</p>
+<ul>
+<li>区别：</li>
+</ul>
+<ol>
+<li>视图是已经编译好的sql语句。而表不是  </li>
+<li>视图没有实际的物理记录。而表有。</li>
+<li>表是内容，视图是窗口</li>
+<li>表只用物理空间而视图不占用物理空间，视图只是逻辑概念的存在，表可以及时对它进行修改，但视图只能有创建的语句来修改</li>
+<li>表是内模式，视图是外模式</li>
+<li>视图是查看数据表的一种方法，可以查询数据表中某些字段构成的数据，只是一些SQL语句的集合。从安全的角度说，视图可以不给用户接触数据表，从而不知道表结构。</li>
+<li>表属于全局模式中的表，是实表；视图属于局部模式的表，是虚表。</li>
+<li>视图的建立和删除只影响视图本身，不影响对应的基本表。</li>
+</ol>
+<ul>
+<li>联系：</li>
+</ul>
+<p>视图（view）是在基本表之上建立的表，它的结构（即所定义的列）和内容（即所有数据行）都来自基本表，它依据基本表存在而存在。一个视图可以对应一个基本表，也可以对应多个基本表。视图是基本表的抽象和在逻辑意义上建立的新关系。</p>
+<h2 id="Linux-bash-特殊变量："><a href="#Linux-bash-特殊变量：" class="headerlink" title="Linux bash 特殊变量："></a>Linux bash 特殊变量：</h2><p>特殊变量列表<br>| 变量 | 含义 |<br>| – | – |<br>| $0 | 当前脚本的文件名 |<br>| $n | 传递给脚本或函数的参数。n 是一个数字，表示第几个参数。例如，第一个参数是<code>$1</code>，第二个参数是<code>$2</code>。|<br>| $# | 传递给脚本或函数的参数个数。|<br>| $<em> | 传递给脚本或函数的所有参数。|<br>| $@ | 传递给脚本或函数的所有参数。被双引号(“ “)包含时，与 $</em> 稍有不同，下面将会讲到。|<br>| $? | 上个命令的退出状态，或函数的返回值。|<br>| $$ | 当前Shell进程ID。对于 Shell 脚本，就是这些脚本所在的进程ID。|</p>
+<h2 id="bash中变量的定义和赋值"><a href="#bash中变量的定义和赋值" class="headerlink" title="bash中变量的定义和赋值"></a>bash中变量的定义和赋值</h2><p>bash中有两个内置的命令declare 和 typeset 可用于创建变量。除了使用内置命令来创建和设置变量外，还可以直接赋值，格式为：变量名=变量值<br>注意：变量名前面不应加美元“$”符号。（和PHP不同）</p>
+<pre><code>     等号“=”前后不可以有空格。
+
+     Shell中不需要显式的语法来声明变量。
+
+     变量名不可以直接和其他字符相连，如果想相连，必须用括号：    echo “this is $(he)llo!”
+</code></pre><h2 id="umask命令"><a href="#umask命令" class="headerlink" title="umask命令"></a>umask命令</h2><p>umask<br>功能说明：指定在建立文件时预设的权限掩码。<br>语　　法：umask [-S][权限掩码]<br>补充说明：umask可用来设定[权限掩码]。[权限掩码]是由3个八进制的数字所组成，将现有的存取权限减掉权限掩码后，即可产生建立文件时预设的权限。</p>
+<p>在Linux中 umask:目前用户在新建文件或者目录时候的默认权限值<br>在Linux中r，w，x的值分别是 ： 4 2 1</p>
+<h2 id="链接分硬链接和符号链接。"><a href="#链接分硬链接和符号链接。" class="headerlink" title="链接分硬链接和符号链接。"></a>链接分硬链接和符号链接。</h2><p>符号链接可以建立对于文件和目录的链接。符号链接可以跨文件系统，即可以跨磁盘分区。符号链接的文件类型位是l，链接文件具有新的i节点。</p>
+<p>硬链接不可以跨文件系统。它只能建立对文件的链接，硬链接的文件类型位是－，且硬链接文件的i节点同被链接文件的i节点相同。</p>
+<p>软链接产生的是一个新的文件(类似快捷方式)，但这个文件的作用就是专门指向某个文件的，删了这个软连接文件，那就等于不需要这个连接，和原来的存在的实体原文件没有任何关系，但删除原来的文件，则相应的软连接不可用（cat那个软链接文件，则提示“没有该文件或目录“）。</p>
+<p>硬链接实际上是为文件建一个<strong>别名</strong>，链接文件和原文件实际上是同一个文件。可以通过ls -i来查看一下，这两个文件的inode号是同一个，说明它们是同一个文件。</p>
+<h2 id="聚集索引"><a href="#聚集索引" class="headerlink" title="聚集索引"></a>聚集索引</h2><p>聚集索引是一种索引，该索引中键值的逻辑顺序决定了表中相应行的<strong>物理顺序</strong>。</p>
+<p>聚集索引确定表中数据的物理顺序。聚集索引类似于电话簿，按姓氏排列数据。由于聚集索引规定数据在表中的物理存储顺序，因此一个表只能包含一个聚集索引。但该索引可以包含多个列（组合索引），就像电话簿按姓氏和名字进行组织一样。</p>
+<p>聚集索引对于那些经常要搜索范围值的列特别有效。使用聚集索引找到包含第一个值的行后，便可以确保包含后续索引值的行在物理相邻。例如，如果应用程序执行的一个查询经常检索某一日期范围内的记录，则使用聚集索引可以迅速找到包含开始日期的行，然后检索表中所有相邻的行，直到到达结束日期。这样有助于提高此类查询的性能。同样，如果对从表中检索的数据进行排序时经常要用到某一列，则可以将该表在该列上聚集（物理排序），避免每次查询该列时都进行排序，从而节省成本。<br>当索引值唯一时，使用聚集索引查找特定的行也很有效率。例如，使用唯一雇员 ID 列 emp_id 查找特定雇员的最快速的方法，是在 emp_id 列上创建聚集索引或 PRIMARY KEY 约束。</p>
+<h2 id="块级元素与行内元素的区别"><a href="#块级元素与行内元素的区别" class="headerlink" title="块级元素与行内元素的区别"></a>块级元素与行内元素的区别</h2><ol>
+<li>块级元素会独占一行，其宽度自动填满其父元素宽度。行内元素不会独占一行，相邻的行内元素会排列在<strong>同一行</strong>，直至一行排不下才会换行，其宽度随元素的内容而变化。</li>
+<li>块级元素可以包含行内元素和块级元素；行内元素不能包含块级元素。</li>
+<li>行内元素设置width、height、margin-top、margin-bottom、padding-top、padding-bottom无效。</li>
+</ol>
+<p>块级元素与行内元素的转换:</p>
+<p>display:inline-block;<br>display:inline;<br>display:block;</p>
+<h2 id="Cookie-Session机制"><a href="#Cookie-Session机制" class="headerlink" title="Cookie/Session机制"></a>Cookie/Session机制</h2><p>会话（Session）跟踪是Web程序中常用的技术，用来跟踪用户的整个会话。常用的会话跟踪技术是Cookie与Session。Cookie通过在客户端记录信息确定用户身份，Session通过在服务器端记录信息确定用户身份。</p>
+<p>###Cookie<br>Cookie实际上是一小段的文本信息。客户端请求服务器，如果服务器需要记录该用户状态，就使用response向客户端浏览器颁发一个Cookie。客户端浏览器会把Cookie保存起来。当浏览器再请求该网站时，浏览器把请求的网址<strong>连同该Cookie一同提交</strong>给服务器。服务器检查该Cookie，以此来辨认用户状态。服务器还可以根据需要修改Cookie的内容。</p>
+<p>Cookie的原理<br><img src="http://hi.csdn.net/attachment/201111/9/0_13208318702UfF.gif" alt="Cookie的原理"></p>
+<p>子域名可以访问根域名的cookie，反之则不可以。cookie，对于不同的浏览器有不同的大小限制。</p>
+<h3 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h3><p>Session是另一种记录客户状态的机制，不同的是Cookie保存在客户端浏览器中，而Session保存在服务器上。客户端浏览器访问服务器的时候，服务器把客户端信息以某种形式记录在服务器上。这就是Session。</p>
+<p>Session对象是在客户端第一次请求服务器的时候创建的。Session也是一种key-value的属性对，通过getAttribute(Stringkey)和setAttribute(String key，Objectvalue)方法读写客户状态信息。</p>
+<p>Session保存在服务器端。为了获得更高的存取速度，服务器一般把Session放在内存里。每个用户都会有一个独立的Session。如果Session内容过于复杂，当大量客户访问服务器时可能会导致内存溢出。因此，Session里的信息应该尽量精简。</p>
+<p>Session生成后，只要用户继续访问，服务器就会更新Session的最后访问时间，并维护该Session。用户每访问服务器一次，无论是否读写Session，服务器都认为该用户的Session“活跃（active）”了一次。</p>
+<h2 id="CPU调度算法"><a href="#CPU调度算法" class="headerlink" title="CPU调度算法"></a>CPU调度算法</h2><h3 id="FCFS-先到先服务"><a href="#FCFS-先到先服务" class="headerlink" title="FCFS 先到先服务"></a>FCFS 先到先服务</h3><p>一旦选定进程，那么在结束之前就不能再切换到另一个进程。</p>
+<h3 id="SJF-最短优先-精确的讲是最短下一个CPU区间的算法-（可能导致饥饿）"><a href="#SJF-最短优先-精确的讲是最短下一个CPU区间的算法-（可能导致饥饿）" class="headerlink" title="SJF 最短优先  精确的讲是最短下一个CPU区间的算法 （可能导致饥饿）"></a>SJF 最短优先  精确的讲是最短下一个CPU区间的算法 （可能导致饥饿）</h3><p>前面提到，一个进程是由CPU区间和I/O区间交替组成的。而SJF是看哪个进程的CPU区间最短。</p>
+<ul>
+<li>SRTF抢占式：又称最短剩余优先，当新进来的进程的CPU区间比当前执行的进程所剩的CPU区间短，则抢占。</li>
+<li>非抢占：称为下一个最短优先，因为在就绪队列中选择最短CPU区间的进程放在队头。</li>
+</ul>
+<h3 id="优先级调度算法-pintos的优先级是0-63-0为最低优先级，63为最高优先级"><a href="#优先级调度算法-pintos的优先级是0-63-0为最低优先级，63为最高优先级" class="headerlink" title="优先级调度算法  pintos的优先级是0-63  0为最低优先级，63为最高优先级"></a>优先级调度算法  pintos的优先级是0-63  0为最低优先级，63为最高优先级</h3><p>SJF是特殊的优先级调度算法，以CPU区间长度的倒数为优先级。</p>
+<ul>
+<li>内部优先级：通过内部数据比如内存要求等。</li>
+<li>外部优先级：用户自己设定。set_priority</li>
+</ul>
+<p>分为抢占式和非抢占式，前者为如果进来的进程优先级高于运行的进程，则替换；后者只是在就绪队列中按优先级排队。</p>
+<p>缺点：无线阻塞或饥饿。前者为一个优先级高且运行时间长的进程一直阻塞，后者为优先级低的进程永远都得不到执行。</p>
+<p>解决饥饿的方法是老化。通过每个时间间隔后将等待的进程优先级降低。</p>
+<h3 id="转轮法-RR算法-抢占式"><a href="#转轮法-RR算法-抢占式" class="headerlink" title="转轮法 RR算法 抢占式"></a>转轮法 RR算法 抢占式</h3><p>用于分时系统。每个进程都占用一个时间片的时间。就绪队列为FIFO循环队列。如果一个进程的CPU区间长度小于时间片，则继续下面的进程；如果大于时间片，则中断切换到下一个进程执行。通常时间片长度为10ms-100ms，由此需要确定时间片大小使得上下文切换次数适当少。</p>
+<h3 id="多级队列调度"><a href="#多级队列调度" class="headerlink" title="多级队列调度"></a>多级队列调度</h3><p>根据某种性质将一个就绪队列分成不同的独立队列，如系统进程，交互进程（前台进程），交互编辑进程，批处理进程，学生进程。</p>
+<p>每个队列都有不同的调度算法。</p>
+<p>每个队列都有优先级，比如前台队列就比后台队列要有绝对的优先级，因此队列间的分配方法：</p>
+<p>（1）只有优先级高的队列为空，才能执行低优先级队列。</p>
+<p>（2）为队列分配不同权重的CPU时间，优先级高的分配时间多。</p>
+<h3 id="多级反馈队列-抢占式"><a href="#多级反馈队列-抢占式" class="headerlink" title="多级反馈队列   抢占式"></a>多级反馈队列   抢占式</h3><p>&emsp;&emsp;动态调整进程，进程在不同队列之间移动，虽然在队列间移动需要耗费资源，但是更合理。按照CPU区间的大小分队列。进程之间的划分是按照所花CPU时间划分，比如队列0是就绪队列，且规定一个时间上界，如果一个进程没能规定时间完成，则被放入队列1中。CPU区间越大的进程就被放入低优先中。每个进程一开始都进入就绪队列。</p>
+<p><img src="https://img-blog.csdn.net/20180802180851937?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="CPU调度算法"></p>
+<h2 id="页替换算法与缺页率"><a href="#页替换算法与缺页率" class="headerlink" title="页替换算法与缺页率"></a>页替换算法与缺页率</h2><h3 id="缺页中断"><a href="#缺页中断" class="headerlink" title="缺页中断"></a>缺页中断</h3><p>&emsp;&emsp;在请求分页系统中，可以通过查询页表中的状态位来确定所要访问的页面是否存在于内存中。每当所要访问的页面不在内存时，会产生一次缺页中断，此时操作系统会根据页表中的外存地址在外存中找到所缺的一页，将其调入内存。 </p>
+<p>缺页本身是一种中断，与一般的中断一样，需要经过4个处理步骤：<br>　　1. 保护CPU现场<br>　　2. 分析中断原因<br>　　3. 转入缺页中断处理程序进行处理<br>　　4. 恢复CPU现场，继续执行<br>　　但是缺页中断时由于所要访问的页面不存在于内存时，有硬件所产生的一种特殊的中断，因此，与一般的中断存区别：<br>　　 1. 在指令执行期间产生和处理缺页中断信号<br>　　 2. 一条指令在执行期间，可能产生多次缺页中断<br>　　 3. 缺页中断返回时，执行产生中断的那一条指令，而一般的中断返回时，执行下一条指令</p>
+<h3 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h3><p>&emsp;&emsp;进程运行过程中，如果发生缺页中断，而此时内存中有没有空闲的物理块是，为了能够把所缺的页面装入内存，系统必须从内存中选择一页调出到磁盘的对换区。但此时应该把那个页面换出，则需要根据一定的页面置换算法（Page Replacement Algorithm)来确定。</p>
+<h4 id="最佳置换（Optimal，-OPT"><a href="#最佳置换（Optimal，-OPT" class="headerlink" title="最佳置换（Optimal， OPT)"></a>最佳置换（Optimal， OPT)</h4><p>&emsp;&emsp;置换以后不再被访问，或者在将来最迟才回被访问的页面，缺页中断率最低。但是该算法需要依据以后各业的使用情况，而当一个进程还未运行完成时，很难估计哪一个页面是以后不再使用或在最长时间以后才会用到的页面。所以该算法是不能实现的。但该算法仍然有意义，作为衡量其他算法优劣的一个标准。</p>
+<h4 id="先进先出置换算法（First-In-First-Out-FIFO"><a href="#先进先出置换算法（First-In-First-Out-FIFO" class="headerlink" title="先进先出置换算法（First In First Out, FIFO)"></a>先进先出置换算法（First In First Out, FIFO)</h4><p>　置换最先调入内存的页面，即置换在内存中驻留时间最久的页面。按照进入内存的先后次序排列成队列，从队尾进入，从队首删除。但是该算法会淘汰经常访问的页面，不适应进程实际运行的规律，目前已经<strong>很少使用</strong>。</p>
+<h4 id="最近最久未使用置换算法（Least-Recently-Used，-LRU）"><a href="#最近最久未使用置换算法（Least-Recently-Used，-LRU）" class="headerlink" title="最近最久未使用置换算法（Least Recently Used， LRU）"></a>最近最久未使用置换算法（Least Recently Used， LRU）</h4><p>　　置换最近一段时间以来最长时间未访问过的页面。根据程序局部性原理，刚被访问的页面，可能马上又要被访问；而较长时间内没有被访问的页面，可能最近不会被访问。<br>　　LRU算法普偏地适用于各种类型的程序，但是系统要时时刻刻对各页的访问历史情况加以记录和更新，开销太大，因此LRU算法必须要有硬件的支持。</p>
+<h4 id="缺页率"><a href="#缺页率" class="headerlink" title="缺页率"></a>缺页率</h4><p>缺页中断率： FIFO &gt; LRU &gt; OPT<br> &emsp;&emsp;所以OPT的算法效果最好，然后时LRU，最后是FIFO</p>
+<h2 id="Linux-设备与驱动"><a href="#Linux-设备与驱动" class="headerlink" title="Linux 设备与驱动"></a>Linux 设备与驱动</h2><ol>
+<li>独享设备：在一个用户作业未完成或退出之前，此设备不能分配给其他作业用。所有字符设备都是独享设备。如输入机、磁带机、打印机等。——很明显：需要装驱动。</li>
+<li>共享设备：多个用户作业或多个进程可以“同时”从这些设备上存取信息。软硬盘、光盘等块设备都是共享设备。——无需驱动。</li>
+<li>虚拟设备：通过软件技术将独享设备改造成共享设备。例如：通过SPOOLing技术将一台打印机虚拟成多台打印机。——实质还是独享设备，需要驱动。</li>
+<li>系统设备，需要驱动。</li>
+</ol>
+<h2 id="linux定时任务cron"><a href="#linux定时任务cron" class="headerlink" title="linux定时任务cron"></a>linux定时任务cron</h2><p><img src="https://img-blog.csdn.net/20180802201420822?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>　　<em>   </em>　 <em>　 </em>　 <em>　　command<br>　　分钟(0-59)　小时(0-23)　日期(1-31)　月份(1-12)　星期(0-6,0代表星期天)　 命令<br>　　<br>　　第1列表示分钟1～59 每分钟用</em>或者 */1表示<br>　　第2列表示小时1～23（0表示0点）<br>　　第3列表示日期1～31<br>　　第4列表示月份1～12<br>　　第5列标识号星期0～6（0表示星期天）</p>
+<p>在以上任何值中，星号（<em>）可以用来代表所有有效的值。譬如，月份值中的星号意味着在满足其它制约条件后每月都执行该命令。<br>　　整数间的短线（-）指定一个整数范围。譬如，1-4 意味着整数 1、2、3、4。<br>　　用逗号（,）隔开的一系列值指定一个列表。譬如，3, 4, 6, 8 标明这四个指定的整数。<br>　　正斜线（/）可以用来指定间隔频率。在范围后加上 /<integer> 意味着在范围内可以跳过 integer。譬如，0-59/2 可以用来在分钟字段定义每两分钟。间隔频率值还可以和星号一起使用。例如，</integer></em>/3 的值可以用在月份字段中表示每三个月运行一次任务。<br>　　开头为井号（#）的行是注释，不会被处理</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2020/08/22/零碎的知识点-1/" data-id="ckjtrgp6b002yn8vi6i1p6d3h" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="零碎的知识点-1" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/08/22/零碎的知识点-2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          零碎的知识点-2
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/08/22/游戏开发-基于netty的文字冒险游戏-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">游戏开发-基于netty的冒险游戏-1</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

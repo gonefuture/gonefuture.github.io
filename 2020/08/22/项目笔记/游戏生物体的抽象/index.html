@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="游戏生物的抽象世界唯一对象 AbstractMirObject构造器 public AbstractMirObject(IMirObjectSoulFill mirObjectSoulFill) {     setobjectId(mirObjectSoulFill.createId()); }  public interface IMirObjectSoulFill {     // 生成单位唯">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gonefuture">
+<meta property="og:url" content="http://gonefuture.top/2020/08/22/项目笔记/游戏生物体的抽象/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="游戏生物的抽象世界唯一对象 AbstractMirObject构造器 public AbstractMirObject(IMirObjectSoulFill mirObjectSoulFill) {     setobjectId(mirObjectSoulFill.createId()); }  public interface IMirObjectSoulFill {     // 生成单位唯">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-07-25T03:50:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gonefuture">
+<meta name="twitter:description" content="游戏生物的抽象世界唯一对象 AbstractMirObject构造器 public AbstractMirObject(IMirObjectSoulFill mirObjectSoulFill) {     setobjectId(mirObjectSoulFill.createId()); }  public interface IMirObjectSoulFill {     // 生成单位唯">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-项目笔记/游戏生物体的抽象" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/项目笔记/游戏生物体的抽象/" class="article-date">
+  <time datetime="2020-08-22T08:42:00.625Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="游戏生物的抽象"><a href="#游戏生物的抽象" class="headerlink" title="游戏生物的抽象"></a>游戏生物的抽象</h1><h2 id="世界唯一对象-AbstractMirObject"><a href="#世界唯一对象-AbstractMirObject" class="headerlink" title="世界唯一对象 AbstractMirObject"></a>世界唯一对象 <code>AbstractMirObject</code></h2><p>构造器</p>
+<pre><code class="java">public AbstractMirObject(IMirObjectSoulFill mirObjectSoulFill) {
+    setobjectId(mirObjectSoulFill.createId());
+}
+
+public interface IMirObjectSoulFill {
+    // 生成单位唯一id
+    long createId();
+}
+</code></pre>
+<p>主要属性</p>
+<ul>
+<li>对象唯一id <code>protected long objectId</code></li>
+<li>对象id的包装类型 <code>protected long objId</code></li>
+</ul>
+<hr>
+<h2 id="可见物-AbstractVisibleObject-extends-AbsreactMirObject"><a href="#可见物-AbstractVisibleObject-extends-AbsreactMirObject" class="headerlink" title="可见物 AbstractVisibleObject extends AbsreactMirObject"></a>可见物 <code>AbstractVisibleObject extends AbsreactMirObject</code></h2><p>主要属性</p>
+<ul>
+<li>配置id <code>int objectkey</code></li>
+<li>观察者列表 <code>KnownList knownList</code></li>
+<li>视野位面 <code>int planes</code> (决定视野可见，等于0表示可被所有位面可见)</li>
+<li>位置 <code>WorldPosition position</code></li>
+<li>控制器 <code>AbstractVisibleObjectController controller</code></li>
+<li>可见对象的目标 <code>AbstractVisibleObject target</code></li>
+<li>刷新资源 <code>SpawnResource spawnResource</code></li>
+<li>出生的X轴 <code>bornX</code></li>
+<li>出生的Y轴 <code>bornY</code></li>
+<li><p>朝向 <code>DirectionEnum bornHeading</code></p>
+</li>
+<li><p>该对象的心跳业务 <code>Map&lt;ObjectTickType, objectTick&gt;&lt;?&gt; tickMap</code> 主要用于防止取消心跳，统一取消</p>
+</li>
+<li><p>是否为出生 <code>boolean birth</code> 用于客户端表现出生特效</p>
+</li>
+<li>过滤器 FilterController filterController</li>
+<li>人物状态 <code>MergeSubmit&lt;CreatureUpdateType&gt; creatureUpdateTask</code></li>
+</ul>
+<p>构造器</p>
+<pre><code class="java">public AbstractVisibleObject(IVisibleObjectSoulFill visibleObjectSoulFill) {
+    super(visibleObjectSoulFill);
+
+    this.filterController = new FilterController();
+    this.objectKet = visibleObjectSoulFill.getObjKey();
+    this.controller = visibleObjectSoulFill.createController(this);
+    this.controller.setOwner(this);
+    this.position = visibleObjectSoulFill.createPosition();
+    this.knownList = visibleObjectSoulFill.createKnownList(this);
+    creatureUpdateTask = new MergeSubmit&lt;&gt;(CreatureUpdateType.class);
+}
+
+
+</code></pre>
+<p>启动一个针对该对象的心跳，使用者要注意定时业务的回收，避免内存泄漏</p>
+<pre><code class="java">public &lt;T extends AbstractVisibleObject&gt; ObjectTick&lt;T&gt; createTick(ObjectTickType tickType, long initialDelay, long initialDelay, 
+long initialDelay, long period, TimeUnit timeUnit, Tick&lt;T&gt; tick) {
+
+    ObjectTick exits = tickMap.remove(tickType);
+    if(exist != null) {
+        exist.tryCancle();
+        LOGGER.error(&quot;exist tick task&quot;+ tickType);
+    }
+    ObjectTick&lt;T&gt;  objectTick = ObjectTick.valueOf(tickType,(T) this, initialDelay, period, timeUnit);
+    tickMap.put(tickType,objectTick)
+    return objectTick;
+}
+</code></pre>
+<p>添加会合并的延迟任务，同一种<code>CreatureUpdateType</code>类型的任务.在延迟时间内提交过多次也只会执行一次<br>PS:这里的延迟任务是不保证关服时一定能够执行完成，如果必须是在关服前执行的任务，请在玩家等处或者停服接口处执行<br><code>public void addMergeDelayTask(CreatureUpdateType type, int dispatcherCode, String name, int delay, TimeUnit timeUnit, Runnable runnable)</code></p>
+<hr>
+<h2 id="AbstractCreature-生物体，有血有肉的-AbstractCreature-extends-AbstractVisibleObject"><a href="#AbstractCreature-生物体，有血有肉的-AbstractCreature-extends-AbstractVisibleObject" class="headerlink" title="AbstractCreature 生物体，有血有肉的  AbstractCreature extends AbstractVisibleObject"></a><code>AbstractCreature</code> 生物体，有血有肉的  <code>AbstractCreature extends AbstractVisibleObject</code></h2><ul>
+<li>攻击模式</li>
+<li>移动控制器</li>
+<li>使用中技能</li>
+<li>生物血量状态  <code>CreatureLifeStats&lt;?&gt; lifeStats</code></li>
+<li>生物属性管理器 <code>CreatureGameStats gameStats</code></li>
+<li>效果管理器</li>
+<li>事件管理器 <code>ObserveController observeController</code></li>
+<li><p>技能管理器</p>
+</li>
+<li><p>实际扣血控制器</p>
+</li>
+<li><p>所有的召唤物，每种类型的召唤物在场上可能有多个，像五条狗这种 <code>Map&lt;SummonType, List&lt;Summon&gt;&gt;</code></p>
+</li>
+<li><p>有时效的标记 <code>AgingMark&lt;CreatureAgingMark&gt; agingMark</code></p>
+</li>
+</ul>
+<p>构造器</p>
+<pre><code class="java">public AbstractCreature(ICreatureSoulFill creatureSoulFill) {
+    super(creatureSoulFill);
+
+    this.lifeStats  = creatureSoulFill.createLifeStats(this);
+    this.lifeStats.init();
+    this.moveController = new MoveController(this);
+    this.observeController = creatureSoulFill.createObserveController(this);
+    this.gameStats = creatureSoulFill.createCreatureGameStats(this);
+    this.effectController = creatureSoulFill.createEffectController(this);
+    this.skillController = creatureSoulFill.createSkillController(this);
+    this.agingMark = new AgingMark();
+}
+
+</code></pre>
+<p>方法</p>
+<ul>
+<li>获取单位等级</li>
+</ul>
+<hr>
+<h2 id="NPC-Npc-extends-AbstractCreature"><a href="#NPC-Npc-extends-AbstractCreature" class="headerlink" title="NPC Npc extends AbstractCreature"></a>NPC <code>Npc extends AbstractCreature</code></h2><ul>
+<li>路由 <code>RouteRoad</code></li>
+<li>AI <code>AbstractAi  ai</code></li>
+<li>生成时间 <code>long createTime</code></li>
+<li>抽象仇恨列表 <code>AbstractAggroList aggroList</code></li>
+<li><p>攻击时间 <code>Map&lt;Long, Long&gt; ontrAttackTime</code></p>
+</li>
+<li><p>攻击控制器 <code>NpcAttackController attackController</code></p>
+</li>
+<li><p>当前选中的目标 <code>AbstractCreature curTarget</code></p>
+</li>
+<li><p>当前目标加入时间 <code>long curTargetJoinTime</code><br>*<br>构造器</p>
+</li>
+</ul>
+<pre><code class="java">public NPC(INpcSoulFill npcSoulFill) {
+    super(npcSoulFill);
+
+    this.aggroList = npcSoulFill.createAggroList(this);
+    this.followPolicy = npcSoulFill.createFollowPolicy(this);
+    this.attackControler = ncSoulFill.createAttackController(this);
+
+    createTime = System.currentTimeMillis();
+}
+</code></pre>
+<ul>
+<li><code>ObjectResource getObjectResource()</code> 获取NVPC的对象配置</li>
+<li><code>ObjectFIghtAttrResource getObjectFightAttrResource()</code></li>
+</ul>
+<hr>
+<h2 id="怪物实体-Monster-extends-NPC"><a href="#怪物实体-Monster-extends-NPC" class="headerlink" title="怪物实体 Monster extends NPC"></a>怪物实体 <code>Monster extends NPC</code></h2><ul>
+<li><code>boolean needRefreshAggroList()</code> 判断某些事情发生(仇恨列表中的玩家死亡)后，该怪物是否需要立刻刷新仇恨列表</li>
+</ul>
+<p>重写的方法</p>
+<ul>
+<li><code>Object createShowInfo(FightPlayer witness)</code> 创建客户端显示用的信息体</li>
+<li><code>boolean canGo(int targetX, int targetY)</code> 是否可以到达</li>
+</ul>
+<h3 id="NPC攻击控制器"><a href="#NPC攻击控制器" class="headerlink" title="NPC攻击控制器"></a>NPC攻击控制器</h3><ul>
+<li>攻击任务 `Future&lt;?&gt; attackTask</li>
+</ul>
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2020/08/22/项目笔记/游戏生物体的抽象/" data-id="ckjtrgp9b0057n8viwvv10cov" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="项目笔记/游戏生物体的抽象" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/08/22/项目笔记/游戏线程模型学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/08/22/项目笔记/消耗系统学习笔记/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

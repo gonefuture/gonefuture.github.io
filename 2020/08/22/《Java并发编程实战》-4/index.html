@@ -1,0 +1,470 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>《Java并发编程实战》-4 | gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="《Java并发编程实战》-45.1 同步容器类Collections.synchronizedXxx等工厂方法创建的同步实现线程安全的方式是：将它们的状态封装起来，并对每个公有方法都进行同步，使得每次只有一个线程能访问容器的状态。 5.5.1 同步容器的问题在使用客户端加锁的Vector上的复合操作 public static Object getList(Vector list) {     s">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Java并发编程实战》-4">
+<meta property="og:url" content="http://gonefuture.top/2020/08/22/《Java并发编程实战》-4/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="《Java并发编程实战》-45.1 同步容器类Collections.synchronizedXxx等工厂方法创建的同步实现线程安全的方式是：将它们的状态封装起来，并对每个公有方法都进行同步，使得每次只有一个线程能访问容器的状态。 5.5.1 同步容器的问题在使用客户端加锁的Vector上的复合操作 public static Object getList(Vector list) {     s">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-08-13T07:35:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Java并发编程实战》-4">
+<meta name="twitter:description" content="《Java并发编程实战》-45.1 同步容器类Collections.synchronizedXxx等工厂方法创建的同步实现线程安全的方式是：将它们的状态封装起来，并对每个公有方法都进行同步，使得每次只有一个线程能访问容器的状态。 5.5.1 同步容器的问题在使用客户端加锁的Vector上的复合操作 public static Object getList(Vector list) {     s">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-《Java并发编程实战》-4" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/《Java并发编程实战》-4/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.404Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《Java并发编程实战》-4
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="《Java并发编程实战》-4"><a href="#《Java并发编程实战》-4" class="headerlink" title="《Java并发编程实战》-4"></a>《Java并发编程实战》-4</h1><h2 id="5-1-同步容器类"><a href="#5-1-同步容器类" class="headerlink" title="5.1 同步容器类"></a>5.1 同步容器类</h2><p>Collections.synchronizedXxx等工厂方法创建的同步实现线程安全的方式是：将它们的状态封装起来，并对每个公有方法都进行同步，使得每次只有一个线程能访问容器的状态。</p>
+<h3 id="5-5-1-同步容器的问题"><a href="#5-5-1-同步容器的问题" class="headerlink" title="5.5.1 同步容器的问题"></a>5.5.1 同步容器的问题</h3><p>在使用客户端加锁的Vector上的复合操作</p>
+<pre><code class="java">public static Object getList(Vector list) {
+    synchronized (list) {
+        int lastIndex = list.size() - 1;
+        return list.get(lastIndex);
+    }
+}
+
+public static void deleteLast(Vector list) {
+    synchronized (this) {
+        int lastIndex = list.size() - 1;
+        list.remove(lastIndex);
+    }
+}
+</code></pre>
+<h3 id="5-1-2-迭代器与ConcurrentModificationException"><a href="#5-1-2-迭代器与ConcurrentModificationException" class="headerlink" title="5.1.2 迭代器与ConcurrentModificationException"></a>5.1.2 迭代器与ConcurrentModificationException</h3><p>当容器类发现容器在迭代过程中被修改时，就会抛出一个”ConcurrentModificationException<br>“，这就是“快速失败”。</p>
+<h3 id="5-1-3-隐藏迭代器"><a href="#5-1-3-隐藏迭代器" class="headerlink" title="5.1.3 隐藏迭代器"></a>5.1.3 隐藏迭代器</h3><p>正如封装对象的状态有助于维持不变性条件，封装对象的同步机制同样有助确保实施同步策略。</p>
+<h2 id="5-2-并发容器"><a href="#5-2-并发容器" class="headerlink" title="5.2 并发容器"></a>5.2 并发容器</h2><p>通过并发容器来代替同步容器，可以极大地提高伸缩性并降低风险。</p>
+<table>
+<thead>
+<tr>
+<th>并发容器</th>
+<th>同步容器</th>
+<th>普通容器</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BlockingQueue</td>
+<td>ConcurrentLinkedQueue</td>
+<td>PriorityQueue</td>
+<td></td>
+</tr>
+<tr>
+<td>ConcurrentHashMap, SkipListMap</td>
+<td>hashtable,  Collections.synchroniedList(TreeSet set)</td>
+<td>hashmap,SortedMap, SortedSet</td>
+<td></td>
+</tr>
+<tr>
+<td>CopyOnWriteArrayList</td>
+<td>Vector, Collections.synchroniedList(List list)</td>
+<td>ArrayList, LinkedList</td>
+<td></td>
+</tr>
+<tr>
+<td>CopyOnWriteArraySet, ConcurrentSkipListListSet</td>
+<td>Collections.synchroniedSet(Set set)</td>
+<td>LinkedHashSet, HashSet, TreeSet</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="5-2-1-ConcurrentHashMap"><a href="#5-2-1-ConcurrentHashMap" class="headerlink" title="5.2.1 ConcurrentHashMap"></a>5.2.1 ConcurrentHashMap</h3><p>ConcurrentHashMap使用更细粒度的加锁机制—<strong>分段锁</strong>来实现更大程度的共享。</p>
+<p>ConcurrentHashMap具有<strong>弱一致性</strong>(Weakly Consistent)，而非”及时失败”。</p>
+<p>只有当应用程序需要加锁Map以进行独占访问时，才应该放弃使用ConcurrentHashMap。</p>
+<h3 id="5-2-2-额外的原子Map操作"><a href="#5-2-2-额外的原子Map操作" class="headerlink" title="5.2.2 额外的原子Map操作"></a>5.2.2 额外的原子Map操作</h3><pre><code class="java">public interface ConcurrentMap&lt;K,V&gt; extends Map&lt;K,V&gt; {
+    // 仅当K没有相应的映射值时才插入
+    V putIfAbsent(K key, V value);
+
+    // 仅当K被映射到oldValue时才替换为newValue
+    boolean remove(K key, V value);
+
+    // 仅当K被映射到oldValue时才替换为newValue
+    boolean replace(K key, V oldValue, V newValue);
+
+    // 仅当K被映射到某个值时才替换为newValue
+    boolean replace(K key, V newValue);
+}
+</code></pre>
+<h3 id="5-2-3-CopyOnWriteArrayList"><a href="#5-2-3-CopyOnWriteArrayList" class="headerlink" title="5.2.3 CopyOnWriteArrayList"></a>5.2.3 CopyOnWriteArrayList</h3><p>CopyOnWriteArrayLsit用于替代同步List，某些情况下它提供了更好的并发行性能，并且在迭代期间不需要对容器进行加锁或复制（类似地，CopyOnWriteArraySet的作用是替代同步Set）。</p>
+<p>每当修改容器时都会复制底层数组，这需要一定的开销。</p>
+<p>仅当迭代操作远远多于修改操作时，才应该使用”写入时负责”容器。</p>
+<h2 id="5-3-阻塞队列和生产者-消费者模式"><a href="#5-3-阻塞队列和生产者-消费者模式" class="headerlink" title="5.3 阻塞队列和生产者-消费者模式"></a>5.3 阻塞队列和生产者-消费者模式</h2><p>在构建高可靠的应用程序时，有界队列是一种强大的资源管理工具:它们能抑制并防止产生过多的工作项，使应用程序在负荷过载的情况下变得更加健壮。</p>
+<p>BlockingQueue的方法:</p>
+<ul>
+<li>put 如果队列满则阻塞</li>
+<li>take 如果队列为空则阻塞</li>
+<li>offer 如果队列满则返回一个失败状态，一般是false</li>
+<li>poll 如果队列空则返回一个表示空的数据,一般是null</li>
+</ul>
+<p>BlockingQueue的多种实现:</p>
+<ul>
+<li><strong>LinkedBlockingQueue</strong> 基于链表，FIFO</li>
+<li><strong>ArrayBlockingQueue</strong> 基于数组, FIFO</li>
+<li><strong>PriorityBlockingQueue</strong> 按优先级排序的队列</li>
+<li><strong>SynchronousQueue</strong> 它不会为队列中元素维护储存空间，它维护一组线程，这些线程在等待着吧元素加入或者移出队列。</li>
+</ul>
+<h3 id="5-3-1-示例-桌面搜索"><a href="#5-3-1-示例-桌面搜索" class="headerlink" title="5.3.1 示例:桌面搜索"></a>5.3.1 示例:桌面搜索</h3><h3 id="5-3-2-串行线程封闭"><a href="#5-3-2-串行线程封闭" class="headerlink" title="5.3.2 串行线程封闭"></a>5.3.2 串行线程封闭</h3><p>对象池利用了串行线程封闭，将一个对象“借给”一个请求线程。</p>
+<p>还可以通过ConcurrentMap的原子方法remove或者AtomicReference的原子方法compareAndSet来转笔可变对象的所有的所有权（但必须确保只有一个线程能接受被转移的对象）。</p>
+<h3 id="双端队列与工作密取"><a href="#双端队列与工作密取" class="headerlink" title="双端队列与工作密取"></a>双端队列与工作密取</h3><p>Deque是一个双端队列，实现了在队头和队尾的高效插入和移除。具体实现包括ArrayList和LinkedBlockingDeque。</p>
+<p>双端队列适用于工作密取模式。</p>
+<h2 id="5-4-阻塞方法与中断方法"><a href="#5-4-阻塞方法与中断方法" class="headerlink" title="5.4 阻塞方法与中断方法"></a>5.4 阻塞方法与中断方法</h2><ul>
+<li>传递</li>
+<li>恢复中断</li>
+</ul>
+<pre><code class="java">public class TackRunnable implements Runnable {
+    try {
+            processTack(queue.take());
+        } catch (InterruptedException e) {
+            // 恢复被中断的状态
+            Thread.currentThread().interrupt();
+        }
+}
+
+</code></pre>
+<h2 id="5-5-同步工具类"><a href="#5-5-同步工具类" class="headerlink" title="5.5 同步工具类"></a>5.5 同步工具类</h2><h3 id="5-5-1-闭锁"><a href="#5-5-1-闭锁" class="headerlink" title="5.5.1 闭锁"></a>5.5.1 闭锁</h3><p>CoutDwonLatch，倒计时门闩,又名闭锁、倒计时计数器，是一种同步工具类，可以延迟线程大的进度直到其到达终止状态。</p>
+<p>闭锁可以用来确保某些活动直到其他活动都完成后才能继续执行。</p>
+<ul>
+<li>确保某个计算在其需要得所有资源都被初始化之后才继续执行。二元闭锁（包括两个状态）可以用来表示“资源R已经被初始化”，而所有需要R的操作都必须现在这个闭锁上等待。</li>
+<li>确保某个服务在其依赖的所有其他服务都已经启动之后才启动。每个服务都有一个相关的二元闭锁。当启动服务S时，将首先在S依赖的其他服务的闭锁上等待，在所有依赖的服务启动后会释放锁S，这样其他依赖S的服务才能继续执行。</li>
+<li>等待直到某个操作的所有参与者（例如，在多个玩家游戏中的所有玩家）都就绪再继续执行。这种情况中，当所有玩家都准备就绪时，闭锁将到达结束状态。</li>
+</ul>
+<h3 id="5-5-2-FutureTask"><a href="#5-5-2-FutureTask" class="headerlink" title="5.5.2 FutureTask"></a>5.5.2 FutureTask</h3><p>FutureTask表示的计算是通过Callable来实现的，相当于一种可生成结果的Runnable，并且可以处于一下三种状态：</p>
+<ul>
+<li>等待运行(Wating to run)</li>
+<li>正在运行(Running)</li>
+<li>运行完成(Completed)</li>
+</ul>
+<h3 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h3><p>计数信号量用来控制同时访问某个某个特殊资源的操作数量，或者同时执行某个指定操作的数量。计算信号量还可以用来实现某种资源池，或者对容器施加边界。</p>
+<h3 id="5-5-4-栅栏"><a href="#5-5-4-栅栏" class="headerlink" title="5.5.4 栅栏"></a>5.5.4 栅栏</h3><p>栅栏类似于闭锁，他能阻塞一组线程直到某个事件发生。栅栏与闭锁的关键区别在于，所有线程必须同时到达栅栏位置，才能继续执行。闭锁用于等待事件，而栅栏用于等待其他线程线程。</p>
+<p>CyclicBarrier可以使一定数量的参与反复地在栅栏位置汇集，他在并行迭代算法中非常有用：这种算法通常将一个问题拆分成一系列相互独立的子问题。</p>
+<p>另一种形式的栅栏使Exchange，他是一种两方栅栏，各方在栅栏位置上交换数据。当两分法执行不对称的操作时，Exchanger会非常有用，例如当一个线程向缓冲区写入数据，而另一个线程从缓冲区读取数据。</p>
+<h2 id="5-6-构建高效且可伸缩的结果缓存"><a href="#5-6-构建高效且可伸缩的结果缓存" class="headerlink" title="5.6 构建高效且可伸缩的结果缓存"></a>5.6 构建高效且可伸缩的结果缓存</h2><p>使用ConcurrentHashMap和FutureTask来构架缓存</p>
+<pre><code class="java">
+public interface Computable&lt;A, V&gt; {
+    V compute(A arg) throws InterruptedExcetion;
+}
+
+public class Menoizer&lt;A, V&gt; implements Computable&lt;A, V&gt; {
+    private final ConcurrentMap&lt;A, Future&lt;V&gt;&gt; cache = new ConcurrentHashMap&lt;&gt;();
+    private final Computable&lt;A, V&gt; c;
+
+    public Menoizer(Computable&lt;A, V&gt; c) { this.c = c; }
+    while (true) {
+        Future&lt;V&gt; f = cache.get(arg);
+        if (f == null) {
+            Callable&lt;V&gt; eval = new Callable&lt;V&gt;() {
+                public V call() throws InterruptedException {
+                    return c.compute(args);
+                }
+            };
+            FutureTask&lt;V&gt; ft = new FutureTask&lt;V&gt;(eval);
+            // 复合操作（“若没有则添加”）
+            f = cache.putIfAbsent(arg, ft);
+            if(f == null) {
+                f = ft;
+                ft.run();
+            }
+        }
+        try{
+            // 若正在计算，则阻塞等待结果
+            return f.get();
+        } catch (CancellationException e) {
+            // 出现异常则去除缓存，防止缓存污染
+            cache.renove(arg,f);
+        } catch (ExecutionException e) {
+            throw launderThrowable(w.getCause())
+        }
+    }
+}
+
+</code></pre>
+<h2 id="第一部分小结"><a href="#第一部分小结" class="headerlink" title="第一部分小结"></a>第一部分小结</h2><ul>
+<li>可变状态是至关重要的。<br>  所有的并发问题都可以归结为如何协调对并发状态的访问，可变状态越少，就越容易确保线程安全。</li>
+<li>尽量将域声明为final类型，除非需要它们是可变的。</li>
+<li>不可变对象一定是线程安全的。<br>  不可变对象能极大地降低并发编程的复杂性。它们更为简单而且安全，可以任意共享而无须使用加锁或保护性复制等机制。</li>
+<li>封装有助于管理复杂性<br>  在编写线程安全的程序时，虽然可以将所有数据都保存在全局变量中，但为什么要这么做？将数据封装在对象中，更易于维持不变性条件：将同步机制封装在对象中，更易于遵循同步策略。</li>
+<li>用锁来保护每个可变变量。</li>
+<li>当保护同一个不变性条件中的所有变量时，要使用用一个锁。</li>
+<li>在执行复合操作期间，要持有锁。</li>
+<li>如果从多个线程中访问同一个可变变量没有同步机制，那么程序会出现问题。</li>
+<li>不要故作聪明地推断出不需要使用同步。</li>
+<li>在设计过程中考虑线程安全，或者在文档中明确地指出它不是线程安全的。</li>
+<li>将同步策略文档化。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2020/08/22/《Java并发编程实战》-4/" data-id="ckjtrgp5v001xn8vi1rwxk6sd" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-4" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/08/22/《Java并发编程实战》-5/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          《Java并发编程实战》-5
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/08/22/《Java并发编程实战》-3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《Java并发编程实战》-3</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

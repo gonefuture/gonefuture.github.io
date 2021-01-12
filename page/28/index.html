@@ -83,14 +83,14 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-零碎的知识点-1" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Java并发编程实战》-12" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/02/零碎的知识点-1/" class="article-date">
-  <time datetime="2018-08-02T03:10:17.050Z" itemprop="datePublished">2018-08-02</time>
+    <h3 href="/2020/08/22/《Java并发编程实战》-12/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.368Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/零碎的知识点/">零碎的知识点</a>
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
   </div>
 
   </div>
@@ -103,7 +103,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/02/零碎的知识点-1/">零碎的知识点-1</a>
+      <a class="article-title" href="/2020/08/22/《Java并发编程实战》-12/">《Java并发编程实战》-12   第13章 显式锁</a>
     </h1>
   
 
@@ -112,103 +112,46 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="零碎的知识点-1"><a href="#零碎的知识点-1" class="headerlink" title="零碎的知识点-1"></a>零碎的知识点-1</h1><hr>
-<h2 id="二叉排序树"><a href="#二叉排序树" class="headerlink" title="二叉排序树"></a>二叉排序树</h2><p>二叉排序树或者是一棵空树，或者是具有下列性质的二叉树：<br>（1）若左子树不空，则左子树上所有结点的值均小于 它的根结点的值；<br>（2）若右子树不空，则右子树上所有结点的值均大于或等于 它的根结点的值；<br>（3）左、右子树也分别为二叉排序树；<br>（4）没有键值相等的节点。</p>
-<blockquote>
-<p>中序遍历可以得到二叉排序树的有序序列</p>
-</blockquote>
-<pre><code class="html">    40
-    / \
-   30 50
+        <h1 id="第13章-显式锁"><a href="#第13章-显式锁" class="headerlink" title="第13章 显式锁"></a>第13章 显式锁</h1><hr>
+<h2 id="13-1-Lock-与-ReentrantLock"><a href="#13-1-Lock-与-ReentrantLock" class="headerlink" title="13.1 Lock 与 ReentrantLock"></a>13.1 Lock 与 ReentrantLock</h2><p>使用ReentrantLock来保护对象状态</p>
+<pre><code class="java">Lock lock = new ReentrantLock();
+...
+lcok.lock()
+try{
+    // 更新对象状态
+    // 捕捉异常，并在必要时恢复不变性条件
+} finally {
+    lock.unlock();
+}
 </code></pre>
-<h2 id="视图与基本表的对比"><a href="#视图与基本表的对比" class="headerlink" title="视图与基本表的对比"></a>视图与基本表的对比</h2><p>视图可以定义在多张表上，因此定义功能比表强。<br>视图中数据更新受到诸多限制，例如不能有聚集函数，不能是定义在多张表上等，因此操作功能弱于表。<br>视图的数据控制功能和表的数据控制功能相当，都有GRANT、REVOKE。</p>
-<p>视图和表的区别和联系：</p>
+<h2 id="13-1-1-轮询锁与定时锁"><a href="#13-1-1-轮询锁与定时锁" class="headerlink" title="13.1.1 轮询锁与定时锁"></a>13.1.1 轮询锁与定时锁</h2><pre><code class="java">
+if (!lock.tryLock(nanosToLock, NANOSECONDS)) 
+    return false;
+try {
+    return sendOnShareLine(message)
+} finally {
+    lock.unlock()
+}
+</code></pre>
+<h3 id="13-1-2-可中断的锁获取操作"><a href="#13-1-2-可中断的锁获取操作" class="headerlink" title="13.1.2 可中断的锁获取操作"></a>13.1.2 可中断的锁获取操作</h3><p>正如定时的锁获取操作能在带有事件限制的操作中使用独占锁，可中断的锁获取操作同样能在可取消的操作中使用加锁。</p>
+<h3 id="13-1-3-非块结构的加锁"><a href="#13-1-3-非块结构的加锁" class="headerlink" title="13.1.3 非块结构的加锁"></a>13.1.3 非块结构的加锁</h3><p>锁分段技术在基于散列的容器中实现了不同的散列链，以便使用不同的锁。</p>
+<h2 id="13-2-性能考虑因素"><a href="#13-2-性能考虑因素" class="headerlink" title="13.2 性能考虑因素"></a>13.2 性能考虑因素</h2><blockquote>
+<p>性能时一个不断变化的指标，内置锁和ReentrantLock在各个JDK版本都不一样。</p>
+</blockquote>
+<h2 id="13-3-公平锁"><a href="#13-3-公平锁" class="headerlink" title="13.3 公平锁"></a>13.3 公平锁</h2><p>在公平锁上，线程将按照它们发出请求的顺序来获得锁，但在非公平锁上，则允许“插队”:当一个线程请求非公平锁的时，如果在发出请求的同时该锁的状态变为可用，那么这个线程将跳过队列中所有的等待线程并获得这个锁。(在Semaphore中同样可以选择采用公平或非公平的获取顺序。)</p>
+<p>在大多数情况下，非公平锁的性能要高于公平锁的性能。</p>
+<h2 id="13-4-在synchronied和ReentrantLock之间进行选择"><a href="#13-4-在synchronied和ReentrantLock之间进行选择" class="headerlink" title="13.4 在synchronied和ReentrantLock之间进行选择"></a>13.4 在synchronied和ReentrantLock之间进行选择</h2><blockquote>
+<p>在一些内置锁无法满足需求的情况下，<code>ReentrantLock</code>可以作为一种高级工具。当需要一些高级功能时才应该使用<code>ReentrantLock</code>，这些功能包括：可定时的、可轮询的与可中断的锁获取操作，公平队列，以及非块结构的锁。否则，还是应该优先使用<code>synchronized</code>。</p>
+</blockquote>
+<h2 id="读-写锁"><a href="#读-写锁" class="headerlink" title="读-写锁"></a>读-写锁</h2><p>ReadWriteLock中的一些可选实现包括：</p>
 <ul>
-<li>区别：</li>
+<li><strong>释放优先</strong>。当一个写入操作释放写入锁时，并且队伍中同时存在读线程和写线程，那么应该优先选择读线程，写线程，还是最先发出请求的线程？</li>
+<li><strong>读线程插队</strong>。如果锁是由读线程持有，但有写线程正在等待，那么新到达的读线程能否立即获得访问权，还是应该在写线程后面等待？如果允许线程插队到写线程之前，那么将提高并发性，但却可能造成写线程饥饿问题。</li>
+<li><strong>重入性</strong>。读取锁和写入锁是否是可重入的。</li>
+<li><strong>降级</strong>。如果一个线程持有写入锁，那么它能否在不释放该锁的情况下获得读取锁？这可能会使得写入锁被“降级”为读取锁，同时不允许其他写线程修改被保护的资源。</li>
+<li><strong>升级</strong>。读取锁能否优于其他正在等待的读线程和写线程而升级为一个写入锁？在大多数的读-写锁实现中并不支持升级，因为如果没有显式的升级操作，那么很容易造成死锁。（如果两个读线程试图同时升级为写入锁，那么二者都不会释放读取锁。）</li>
 </ul>
-<ol>
-<li>视图是已经编译好的sql语句。而表不是  </li>
-<li>视图没有实际的物理记录。而表有。</li>
-<li>表是内容，视图是窗口</li>
-<li>表只用物理空间而视图不占用物理空间，视图只是逻辑概念的存在，表可以及时对它进行修改，但视图只能有创建的语句来修改</li>
-<li>表是内模式，视图是外模式</li>
-<li>视图是查看数据表的一种方法，可以查询数据表中某些字段构成的数据，只是一些SQL语句的集合。从安全的角度说，视图可以不给用户接触数据表，从而不知道表结构。</li>
-<li>表属于全局模式中的表，是实表；视图属于局部模式的表，是虚表。</li>
-<li>视图的建立和删除只影响视图本身，不影响对应的基本表。</li>
-</ol>
-<ul>
-<li>联系：</li>
-</ul>
-<p>视图（view）是在基本表之上建立的表，它的结构（即所定义的列）和内容（即所有数据行）都来自基本表，它依据基本表存在而存在。一个视图可以对应一个基本表，也可以对应多个基本表。视图是基本表的抽象和在逻辑意义上建立的新关系。</p>
-<h2 id="Linux-bash-特殊变量："><a href="#Linux-bash-特殊变量：" class="headerlink" title="Linux bash 特殊变量："></a>Linux bash 特殊变量：</h2><p>特殊变量列表<br>| 变量 | 含义 |<br>| – | – |<br>| $0 | 当前脚本的文件名 |<br>| $n | 传递给脚本或函数的参数。n 是一个数字，表示第几个参数。例如，第一个参数是<code>$1</code>，第二个参数是<code>$2</code>。|<br>| $# | 传递给脚本或函数的参数个数。|<br>| $<em> | 传递给脚本或函数的所有参数。|<br>| $@ | 传递给脚本或函数的所有参数。被双引号(“ “)包含时，与 $</em> 稍有不同，下面将会讲到。|<br>| $? | 上个命令的退出状态，或函数的返回值。|<br>| $$ | 当前Shell进程ID。对于 Shell 脚本，就是这些脚本所在的进程ID。|</p>
-<h2 id="bash中变量的定义和赋值"><a href="#bash中变量的定义和赋值" class="headerlink" title="bash中变量的定义和赋值"></a>bash中变量的定义和赋值</h2><p>bash中有两个内置的命令declare 和 typeset 可用于创建变量。除了使用内置命令来创建和设置变量外，还可以直接赋值，格式为：变量名=变量值<br>注意：变量名前面不应加美元“$”符号。（和PHP不同）</p>
-<pre><code>     等号“=”前后不可以有空格。
-
-     Shell中不需要显式的语法来声明变量。
-
-     变量名不可以直接和其他字符相连，如果想相连，必须用括号：    echo “this is $(he)llo!”
-</code></pre><h2 id="umask命令"><a href="#umask命令" class="headerlink" title="umask命令"></a>umask命令</h2><p>umask<br>功能说明：指定在建立文件时预设的权限掩码。<br>语　　法：umask [-S][权限掩码]<br>补充说明：umask可用来设定[权限掩码]。[权限掩码]是由3个八进制的数字所组成，将现有的存取权限减掉权限掩码后，即可产生建立文件时预设的权限。</p>
-<p>在Linux中 umask:目前用户在新建文件或者目录时候的默认权限值<br>在Linux中r，w，x的值分别是 ： 4 2 1</p>
-<h2 id="链接分硬链接和符号链接。"><a href="#链接分硬链接和符号链接。" class="headerlink" title="链接分硬链接和符号链接。"></a>链接分硬链接和符号链接。</h2><p>符号链接可以建立对于文件和目录的链接。符号链接可以跨文件系统，即可以跨磁盘分区。符号链接的文件类型位是l，链接文件具有新的i节点。</p>
-<p>硬链接不可以跨文件系统。它只能建立对文件的链接，硬链接的文件类型位是－，且硬链接文件的i节点同被链接文件的i节点相同。</p>
-<p>软链接产生的是一个新的文件(类似快捷方式)，但这个文件的作用就是专门指向某个文件的，删了这个软连接文件，那就等于不需要这个连接，和原来的存在的实体原文件没有任何关系，但删除原来的文件，则相应的软连接不可用（cat那个软链接文件，则提示“没有该文件或目录“）。</p>
-<p>硬链接实际上是为文件建一个<strong>别名</strong>，链接文件和原文件实际上是同一个文件。可以通过ls -i来查看一下，这两个文件的inode号是同一个，说明它们是同一个文件。</p>
-<h2 id="聚集索引"><a href="#聚集索引" class="headerlink" title="聚集索引"></a>聚集索引</h2><p>聚集索引是一种索引，该索引中键值的逻辑顺序决定了表中相应行的<strong>物理顺序</strong>。</p>
-<p>聚集索引确定表中数据的物理顺序。聚集索引类似于电话簿，按姓氏排列数据。由于聚集索引规定数据在表中的物理存储顺序，因此一个表只能包含一个聚集索引。但该索引可以包含多个列（组合索引），就像电话簿按姓氏和名字进行组织一样。</p>
-<p>聚集索引对于那些经常要搜索范围值的列特别有效。使用聚集索引找到包含第一个值的行后，便可以确保包含后续索引值的行在物理相邻。例如，如果应用程序执行的一个查询经常检索某一日期范围内的记录，则使用聚集索引可以迅速找到包含开始日期的行，然后检索表中所有相邻的行，直到到达结束日期。这样有助于提高此类查询的性能。同样，如果对从表中检索的数据进行排序时经常要用到某一列，则可以将该表在该列上聚集（物理排序），避免每次查询该列时都进行排序，从而节省成本。<br>当索引值唯一时，使用聚集索引查找特定的行也很有效率。例如，使用唯一雇员 ID 列 emp_id 查找特定雇员的最快速的方法，是在 emp_id 列上创建聚集索引或 PRIMARY KEY 约束。</p>
-<h2 id="块级元素与行内元素的区别"><a href="#块级元素与行内元素的区别" class="headerlink" title="块级元素与行内元素的区别"></a>块级元素与行内元素的区别</h2><ol>
-<li>块级元素会独占一行，其宽度自动填满其父元素宽度。行内元素不会独占一行，相邻的行内元素会排列在<strong>同一行</strong>，直至一行排不下才会换行，其宽度随元素的内容而变化。</li>
-<li>块级元素可以包含行内元素和块级元素；行内元素不能包含块级元素。</li>
-<li>行内元素设置width、height、margin-top、margin-bottom、padding-top、padding-bottom无效。</li>
-</ol>
-<p>块级元素与行内元素的转换:</p>
-<p>display:inline-block;<br>display:inline;<br>display:block;</p>
-<h2 id="Cookie-Session机制"><a href="#Cookie-Session机制" class="headerlink" title="Cookie/Session机制"></a>Cookie/Session机制</h2><p>会话（Session）跟踪是Web程序中常用的技术，用来跟踪用户的整个会话。常用的会话跟踪技术是Cookie与Session。Cookie通过在客户端记录信息确定用户身份，Session通过在服务器端记录信息确定用户身份。</p>
-<p>###Cookie<br>Cookie实际上是一小段的文本信息。客户端请求服务器，如果服务器需要记录该用户状态，就使用response向客户端浏览器颁发一个Cookie。客户端浏览器会把Cookie保存起来。当浏览器再请求该网站时，浏览器把请求的网址<strong>连同该Cookie一同提交</strong>给服务器。服务器检查该Cookie，以此来辨认用户状态。服务器还可以根据需要修改Cookie的内容。</p>
-<p>Cookie的原理<br><img src="http://hi.csdn.net/attachment/201111/9/0_13208318702UfF.gif" alt="Cookie的原理"></p>
-<p>子域名可以访问根域名的cookie，反之则不可以。cookie，对于不同的浏览器有不同的大小限制。</p>
-<h3 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h3><p>Session是另一种记录客户状态的机制，不同的是Cookie保存在客户端浏览器中，而Session保存在服务器上。客户端浏览器访问服务器的时候，服务器把客户端信息以某种形式记录在服务器上。这就是Session。</p>
-<p>Session对象是在客户端第一次请求服务器的时候创建的。Session也是一种key-value的属性对，通过getAttribute(Stringkey)和setAttribute(String key，Objectvalue)方法读写客户状态信息。</p>
-<p>Session保存在服务器端。为了获得更高的存取速度，服务器一般把Session放在内存里。每个用户都会有一个独立的Session。如果Session内容过于复杂，当大量客户访问服务器时可能会导致内存溢出。因此，Session里的信息应该尽量精简。</p>
-<p>Session生成后，只要用户继续访问，服务器就会更新Session的最后访问时间，并维护该Session。用户每访问服务器一次，无论是否读写Session，服务器都认为该用户的Session“活跃（active）”了一次。</p>
-<h2 id="CPU调度算法"><a href="#CPU调度算法" class="headerlink" title="CPU调度算法"></a>CPU调度算法</h2><h3 id="FCFS-先到先服务"><a href="#FCFS-先到先服务" class="headerlink" title="FCFS 先到先服务"></a>FCFS 先到先服务</h3><p>一旦选定进程，那么在结束之前就不能再切换到另一个进程。</p>
-<h3 id="SJF-最短优先-精确的讲是最短下一个CPU区间的算法-（可能导致饥饿）"><a href="#SJF-最短优先-精确的讲是最短下一个CPU区间的算法-（可能导致饥饿）" class="headerlink" title="SJF 最短优先  精确的讲是最短下一个CPU区间的算法 （可能导致饥饿）"></a>SJF 最短优先  精确的讲是最短下一个CPU区间的算法 （可能导致饥饿）</h3><p>前面提到，一个进程是由CPU区间和I/O区间交替组成的。而SJF是看哪个进程的CPU区间最短。</p>
-<ul>
-<li>SRTF抢占式：又称最短剩余优先，当新进来的进程的CPU区间比当前执行的进程所剩的CPU区间短，则抢占。</li>
-<li>非抢占：称为下一个最短优先，因为在就绪队列中选择最短CPU区间的进程放在队头。</li>
-</ul>
-<h3 id="优先级调度算法-pintos的优先级是0-63-0为最低优先级，63为最高优先级"><a href="#优先级调度算法-pintos的优先级是0-63-0为最低优先级，63为最高优先级" class="headerlink" title="优先级调度算法  pintos的优先级是0-63  0为最低优先级，63为最高优先级"></a>优先级调度算法  pintos的优先级是0-63  0为最低优先级，63为最高优先级</h3><p>SJF是特殊的优先级调度算法，以CPU区间长度的倒数为优先级。</p>
-<ul>
-<li>内部优先级：通过内部数据比如内存要求等。</li>
-<li>外部优先级：用户自己设定。set_priority</li>
-</ul>
-<p>分为抢占式和非抢占式，前者为如果进来的进程优先级高于运行的进程，则替换；后者只是在就绪队列中按优先级排队。</p>
-<p>缺点：无线阻塞或饥饿。前者为一个优先级高且运行时间长的进程一直阻塞，后者为优先级低的进程永远都得不到执行。</p>
-<p>解决饥饿的方法是老化。通过每个时间间隔后将等待的进程优先级降低。</p>
-<h3 id="转轮法-RR算法-抢占式"><a href="#转轮法-RR算法-抢占式" class="headerlink" title="转轮法 RR算法 抢占式"></a>转轮法 RR算法 抢占式</h3><p>用于分时系统。每个进程都占用一个时间片的时间。就绪队列为FIFO循环队列。如果一个进程的CPU区间长度小于时间片，则继续下面的进程；如果大于时间片，则中断切换到下一个进程执行。通常时间片长度为10ms-100ms，由此需要确定时间片大小使得上下文切换次数适当少。</p>
-<h3 id="多级队列调度"><a href="#多级队列调度" class="headerlink" title="多级队列调度"></a>多级队列调度</h3><p>根据某种性质将一个就绪队列分成不同的独立队列，如系统进程，交互进程（前台进程），交互编辑进程，批处理进程，学生进程。</p>
-<p>每个队列都有不同的调度算法。</p>
-<p>每个队列都有优先级，比如前台队列就比后台队列要有绝对的优先级，因此队列间的分配方法：</p>
-<p>（1）只有优先级高的队列为空，才能执行低优先级队列。</p>
-<p>（2）为队列分配不同权重的CPU时间，优先级高的分配时间多。</p>
-<h3 id="多级反馈队列-抢占式"><a href="#多级反馈队列-抢占式" class="headerlink" title="多级反馈队列   抢占式"></a>多级反馈队列   抢占式</h3><p>&emsp;&emsp;动态调整进程，进程在不同队列之间移动，虽然在队列间移动需要耗费资源，但是更合理。按照CPU区间的大小分队列。进程之间的划分是按照所花CPU时间划分，比如队列0是就绪队列，且规定一个时间上界，如果一个进程没能规定时间完成，则被放入队列1中。CPU区间越大的进程就被放入低优先中。每个进程一开始都进入就绪队列。</p>
-<p><img src="https://img-blog.csdn.net/20180802180851937?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="CPU调度算法"></p>
-<h2 id="页替换算法与缺页率"><a href="#页替换算法与缺页率" class="headerlink" title="页替换算法与缺页率"></a>页替换算法与缺页率</h2><h3 id="缺页中断"><a href="#缺页中断" class="headerlink" title="缺页中断"></a>缺页中断</h3><p>&emsp;&emsp;在请求分页系统中，可以通过查询页表中的状态位来确定所要访问的页面是否存在于内存中。每当所要访问的页面不在内存时，会产生一次缺页中断，此时操作系统会根据页表中的外存地址在外存中找到所缺的一页，将其调入内存。 </p>
-<p>缺页本身是一种中断，与一般的中断一样，需要经过4个处理步骤：<br>　　1. 保护CPU现场<br>　　2. 分析中断原因<br>　　3. 转入缺页中断处理程序进行处理<br>　　4. 恢复CPU现场，继续执行<br>　　但是缺页中断时由于所要访问的页面不存在于内存时，有硬件所产生的一种特殊的中断，因此，与一般的中断存区别：<br>　　 1. 在指令执行期间产生和处理缺页中断信号<br>　　 2. 一条指令在执行期间，可能产生多次缺页中断<br>　　 3. 缺页中断返回时，执行产生中断的那一条指令，而一般的中断返回时，执行下一条指令</p>
-<h3 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h3><p>&emsp;&emsp;进程运行过程中，如果发生缺页中断，而此时内存中有没有空闲的物理块是，为了能够把所缺的页面装入内存，系统必须从内存中选择一页调出到磁盘的对换区。但此时应该把那个页面换出，则需要根据一定的页面置换算法（Page Replacement Algorithm)来确定。</p>
-<h4 id="最佳置换（Optimal，-OPT"><a href="#最佳置换（Optimal，-OPT" class="headerlink" title="最佳置换（Optimal， OPT)"></a>最佳置换（Optimal， OPT)</h4><p>&emsp;&emsp;置换以后不再被访问，或者在将来最迟才回被访问的页面，缺页中断率最低。但是该算法需要依据以后各业的使用情况，而当一个进程还未运行完成时，很难估计哪一个页面是以后不再使用或在最长时间以后才会用到的页面。所以该算法是不能实现的。但该算法仍然有意义，作为衡量其他算法优劣的一个标准。</p>
-<h4 id="先进先出置换算法（First-In-First-Out-FIFO"><a href="#先进先出置换算法（First-In-First-Out-FIFO" class="headerlink" title="先进先出置换算法（First In First Out, FIFO)"></a>先进先出置换算法（First In First Out, FIFO)</h4><p>　置换最先调入内存的页面，即置换在内存中驻留时间最久的页面。按照进入内存的先后次序排列成队列，从队尾进入，从队首删除。但是该算法会淘汰经常访问的页面，不适应进程实际运行的规律，目前已经<strong>很少使用</strong>。</p>
-<h4 id="最近最久未使用置换算法（Least-Recently-Used，-LRU）"><a href="#最近最久未使用置换算法（Least-Recently-Used，-LRU）" class="headerlink" title="最近最久未使用置换算法（Least Recently Used， LRU）"></a>最近最久未使用置换算法（Least Recently Used， LRU）</h4><p>　　置换最近一段时间以来最长时间未访问过的页面。根据程序局部性原理，刚被访问的页面，可能马上又要被访问；而较长时间内没有被访问的页面，可能最近不会被访问。<br>　　LRU算法普偏地适用于各种类型的程序，但是系统要时时刻刻对各页的访问历史情况加以记录和更新，开销太大，因此LRU算法必须要有硬件的支持。</p>
-<h4 id="缺页率"><a href="#缺页率" class="headerlink" title="缺页率"></a>缺页率</h4><p>缺页中断率： FIFO &gt; LRU &gt; OPT<br> &emsp;&emsp;所以OPT的算法效果最好，然后时LRU，最后是FIFO</p>
-<h2 id="Linux-设备与驱动"><a href="#Linux-设备与驱动" class="headerlink" title="Linux 设备与驱动"></a>Linux 设备与驱动</h2><ol>
-<li>独享设备：在一个用户作业未完成或退出之前，此设备不能分配给其他作业用。所有字符设备都是独享设备。如输入机、磁带机、打印机等。——很明显：需要装驱动。</li>
-<li>共享设备：多个用户作业或多个进程可以“同时”从这些设备上存取信息。软硬盘、光盘等块设备都是共享设备。——无需驱动。</li>
-<li>虚拟设备：通过软件技术将独享设备改造成共享设备。例如：通过SPOOLing技术将一台打印机虚拟成多台打印机。——实质还是独享设备，需要驱动。</li>
-<li>系统设备，需要驱动。</li>
-</ol>
-<h2 id="linux定时任务cron"><a href="#linux定时任务cron" class="headerlink" title="linux定时任务cron"></a>linux定时任务cron</h2><p><img src="https://img-blog.csdn.net/20180802201420822?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<p>　　<em>   </em>　 <em>　 </em>　 <em>　　command<br>　　分钟(0-59)　小时(0-23)　日期(1-31)　月份(1-12)　星期(0-6,0代表星期天)　 命令<br>　　<br>　　第1列表示分钟1～59 每分钟用</em>或者 */1表示<br>　　第2列表示小时1～23（0表示0点）<br>　　第3列表示日期1～31<br>　　第4列表示月份1～12<br>　　第5列标识号星期0～6（0表示星期天）</p>
-<p>在以上任何值中，星号（<em>）可以用来代表所有有效的值。譬如，月份值中的星号意味着在满足其它制约条件后每月都执行该命令。<br>　　整数间的短线（-）指定一个整数范围。譬如，1-4 意味着整数 1、2、3、4。<br>　　用逗号（,）隔开的一系列值指定一个列表。譬如，3, 4, 6, 8 标明这四个指定的整数。<br>　　正斜线（/）可以用来指定间隔频率。在范围后加上 /<integer> 意味着在范围内可以跳过 integer。譬如，0-59/2 可以用来在分钟字段定义每两分钟。间隔频率值还可以和星号一起使用。例如，</integer></em>/3 的值可以用在月份字段中表示每三个月运行一次任务。<br>　　开头为井号（#）的行是注释，不会被处理</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>与内置锁相比，显式的Lock提供了一些宽展功能，在处理锁的不可用性方面有着更高的灵活性，并且对队列行有着更好的控制。但ReentrantLock不能完全替代<code>synchronized</code>，只有在<code>synchronized</code>无法满足需求时，才应该使用它。<br>读-写允许多个读线程并发地访问被保护的对象，当访问以读取操作为主的数据结构时，他能提高程序的可伸缩性。</p>
 
       
     </div>
@@ -217,7 +160,7 @@
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/02/零碎的知识点-1/" data-id="ck8gr4zgy002z1ovtyxoyj5o2" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/《Java并发编程实战》-12/" data-id="ckjtrgp5h0015n8vin6tyjy1h" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -225,7 +168,7 @@
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="零碎的知识点-1" ></div> 
+<div id="SOHUCS" sid="《Java并发编程实战》-12" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -243,10 +186,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Thinking in Java 》读书笔记-17" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Java并发编程实战》-11" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/08/01/《Thinking in Java 》读书笔记-17/" class="article-date">
-  <time datetime="2018-08-01T13:06:05.058Z" itemprop="datePublished">2018-08-01</time>
+    <h3 href="/2020/08/22/《Java并发编程实战》-11/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.361Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   <div class="article-category">
@@ -263,7 +206,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/《Thinking in Java 》读书笔记-17/">《Thinking in Java 》读书笔记-17</a>
+      <a class="article-title" href="/2020/08/22/《Java并发编程实战》-11/">《Java并发编程实战》-11 第12章 并发程序的测试</a>
     </h1>
   
 
@@ -272,50 +215,45 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="《Thinking-in-Java-》读书笔记-17"><a href="#《Thinking-in-Java-》读书笔记-17" class="headerlink" title="《Thinking in Java 》读书笔记-17"></a>《Thinking in Java 》读书笔记-17</h1><h2 id="17-1-完整的容器分类法"><a href="#17-1-完整的容器分类法" class="headerlink" title="17.1 完整的容器分类法"></a>17.1 完整的容器分类法</h2><p><img src="https://img-blog.csdn.net/20180801173227921?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNTA0MDE2OQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<h2 id="17-2-填充容器"><a href="#17-2-填充容器" class="headerlink" title="17.2 填充容器"></a>17.2 填充容器</h2><p>Collections.nCopies()和Collection.fill()都可以用单个对象的引用来填充Collection，并且所有引用都被设置为指向相同的的对象。<br>fill()方法的用处更为有限，它只能替换已经在List中存在的元素，而不能添加新的元素。</p>
-<h3 id="17-2-1-一种Generator解决方案"><a href="#17-2-1-一种Generator解决方案" class="headerlink" title="17.2.1 一种Generator解决方案"></a>17.2.1 一种Generator解决方案</h3><p>所有的Collection子类型都有一个接受另一个Collection对象的构造器。</p>
-<h3 id="17-2-2-Map生成器"><a href="#17-2-2-Map生成器" class="headerlink" title="17.2.2 Map生成器"></a>17.2.2 Map生成器</h3><h3 id="未获支持的操作"><a href="#未获支持的操作" class="headerlink" title="未获支持的操作"></a>未获支持的操作</h3><h3 id="17-2-3-使用Abstract类"><a href="#17-2-3-使用Abstract类" class="headerlink" title="17.2.3 使用Abstract类"></a>17.2.3 使用Abstract类</h3><h2 id="17-3-Collection的功能方法"><a href="#17-3-Collection的功能方法" class="headerlink" title="17.3 Collection的功能方法"></a>17.3 Collection的功能方法</h2><h2 id="17-4-可选操作"><a href="#17-4-可选操作" class="headerlink" title="17.4 可选操作"></a>17.4 可选操作</h2><p>执行各种不同的添加和移除的方法在Collection接口中都是可选操作。<br>使用Arrays.asList()生成的List,基于一个固定大小的数组，仅支持那些不会改变数组大小的操作。</p>
-<h2 id="17-5-List的功能方法"><a href="#17-5-List的功能方法" class="headerlink" title="17.5 List的功能方法"></a>17.5 List的功能方法</h2><h2 id="17-6-Set和存储顺序"><a href="#17-6-Set和存储顺序" class="headerlink" title="17.6 Set和存储顺序"></a>17.6 Set和存储顺序</h2><table>
-<thead>
-<tr>
-<th>接口</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Set</td>
-<td>存入Set的每一个元素都必须是唯一的，因为Set不保存重复元素．加入Set的元素必须定义equals()方法以确保对象的唯一性. Set和Collection有完全一样的接口.Set接口不保证维护元素的次序.</td>
-</tr>
-<tr>
-<td>HashSet *</td>
-<td>为快速查找而设计的Set.存入HashSet的元素必须定义HashCode()方法.</td>
-</tr>
-<tr>
-<td>TreeSet</td>
-<td>保持次序的Set,底层为树结构.使用它可以从Set中提取有序的序列.元素必须实现Comparable接口</td>
-</tr>
-<tr>
-<td>LinkedHashSet</td>
-<td>具有HashSet的查询速度,且内部使用链表维护元素的顺序.于是在使用迭代器遍历Set时,结果会按元素插入的次序显示.元素也必须定义hashCode()方法.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="17-7-队列"><a href="#17-7-队列" class="headerlink" title="17.7 队列"></a>17.7 队列</h2><h3 id="17-7-1-优先级队列"><a href="#17-7-1-优先级队列" class="headerlink" title="17.7.1 优先级队列"></a>17.7.1 优先级队列</h3><h2 id="17-8-理解Map"><a href="#17-8-理解Map" class="headerlink" title="17.8 理解Map"></a>17.8 理解Map</h2><h2 id="17-9-散列与散列码"><a href="#17-9-散列与散列码" class="headerlink" title="17.9 散列与散列码"></a>17.9 散列与散列码</h2><p>散列的价值在于速度。我们使用数组来保存键的信息，这个信息并不是键本身，而是通过键对象生成一个数字(散列码)，作为数组下标。由于数组的容量是固定的，而散列容器的大小是可变的，所以不同的键可以产生相同的数组下标(散列码)。也就是说，可能会有冲突(当然也有特例，比如EnumMap和EnumSet)。所以，数组的值存放着一个保存所有相同散列码的值的list(引用)。然后对list中的值使用equals进行线性查询。如果散列函数设计的比较好的话，数组的每个位置只有较少的值，并且浪费空间也小。于是，查询过程就是首先计算键的散列码得到数组下标，然后内存寻址(时间复杂度为O(1)，赋值)找到数组的值，再遍历list(时间复杂度为O(n)，线性查询)即可。即hashCode和equals共同确定了对象的唯一性。</p>
-<p>所有类都继承于Object。Object的hashCode方法生成的散列码，实际上是默认使用对象的地址计算散列码；而Object的equals方法实际上就是地址比较(==)。显然，当我们在使用散列容器(如HashMap的Key，HashSet等)时，我们自定义的类中还继承Object的hashCode和equals是不行的。必须重写hashCode和equals方法。好的hashCode()应该产生分布均匀的散列码。</p>
-<h2 id="17-10-选择接口的不同实现"><a href="#17-10-选择接口的不同实现" class="headerlink" title="17.10 选择接口的不同实现"></a>17.10 选择接口的不同实现</h2><h2 id="17-11-实用方法"><a href="#17-11-实用方法" class="headerlink" title="17.11 实用方法"></a>17.11 实用方法</h2><h2 id="17-12-持有引用"><a href="#17-12-持有引用" class="headerlink" title="17.12 持有引用"></a>17.12 持有引用</h2><ul>
-<li>SoftRefernce </li>
-<li>WeakRefernce </li>
-<li>PhantomRefernce </li>
+        <h1 id="第12章-并发程序的测试"><a href="#第12章-并发程序的测试" class="headerlink" title="第12章 并发程序的测试"></a>第12章 并发程序的测试</h1><hr>
+<p>吞吐量:指一组并发任务中已完成任务所栈的比例。<br>响应性：指请求从发出到完成之间的时间（也成为延迟）。</p>
+<h2 id="12-1-正确性测试"><a href="#12-1-正确性测试" class="headerlink" title="12.1 正确性测试"></a>12.1 正确性测试</h2><p>在为某个并发类设计单元测试时，首先需要执行与测试串行类时相同的分析—找出需要检查的不变性条件和后验条件。</p>
+<h3 id="12-1-1-基本的单元测试"><a href="#12-1-1-基本的单元测试" class="headerlink" title="12.1.1 基本的单元测试"></a>12.1.1 基本的单元测试</h3><p>在测试集中包含一组串行测试通常是有帮助的，因为它们有助于在开始分析数据竞争之前找出与并发无关性的问题。</p>
+<h3 id="12-1-2-对阻塞操作的测试"><a href="#12-1-2-对阻塞操作的测试" class="headerlink" title="12.1.2 对阻塞操作的测试"></a>12.1.2 对阻塞操作的测试</h3><p>在测试并发的基本属性时，需要引入多个线程。</p>
+<p>Thread.getState的返回结果不能用于并发控制，它能限制测试的有效性—其主要作用还是作为调试信息的来源。</p>
+<h3 id="12-1-3-安全性测试"><a href="#12-1-3-安全性测试" class="headerlink" title="12.1.3 安全性测试"></a>12.1.3 安全性测试</h3><blockquote>
+<p>在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情况是，在测试属性中不需要任何同步机制。</p>
+</blockquote>
+<h3 id="12-1-4-资源管理的测试"><a href="#12-1-4-资源管理的测试" class="headerlink" title="12.1.4 资源管理的测试"></a>12.1.4 资源管理的测试</h3><h3 id="12-1-5-使用回调"><a href="#12-1-5-使用回调" class="headerlink" title="12.1.5 使用回调"></a>12.1.5 使用回调</h3><p>回调函数的执行通常是在对象生命周期的一些已知位置上，并且在这些位置上非常适合判断不变性是否被破坏。</p>
+<h3 id="12-1-6-产生跟多的交替操作"><a href="#12-1-6-产生跟多的交替操作" class="headerlink" title="12.1.6 产生跟多的交替操作"></a>12.1.6 产生跟多的交替操作</h3><p>在访问共享状态的操作中，使用Thread.yield将产生更多的上下文切换（这项技术是平台相关的）。</p>
+<h2 id="12-2-性能测试"><a href="#12-2-性能测试" class="headerlink" title="12.2 性能测试"></a>12.2 性能测试</h2><h3 id="12-2-1-在PutTakeTest中增加计时功能"><a href="#12-2-1-在PutTakeTest中增加计时功能" class="headerlink" title="12.2.1 在PutTakeTest中增加计时功能"></a>12.2.1 在PutTakeTest中增加计时功能</h3><h3 id="12-2-2-多种算法的比较"><a href="#12-2-2-多种算法的比较" class="headerlink" title="12.2.2 多种算法的比较"></a>12.2.2 多种算法的比较</h3><h3 id="响应性衡量"><a href="#响应性衡量" class="headerlink" title="响应性衡量"></a>响应性衡量</h3><p>如果能获取更小的服务时间变动性，那么更长的平均时间是有意义的，“可预测需性”同样是一个非常有价值的性能特征。<br>除非线程由于密集的同步需求而被持续地阻塞，否则非公平的信号量通常能实现更好的吞吐量。</p>
+<h2 id="12-3-避免性能测试的陷阱"><a href="#12-3-避免性能测试的陷阱" class="headerlink" title="12.3 避免性能测试的陷阱"></a>12.3 避免性能测试的陷阱</h2><h3 id="12-3-1-垃圾回收"><a href="#12-3-1-垃圾回收" class="headerlink" title="12.3.1 垃圾回收"></a>12.3.1 垃圾回收</h3><p>垃圾回收的执行时序是无法预测的，因此在执行测试时，垃圾回收器可能在任何时刻运行。</p>
+<h3 id="12-3-2-动态编译"><a href="#12-3-2-动态编译" class="headerlink" title="12.3.2 动态编译"></a>12.3.2 动态编译</h3><p>当某个类第一次被加载时，JVM会通过解释字节码的方式执行它。在某个时刻，如果一个方法运行的次数足够多，那么动态编译器会将它编译为机器代码，当编译完成后，代码的执行方式将从解释执行变成直接执行。</p>
+<h3 id="12-3-3-对代码路径的不真实采集"><a href="#12-3-3-对代码路径的不真实采集" class="headerlink" title="12.3.3 对代码路径的不真实采集"></a>12.3.3 对代码路径的不真实采集</h3><p>运行时编译器根据收集到的信息对已编译的代码进行优化。JVM可以与执行过程特定的信息来生成更优的代码，这个意味着在编译某个程序的方法M时生成的代码，将可能与编译另一个不同程序中的方法M时生成的代码不同。</p>
+<h3 id="12-3-4-不真实的竞争程度"><a href="#12-3-4-不真实的竞争程度" class="headerlink" title="12.3.4 不真实的竞争程度"></a>12.3.4 不真实的竞争程度</h3><p>并发的应用程序可以交替执行两种不同的类型的工作：访问共享数据（例如从共享工作队列中取出下一个任务）以及执行线程本地的计算（例如，执行任务，并假设任务本身不会访问共享数据）。</p>
+<h3 id="12-3-5-无用代码的消除"><a href="#12-3-5-无用代码的消除" class="headerlink" title="12.3.5 无用代码的消除"></a>12.3.5 无用代码的消除</h3><blockquote>
+<p>要编写有效的性能测试程序，那就需要告诉优化器不要将基准测试当作无用代码而优化掉。这就要求在程序中对每个计算结果都要通过某种方式来使用，这种方式不需要同步或者大量的计算。</p>
+</blockquote>
+<h2 id="12-4-其他的测试方法"><a href="#12-4-其他的测试方法" class="headerlink" title="12.4 其他的测试方法"></a>12.4 其他的测试方法</h2><p>测试的目标不是更多地发现错误，而是提高代码按照预期方式工作的可信度。</p>
+<h3 id="12-4-1-代码审查"><a href="#12-4-1-代码审查" class="headerlink" title="12.4.1 代码审查"></a>12.4.1 代码审查</h3><p>多人参与的代码审查通常是不可替代的（另一方面，代码审查也不能取代测试）。</p>
+<h3 id="12-4-2-静态分析工具"><a href="#12-4-2-静态分析工具" class="headerlink" title="12.4.2 静态分析工具"></a>12.4.2 静态分析工具</h3><p>静态分析工具能生成一个警告列表，其中包含的警告信息必须通过手工方式进行检查，从而确定这些警告是否表示真正的错误。</p>
+<p>FindBUgs包含的检测器：</p>
+<ul>
+<li>调用Thread.run()</li>
+<li>未被释放的锁<br>  标准的做法是在一个人finally块中释放显式锁，否则，当发生Exception事件时，锁仍然处于未被释放的状态。</li>
+<li>空的同步块</li>
+<li>双重检查加锁<br>  双重检查加锁时一种错误的习惯用法，其初衷是为了降低延迟初始化过程中的同步开销，该用法在读取一个共享的可变域时缺少正确的同步。</li>
+<li>在构造函数中启动一个线程。<br>  如果在构造函数中启动一个线程，那么将可能带来子类化问题，同时还会导致this引用从构造函数中逸出。</li>
+<li>通知错误<br>  如果一个同步块中调用了notify或notifyAll，但没有修改任何状态，那么就可能出错。</li>
+<li>条件等待中的错误<br>  如果在调用Object.wait和Condition.await方法时没有持有锁，或者不在某个循环中，或者没有检查某些状态谓词，那么通常是一个错误。</li>
+<li>对Lock和Condition的误用</li>
+<li>在休眠或者等待的同时持有一个锁。</li>
+<li>自旋循环。<br>  当等待某个状态转换发生时，闭锁或条件等待通常比在代码中自旋是一种更好的技术。</li>
 </ul>
-<h2 id="17-13-Java-1-0-1-1的容器"><a href="#17-13-Java-1-0-1-1的容器" class="headerlink" title="17.13 Java 1.0/1.1的容器"></a>17.13 Java 1.0/1.1的容器</h2><ol>
-<li>不要在新代码里使用Vector、Enumeration。</li>
-<li>用LinkedLsit或基于LinlkedList的子类代替旧版的Stack。</li>
-<li>如果拥有一个可以命名的固定的标志集合，那么EnumSet与BitSet相比是更好的选择。</li>
-<li>只有在运行时才知道需要多少个标志，对标志命名不合理，需要BitSet中的某种特性操作。</li>
-</ol>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
+<h3 id="12-4-3-面向方面的测试技术"><a href="#12-4-3-面向方面的测试技术" class="headerlink" title="12.4.3 面向方面的测试技术"></a>12.4.3 面向方面的测试技术</h3><p>AOP可以用来确保不变性条件不被破坏，或者与同步策略的某些方面保持一直。</p>
+<h3 id="12-4-4-分析与监测工具"><a href="#12-4-4-分析与监测工具" class="headerlink" title="12.4.4 分析与监测工具"></a>12.4.4 分析与监测工具</h3><p>分析工具通常为能给出程序内部的详细信息，为每个线程提供一个事件线显示，并且用颜色区分不同的线程状态（可运行，由于等待某个锁为阻塞，由于等待I/O操作而阻塞等等）。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>要测试并发程序的正确性可能非常困难，因为并发程序的许多故障模式哦都是一些低概率事件，它们对于执行时序、负载情况以及其他难以出现的条件都非常敏感。</p>
+
       
     </div>
     <footer class="article-footer">
@@ -323,7 +261,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/08/01/《Thinking in Java 》读书笔记-17/" data-id="ck8gr4zet00291ovtitmgdz9a" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/《Java并发编程实战》-11/" data-id="ckjtrgp5i0018n8viakef47hp" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -331,7 +269,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-17" ></div> 
+<div id="SOHUCS" sid="《Java并发编程实战》-11" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -349,10 +287,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-《Thinking in Java 》读书笔记-11" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-《Java并发编程实战》-10" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2018/07/30/《Thinking in Java 》读书笔记-11/" class="article-date">
-  <time datetime="2018-07-30T10:11:35.454Z" itemprop="datePublished">2018-07-30</time>
+    <h3 href="/2020/08/22/《Java并发编程实战》-10/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.353Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   <div class="article-category">
@@ -369,7 +307,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/30/《Thinking in Java 》读书笔记-11/">《Thinking in Java 》读书笔记-11</a>
+      <a class="article-title" href="/2020/08/22/《Java并发编程实战》-10/">《Java并发编程实战》-11</a>
     </h1>
   
 
@@ -378,69 +316,54 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="第11章-持有对象"><a href="#第11章-持有对象" class="headerlink" title="第11章 持有对象"></a>第11章 持有对象</h1><hr>
-<h2 id="11-1-泛型和类型安全的容器"><a href="#11-1-泛型和类型安全的容器" class="headerlink" title="11.1 泛型和类型安全的容器"></a>11.1 泛型和类型安全的容器</h2><h2 id="1-2-基本概念"><a href="#1-2-基本概念" class="headerlink" title="1.2 基本概念"></a>1.2 基本概念</h2><ul>
-<li>Collection</li>
-<li>Map</li>
-<li>List</li>
-</ul>
-<h2 id="1-3添加一组元素"><a href="#1-3添加一组元素" class="headerlink" title="1.3添加一组元素"></a>1.3添加一组元素</h2><p>构建一个不包含元素的Collection，然后调用Collection.addAll()这种方式，运行速度快，也比较方便，是首先方式。</p>
-<p>使用Array.asList()可以使用<strong>显式类型参数</strong>说明产生的List的实际的目标类型。</p>
-<h2 id="1-4-容器的打印"><a href="#1-4-容器的打印" class="headerlink" title="1.4 容器的打印"></a>1.4 容器的打印</h2><p>使用Arrays.toString()来产生数组的可打印表示。</p>
-<h2 id="11-5-List"><a href="#11-5-List" class="headerlink" title="11.5 List"></a>11.5 List</h2><ul>
-<li><p>基本的ArrayList，它长于随机访问元素，但是在List的中间插入移动元素时较慢。</p>
-</li>
-<li><p>LinkedList,它通过代价较低的在List中间进行的插入和删除操作，提供了优化的顺序访问。LinkedList在随机访问方面相对比较慢，但它的特性较ArrayList更大。</p>
-</li>
-</ul>
-<h2 id="11-6-迭代器"><a href="#11-6-迭代器" class="headerlink" title="11.6 迭代器"></a>11.6 迭代器</h2><p>Java的iterator()要求容器返回一个Iterator。Iterator将准备好返回序列的第一个元素。</p>
-<ol>
-<li>使用方法iterator()要求容器返回一个Iterator.Iterator将准备好返回序列的第一个元素。</li>
-<li>使用next()获得序列中的下一个元素。</li>
-<li>使用hashNext()检查序列中是否还有元素。</li>
-<li>使用remove()将迭代器新近返回的元素删除。</li>
-</ol>
-<p>Iterator可以移除由next()产生的最后一个元素，这意味着在调用remove()之前必须先调用next()。</p>
-<h2 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h2><p>LinkedList具有能够直接实现栈的所有功能的方法，因此可以直接将LinkedList作为栈使用。</p>
-<p>peek()方法提供栈顶元素，但是并不将其从栈顶移除，而pop()将移除并返回栈顶元素。</p>
-<h2 id="11-9-Set"><a href="#11-9-Set" class="headerlink" title="11.9 Set"></a>11.9 Set</h2><p>Set不保存重复的元素。</p>
-<p>TreeSet将元素储存在红-黑树数据结构中，有序。</p>
-<p>HashSet使用的是散列函数，无序。</p>
-<p>LinkedHashList因为查询速度的原因使用散列，但是也使用了链表来维护元素的插入顺序。</p>
-<h2 id="11-10-Map"><a href="#11-10-Map" class="headerlink" title="11.10 Map"></a>11.10 Map</h2><p>Map可以用keySet()返回它的键的Set，用valueSet()它的值的Collection。</p>
+        <h1 id="第11章-性能与可伸缩性"><a href="#第11章-性能与可伸缩性" class="headerlink" title="第11章 性能与可伸缩性"></a>第11章 性能与可伸缩性</h1><hr>
+<h2 id="11-1-对性能的思考"><a href="#11-1-对性能的思考" class="headerlink" title="11.1 对性能的思考"></a>11.1 对性能的思考</h2><h3 id="11-1-1-性能与可伸缩性"><a href="#11-1-1-性能与可伸缩性" class="headerlink" title="11.1.1 性能与可伸缩性"></a>11.1.1 性能与可伸缩性</h3><blockquote>
+<p>可伸缩性指的是:当增加计算资源时(例如CPU、内存、存储容量或I/O带宽)，程序的吞吐量或处理能力能相应地增加。</p>
+</blockquote>
+<h3 id="11-1-2-评估各种性能权衡因素"><a href="#11-1-2-评估各种性能权衡因素" class="headerlink" title="11.1.2 评估各种性能权衡因素"></a>11.1.2 评估各种性能权衡因素</h3><blockquote>
+<p>避免不成熟的优化。首先使程序正确，然后提高运行速度–如果它还运行得不够快。</p>
+</blockquote>
+<p>以测试为基准，不要猜测。</p>
+<h2 id="11-2-Amdahl定律"><a href="#11-2-Amdahl定律" class="headerlink" title="11.2 Amdahl定律"></a>11.2 Amdahl定律</h2><p>Amdahl定律描述的是：在增加计算资源的情况下，程序在理论上能够实现最高加速比，这个值取决于程序中可并行组件和串行组件所占的比重。</p>
+<blockquote>
+<p>在所有并发程序中都包含一些串行部分。如果你认为在你的程序中不存在串行部分，那么可任意在仔细检查一遍。</p>
+</blockquote>
+<h3 id="11-2-1-实列：在各种框架中隐藏的串行部分"><a href="#11-2-1-实列：在各种框架中隐藏的串行部分" class="headerlink" title="11.2.1 实列：在各种框架中隐藏的串行部分"></a>11.2.1 实列：在各种框架中隐藏的串行部分</h3><h3 id="11-2-2-Amdahl定律的应用"><a href="#11-2-2-Amdahl定律的应用" class="headerlink" title="11.2.2 Amdahl定律的应用"></a>11.2.2 Amdahl定律的应用</h3><h2 id="11-3-线程引入的开销"><a href="#11-3-线程引入的开销" class="headerlink" title="11.3 线程引入的开销"></a>11.3 线程引入的开销</h2><h3 id="11-3-1-上下文切换"><a href="#11-3-1-上下文切换" class="headerlink" title="11.3.1 上下文切换"></a>11.3.1 上下文切换</h3><p>切换线程上下文需要一定的开销，而在线程调度过程中需要访问由操作系统和JVM共享的数据结构。应用程序、操作系统以及JVM都使用一组相同的CPU。</p>
+<h3 id="11-3-2-内存同步"><a href="#11-3-2-内存同步" class="headerlink" title="11.3.2 内存同步"></a>11.3.2 内存同步</h3><p>同步操作的性能开销包括多个方面。在<code>synchronized</code>和<code>volatile</code>提供的可见性保证中可能会使用一些特殊指令，即内存栅栏(Memory Barrier)。内存栅栏可以刷新缓存，使缓存无效，刷新硬件的写缓冲，以及停止执行管道。</p>
+<blockquote>
+<p>不要过度担心非竞争同步带来的开销。这个基本的机制已经非常快了，并且JVM还能进行额外的优化以及进一步降低或消除开销。因此，我们应该将优化重点放在那些发生锁竞争的地方。</p>
+</blockquote>
+<h3 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h3><p>当线程无法获取某个锁或者由于某个条件等待或在I/O操作上阻塞时，需要被挂起，在这个过程中将包含两次额外的上下文切换，以及所有必要的操作系统操作和缓存操作：被阻塞的线程在其执行时间片还未用完之前就被就被交换换出去，而在随后当要获取的锁或者其他资源可用时，又再次被切换回来。（由于锁竞争而导致阻塞时，线程在持有锁时将存在一定的开销：当它释放锁时，必须告诉操作系统恢复运行阻塞的线程）。</p>
+<h2 id="11-4-减少锁的竞争"><a href="#11-4-减少锁的竞争" class="headerlink" title="11.4 减少锁的竞争"></a>11.4 减少锁的竞争</h2><blockquote>
+<p>在并发程序中，对可伸缩性的最主要威胁就是独占方式的资源锁。</p>
+</blockquote>
+<p>由3种方式可以降低锁的竞争程度：</p>
 <ul>
-<li><p>HashMap</p>
-</li>
-<li><p>TreeMap</p>
-</li>
-<li><p>LinkedHashMap</p>
-</li>
+<li>减少锁的持有时间。</li>
+<li>降低锁的请求频率。</li>
+<li>使用带有协调机制的独占锁，这些机制允许更高的并发性。</li>
 </ul>
-<h2 id="11-111-Queue"><a href="#11-111-Queue" class="headerlink" title="11.111 Queue"></a>11.111 Queue</h2><p>  队列是一个典型的先进先出的容器。</p>
-<h3 id="11-11-1-PriorityQueue"><a href="#11-11-1-PriorityQueue" class="headerlink" title="11.11.1 PriorityQueue"></a>11.11.1 PriorityQueue</h3><p>优先队列声明下一个弹出元素是最需要的元素（具有最高的优先级）。</p>
-<h2 id="Collection和Iterator"><a href="#Collection和Iterator" class="headerlink" title="Collection和Iterator"></a>Collection和Iterator</h2><p>Collection是描述所有序列容器的共性的跟接口，它可能被认为是一个“附属接口”，即因为要表示其他若干个接口的共性而出现的接口。</p>
-<p>实现Collection就意味着需要提供iterator()方法。</p>
-<p>Collection可以生成Iterator，而List可以生成ListIterator。</p>
-<h2 id="11-13-Foreach与迭代器"><a href="#11-13-Foreach与迭代器" class="headerlink" title="11.13 Foreach与迭代器"></a>11.13 Foreach与迭代器</h2><p>foreach语法主要用于数组和实现了Iterable接口的对象。</p>
-<h3 id="11-13-1-适配器方法惯用法"><a href="#11-13-1-适配器方法惯用法" class="headerlink" title="11.13.1 适配器方法惯用法"></a>11.13.1 适配器方法惯用法</h3><p>由Arrays.asList()产生的List对象会使用底层数组作为其物理实现。只要你执行的操作会修改这个List，并且你不想原来的数组被修改，那么你应该在另一个容器中创建一个副本。</p>
-<h2 id="11-14-总结"><a href="#11-14-总结" class="headerlink" title="11.14 总结"></a>11.14 总结</h2><ol>
-<li><p>数组将数字与对象联系起来。它保存类型明确的对象，查询对象时，不需要对结果做类型转换。他可以是多维的，可以保存基本类型的数组。但是，数组一旦生成，其容量就不能改变。</p>
-</li>
-<li><p>Collection保存单一的元素，而Map保存相关的键值对。有了Java的泛型，你就可可以指定容器中存放的对象类型，因此你就不会将错误类型的对象放置到容器中，并且自从容器中获取元素时，不必进行类型转换。各种Collection和各种Map都可以在你向其中添加更多的元素时，紫红调整其尺寸。容器不能持有基本类型，但是自动包装机制会仔细地执行基本类型到容器中所持有的包装其类型之间的双向转换。</p>
-</li>
-<li><p>像数组一样，List也建立数字索引与对象的关联，因此，数组和List都是排好序的容器。List能够自动扩充容量。</p>
-</li>
-<li><p>如果要进行大量的随机访问，就使用ArrayList；如果要经常从表中插入或删除元素，则应该使用LinkedList。</p>
-</li>
-<li><p>各种Queue以及栈的行为，由LinkedList提供支持。</p>
-</li>
-<li><p>Map是一种将对象（而非数字）与对象相关联的设计。HashMap设计用来快速访问；而TreeMap保持“键”始终处于排序状态，所以没有HashMap快。LinkedHashMap保持元素插入的顺序，但是也通过散列提供快速访问能力。</p>
-</li>
-<li><p>Set不接受重复元素。HashSet提供组块的查询速度，而TreeSet保持元素处于排序状态，LinkedHashSet以插入顺序保存元素。</p>
-</li>
-<li><p>新程序中不应该使用过时的Vector、Hashtable和Stack。</p>
-</li>
-</ol>
+<h3 id="11-4-1-缩小锁的范围（”快进快出”）"><a href="#11-4-1-缩小锁的范围（”快进快出”）" class="headerlink" title="11.4.1 缩小锁的范围（”快进快出”）"></a>11.4.1 缩小锁的范围（”快进快出”）</h3><p>降低发生竞争可能性的一种有效方式就是尽可能缩短锁的持有时间。例如，而可以将一些与锁无关的代码移出同步代码块，尤其是那些开销较大的操作，以及可能被阻塞的操作，例如I/O操作。</p>
+<h3 id="11-4-2-减小锁的粒度"><a href="#11-4-2-减小锁的粒度" class="headerlink" title="11.4.2 减小锁的粒度"></a>11.4.2 减小锁的粒度</h3><p>通过锁分段和锁分解等降低线程请求锁的频率（从而减小竞争的可能性）的技术可以减小锁的持有时间，在这些技术中将采用多个互相独立的锁来保护独立的状态变量，从而改变这些变量之前由单个锁保护的情况。</p>
+<h3 id="11-4-3-锁分段"><a href="#11-4-3-锁分段" class="headerlink" title="11.4.3 锁分段"></a>11.4.3 锁分段</h3><p>锁分段的一个劣势在于:与采用单个锁来实现独占访问相比，要获取多个锁来实现独占访问将更加困难并且开销更高。</p>
+<h3 id="11-4-4-避免热点域"><a href="#11-4-4-避免热点域" class="headerlink" title="11.4.4 避免热点域"></a>11.4.4 避免热点域</h3><h3 id="11-4-5-一些替代独占锁的方法"><a href="#11-4-5-一些替代独占锁的方法" class="headerlink" title="11.4.5 一些替代独占锁的方法"></a>11.4.5 一些替代独占锁的方法</h3><p>放弃使用独占锁来管理共享状态:</p>
+<ul>
+<li>使用并发容器</li>
+<li>读-写锁</li>
+<li>不可变对象</li>
+<li>原子对象</li>
+</ul>
+<h3 id="11-4-6-监测CPU的利用率"><a href="#11-4-6-监测CPU的利用率" class="headerlink" title="11.4.6 监测CPU的利用率"></a>11.4.6 监测CPU的利用率</h3><p>如果CPU没有得到充分利用，那么需要找到其中的原因。通常有一下几种原因:</p>
+<ul>
+<li>负载不充足。</li>
+<li>I/O密集。</li>
+<li>外部限制。</li>
+<li>锁竞争。</li>
+</ul>
+<h2 id="11-4-7-向对象池说“不”"><a href="#11-4-7-向对象池说“不”" class="headerlink" title="11.4.7 向对象池说“不”"></a>11.4.7 向对象池说“不”</h2><blockquote>
+<p>通常，对象分配操作的开销比同步的开销更低。</p>
+</blockquote>
+<h2 id="11-5-实例：比较Map的性能"><a href="#11-5-实例：比较Map的性能" class="headerlink" title="11.5 实例：比较Map的性能"></a>11.5 实例：比较Map的性能</h2><h2 id="11-6-减少上下文切换的开销"><a href="#11-6-减少上下文切换的开销" class="headerlink" title="11.6 减少上下文切换的开销"></a>11.6 减少上下文切换的开销</h2><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>由于使用线程常常是为了充分利用多个处理器的计算能力，因此并发程序性能的讨论中，童话参观更多地将侧重点放在吞吐量和可伸缩性上，而不是服务时间。Amdahl定律告诉我们，程序的可伸缩性取决于在所有代码中必须被串行执行的代码比例。因为Java程序中串行执行的主要来源是独占凡是的资源锁，因此通常可以通过以下方式来提升可伸缩性：减少锁的持有时间，降低锁的粒度，意见采用非独占锁或非阻塞锁来代替独占锁。</p>
 
       
     </div>
@@ -449,7 +372,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
 
-        <a data-url="http://gonefuture.top/2018/07/30/《Thinking in Java 》读书笔记-11/" data-id="ck8gr4zga002r1ovt49gljr3f" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/《Java并发编程实战》-10/" data-id="ckjtrgp58000pn8vi6j8j8y8t" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -457,7 +380,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="《Thinking in Java 》读书笔记-11" ></div> 
+<div id="SOHUCS" sid="《Java并发编程实战》-10" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -477,7 +400,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/27/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="page-number current">28</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/29/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/27/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="page-number current">28</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/29/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -491,23 +414,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2020/03/25/游戏框架笔记/技能系统设计/">技能系统设计</a>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/24/游戏框架笔记/跨服系统设计/">跨服系统的设计</a>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
           </li>
         
           <li>
-            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
           </li>
         
           <li>
-            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
           </li>
         
       </ul>
@@ -519,7 +442,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -528,7 +451,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
     </div>
   </div>
 
@@ -549,11 +472,11 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2020 WeiJian Qian
+      &copy; 2021 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
-    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
 
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
       .

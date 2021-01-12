@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Spring源码组件学习-BeanDefinitionBeanDefinitionBeanDefinition的作用bean的定义、包装是java bean的基础，在Spring中，BeanDefinition就是Bean的定义。一个BeanDefinition描述了一个bean的实例，包括属性值、构造方法参数值和继承自它的类的更多信息。BeanDefinition仅仅是一个最简单的接口，主要功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gonefuture">
+<meta property="og:url" content="http://gonefuture.top/2020/08/22/学习笔记/Spring源码组件学习-BeanDefinition/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="Spring源码组件学习-BeanDefinitionBeanDefinitionBeanDefinition的作用bean的定义、包装是java bean的基础，在Spring中，BeanDefinition就是Bean的定义。一个BeanDefinition描述了一个bean的实例，包括属性值、构造方法参数值和继承自它的类的更多信息。BeanDefinition仅仅是一个最简单的接口，主要功能">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-07-30T08:29:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gonefuture">
+<meta name="twitter:description" content="Spring源码组件学习-BeanDefinitionBeanDefinitionBeanDefinition的作用bean的定义、包装是java bean的基础，在Spring中，BeanDefinition就是Bean的定义。一个BeanDefinition描述了一个bean的实例，包括属性值、构造方法参数值和继承自它的类的更多信息。BeanDefinition仅仅是一个最简单的接口，主要功能">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-学习笔记/Spring源码组件学习-BeanDefinition" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/学习笔记/Spring源码组件学习-BeanDefinition/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.573Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="Spring源码组件学习-BeanDefinition"><a href="#Spring源码组件学习-BeanDefinition" class="headerlink" title="Spring源码组件学习-BeanDefinition"></a>Spring源码组件学习-BeanDefinition</h1><h2 id="BeanDefinition"><a href="#BeanDefinition" class="headerlink" title="BeanDefinition"></a>BeanDefinition</h2><h3 id="BeanDefinition的作用"><a href="#BeanDefinition的作用" class="headerlink" title="BeanDefinition的作用"></a><code>BeanDefinition</code>的作用</h3><p>bean的定义、包装是java bean的基础，在Spring中，<code>BeanDefinition</code>就是Bean的定义。<br>一个<code>BeanDefinition</code>描述了一个bean的实例，包括属性值、构造方法参数值和继承自它的类的更多信息。<code>BeanDefinition</code>仅仅是一个最简单的接口，主要功能是允许<code>BeanFactoryPostProcessor</code>例如<code>PropertyPlaceHolderConfigure</code>能够检索并修改属性值和别的bean的元数据。</p>
+<p>一个<code>BeanDefinition</code>里拥有类名、scope、属性、构造函数参数列表、依赖的bean、是否是单例类、是否是懒加载等，其实就是将Bean的定义信息储存到这个<code>BeanDefiniton</code>相应中的属性中，后面对Bean的操作就直接对<code>BeanDefinition</code>进行，例如拿到这个<code>BeanDefinition</code>后，可以根据里面的类名、构造函数、构造函数参数、使用反射进行对象创建。</p>
+<h3 id="BeanDefinition的继承关系"><a href="#BeanDefinition的继承关系" class="headerlink" title="BeanDefinition的继承关系"></a><code>BeanDefinition</code>的继承关系</h3><p>父接口：<br><code>AttributeAccessor</code>, <code>BeanMetadataElement</code><br>子接口：<br><code>AnnotatedBeanDefinition</code><br>子类:<br><code>AbstractBeanDefinition</code>, <code>AnnotatedGenericBeanDefinition</code>, <code>ChildBeanDefinition</code>, <code>GenericBeanDefinition</code>, <code>RootBeanDefinition</code>, <code>ScannedGenericBeanDefinition</code></p>
+<p>其中，<code>AttaibuteAccessor</code>接口定义了最基本的对任意对象的元数据的修改或者获取，主要方法有：</p>
+<pre><code class="java">String[] attributeName();
+Object getAttribute(String name)
+boolean hasAttribute(String name)
+Object removeAttribute(String name)
+void setAttribute(String name, Object value)
+</code></pre>
+<p><code>BeanMetadataElement</code>接口提供了一个getResource()方法，用来传输一个可配置的源对象。</p>
+<h3 id="BeanDefinition的抽象类AbstractBeanDefinition"><a href="#BeanDefinition的抽象类AbstractBeanDefinition" class="headerlink" title="BeanDefinition的抽象类AbstractBeanDefinition"></a><code>BeanDefinition</code>的抽象类<code>AbstractBeanDefinition</code></h3><pre><code class="java">public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccessor implements BeanDefinition, Cloneable {
+
+}
+</code></pre>
+<h3 id="RootBeanDefinition"><a href="#RootBeanDefinition" class="headerlink" title="RootBeanDefinition"></a><code>RootBeanDefinition</code></h3><p>一个<code>RootBeanDefinition</code>定义表明它是一个可合并的bean definiton:即在Spring beanFactory运行期间，可以返回一个特定的bean。<code>RootBeanDefinition</code>可以作为一个重要的通用的bean definition视图。</p>
+<p>## </p>
+<h2 id="BeanDefinitionProProcessor"><a href="#BeanDefinitionProProcessor" class="headerlink" title="BeanDefinitionProProcessor"></a>BeanDefinitionProProcessor</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+        <a data-url="http://gonefuture.top/2020/08/22/学习笔记/Spring源码组件学习-BeanDefinition/" data-id="ckjtrgp8p004nn8vioje6kbhq" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="学习笔记/Spring源码组件学习-BeanDefinition" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/08/22/学习笔记/Spring源码组件学习-BeanDefinitionParser/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/08/22/学习笔记/Spring源码组件学习-AOP/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

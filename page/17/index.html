@@ -83,10 +83,10 @@
     <div class="outer">
       <section id="main">
   
-    <article id="post-读书笔记/《Java并发编程实战》-12" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/SrpingAOP源码分析-SpringMVC" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/08/01/读书笔记/《Java并发编程实战》-12/" class="article-date">
-  <time datetime="2019-08-01T01:54:07.027Z" itemprop="datePublished">2019-08-01</time>
+    <h3 href="/2020/08/22/学习笔记/SrpingAOP源码分析-SpringMVC/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.599Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   </div>
@@ -98,299 +98,29 @@
     <div class="article-entry" itemprop="articleBody">
       
         
-        <!DOCTYPE html>
-  <html>
-    <head>
-      <title>《Java并发编程实战》-12   第13章 显式锁</title>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      
-      <link rel="stylesheet" href="file:///C:\Users\gonefuture\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.3.5\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-
-      <style> 
-      /**
- * prism.js Github theme based on GitHub's theme.
- * @author Sam Clarke
- */
-code[class*="language-"],
-pre[class*="language-"] {
-  color: #333;
-  background: none;
-  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  text-align: left;
-  white-space: pre;
-  word-spacing: normal;
-  word-break: normal;
-  word-wrap: normal;
-  line-height: 1.4;
-
-  -moz-tab-size: 8;
-  -o-tab-size: 8;
-  tab-size: 8;
-
-  -webkit-hyphens: none;
-  -moz-hyphens: none;
-  -ms-hyphens: none;
-  hyphens: none;
-}
-
-/* Code blocks */
-pre[class*="language-"] {
-  padding: .8em;
-  overflow: auto;
-  /* border: 1px solid #ddd; */
-  border-radius: 3px;
-  /* background: #fff; */
-  background: #f5f5f5;
-}
-
-/* Inline code */
-:not(pre) > code[class*="language-"] {
-  padding: .1em;
-  border-radius: .3em;
-  white-space: normal;
-  background: #f5f5f5;
-}
-
-.token.comment,
-.token.blockquote {
-  color: #969896;
-}
-
-.token.cdata {
-  color: #183691;
-}
-
-.token.doctype,
-.token.punctuation,
-.token.variable,
-.token.macro.property {
-  color: #333;
-}
-
-.token.operator,
-.token.important,
-.token.keyword,
-.token.rule,
-.token.builtin {
-  color: #a71d5d;
-}
-
-.token.string,
-.token.url,
-.token.regex,
-.token.attr-value {
-  color: #183691;
-}
-
-.token.property,
-.token.number,
-.token.boolean,
-.token.entity,
-.token.atrule,
-.token.constant,
-.token.symbol,
-.token.command,
-.token.code {
-  color: #0086b3;
-}
-
-.token.tag,
-.token.selector,
-.token.prolog {
-  color: #63a35c;
-}
-
-.token.function,
-.token.namespace,
-.token.pseudo-element,
-.token.class,
-.token.class-name,
-.token.pseudo-class,
-.token.id,
-.token.url-reference .token.variable,
-.token.attr-name {
-  color: #795da3;
-}
-
-.token.entity {
-  cursor: help;
-}
-
-.token.title,
-.token.title .token.punctuation {
-  font-weight: bold;
-  color: #1d3e81;
-}
-
-.token.list {
-  color: #ed6a43;
-}
-
-.token.inserted {
-  background-color: #eaffea;
-  color: #55a532;
-}
-
-.token.deleted {
-  background-color: #ffecec;
-  color: #bd2c00;
-}
-
-.token.bold {
-  font-weight: bold;
-}
-
-.token.italic {
-  font-style: italic;
-}
-
-
-/* JSON */
-.language-json .token.property {
-  color: #183691;
-}
-
-.language-markup .token.tag .token.punctuation {
-  color: #333;
-}
-
-/* CSS */
-code.language-css,
-.language-css .token.function {
-  color: #0086b3;
-}
-
-/* YAML */
-.language-yaml .token.atrule {
-  color: #63a35c;
-}
-
-code.language-yaml {
-  color: #183691;
-}
-
-/* Ruby */
-.language-ruby .token.function {
-  color: #333;
-}
-
-/* Markdown */
-.language-markdown .token.url {
-  color: #795da3;
-}
-
-/* Makefile */
-.language-makefile .token.symbol {
-  color: #795da3;
-}
-
-.language-makefile .token.variable {
-  color: #183691;
-}
-
-.language-makefile .token.builtin {
-  color: #0086b3;
-}
-
-/* Bash */
-.language-bash .token.keyword {
-  color: #0086b3;
-}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
-/* Please visit the URL below for more information: */
-/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
- 
-      </style>
-    </head>
-    <body for="html-export">
-      <div class="mume markdown-preview   ">
-      <h1 class="mume-header" id="%E7%AC%AC13%E7%AB%A0-%E6%98%BE%E5%BC%8F%E9%94%81">第13章 显式锁</h1>
-
-<h2 class="mume-header" id="131-lock-%E4%B8%8E-reentrantlock">13.1 Lock 与 ReentrantLock</h2>
-
-<p>使用ReentrantLock来保护对象状态</p>
-<pre data-role="codeBlock" data-info="java" class="language-java">Lock lock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReentrantLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-lcok<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token keyword">try</span><span class="token punctuation">{</span>
-    <span class="token comment">// 更新对象状态</span>
-    <span class="token comment">// 捕捉异常，并在必要时恢复不变性条件</span>
-<span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-    lock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-</pre><h2 class="mume-header" id="1311-%E8%BD%AE%E8%AF%A2%E9%94%81%E4%B8%8E%E5%AE%9A%E6%97%B6%E9%94%81">13.1.1 轮询锁与定时锁</h2>
-
-<pre data-role="codeBlock" data-info="java" class="language-java">
-<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>lock<span class="token punctuation">.</span><span class="token function">tryLock</span><span class="token punctuation">(</span>nanosToLock<span class="token punctuation">,</span> NANOSECONDS<span class="token punctuation">)</span><span class="token punctuation">)</span> 
-    <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-<span class="token keyword">try</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token function">sendOnShareLine</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span>
-<span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-    lock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-</pre><h3 class="mume-header" id="1312-%E5%8F%AF%E4%B8%AD%E6%96%AD%E7%9A%84%E9%94%81%E8%8E%B7%E5%8F%96%E6%93%8D%E4%BD%9C">13.1.2 可中断的锁获取操作</h3>
-
-<p>正如定时的锁获取操作能在带有事件限制的操作中使用独占锁，可中断的锁获取操作同样能在可取消的操作中使用加锁。</p>
-<h3 class="mume-header" id="1313-%E9%9D%9E%E5%9D%97%E7%BB%93%E6%9E%84%E7%9A%84%E5%8A%A0%E9%94%81">13.1.3 非块结构的加锁</h3>
-
-<p>锁分段技术在基于散列的容器中实现了不同的散列链，以便使用不同的锁。</p>
-<h2 class="mume-header" id="132-%E6%80%A7%E8%83%BD%E8%80%83%E8%99%91%E5%9B%A0%E7%B4%A0">13.2 性能考虑因素</h2>
-
-<blockquote>
-<p>性能时一个不断变化的指标，内置锁和ReentrantLock在各个JDK版本都不一样。</p>
-</blockquote>
-<h2 class="mume-header" id="133-%E5%85%AC%E5%B9%B3%E9%94%81">13.3 公平锁</h2>
-
-<p>在公平锁上，线程将按照它们发出请求的顺序来获得锁，但在非公平锁上，则允许“插队”:当一个线程请求非公平锁的时，如果在发出请求的同时该锁的状态变为可用，那么这个线程将跳过队列中所有的等待线程并获得这个锁。(在Semaphore中同样可以选择采用公平或非公平的获取顺序。)</p>
-<p>在大多数情况下，非公平锁的性能要高于公平锁的性能。</p>
-<h2 class="mume-header" id="134-%E5%9C%A8synchronied%E5%92%8Creentrantlock%E4%B9%8B%E9%97%B4%E8%BF%9B%E8%A1%8C%E9%80%89%E6%8B%A9">13.4 在synchronied和ReentrantLock之间进行选择</h2>
-
-<blockquote>
-<p>在一些内置锁无法满足需求的情况下，<code>ReentrantLock</code>可以作为一种高级工具。当需要一些高级功能时才应该使用<code>ReentrantLock</code>，这些功能包括：可定时的、可轮询的与可中断的锁获取操作，公平队列，以及非块结构的锁。否则，还是应该优先使用<code>synchronized</code>。</p>
-</blockquote>
-<h2 class="mume-header" id="%E8%AF%BB-%E5%86%99%E9%94%81">读-写锁</h2>
-
-<p>ReadWriteLock中的一些可选实现包括：</p>
-<ul>
-<li><strong>释放优先</strong>。当一个写入操作释放写入锁时，并且队伍中同时存在读线程和写线程，那么应该优先选择读线程，写线程，还是最先发出请求的线程？</li>
-<li><strong>读线程插队</strong>。如果锁是由读线程持有，但有写线程正在等待，那么新到达的读线程能否立即获得访问权，还是应该在写线程后面等待？如果允许线程插队到写线程之前，那么将提高并发性，但却可能造成写线程饥饿问题。</li>
-<li><strong>重入性</strong>。读取锁和写入锁是否是可重入的。</li>
-<li><strong>降级</strong>。如果一个线程持有写入锁，那么它能否在不释放该锁的情况下获得读取锁？这可能会使得写入锁被“降级”为读取锁，同时不允许其他写线程修改被保护的资源。</li>
-<li><strong>升级</strong>。读取锁能否优于其他正在等待的读线程和写线程而升级为一个写入锁？在大多数的读-写锁实现中并不支持升级，因为如果没有显式的升级操作，那么很容易造成死锁。（如果两个读线程试图同时升级为写入锁，那么二者都不会释放读取锁。）</li>
+        <h1 id="SrpingAOP源码分析-Spring-MVC"><a href="#SrpingAOP源码分析-Spring-MVC" class="headerlink" title="SrpingAOP源码分析-Spring MVC"></a>SrpingAOP源码分析-Spring MVC</h1><h2 id="Srping-MVC工作流程图"><a href="#Srping-MVC工作流程图" class="headerlink" title="Srping MVC工作流程图"></a>Srping MVC工作流程图</h2><h2 id="Spring工作流程秒描述"><a href="#Spring工作流程秒描述" class="headerlink" title="Spring工作流程秒描述"></a>Spring工作流程秒描述</h2><ol>
+<li>用户向服务器发送请求，请求被Spring前端控制<code>Servelt DispatcherServlet</code>捕获；</li>
+<li><code>DispatcherServlet</code>对请求URL进行解析，得到请求资源标识符（URI）。然后根据该URI，调用<code>HandlerMapping</code>获得该Handler配置的所有相关的对象（包括Handler对象以及Handler对象对应的拦截器），最后以<code>HandlerExecutionChain</code>对象的形式返回；</li>
+<li><code>DispatcherServlet</code>根据获得的Handler，选择一个合适的<code>HandlerAdapter</code>。（附注：如果成功获得<code>HandlerAdapter</code>后，此时将开始执行拦截器的<code>preHandler(...)</code>方法）</li>
+<li>提取Request中的模型数据，填充Handler入参，开始执行Handler（Controller)。 在填充Handler的入参过程中，根据你的配置，Spring将帮你做一些额外的工作：<ul>
+<li><code>HttpMessageConveter</code>： 将请求消息（如Json、xml等数据）转换成一个对象，将对象转换为指定的响应信息</li>
+<li>数据转换：对请求消息进行数据转换。如String转换成Integer、Double等</li>
+<li>数据格式化：对请求消息进行数据格式化。 如将字符串转换成格式化数字或格式化日期等</li>
+<li>数据验证： 验证数据的有效性（长度、格式等），验证结果存储到<code>BindingResult</code>或<code>Error</code>中</li>
 </ul>
-<h2 class="mume-header" id="%E6%80%BB%E7%BB%93">总结</h2>
+</li>
+<li>Handler执行完成后，向<code>DispatcherServlet</code>返回一个<code>ModelAndView</code>对象；</li>
+<li>根据返回的<code>ModelAndView</code>，选择一个适合的<code>ViewResolver</code>（必须是已经注册到Spring容器中的<code>ViewResolver</code>)返回给<code>DispatcherServlet</code>；</li>
+<li><code>ViewResolver</code>结合Model和View，来渲染视图</li>
+<li>将渲染结果返回给客户端。</li>
+</ol>
 
-<p>与内置锁相比，显式的Lock提供了一些宽展功能，在处理锁的不可用性方面有着更高的灵活性，并且对队列行有着更好的控制。但ReentrantLock不能完全替代<code>synchronized</code>，只有在<code>synchronized</code>无法满足需求时，才应该使用它。<br>
-读-写允许多个读线程并发地访问被保护的对象，当访问以读取操作为主的数据结构时，他能提高程序的可伸缩性。</p>
-
-      </div>
-      
-      
-    </body>
-    
-    
-    
-    
-    
-    
-    
-  </html>
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/08/01/读书笔记/《Java并发编程实战》-12/" data-id="ck8gr4zp8004m1ovtrm40vdq8" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/学习笔记/SrpingAOP源码分析-SpringMVC/" data-id="ckjtrgp8n004ln8vik54yk6xg" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -398,7 +128,7 @@ lcok<span class="token punctuation">.</span><span class="token function">lock</s
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="读书笔记/《Java并发编程实战》-12" ></div> 
+<div id="SOHUCS" sid="学习笔记/SrpingAOP源码分析-SpringMVC" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -416,10 +146,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-读书笔记/《Java并发编程实战》-11" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/Spring源码组件学习-IOC" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/08/01/读书笔记/《Java并发编程实战》-11/" class="article-date">
-  <time datetime="2019-08-01T01:54:07.011Z" itemprop="datePublished">2019-08-01</time>
+    <h3 href="/2020/08/22/学习笔记/Spring源码组件学习-IOC/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.594Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   </div>
@@ -431,335 +161,281 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <!DOCTYPE html>
-  <html>
-    <head>
-      <title>《Java并发编程实战》-11 第12章 并发程序的测试</title>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      
-      <link rel="stylesheet" href="file:///C:\Users\gonefuture\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.3.5\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-
-      <style> 
-      /**
- * prism.js Github theme based on GitHub's theme.
- * @author Sam Clarke
- */
-code[class*="language-"],
-pre[class*="language-"] {
-  color: #333;
-  background: none;
-  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  text-align: left;
-  white-space: pre;
-  word-spacing: normal;
-  word-break: normal;
-  word-wrap: normal;
-  line-height: 1.4;
-
-  -moz-tab-size: 8;
-  -o-tab-size: 8;
-  tab-size: 8;
-
-  -webkit-hyphens: none;
-  -moz-hyphens: none;
-  -ms-hyphens: none;
-  hyphens: none;
-}
-
-/* Code blocks */
-pre[class*="language-"] {
-  padding: .8em;
-  overflow: auto;
-  /* border: 1px solid #ddd; */
-  border-radius: 3px;
-  /* background: #fff; */
-  background: #f5f5f5;
-}
-
-/* Inline code */
-:not(pre) > code[class*="language-"] {
-  padding: .1em;
-  border-radius: .3em;
-  white-space: normal;
-  background: #f5f5f5;
-}
-
-.token.comment,
-.token.blockquote {
-  color: #969896;
-}
-
-.token.cdata {
-  color: #183691;
-}
-
-.token.doctype,
-.token.punctuation,
-.token.variable,
-.token.macro.property {
-  color: #333;
-}
-
-.token.operator,
-.token.important,
-.token.keyword,
-.token.rule,
-.token.builtin {
-  color: #a71d5d;
-}
-
-.token.string,
-.token.url,
-.token.regex,
-.token.attr-value {
-  color: #183691;
-}
-
-.token.property,
-.token.number,
-.token.boolean,
-.token.entity,
-.token.atrule,
-.token.constant,
-.token.symbol,
-.token.command,
-.token.code {
-  color: #0086b3;
-}
-
-.token.tag,
-.token.selector,
-.token.prolog {
-  color: #63a35c;
-}
-
-.token.function,
-.token.namespace,
-.token.pseudo-element,
-.token.class,
-.token.class-name,
-.token.pseudo-class,
-.token.id,
-.token.url-reference .token.variable,
-.token.attr-name {
-  color: #795da3;
-}
-
-.token.entity {
-  cursor: help;
-}
-
-.token.title,
-.token.title .token.punctuation {
-  font-weight: bold;
-  color: #1d3e81;
-}
-
-.token.list {
-  color: #ed6a43;
-}
-
-.token.inserted {
-  background-color: #eaffea;
-  color: #55a532;
-}
-
-.token.deleted {
-  background-color: #ffecec;
-  color: #bd2c00;
-}
-
-.token.bold {
-  font-weight: bold;
-}
-
-.token.italic {
-  font-style: italic;
-}
-
-
-/* JSON */
-.language-json .token.property {
-  color: #183691;
-}
-
-.language-markup .token.tag .token.punctuation {
-  color: #333;
-}
-
-/* CSS */
-code.language-css,
-.language-css .token.function {
-  color: #0086b3;
-}
-
-/* YAML */
-.language-yaml .token.atrule {
-  color: #63a35c;
-}
-
-code.language-yaml {
-  color: #183691;
-}
-
-/* Ruby */
-.language-ruby .token.function {
-  color: #333;
-}
-
-/* Markdown */
-.language-markdown .token.url {
-  color: #795da3;
-}
-
-/* Makefile */
-.language-makefile .token.symbol {
-  color: #795da3;
-}
-
-.language-makefile .token.variable {
-  color: #183691;
-}
-
-.language-makefile .token.builtin {
-  color: #0086b3;
-}
-
-/* Bash */
-.language-bash .token.keyword {
-  color: #0086b3;
-}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
-/* Please visit the URL below for more information: */
-/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
- 
-      </style>
-    </head>
-    <body for="html-export">
-      <div class="mume markdown-preview   ">
-      <h1 class="mume-header" id="%E7%AC%AC12%E7%AB%A0-%E5%B9%B6%E5%8F%91%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%B5%8B%E8%AF%95">第12章 并发程序的测试</h1>
-
+        <h1 id="SpringIOC源码分析"><a href="#SpringIOC源码分析" class="headerlink" title="SpringIOC源码分析"></a>SpringIOC源码分析</h1><h2 id="IOC初始化"><a href="#IOC初始化" class="headerlink" title="IOC初始化"></a>IOC初始化</h2><ol>
+<li>XmlBeanFactory的整个流程</li>
+<li>FileSystemXmlApplicationContext的IOC容器流程。</li>
+<li>AbstractApplicationContext子类的refresh函数载入Bean定义过程</li>
+<li>AbstractApplicationContext子类的refrshBeanFactory()方法</li>
+<li>AbstractRefreshableApplicationContext子类的loadBeandefinitions方法</li>
+<li>AbstractBeanDefinitionReader读取Bean定义资源</li>
+<li>资源加载器获取要读入的资源</li>
+<li>XmlBeanDefinitionReader加载Bean定义资源</li>
+<li>DecumentLoader将Bean定义资源转换为Decument对象</li>
+<li>XmlBeanDefinitionReader加载Bean定义资源文件</li>
+<li>DefaultBeanDefinitionDocumentReader对定Bean定义的Decument对象解析</li>
+<li>BeanDefinitionParserDelegate解析Bean定义资源文件中的<code>&lt;Bean&gt;</code>元素。</li>
+<li>BeanDefinitionParserDelegate解析<code>&lt;property&gt;</code>元素。</li>
+<li>解析<code>&lt;property&gt;</code>元素的子元素</li>
+<li>解析<code>&lt;list&gt;</code>子元素</li>
+<li>解析过后的BeanDefinition在IoC容器中注册：</li>
+<li>DefaultListableBeanFactory向Ioc容器注册解析后的BeanDefinition</li>
+</ol>
 <hr>
-<p>吞吐量:指一组并发任务中已完成任务所栈的比例。<br>
-响应性：指请求从发出到完成之间的时间（也成为延迟）。</p>
-<h2 class="mume-header" id="121-%E6%AD%A3%E7%A1%AE%E6%80%A7%E6%B5%8B%E8%AF%95">12.1 正确性测试</h2>
+<h2 id="IOC体系"><a href="#IOC体系" class="headerlink" title="IOC体系"></a>IOC体系</h2><pre><code>Spring Bean的创建是典型的工厂模式，这一系列的Bean工厂，也即IOC容器为开发者管理对象间的依赖关系提供了很多便利和基础服务，在Spring中有许多次的IOC容器的实现供用户选择和使用，其相互关系如下：
+</code></pre><h3 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h3><pre><code>SpringFactory定义了IOC容器的最基本形式，并提供了IOC容器应遵守的最基本的接口，也就是Spring代码中，BeanFactory只是个接口，并不是IOC容器的具体实现，但是Spring容器给出了很多种实现，如DefaultListableBeanFactory、XmlBeanFactory、ApplicationContext等，都是附加了某种功能的实现。
+</code></pre><p><img src="https://javadoop.com/blogimages/spring-context/2.png" alt="BeanFactory"></p>
+<h3 id="ApplicationContext"><a href="#ApplicationContext" class="headerlink" title="ApplicationContext"></a>ApplicationContext</h3><p><img src="https://javadoop.com/blogimages/spring-context/2.png" alt="Application">)</p>
+<ol>
+<li><code>ApplicationContext</code>继承了<code>ListableBeanFactory</code>，这个 <code>Listable</code>的意思就是，通过这个接口，可以获取多个<code>Bean</code>，最顶层 <code>BeanFactory</code>接口的方法都是获取单个Bean的。</li>
+<li><code>ApplicationContext</code>继承了 HierarchicalBeanFactory，Hierarchical 单词本身已经能说明问题了，也就是说我们可以在应用中起多个 BeanFactory，然后可以将各个 BeanFactory 设置为父子关系。<br>AutowireCapableBeanFactory 这个名字中的 Autowire 大家都非常熟悉，它就是用来自动装配 Bean 用的，但是仔细看上图，ApplicationContext 并没有继承它，不过不用担心，不使用继承，不代表不可以使用组合，如果你看到 ApplicationContext 接口定义中的最后一个方法 getAutowireCapableBeanFactory() 就知道了。<br>ConfigurableListableBeanFactory 也是一个特殊的接口，看图，特殊之处在于它继承了第二层所有的三个接口，而 ApplicationContext 没有。这点之后会用到。<br>请先不用花时间在其他的接口和类上，先理解我说的这几点就可以了。</li>
+</ol>
+<p>FileSystemXmlApplicationContext 的构造函数需要一个 xml 配置文件在系统中的路径，其他和 ClassPathXmlApplicationContext 基本上一样。</p>
+<p>AnnotationConfigApplicationContext 是基于注解来使用的，它不需要配置文件，采用 java 配置类和各种注解来配置，是比较简单的方式，也是大势所趋吧。</p>
+<pre><code class="java">public interface BeanFactory {
+    // 转义符&quot;&amp;&quot;用来获取FactoryBean本身
+    String FACTORY_BEAN_PREFIX = &quot;&amp;&quot;;
+    // 根据bean的名字进行获取bean的实例，这是IOC最大的最大抽象方法
+    Object getBean() throws BeansException;
+    // 根据bean的名字和Class类型进行获取Bean实例，和上面方法不同的是，bean名字和Bean的类型无关时会抛出异常
+    &lt;T&gt; T getBean(String name, Class&lt;T&gt; requiredType) throws BasesException;
+    &lt;T&gt; T getBean(Class&lt;T&gt; requiredType) thows BeansException;
+    object getBean(Stirng name, Object... args) throws BeansException;
+    // 检测整个IOC容器种是否含有整个Bean
+    boolean containsBean(String name);
+    // 判断这个Bean是不是单例
+    boolean isSingleton(String name) throws NoSuchBeanDefinitionException;
+    // 查询指定的bean的名字和Class类型是不是指定的Class类型
+    boolean isTypeMatch(String name, Class targetType) throws NoSuchBeanDefinitionException;
+    // 这里得到bean的别名，如果根据别名检索，那么其原名也会被检索出来
+    String[] getAliases(String name);
+}
+</code></pre>
+<h3 id="BeanDefinition"><a href="#BeanDefinition" class="headerlink" title="BeanDefinition"></a>BeanDefinition</h3><p>这个接口，可以理解为xml bean元素的数据载体。通过对比xml bean标签的属性列表和BeanDefinition的属性列表一看便知。</p>
+<p>解析XML的过程，就是Xml<code>&lt;bean&gt;</code>元素内容转换为BeanDefinition对象的过程。而且这个接口，支持层级，对应对象的继承。</p>
+<p>BeanDefinitionHolder: BeanDefinitionHolder根据名称或者别名持有beanDefiniton，他承载了name和BeanDefinition的映射信息。<br>BeanWarpper: 提供对标准javaBean的分析和操作方法：单个或者批量获取和设置属性值，获取属性描述符，查询属性的可读性和可写性等。支持属性的嵌套设置，深度没有限制。</p>
+<p>AbstractRefreshableApplicationContext的refreshBeanFactory()这个方法</p>
+<pre><code class="java">
+protected final void refreshBeanFactory() throws BeansException {
 
-<p>在为某个并发类设计单元测试时，首先需要执行与测试串行类时相同的分析---找出需要检查的不变性条件和后验条件。</p>
-<h3 class="mume-header" id="1211-%E5%9F%BA%E6%9C%AC%E7%9A%84%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">12.1.1 基本的单元测试</h3>
+    if (hasBeanFactory()) {
+        destroyBeans();
 
-<p>在测试集中包含一组串行测试通常是有帮助的，因为它们有助于在开始分析数据竞争之前找出与并发无关性的问题。</p>
-<h3 class="mume-header" id="1212-%E5%AF%B9%E9%98%BB%E5%A1%9E%E6%93%8D%E4%BD%9C%E7%9A%84%E6%B5%8B%E8%AF%95">12.1.2 对阻塞操作的测试</h3>
+        closeBeanFactory();
+    }
 
-<p>在测试并发的基本属性时，需要引入多个线程。</p>
-<p>Thread.getState的返回结果不能用于并发控制，它能限制测试的有效性---其主要作用还是作为调试信息的来源。</p>
-<h3 class="mume-header" id="1213-%E5%AE%89%E5%85%A8%E6%80%A7%E6%B5%8B%E8%AF%95">12.1.3 安全性测试</h3>
+    try {
+        // 创建IOC容器
+        DefaultListableBeanFactory beanFactory = createBeanFactory();
 
-<blockquote>
-<p>在构建对并发类的安全性测试中，需要解决的关键问题在于，要找出那些容易检查的属性，这些属性在发生错误的情况下极有可能失败，同时又不会使得错误检查代码认为地限制并发性。理性情况是，在测试属性中不需要任何同步机制。</p>
-</blockquote>
-<h3 class="mume-header" id="1214-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E7%9A%84%E6%B5%8B%E8%AF%95">12.1.4 资源管理的测试</h3>
+        beanFactory.setSerializationId(getId());
 
-<h3 class="mume-header" id="1215-%E4%BD%BF%E7%94%A8%E5%9B%9E%E8%B0%83">12.1.5 使用回调</h3>
+        customizeBeanFactory(beanFactory);
+        //载入loadBeanDefinitions
+        loadBeanDefinitions(beanFactory);
 
-<p>回调函数的执行通常是在对象生命周期的一些已知位置上，并且在这些位置上非常适合判断不变性是否被破坏。</p>
-<h3 class="mume-header" id="1216-%E4%BA%A7%E7%94%9F%E8%B7%9F%E5%A4%9A%E7%9A%84%E4%BA%A4%E6%9B%BF%E6%93%8D%E4%BD%9C">12.1.6 产生跟多的交替操作</h3>
+        synchronized (this.beanFactoryMonitor) {
 
-<p>在访问共享状态的操作中，使用Thread.yield将产生更多的上下文切换（这项技术是平台相关的）。</p>
-<h2 class="mume-header" id="122-%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95">12.2 性能测试</h2>
+        this.beanFactory = beanFactory;
+        }
 
-<h3 class="mume-header" id="1221-%E5%9C%A8puttaketest%E4%B8%AD%E5%A2%9E%E5%8A%A0%E8%AE%A1%E6%97%B6%E5%8A%9F%E8%83%BD">12.2.1 在PutTakeTest中增加计时功能</h3>
+    } catch (IOException ex) {
+        throw new ApplicationContextException(&quot;I/O error parsing bean definition source for &quot; + getDisplayName(), ex);
+    }
+}
 
-<h3 class="mume-header" id="1222-%E5%A4%9A%E7%A7%8D%E7%AE%97%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83">12.2.2 多种算法的比较</h3>
+public abstract class AbstractXmlApplicationContext extends AbstractRefreshableConfigApplicationContext {  
 
-<h3 class="mume-header" id="%E5%93%8D%E5%BA%94%E6%80%A7%E8%A1%A1%E9%87%8F">响应性衡量</h3>
+/**
+ * Loads the bean definitions via an XmlBeanDefinitionReader.
+ */
 
-<p>如果能获取更小的服务时间变动性，那么更长的平均时间是有意义的，“可预测需性”同样是一个非常有价值的性能特征。<br>
-除非线程由于密集的同步需求而被持续地阻塞，否则非公平的信号量通常能实现更好的吞吐量。</p>
-<h2 class="mume-header" id="123-%E9%81%BF%E5%85%8D%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E7%9A%84%E9%99%B7%E9%98%B1">12.3 避免性能测试的陷阱</h2>
+@Override
+protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
 
-<h3 class="mume-header" id="1231-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6">12.3.1 垃圾回收</h3>
+    // Create a new XmlBeanDefinitionReader for the given BeanFactory.
 
-<p>垃圾回收的执行时序是无法预测的，因此在执行测试时，垃圾回收器可能在任何时刻运行。</p>
-<h3 class="mume-header" id="1232-%E5%8A%A8%E6%80%81%E7%BC%96%E8%AF%91">12.3.2 动态编译</h3>
+    XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 
-<p>当某个类第一次被加载时，JVM会通过解释字节码的方式执行它。在某个时刻，如果一个方法运行的次数足够多，那么动态编译器会将它编译为机器代码，当编译完成后，代码的执行方式将从解释执行变成直接执行。</p>
-<h3 class="mume-header" id="1233-%E5%AF%B9%E4%BB%A3%E7%A0%81%E8%B7%AF%E5%BE%84%E7%9A%84%E4%B8%8D%E7%9C%9F%E5%AE%9E%E9%87%87%E9%9B%86">12.3.3 对代码路径的不真实采集</h3>
+    // Configure the bean definition reader with this context&#39;s
 
-<p>运行时编译器根据收集到的信息对已编译的代码进行优化。JVM可以与执行过程特定的信息来生成更优的代码，这个意味着在编译某个程序的方法M时生成的代码，将可能与编译另一个不同程序中的方法M时生成的代码不同。</p>
-<h3 class="mume-header" id="1234-%E4%B8%8D%E7%9C%9F%E5%AE%9E%E7%9A%84%E7%AB%9E%E4%BA%89%E7%A8%8B%E5%BA%A6">12.3.4 不真实的竞争程度</h3>
+    // resource loading environment.
 
-<p>并发的应用程序可以交替执行两种不同的类型的工作：访问共享数据（例如从共享工作队列中取出下一个任务）以及执行线程本地的计算（例如，执行任务，并假设任务本身不会访问共享数据）。</p>
-<h3 class="mume-header" id="1235-%E6%97%A0%E7%94%A8%E4%BB%A3%E7%A0%81%E7%9A%84%E6%B6%88%E9%99%A4">12.3.5 无用代码的消除</h3>
+    beanDefinitionReader.setResourceLoader(this);
 
-<blockquote>
-<p>要编写有效的性能测试程序，那就需要告诉优化器不要将基准测试当作无用代码而优化掉。这就要求在程序中对每个计算结果都要通过某种方式来使用，这种方式不需要同步或者大量的计算。</p>
-</blockquote>
-<h2 class="mume-header" id="124-%E5%85%B6%E4%BB%96%E7%9A%84%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95">12.4 其他的测试方法</h2>
+    beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
 
-<p>测试的目标不是更多地发现错误，而是提高代码按照预期方式工作的可信度。</p>
-<h3 class="mume-header" id="1241-%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5">12.4.1 代码审查</h3>
+    // Allow a subclass to provide custom initialization of the reader,
 
-<p>多人参与的代码审查通常是不可替代的（另一方面，代码审查也不能取代测试）。</p>
-<h3 class="mume-header" id="1242-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7">12.4.2 静态分析工具</h3>
+    // then proceed with actually loading the bean definitions.
+    initBeanDefinitionReader(beanDefinitionReader);
 
-<p>静态分析工具能生成一个警告列表，其中包含的警告信息必须通过手工方式进行检查，从而确定这些警告是否表示真正的错误。</p>
-<p>FindBUgs包含的检测器：</p>
-<ul>
-<li>调用Thread.run()</li>
-<li>未被释放的锁<br>
-标准的做法是在一个人finally块中释放显式锁，否则，当发生Exception事件时，锁仍然处于未被释放的状态。</li>
-<li>空的同步块</li>
-<li>双重检查加锁<br>
-双重检查加锁时一种错误的习惯用法，其初衷是为了降低延迟初始化过程中的同步开销，该用法在读取一个共享的可变域时缺少正确的同步。</li>
-<li>在构造函数中启动一个线程。<br>
-如果在构造函数中启动一个线程，那么将可能带来子类化问题，同时还会导致this引用从构造函数中逸出。</li>
-<li>通知错误<br>
-如果一个同步块中调用了notify或notifyAll，但没有修改任何状态，那么就可能出错。</li>
-<li>条件等待中的错误<br>
-如果在调用Object.wait和Condition.await方法时没有持有锁，或者不在某个循环中，或者没有检查某些状态谓词，那么通常是一个错误。</li>
-<li>对Lock和Condition的误用</li>
-<li>在休眠或者等待的同时持有一个锁。</li>
-<li>自旋循环。<br>
-当等待某个状态转换发生时，闭锁或条件等待通常比在代码中自旋是一种更好的技术。</li>
-</ul>
-<h3 class="mume-header" id="1243-%E9%9D%A2%E5%90%91%E6%96%B9%E9%9D%A2%E7%9A%84%E6%B5%8B%E8%AF%95%E6%8A%80%E6%9C%AF">12.4.3 面向方面的测试技术</h3>
+    loadBeanDefinitions(beanDefinitionReader);
+}
 
-<p>AOP可以用来确保不变性条件不被破坏，或者与同步策略的某些方面保持一直。</p>
-<h3 class="mume-header" id="1244-%E5%88%86%E6%9E%90%E4%B8%8E%E7%9B%91%E6%B5%8B%E5%B7%A5%E5%85%B7">12.4.4 分析与监测工具</h3>
+// 先调用本类里面的loadBeanDefinitions
+protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
 
-<p>分析工具通常为能给出程序内部的详细信息，为每个线程提供一个事件线显示，并且用颜色区分不同的线程状态（可运行，由于等待某个锁为阻塞，由于等待I/O操作而阻塞等等）。</p>
-<h2 class="mume-header" id="%E5%B0%8F%E7%BB%93">小结</h2>
+    Resource[] configResources = getConfigResources();
 
-<p>要测试并发程序的正确性可能非常困难，因为并发程序的许多故障模式哦都是一些低概率事件，它们对于执行时序、负载情况以及其他难以出现的条件都非常敏感。</p>
+    if (configResources != null) {
+        reader.loadBeanDefinitions(configResources);
+    }
 
-      </div>
-      
-      
-    </body>
-    
-    
-    
-    
-    
-    
-    
-  </html>
+    String[] configLocations = getConfigLocations();
+
+    if (configLocations != null) {
+        reader.loadBeanDefinitions(configLocations);
+    }
+}
+
+// 委托给reader.loadBeanDefinitions(configLocation);    XmlBeanDefinitionReader
+// 通过XmlBeanDefinitionReader来读取。下面看一下XmlBeanDefinitionReader这个方法，但其实并不在这个类实现这个方法，而是在它的基类里面AbstractBeanDefinitionReader
+public int loadBeanDefinitions(String... locations) throws BeanDefinitionStoreException {
+
+    Assert.notNull(locations, &quot;Location array must not be null&quot;);
+
+    int counter = 0;
+    for (String location : locations) {
+    counter += loadBeanDefinitions(location);
+    }
+    return counter;
+}
+
+//进入到loadBeanDefinitions
+public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefinitionStoreException {
+    Assert.notNull(encodedResource, &quot;EncodedResource must not be null&quot;);
+    if (logger.isInfoEnabled()) {
+    logger.info(&quot;Loading XML bean definitions from &quot; + encodedResource.getResource());  
+    }
+
+    Set&lt;EncodedResource&gt; currentResources = this.resourcesCurrentlyBeingLoaded.get();
+    if (currentResources == null) {
+        currentResources = new HashSet&lt;EncodedResource&gt;(4);
+        this.resourcesCurrentlyBeingLoaded.set(currentResources);
+    }
+
+    if (!currentResources.add(encodedResource)) {
+        throw new BeanDefinitionStoreException(
+        &quot;Detected cyclic loading of &quot; + encodedResource + &quot; - check your import definitions!&quot;);
+    }
+    try {
+            //获取IO
+            InputStream inputStream = encodedResource.getResource().getInputStream();
+        try {
+            InputSource inputSource = new InputSource(inputStream);
+            if (encodedResource.getEncoding() != null) {
+                inputSource.setEncoding(encodedResource.getEncoding());
+            }
+            //这个方法从流中读取
+        return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
+        } finally {
+            inputStream.close();
+        }
+    } catch (IOException ex) {
+        throw new BeanDefinitionStoreException(&quot;IOException parsing XML document from &quot; + encodedResource.getResource(), ex);
+    } finally {
+        currentResources.remove(encodedResource);
+        if (currentResources.isEmpty()) {
+        this.resourcesCurrentlyBeingLoaded.remove();
+        }
+    }
+}
+
+// 进入到doLoadBeanDefinitions  Resource IO封装
+protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource) throws BeanDefinitionStoreException {
+    try {
+        int validationMode = getValidationModeForResource(resource);
+        Document doc = this.documentLoader.loadDocument(
+        inputSource, getEntityResolver(), this.errorHandler, validationMode, isNamespaceAware());
+        return registerBeanDefinitions(doc, resource); //解析XML
+    } catch (BeanDefinitionStoreException ex) {
+    throw ex;
+    } catch (SAXParseException ex) {
+    throw new XmlBeanDefinitionStoreException(resource.getDescription(),
+    &quot;Line &quot; + ex.getLineNumber() + &quot; in XML document from &quot; + resource + &quot; is invalid&quot;, ex);
+    } catch (SAXException ex) {
+    throw new XmlBeanDefinitionStoreException(resource.getDescription(),&quot;XML document from &quot; + resource + &quot; is invalid&quot;, ex);
+    } catch (ParserConfigurationException ex) {
+    throw new BeanDefinitionStoreException(resource.getDescription(),&quot;Parser configuration exception parsing XML from &quot; + resource, ex);
+    } catch (IOException ex) {
+        throw new BeanDefinitionStoreException(resource.getDescription(),&quot;IOException parsing XML document from &quot; + resource, ex);
+    } catch (Throwable ex) {
+        throw new BeanDefinitionStoreException(resource.getDescription(),&quot;Unexpected exception parsing XML document from &quot; + resource, ex);
+    }
+}
+// 进入到registerBeanDefinitions
+public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
+    // Read document based on new BeanDefinitionDocumentReader SPI.
+    BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
+    int countBefore = getRegistry().getBeanDefinitionCount();
+    documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+    return getRegistry().getBeanDefinitionCount() - countBefore;
+}
+//documentReader.registerBeanDefinitionsXML解析
+public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
+    this.readerContext = readerContext;
+    logger.debug(&quot;Loading bean definitions&quot;);
+    Element root = doc.getDocumentElement();
+    BeanDefinitionParserDelegate delegate = createHelper(readerContext, root);
+    preProcessXml(root);
+    parseBeanDefinitions(root, delegate);
+    postProcessXml(root);
+}
+
+//-----遍历节点
+protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
+    if (delegate.isDefaultNamespace(root)) {
+        NodeList nl = root.getChildNodes();
+            for (int i = 0; i &lt; nl.getLength(); i++) {
+                Node node = nl.item(i);
+                if (node instanceof Element) {
+                    Element ele = (Element) node;
+                    if (delegate.isDefaultNamespace(ele)) {
+                    parseDefaultElement(ele, delegate); //默认解析
+                } else {
+                    delegate.parseCustomElement(ele);
+                }
+            }
+        }
+    } else {
+        delegate.parseCustomElement(root);
+    }
+}
+
+// ---判断解析类
+private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
+    if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
+    // import类型
+    importBeanDefinitionResource(ele);
+    } else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
+        // 别名方式
+        processAliasRegistration(ele);
+    } else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
+        // bean解析方式
+        processBeanDefinition(ele, delegate);
+    }
+}
+</code></pre>
+<hr>
+<h2 id="Bean生命周期分析"><a href="#Bean生命周期分析" class="headerlink" title="Bean生命周期分析"></a>Bean生命周期分析</h2><ol>
+<li>Spring对Bean进行实例化(相当于程序中的new Xx())</li>
+<li>Spring将值和Bean的引用注入Bean对应的属性中</li>
+<li>如果Bean实现了<code>BaenNameAware</code>接口，Spring将Bean的ID传递给setBeanName()方法（实现<code>BeanNameAware</code>接口主要是为了通过Bean的引用来获取Bean得ID，一般业务中是很少有用到Bean的ID的）</li>
+<li>如果Bean实现了<code>BeanfactoryAware</code>接口，Spring将调用setBeanFactory(BeanFactory bf)方法并把BeanFactory容器实例作为参数传入。（实现<code>BeanFactoryAware</code>主要目的是为了获取Spring容器，如Bean通过Spring容器发布时间等）</li>
+<li>如果Bean实现了<code>ApplicationContextAware</code>接口，Spring容器将调用<code>setApplicationContext()</code>方法，把bean所在的应用上下文的引用传入。（作用与<code>BeanFactory</code>类似都是为了获取Spring容器，不同的是Spring容器在调用<code>setApplicationContext</code>方法时会把它自己作为<code>setApplicationContext</code>的参数传入，而Spring容器在调用<code>setBeanFactory</code>前需要程序员自己指定（注入）<code>setBeanFactory</code>里的参数<code>BeanFactory</code>）</li>
+<li>如果Bean实现了<code>BeanPostProcess</code>接口，Spring将调用它们的<code>postProcessBeforeInitialization</code>（预初始化）方法<br>（作用是在Bean实例创建成功后对进行增强处理，如对Bean进行修改，增加某个功能）</li>
+<li>如果Bean实现了<code>InitializingBean</code>接口，Spring将调用它们的<code>afterPropertiesSet</code>方法，作用与在配置文件中对Bean使用init-method声明初始化的作用一样，都是在Bean的全部属性设置成功后执行的初始化方法。</li>
+<li>如果Bean实现了<code>BeanPostProcess</code>接口，Spring将调用它们的<code>postProcessAfterInitialization</code>（后初始化）方法（作用与6的一样，只不过<code>postProcessBeforeInitialization</code>是在Bean初始化前执行的，而这个是在Bean初始化后执行的，时机不同)</li>
+<li>此时，bean已经准备就绪，可以被程序使用了，Bean将一直驻留在应用上下文中给应用使用，直到应用上下文被销毁</li>
+<li>如果Bean实现了DispostbleBean接口，Spring将调用它的destory方法，作用与在配置文件中对Bean使用destory-method属性的作用一样，都是在Bean实例销毁前执行的方法。</li>
+</ol>
+
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/08/01/读书笔记/《Java并发编程实战》-11/" data-id="ck8gr4zp5004l1ovtfxj2wabm" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/学习笔记/Spring源码组件学习-IOC/" data-id="ckjtrgp8q004on8viztqp0t4l" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -767,7 +443,7 @@ code.language-yaml {
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="读书笔记/《Java并发编程实战》-11" ></div> 
+<div id="SOHUCS" sid="学习笔记/Spring源码组件学习-IOC" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -785,10 +461,10 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
 
 
   
-    <article id="post-学习笔记/Spring源码组件学习-BeanDefinitionParser" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/Spring源码组件学习-BeanPostProcessor" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <h3 href="/2019/08/01/学习笔记/Spring源码组件学习-BeanDefinitionParser/" class="article-date">
-  <time datetime="2019-08-01T01:54:06.760Z" itemprop="datePublished">2019-08-01</time>
+    <h3 href="/2020/08/22/学习笔记/Spring源码组件学习-BeanPostProcessor/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.588Z" itemprop="datePublished">2020-08-22</time>
 </h3>
     
   </div>
@@ -800,47 +476,133 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
     <div class="article-entry" itemprop="articleBody">
       
         
-        <h1 id="Spring源码组件学习-BeanDefinitionParser"><a href="#Spring源码组件学习-BeanDefinitionParser" class="headerlink" title="Spring源码组件学习-BeanDefinitionParser"></a>Spring源码组件学习-BeanDefinitionParser</h1><h2 id="Spring自定义xml配置元素，读取xml配置加载bean的过程"><a href="#Spring自定义xml配置元素，读取xml配置加载bean的过程" class="headerlink" title="Spring自定义xml配置元素，读取xml配置加载bean的过程"></a>Spring自定义xml配置元素，读取xml配置加载bean的过程</h2><p>xml扩展大概有以下几个步骤：</p>
-<ol>
-<li>编写自定义类</li>
-<li>编写xml schema来描述自定义元素</li>
-<li>编写<code>NamespaceHandler</code>实现类编写</li>
-<li>编写<code>BeanDefinitionParser</code>实现类</li>
-<li>把以上组建注册到Spring</li>
-</ol>
-<h2 id="xml的schema约束："><a href="#xml的schema约束：" class="headerlink" title="xml的schema约束："></a>xml的schema约束：</h2><p>schema约束定义了xml文档的结构、内容和语法，包括元素和属性、关系的结构以及数据类型等等。</p>
-<ol>
-<li>所有的标签和属性都需要Schema来定义（schema本身w3c来定义）。</li>
-<li>所有的schema文件都需要一个id，即<code>namespace</code>，其值为一个url,通常是这个xml的xsd文件地址。</li>
-<li><code>namespace</code>值由<code>targetNameSpace</code>属性来指定。</li>
-<li>引入一个<code>schema</code>约束，使用属性xmls,属性值即为对应schema文件的命名空间<code>nameSpace</code></li>
-<li>如果引入的<code>schema</code>非W3c组织定义的，必须指定<code>schema</code>文件的位置，<code>schema</code>文件的位置由<code>schemaLocation</code>来指定。</li>
-<li>引入多个<code>schema</code>文件需要使用别名。别名形式如下：xmlns:alias。</li>
-</ol>
-<p>对于上述配置文件的详细解读</p>
-<h2 id="NamespaceHandler"><a href="#NamespaceHandler" class="headerlink" title="NamespaceHandler"></a>NamespaceHandler</h2><p>用于解析自定义命名空间下的所有元素。</p>
-<p>Spring提供了默认实现类<code>NamespaceHandlerSupport</code>，只需要重写<code>init()</code>方法注册每个元素的解析器。</p>
-<h2 id="注册handler和schema（将组件串联起来）"><a href="#注册handler和schema（将组件串联起来）" class="headerlink" title="注册handler和schema（将组件串联起来）"></a>注册<code>handler</code>和<code>schema</code>（将组件串联起来）</h2><p>为了让Spring在解析xml的时候能够感知到自定义的元素，需要将<code>handlers</code>格式和<code>schemas</code>格式的文件放入classPath下的<code>META-INF/</code>目录中。</p>
-<ol>
-<li><p><code>srping.handlers</code>文件包含了<code>xml schema url</code>和handler类的映射关系，比如：</p>
-<pre><code class="handlers"> http\://www.windforce.com/common/event=com.windforce.event.config.EvenrNamespaceHandler
-</code></pre>
-<p> 上面的冒号表示转义，key部分必须和xsd文件的中的<code>targetNamespace</code>值保持一致。</p>
-</li>
-<li><p>spring.schemas文件包含<code>xml schema url</code>和xsd文件位置的映射关系。</p>
-<pre><code class="schemas"> http\://www.windforce.com/common/event/event-1.0.xsd=com/windfore/common/event/config/event-1.0.xsd
-</code></pre>
-</li>
-</ol>
-<h2 id="BeanDefinitionParser"><a href="#BeanDefinitionParser" class="headerlink" title="BeanDefinitionParser"></a>BeanDefinitionParser</h2><p>当解析xml配置文件时遇到在<code>NamespaceHandler</code>中指定的元素，Spring就会将元素交由相应的的<code>BeanDefinitionParser</code>来解析。</p>
-<p><code>BeanDefinitionParser</code>是一个接口，只有一个方法<code>BeanDefinition parse(Element element, ParseContext parseContext)</code>，返回<code>BeanDefinition</code>。</p>
+        <h1 id="Spring源码组件学习-BeanPostProcessor"><a href="#Spring源码组件学习-BeanPostProcessor" class="headerlink" title="Spring源码组件学习-BeanPostProcessor"></a>Spring源码组件学习-BeanPostProcessor</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p><code>BeanPostProcessor</code>称为Bean后置处理器，他是Spring中定义的接口，在Spring容器的创建过程中（具体为Bean初始化前端）会回调<code>BeanPostProcessor</code>中定义的两个方法。</p>
+<pre><code class="java">public interface BeanPostProcessor {
+    Object interface postProcessBeforeInitialization(Object bean,String beanName) throws BeanException;
 
+    Object interface postProcessAfterInitialization(Object bean,String beanName) throws BeanException;
+}
+
+</code></pre>
+<p>其中<code>postProcessBeforeInitiallization</code>方法会在每一个bean对象的初始化方法调用之前回调；<br>其中<code>postProcessAfterInitiallization</code>方法会在每一个bean对象的初始化方法调用之后回调；</p>
+<p>自定义<code>BeanPostProcessor</code></p>
+<p>查看BeanPostProcessor源码，可以看到它两个方法的参数都相同，其中第一个参数<code>Object bean</code>表示当前正在初始化的bean对象。此外两个方法都返回Object类型的实例，返回值既可以是将入参<code>Object bean</code>原封不动的返回出去，也可以对当前bean进行包装再返回。</p>
+<h2 id="执行原理"><a href="#执行原理" class="headerlink" title="执行原理"></a>执行原理</h2><p><code>BeanPostProcessor</code>的执行是定义在容器的刷新过程中，容器刷新对象具体的方法为：<br><code>AbstractApplicationContext.refresh()</code><br>在<code>refresh</code>方法执行的调用栈中会去调用<br><code>AbstractAutowireCapableBeanFactory.deCreateBean()</code>方法，该方法节选源码如下:</p>
+<pre><code class="java">protected Object initializeBean(final String beanName, final Object bean, RootBeanDefinition mbd) {
+    if(mbd == null || !mbd.isSynthetic()) {
+        wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
+    }
+    invokeInitMethods(beanName, wrappedBean, mbd);
+
+    if(mbd == null || !mbd.isSynthetic()) {
+        wrappedBean = applyBeanPostProcessorsAfterInitialzation(wrappedBean, beanName);
+    }
+    return wrappedBean;
+}
+</code></pre>
+<p>看到在调用初始化方法前后会分别调用<code>applyBeanPostProcessorsBeforeInitializatioan()</code>和<code>applyBeanPostProcessorsAfterInitialization()</code>。<br><code>applyBeanPostProcessorsBeforeInitialization()</code>方法的源码如下</p>
+<pre><code class="java">public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeansException {
+    Object result = existingBean;
+    // 获取所有的BeanPostProcessor进行遍历
+    for(BeanPostProcessor beanProcessor : getBeanPostProcessor()) {
+        result = beanProcessor.postProcessBeanBeforeInitiallization(result, beanName);
+        if(result == null) {
+            return result;
+        }
+    }
+    return result;
+}
+</code></pre>
+<p>可以看到其逻辑为遍历得到容器中所有的<code>BeanPostProcessor</code>,然后一次执行<code>postProcessBeforeInitialization</code>,一旦返回null,就跳出for循环不执行后面的<code>BeanPostProcessor.postProcessBeforeInitialization()</code>,也就是说如果返回的<br>是null那么我们通过getBean方法将得不到目标Bean。<br><code>applyBeanPostProceorsAfterInitialzation()</code>方法的逻辑与上面一样。</p>
+<h2 id="Spring中常见的几个Bean后置处理器"><a href="#Spring中常见的几个Bean后置处理器" class="headerlink" title="Spring中常见的几个Bean后置处理器"></a>Spring中常见的几个Bean后置处理器</h2><p>Spring底层的很多功能特性都是借助<code>BeanPostProcessor</code>的子类来实现。</p>
+<h3 id="AppliacationContextAwareProcessor"><a href="#AppliacationContextAwareProcessor" class="headerlink" title="AppliacationContextAwareProcessor"></a>AppliacationContextAwareProcessor</h3><p><code>AppliacationContextAwareProcessor</code>作用是当应用程序定义的Bean实现<code>ApplicationContextAware</code>接口时注入<code>ApplicationContext</code>对象。</p>
+<pre><code class="java">class ApplicationContextAwareProcessor implements BeanPostProcessor {
+    private final ConfigurableApplicationCotext applicationContext;
+
+    private final StringValueResolver embeddedVakueResolver;
+
+    // Create a new ApplicationContextAwareProcessor for the given context
+    public ApplicationContextAwareProcessor(ConfigurableApplicationContext applicationContext ) {
+        this.applicationContext = applicationContext;
+        this.embeddedValueResolver = new EmbeddedValueResolver(applicationContext.getBeanFactory());
+    }
+
+    @Override
+    public Object postProcessBeforeInitialization(final Object bean, String beanName) throws BeansException {
+        AccessControlContext acc = null;
+        // 这里bean是Car,它实现了ApplicationContextAware接口
+        if (System.getSecurityManager() != null &amp;&amp;
+                (bean instanceof EnvironmentAware || bean instanceof EmbeddedValueResolverAware ||
+                        bean instanceof ResourceLoaderAware || bean instanceof ApplicationEventPublisherAware ||
+                        bean instanceof MessageSourceAware || bean instanceof ApplicationContextAware)) {
+            invokeAwareInterfaces(bean);
+        }
+
+        return bean;
+    }
+
+    private void invokeAwareInterfaces(Object bean) {
+        if (bean instanceof Aware) {
+            if (bean instanceof EnvironmentAware) {
+                ((EnvironmentAware) bean).setEnvironment(this.applicationContext.getEnvironment());
+            }
+            if (bean instanceof EmbeddedValueResolverAware) {
+                ((EmbeddedValueResolverAware) bean).setEmbeddedValueResolver(this.embeddedValueResolver);
+            }
+            if (bean instanceof ResourceLoaderAware) {
+                ((ResourceLoaderAware) bean).setResourceLoader(this.applicationContext);
+            }
+            if (bean instanceof ApplicationEventPublisherAware) {
+                ((ApplicationEventPublisherAware) bean).setApplicationEventPublisher(this.applicationContext);
+            }
+            if (bean instanceof MessageSourceAware) {
+                ((MessageSourceAware) bean).setMessageSource(this.applicationContext);
+            }
+            if (bean instanceof ApplicationContextAware) {
+                // 会执行这里回调实现类重写的setApplicationContext方法，然后将this.applicationContext注入给Car
+                ((ApplicationContextAware) bean).setApplicationContext(this.applicationContext);
+            }
+        }
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) {
+        return bean;
+    }
+
+}
+</code></pre>
+<h3 id="InitDestroyAnnotationBeanPostProcessor"><a href="#InitDestroyAnnotationBeanPostProcessor" class="headerlink" title="InitDestroyAnnotationBeanPostProcessor"></a>InitDestroyAnnotationBeanPostProcessor</h3><p><code>InitDestroyAnnotationBeanPostProcessor后</code>置处理器是用来处理自定义的初始化方法和销毁方法。Spring中提供了3种自定义初始化和销毁方法：</p>
+<ol>
+<li>通过@Bean指定<code>init-method</code>和<code>destroy-method</code>属性</li>
+<li>Bean实现InitializingBean（定义初始化逻辑），DisposableBean（定义销毁逻辑）;</li>
+<li>@PostConstruct：在bean创建完成并且属性赋值完成；来执行初始化方法<br> @PreDestroy：在容器销毁bean之前通知我们进行清理工作</li>
+</ol>
+<p><code>InitDestroyAnnotationBeanPostProcessor</code>的作用就是让第3种方式生效。</p>
+<p>InitDestroyAnnotationBeanPostProcessor会在Bean创建的时候通过反射的方式查找包含@PostConstruct和@PreDestroy注解的方法，然后再通过反射执行方法。InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization()的源码</p>
+<pre><code class="java">public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    // 获取bean的metadata
+    LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());
+    try {
+        // 执行@PostConstruct指定的init方法
+        metadata.invokeInitMethods(bean, beanName);
+    }
+    catch (InvocationTargetException ex) {
+        throw new BeanCreationException(beanName, &quot;Invocation of init method failed&quot;, ex.getTargetException());
+    }
+    catch (Throwable ex) {
+        throw new BeanCreationException(beanName, &quot;Failed to invoke init method&quot;, ex);
+    }
+    return bean;
+}
+</code></pre>
+<h3 id="ConfigurationClassPostProcessor"><a href="#ConfigurationClassPostProcessor" class="headerlink" title="ConfigurationClassPostProcessor"></a>ConfigurationClassPostProcessor</h3><h3 id="PostProcessorRegistrationDelegate"><a href="#PostProcessorRegistrationDelegate" class="headerlink" title="PostProcessorRegistrationDelegate"></a>PostProcessorRegistrationDelegate</h3><h3 id="CommonAnnotationBean"><a href="#CommonAnnotationBean" class="headerlink" title="CommonAnnotationBean"></a>CommonAnnotationBean</h3><h3 id="RequiredAnnotationBeanPostProcessor"><a href="#RequiredAnnotationBeanPostProcessor" class="headerlink" title="RequiredAnnotationBeanPostProcessor"></a>RequiredAnnotationBeanPostProcessor</h3><h3 id="ApplicationListenerDetetor"><a href="#ApplicationListenerDetetor" class="headerlink" title="ApplicationListenerDetetor"></a>ApplicationListenerDetetor</h3>
       
     </div>
     <footer class="article-footer">
       <div class="article-footer-content">
         
-        <a data-url="http://gonefuture.top/2019/08/01/学习笔记/Spring源码组件学习-BeanDefinitionParser/" data-id="ck8gr4zok004e1ovtunly1rhl" class="article-share-link">Share</a>
+        <a data-url="http://gonefuture.top/2020/08/22/学习笔记/Spring源码组件学习-BeanPostProcessor/" data-id="ckjtrgp8i004dn8vi2fw4s86f" class="article-share-link">Share</a>
         
       </div>
     </footer>
@@ -848,7 +610,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   </div>
 
 <!--PC和WAP自适应版-->
-<div id="SOHUCS" sid="学习笔记/Spring源码组件学习-BeanDefinitionParser" ></div> 
+<div id="SOHUCS" sid="学习笔记/Spring源码组件学习-BeanPostProcessor" ></div> 
 <script type="text/javascript"> 
 (function(){ 
 var appid = 'cytLwvbWT'; 
@@ -868,7 +630,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
     </nav>
   
 </section>
@@ -882,23 +644,23 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
       <ul>
         
           <li>
-            <a href="/2020/03/25/游戏框架笔记/技能系统设计/">技能系统设计</a>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/24/游戏框架笔记/跨服系统设计/">跨服系统的设计</a>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2020/03/23/游戏框架笔记/合服组件的设计/">合服组件的设计</a>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
           </li>
         
           <li>
-            <a href="/2020/01/03/项目笔记/属性系统学习笔记/">(no title)</a>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
           </li>
         
           <li>
-            <a href="/2019/11/13/项目笔记/缓存持久化系统学习/">(no title)</a>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
           </li>
         
       </ul>
@@ -910,7 +672,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -919,7 +681,7 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">36</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">11</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
     </div>
   </div>
 
@@ -940,11 +702,11 @@ window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="tex
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2020 WeiJian Qian
+      &copy; 2021 WeiJian Qian
 	  <span id="busuanzi_container_site_pv">
 		 <span id="busuanzi_value_site_pv"></span>hits
     </span><br>
-    <a href="http://www.miibeian.gov.cn/" target="_blank">粤ICP备17094722号-1</a> 
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
 
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
       .

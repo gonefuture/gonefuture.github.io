@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  
+  <title>《Java并发编程实战》-11 | gonefuture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第11章 性能与可伸缩性 11.1 对性能的思考11.1.1 性能与可伸缩性 可伸缩性指的是:当增加计算资源时(例如CPU、内存、存储容量或I/O带宽)，程序的吞吐量或处理能力能相应地增加。  11.1.2 评估各种性能权衡因素 避免不成熟的优化。首先使程序正确，然后提高运行速度–如果它还运行得不够快。  以测试为基准，不要猜测。 11.2 Amdahl定律Amdahl定律描述的是：在增加计算资源">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Java并发编程实战》-11">
+<meta property="og:url" content="http://gonefuture.top/2020/08/22/《Java并发编程实战》-10/index.html">
+<meta property="og:site_name" content="gonefuture">
+<meta property="og:description" content="第11章 性能与可伸缩性 11.1 对性能的思考11.1.1 性能与可伸缩性 可伸缩性指的是:当增加计算资源时(例如CPU、内存、存储容量或I/O带宽)，程序的吞吐量或处理能力能相应地增加。  11.1.2 评估各种性能权衡因素 避免不成熟的优化。首先使程序正确，然后提高运行速度–如果它还运行得不够快。  以测试为基准，不要猜测。 11.2 Amdahl定律Amdahl定律描述的是：在增加计算资源">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-08-21T10:05:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Java并发编程实战》-11">
+<meta name="twitter:description" content="第11章 性能与可伸缩性 11.1 对性能的思考11.1.1 性能与可伸缩性 可伸缩性指的是:当增加计算资源时(例如CPU、内存、存储容量或I/O带宽)，程序的吞吐量或处理能力能相应地增加。  11.1.2 评估各种性能权衡因素 避免不成熟的优化。首先使程序正确，然后提高运行速度–如果它还运行得不够快。  以测试为基准，不要猜测。 11.2 Amdahl定律Amdahl定律描述的是：在增加计算资源">
+  
+    <link rel="alternative" href="/atom.xml" title="gonefuture" type="application/atom+xml">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+
+</head>
+
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <nav id="upper-nav" class="inner">
+      <a id="main-nav-toggle" class="nav-icon"></a>
+      <div class="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        
+          <a id="nav-github" class="nav-icon" href="https://github.com/gonefutre"></a>
+        
+      </div>
+    </nav>
+    <div id="header-title">
+      
+        <h1 id="blog-title-wrap">
+          <a href="/" id="blog-title">钱伟健的个人博客</a>
+        </h1>
+      
+    </div>
+    <div id="contenedor">
+      <ul class="cube">
+        <li class="cara">gonefuture</li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+        <li class="cara"></li>
+      </ul>
+    </div>
+    <nav id="main-nav">
+      
+        <a class="main-nav-link" href="/">Home</a>
+      
+        <a class="main-nav-link" href="/archives">Archives</a>
+      
+        <a class="main-nav-link" href="/categories">categories</a>
+      
+        <a class="main-nav-link" href="/tags">tags</a>
+      
+        <a class="main-nav-link" href="/about">about</a>
+      
+      <a class="main-nav-link st-search-show-outputs">Search</a>
+    </nav>
+  </div>
+</header>
+
+    <div class="outer">
+      <section id="main"><article id="post-《Java并发编程实战》-10" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <h3 href="/2020/08/22/《Java并发编程实战》-10/" class="article-date">
+  <time datetime="2020-08-22T08:41:59.353Z" itemprop="datePublished">2020-08-22</time>
+</h3>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/读书笔记/">读书笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+  <div class="curve-down">
+  <div class="fill-content">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《Java并发编程实战》-11
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        <h1 id="第11章-性能与可伸缩性"><a href="#第11章-性能与可伸缩性" class="headerlink" title="第11章 性能与可伸缩性"></a>第11章 性能与可伸缩性</h1><hr>
+<h2 id="11-1-对性能的思考"><a href="#11-1-对性能的思考" class="headerlink" title="11.1 对性能的思考"></a>11.1 对性能的思考</h2><h3 id="11-1-1-性能与可伸缩性"><a href="#11-1-1-性能与可伸缩性" class="headerlink" title="11.1.1 性能与可伸缩性"></a>11.1.1 性能与可伸缩性</h3><blockquote>
+<p>可伸缩性指的是:当增加计算资源时(例如CPU、内存、存储容量或I/O带宽)，程序的吞吐量或处理能力能相应地增加。</p>
+</blockquote>
+<h3 id="11-1-2-评估各种性能权衡因素"><a href="#11-1-2-评估各种性能权衡因素" class="headerlink" title="11.1.2 评估各种性能权衡因素"></a>11.1.2 评估各种性能权衡因素</h3><blockquote>
+<p>避免不成熟的优化。首先使程序正确，然后提高运行速度–如果它还运行得不够快。</p>
+</blockquote>
+<p>以测试为基准，不要猜测。</p>
+<h2 id="11-2-Amdahl定律"><a href="#11-2-Amdahl定律" class="headerlink" title="11.2 Amdahl定律"></a>11.2 Amdahl定律</h2><p>Amdahl定律描述的是：在增加计算资源的情况下，程序在理论上能够实现最高加速比，这个值取决于程序中可并行组件和串行组件所占的比重。</p>
+<blockquote>
+<p>在所有并发程序中都包含一些串行部分。如果你认为在你的程序中不存在串行部分，那么可任意在仔细检查一遍。</p>
+</blockquote>
+<h3 id="11-2-1-实列：在各种框架中隐藏的串行部分"><a href="#11-2-1-实列：在各种框架中隐藏的串行部分" class="headerlink" title="11.2.1 实列：在各种框架中隐藏的串行部分"></a>11.2.1 实列：在各种框架中隐藏的串行部分</h3><h3 id="11-2-2-Amdahl定律的应用"><a href="#11-2-2-Amdahl定律的应用" class="headerlink" title="11.2.2 Amdahl定律的应用"></a>11.2.2 Amdahl定律的应用</h3><h2 id="11-3-线程引入的开销"><a href="#11-3-线程引入的开销" class="headerlink" title="11.3 线程引入的开销"></a>11.3 线程引入的开销</h2><h3 id="11-3-1-上下文切换"><a href="#11-3-1-上下文切换" class="headerlink" title="11.3.1 上下文切换"></a>11.3.1 上下文切换</h3><p>切换线程上下文需要一定的开销，而在线程调度过程中需要访问由操作系统和JVM共享的数据结构。应用程序、操作系统以及JVM都使用一组相同的CPU。</p>
+<h3 id="11-3-2-内存同步"><a href="#11-3-2-内存同步" class="headerlink" title="11.3.2 内存同步"></a>11.3.2 内存同步</h3><p>同步操作的性能开销包括多个方面。在<code>synchronized</code>和<code>volatile</code>提供的可见性保证中可能会使用一些特殊指令，即内存栅栏(Memory Barrier)。内存栅栏可以刷新缓存，使缓存无效，刷新硬件的写缓冲，以及停止执行管道。</p>
+<blockquote>
+<p>不要过度担心非竞争同步带来的开销。这个基本的机制已经非常快了，并且JVM还能进行额外的优化以及进一步降低或消除开销。因此，我们应该将优化重点放在那些发生锁竞争的地方。</p>
+</blockquote>
+<h3 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h3><p>当线程无法获取某个锁或者由于某个条件等待或在I/O操作上阻塞时，需要被挂起，在这个过程中将包含两次额外的上下文切换，以及所有必要的操作系统操作和缓存操作：被阻塞的线程在其执行时间片还未用完之前就被就被交换换出去，而在随后当要获取的锁或者其他资源可用时，又再次被切换回来。（由于锁竞争而导致阻塞时，线程在持有锁时将存在一定的开销：当它释放锁时，必须告诉操作系统恢复运行阻塞的线程）。</p>
+<h2 id="11-4-减少锁的竞争"><a href="#11-4-减少锁的竞争" class="headerlink" title="11.4 减少锁的竞争"></a>11.4 减少锁的竞争</h2><blockquote>
+<p>在并发程序中，对可伸缩性的最主要威胁就是独占方式的资源锁。</p>
+</blockquote>
+<p>由3种方式可以降低锁的竞争程度：</p>
+<ul>
+<li>减少锁的持有时间。</li>
+<li>降低锁的请求频率。</li>
+<li>使用带有协调机制的独占锁，这些机制允许更高的并发性。</li>
+</ul>
+<h3 id="11-4-1-缩小锁的范围（”快进快出”）"><a href="#11-4-1-缩小锁的范围（”快进快出”）" class="headerlink" title="11.4.1 缩小锁的范围（”快进快出”）"></a>11.4.1 缩小锁的范围（”快进快出”）</h3><p>降低发生竞争可能性的一种有效方式就是尽可能缩短锁的持有时间。例如，而可以将一些与锁无关的代码移出同步代码块，尤其是那些开销较大的操作，以及可能被阻塞的操作，例如I/O操作。</p>
+<h3 id="11-4-2-减小锁的粒度"><a href="#11-4-2-减小锁的粒度" class="headerlink" title="11.4.2 减小锁的粒度"></a>11.4.2 减小锁的粒度</h3><p>通过锁分段和锁分解等降低线程请求锁的频率（从而减小竞争的可能性）的技术可以减小锁的持有时间，在这些技术中将采用多个互相独立的锁来保护独立的状态变量，从而改变这些变量之前由单个锁保护的情况。</p>
+<h3 id="11-4-3-锁分段"><a href="#11-4-3-锁分段" class="headerlink" title="11.4.3 锁分段"></a>11.4.3 锁分段</h3><p>锁分段的一个劣势在于:与采用单个锁来实现独占访问相比，要获取多个锁来实现独占访问将更加困难并且开销更高。</p>
+<h3 id="11-4-4-避免热点域"><a href="#11-4-4-避免热点域" class="headerlink" title="11.4.4 避免热点域"></a>11.4.4 避免热点域</h3><h3 id="11-4-5-一些替代独占锁的方法"><a href="#11-4-5-一些替代独占锁的方法" class="headerlink" title="11.4.5 一些替代独占锁的方法"></a>11.4.5 一些替代独占锁的方法</h3><p>放弃使用独占锁来管理共享状态:</p>
+<ul>
+<li>使用并发容器</li>
+<li>读-写锁</li>
+<li>不可变对象</li>
+<li>原子对象</li>
+</ul>
+<h3 id="11-4-6-监测CPU的利用率"><a href="#11-4-6-监测CPU的利用率" class="headerlink" title="11.4.6 监测CPU的利用率"></a>11.4.6 监测CPU的利用率</h3><p>如果CPU没有得到充分利用，那么需要找到其中的原因。通常有一下几种原因:</p>
+<ul>
+<li>负载不充足。</li>
+<li>I/O密集。</li>
+<li>外部限制。</li>
+<li>锁竞争。</li>
+</ul>
+<h2 id="11-4-7-向对象池说“不”"><a href="#11-4-7-向对象池说“不”" class="headerlink" title="11.4.7 向对象池说“不”"></a>11.4.7 向对象池说“不”</h2><blockquote>
+<p>通常，对象分配操作的开销比同步的开销更低。</p>
+</blockquote>
+<h2 id="11-5-实例：比较Map的性能"><a href="#11-5-实例：比较Map的性能" class="headerlink" title="11.5 实例：比较Map的性能"></a>11.5 实例：比较Map的性能</h2><h2 id="11-6-减少上下文切换的开销"><a href="#11-6-减少上下文切换的开销" class="headerlink" title="11.6 减少上下文切换的开销"></a>11.6 减少上下文切换的开销</h2><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>由于使用线程常常是为了充分利用多个处理器的计算能力，因此并发程序性能的讨论中，童话参观更多地将侧重点放在吞吐量和可伸缩性上，而不是服务时间。Amdahl定律告诉我们，程序的可伸缩性取决于在所有代码中必须被串行执行的代码比例。因为Java程序中串行执行的主要来源是独占凡是的资源锁，因此通常可以通过以下方式来提升可伸缩性：减少锁的持有时间，降低锁的粒度，意见采用非独占锁或非阻塞锁来代替独占锁。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <div class="article-footer-content">
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+        <a data-url="http://gonefuture.top/2020/08/22/《Java并发编程实战》-10/" data-id="ckjtrgp58000pn8vi6j8j8y8t" class="article-share-link">Share</a>
+        
+      </div>
+    </footer>
+  </div>
+  </div>
+
+<!--PC和WAP自适应版-->
+<div id="SOHUCS" sid="《Java并发编程实战》-10" ></div> 
+<script type="text/javascript"> 
+(function(){ 
+var appid = 'cytLwvbWT'; 
+var conf = 'prod_c2be45ba4993cf83be33cabf34204da1'; 
+var width = window.innerWidth || document.documentElement.clientWidth; 
+if (width < 960) { 
+window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("http://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/08/22/《Java并发编程实战》-11/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          《Java并发编程实战》-11 第12章 并发程序的测试
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/08/22/《Java并发编程实战》-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">《Java并发编程实战》-1</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/11/10/学习笔记/web权限模型/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/06/项目笔记/小工具/LockBox锁盒子/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/06/项目笔记/slg项目笔记/属性系统基础架构/">属性系统基础架构</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/05/游戏框架笔记/用FakeEnum来优化枚举和实现类的分离/">FakeEnum</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/22/项目笔记/项目全部模块速览/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NIO/">NIO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/">Netty</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/">SpringBoot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expression/">expression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/netty/">netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/游戏开发/">游戏开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">94</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="450" src="//music.163.com/outchain/player?type=0&id=472116048&auto=1&height=430"></iframe>
+  </div>
+
+
+
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 WeiJian Qian
+	  <span id="busuanzi_container_site_pv">
+		 <span id="busuanzi_value_site_pv"></span>hits
+    </span><br>
+    <a href="https://help.aliyun.com/knowledge_detail/137270.html" target="_blank">粤ICP备17094722号-1</a> 
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/sun11/hexo-theme-paperbox" target="_blank">Paperbox</a>
+    </div>
+  </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">tags</a>
+  
+    <a href="/about" class="mobile-nav-link">about</a>
+  
+  <a href="#search" class="mobile-nav-link st-search-show-outputs">Search</a>
+</nav>
+  
+
+<!-- totop start -->
+<div id="totop">
+	<a title="To Top"></a>
+</div>
+<!-- totop end -->
+
+<!-- swiftype search start -->
+
+<!-- swiftype search end -->
+
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+<script src="//db101.cn/file/js/jquery.min.js"></script>
+<script src="//db101.cn/file/js/jquery.qrcode.min.js">
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/lrsjng.jquery-qrcode/0.12.0/jquery.qrcode.min.js"></script> -->
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>
